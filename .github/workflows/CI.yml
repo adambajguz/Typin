@@ -1,6 +1,24 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '*'
+    paths-ignore:
+      - LICENSE
+      - Changelog.md
+      - README.md
+  pull_request:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+    paths-ignore:
+      - LICENSE
+      - Changelog.md
+      - README.md
 
 jobs:
   build:
