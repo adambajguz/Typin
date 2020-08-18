@@ -9,14 +9,14 @@
 
 </p>
 
-<table border="0">
- <tr border="0">
-    <td border="0">
+<table>
+ <tr>
+    <td>
       <p align="center">
         <img src="https://raw.githubusercontent.com/adambajguz/Typin/master/.img/typin-logo-b-256px.png" width="75%">
       </p>
     </td>
-    <td border="0">
+    <td>
 
 <b>Table of contents</b>
 
