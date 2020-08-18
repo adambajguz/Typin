@@ -1,7 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.1.2-beta</Version>
+    <Author>Adam Bajguz</Author>
     <Company>Adam Bajguz</Company>
     <Copyright>Copyright (C) Adam Bajguz</Copyright>
     <LangVersion>latest</LangVersion>

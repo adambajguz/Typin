@@ -13,7 +13,7 @@
  <tr>
     <td>
       <p align="center">
-        <img src="https://raw.githubusercontent.com/adambajguz/Typin/master/.img/typin-logo-b-256px.png" width="75%">
+        <img src="https://raw.githubusercontent.com/adambajguz/Typin/master/.img/typin-logo-256px.png" width="75%">
       </p>
     </td>
     <td>

@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Typin.props" />
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
-    <Authors>adambajguz</Authors>
+    <Authors>$(Company)</Authors>
     <Copyright>
       Copyright for portions of project Typin are held by Alexey Golub, 2019-2020 as a part of project CliFx.
       All other copyright for project Typin are held by Adam Bajguz, 2020.

@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3AAE8166-BB8E-49DA-844C-3A0EE6BD40A0}"
 	ProjectSection(SolutionItems) = preProject
 		Changelog.md = Changelog.md
-		Typin.props = Typin.props
 		.github\FUNDING.yml = .github\FUNDING.yml
 		LICENSE = LICENSE
 		Readme.md = Readme.md
