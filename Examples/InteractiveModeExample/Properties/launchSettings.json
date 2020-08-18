@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "InteractiveModeExample": {
+      "commandName": "Project",
+      "commandLineArgs": "[interactive]"
+    }
+  }
+}

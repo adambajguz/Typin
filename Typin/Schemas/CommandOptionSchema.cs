@@ -123,7 +123,7 @@
                 return null;
 
             // The user may mistakenly specify dashes, thinking it's required, so trim them
-            string name = attribute.Name?.TrimStart('-');
+            string? name = attribute.Name?.TrimStart('-');
 
             return new CommandOptionSchema(
                 property,
