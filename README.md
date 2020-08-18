@@ -102,4 +102,4 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 
 ## Etymology
 
-Typin is made out of "Typ" for "Type" and "in" for "interactive". It's pronounced as "Typein".
+Typin is made out of "Typ" for "Type" and "in" for "interactive". It's pronounced as "Type in".
