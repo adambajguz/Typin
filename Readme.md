@@ -10,13 +10,13 @@
 </p>
 
 <table border="0">
- <tr>
-    <td>
+ <tr border="0">
+    <td border="0">
       <p align="center">
         <img src="https://raw.githubusercontent.com/adambajguz/Typin/master/.img/typin-logo-b-256px.png" width="75%">
       </p>
     </td>
-    <td>
+    <td border="0">
 
 <b>Table of contents</b>
 
