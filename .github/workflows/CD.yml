@@ -16,10 +16,10 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.100
+        dotnet-version: 3.1.300
 
     - name: Pack
-      run: dotnet pack CliFx --configuration Release
+      run: dotnet pack Typin --configuration Release
 
     - name: Deploy
-      run: dotnet nuget push CliFx/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+      run: dotnet nuget push Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}

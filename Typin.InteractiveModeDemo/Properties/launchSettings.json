@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Typin.InteractiveModeDemo": {
+      "commandName": "Project",
+      "commandLineArgs": "[interactive]"
+    }
+  }
+}

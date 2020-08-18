@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CliFx.InteractiveModeDemo": {
-      "commandName": "Project",
-      "commandLineArgs": "[interactive]"
-    }
-  }
-}

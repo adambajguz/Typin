@@ -1,18 +1,19 @@
-# CliFx
+# Typin
 
-[![Build](https://github.com/Tyrrrz/CliFx/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/CliFx/actions)
-[![Coverage](https://codecov.io/gh/Tyrrrz/CliFx/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/CliFx)
-[![Version](https://img.shields.io/nuget/v/CliFx.svg)](https://nuget.org/packages/CliFx)
-[![Downloads](https://img.shields.io/nuget/dt/CliFx.svg)](https://nuget.org/packages/CliFx)
-[![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
+[![Build](https://github.com/adambajguz/Typin/workflows/CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
+[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg)](https://codecov.io/gh/adambajguz/Typin)
+[![Version](https://img.shields.io/nuget/v/Typin.svg)](https://nuget.org/packages/Typin)
+[![Downloads](https://img.shields.io/nuget/dt/Typin.svg)](https://nuget.org/packages/Typin)
 
-CliFx is a simple to use, yet powerful framework for building command line applications. Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application. This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
+![Typin](.img/typin-logo-b-256px.png)
 
-An important property of CliFx, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework. The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications. At its core, CliFx is highly opinionated, giving preference to convention over configuration, strictness over extensibility, consistency over ambiguity, and so on.
+Typin is a simple to use, yet powerful framework for building command line applications. Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application. This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
+
+An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework. The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications. At its core, Typin is highly opinionated, giving preference to convention over configuration, strictness over extensibility, consistency over ambiguity, and so on.
 
 ## Download
 
-- [NuGet](https://nuget.org/packages/CliFx): `dotnet add package CliFx`
+- [NuGet](https://nuget.org/packages/Typin): `dotnet add package Typin`
 
 ## Features
 
@@ -37,7 +38,7 @@ An important property of CliFx, when compared to some other libraries, is that i
 
 ## Usage
 
-- [CliFx](#clifx)
+- [Typin](#typin)
   - [Download](#download)
   - [Features](#features)
   - [Screenshots](#screenshots)
@@ -175,7 +176,7 @@ v1.0
 
 Commands can be configured to take input from command line arguments. To do that, we need to add properties to the command and annotate them with special attributes.
 
-In CliFx, there are two types of argument bindings: **parameters** and **options**. Parameters are positional arguments that are identified by the order they appear in, while options are identified by their names.
+In Typin, there are two types of argument bindings: **parameters** and **options**. Parameters are positional arguments that are identified by the order they appear in, while options are identified by their names.
 
 Here's an example command that calculates a logarithm of a value, which uses both a parameter and an option:
 
@@ -265,7 +266,7 @@ As a general guideline, prefer to use parameters for required inputs that the co
 
 ### Argument syntax
 
-This library supports an argument syntax which is based on the POSIX standard. To be fair, nobody really knows what the standard is about and very few tools actually follow it to the letter, so for the purpose of having dashes and spaces, CliFx is using the "standard command line syntax".
+This library supports an argument syntax which is based on the POSIX standard. To be fair, nobody really knows what the standard is about and very few tools actually follow it to the letter, so for the purpose of having dashes and spaces, Typin is using the "standard command line syntax".
 
 More specifically, the following examples are all valid:
 
@@ -279,7 +280,7 @@ More specifically, the following examples are all valid:
 - `myapp -i file1.txt -i file2.txt` sets option `'i'` to a sequence of values `"file1.txt"` and `"file2.txt"`
 - `myapp cmd abc -o` routes to command `cmd` (assuming it exists) with parameter `abc` and sets option `'o'` without value
 
-Argument parsing in CliFx aims to be as deterministic as possible, ideally yielding the same result no matter the context. The only context-sensitive part in the parser is the command name resolution which needs to know what commands are available in order to discern between arguments that correspond to the command name and arguments which are parameters.
+Argument parsing in Typin aims to be as deterministic as possible, ideally yielding the same result no matter the context. The only context-sensitive part in the parser is the command name resolution which needs to know what commands are available in order to discern between arguments that correspond to the command name and arguments which are parameters.
 
 Options are always parsed the same way, disregarding the arity of the actual property it binds to. This means that `myapp -i file1.txt file2.txt` will _always_ be parsed as an option with multiple values, even if the underlying bound property is not enumerable. For the same reason, unseparated arguments such as `myapp -ofile` will be treated as five distinct options `'o'`, `'f'`, `'i'`, `'l'`, `'e'`, instead of `'o'` being set to `"file"`.
 
@@ -368,7 +369,7 @@ Total file size: 186368 bytes
 
 Complex command line applications may have more than a single command in order to facilitate different workflows. In even more complex applications there may be multiple levels of commands, forming a hierarchy.
 
-Whichever case it is, CliFx takes care of everything for you. All you need to do is specify appropriate command names in the attributes:
+Whichever case it is, Typin takes care of everything for you. All you need to do is specify appropriate command names in the attributes:
 
 ```c#
 // Default command, i.e. command without a name
@@ -446,7 +447,7 @@ In every command it is possible to define a description and a manual with `[Comm
 
 ### Built-in and custom directives
 
-By default CliFx provides 6 directives, i.e., `[debug]`, `[preview]`, `[>]`, `[.]`, `[..]`, and `[default]`. The last 4 directives are only for interactive mode. Directives are used to change the behaviour of the whole application, e.g., imagine you have an application that logs everything to a fiel, then you can add `[no-logging]` directive to disable logging for a command or whole interactive session.
+By default Typin provides 6 directives, i.e., `[debug]`, `[preview]`, `[>]`, `[.]`, `[..]`, and `[default]`. The last 4 directives are only for interactive mode. Directives are used to change the behaviour of the whole application, e.g., imagine you have an application that logs everything to a fiel, then you can add `[no-logging]` directive to disable logging for a command or whole interactive session.
 
 #### [debug] aka debug mode
 
@@ -591,7 +592,7 @@ When starting the application in interactive mode it is possible to pass a comma
 
 ### Reporting errors
 
-You may have noticed that commands in CliFx don't return exit codes. This is by design as exit codes are considered a higher-level concern and thus handled by `CliApplication`, not by individual commands.
+You may have noticed that commands in Typin don't return exit codes. This is by design as exit codes are considered a higher-level concern and thus handled by `CliApplication`, not by individual commands.
 
 Commands can report execution failure simply by throwing exceptions just like any other C# code. When an exception is thrown, `CliApplication` will catch it, print the error, and return `1` as the exit code to the calling process.
 
@@ -656,7 +657,7 @@ By default all exceptions are handled using `DefaultExceptionHandler` class inst
 ``` c#
     public class CustomExceptionHandler : ICliExceptionHandler
     {
-        public void HandleCliFxException(ICliContext context, CliFxException ex)
+        public void HandleTypinException(ICliContext context, TypinException ex)
         {
             WriteError(context.Console, ex.ToString());
             context.Console.Error.WriteLine();
@@ -723,7 +724,7 @@ Keep in mind that a command may delay cancellation only once. If the user decide
 
 ### Dependency injection
 
-CliFx uses [`Microsoft.Extensions.DependencyInjection`](https://nuget.org/packages/Microsoft.Extensions.DependencyInjection) (aka the built-in dependency container in ASP.NET Core) to initialize commands and directives, and to support services injection.
+Typin uses [`Microsoft.Extensions.DependencyInjection`](https://nuget.org/packages/Microsoft.Extensions.DependencyInjection) (aka the built-in dependency container in ASP.NET Core) to initialize commands and directives, and to support services injection.
 
 By default the following services are registered:
 
@@ -739,7 +740,7 @@ Additionally, every directive, middleware, and command is registered using its i
 
 Services can be registerd using `ConfigureServices` or `UseStartup`.
 
-CliFx supports also `Scoped` services. A scope begins after parsing the console input, and ends with the command execution.
+Typin supports also `Scoped` services. A scope begins after parsing the console input, and ends with the command execution.
 
 ```c#
 public static class Program
@@ -764,7 +765,7 @@ public static class Program
 
 ### Testing
 
-CliFx provides an easy way to write functional tests for your commands thanks to the `IConsole` interface.
+Typin provides an easy way to write functional tests for your commands thanks to the `IConsole` interface.
 
 You can use `VirtualConsole` to replace the application's stdin, stdout and stderr with your own streams. It has multiple constructor overloads allowing you to specify the exact set of streams that you want. Streams which are not provided by you are replaced with stubs, i.e. `VirtualConsole` doesn't leak to `System.Console` in any way.
 
@@ -843,7 +844,7 @@ public async Task ConcatCommand_Test()
 }
 ```
 
-Note that CliFx applications have access to underlying binary streams that allows them to write binary data directly. By using the approach outlined above, we're making the assumption that the application is only expected to produce text output.
+Note that Typin applications have access to underlying binary streams that allows them to write binary data directly. By using the approach outlined above, we're making the assumption that the application is only expected to produce text output.
 
 ### Environment variables
 
@@ -879,7 +880,7 @@ Environment variables can be used as fallback for options of enumerable types to
 
 ### ProgressTicker
 
-CliFx comes with a simple utility for reporting progress to the console, `ProgressTicker`, which renders progress in-place on every tick.
+Typin comes with a simple utility for reporting progress to the console, `ProgressTicker`, which renders progress in-place on every tick.
 
 It implements a well-known `IProgress<double>` interface so you can pass it to methods that are aware of this abstraction.
 
@@ -894,7 +895,7 @@ for (var i = 0.0; i <= 1; i += 0.01)
 
 ### TableUtils
 
-CliFx comes with a simple utility for writing tables to the console. It can display both ungrouped and single-level grouped collections.
+Typin comes with a simple utility for writing tables to the console. It can display both ungrouped and single-level grouped collections.
  Its configuration uses expressions to specfiy columns and column values transformations to string.
 
 ``` c#
@@ -963,7 +964,7 @@ TableUtils.Write(console,
 
 ## Benchmarks
 
-Here's how CliFx's execution overhead compares to that of other libraries.
+Here's how Typin's execution overhead compares to that of other libraries.
 
 ```ini
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.14393.3443 (1607/AnniversaryUpdate/Redstone1)
@@ -978,12 +979,13 @@ Frequency=3124994 Hz, Resolution=320.0006 ns, Timer=TSC
 |------------------------------------- |------------:|----------:|-----------:|------:|--------:|-----:|
 |                    CommandLineParser |    24.79 us |  0.166 us |   0.155 us |  0.49 |    0.00 |    1 |
 |                                CliFx |    50.27 us |  0.248 us |   0.232 us |  1.00 |    0.00 |    2 |
-|                                Clipr |   160.22 us |  0.817 us |   0.764 us |  3.19 |    0.02 |    3 |
-| McMaster.Extensions.CommandLineUtils |   166.45 us |  1.111 us |   1.039 us |  3.31 |    0.03 |    4 |
-|                   System.CommandLine |   170.27 us |  0.599 us |   0.560 us |  3.39 |    0.02 |    5 |
-|                            PowerArgs |   306.12 us |  1.495 us |   1.398 us |  6.09 |    0.03 |    6 |
-|                               Cocona | 1,856.07 us | 48.727 us | 141.367 us | 37.88 |    2.60 |    7 |
+|                               Typein |    50.27 us |  0.248 us |   0.232 us |  1.00 |    0.00 |    3 |
+|                                Clipr |   160.22 us |  0.817 us |   0.764 us |  3.19 |    0.02 |    4 |
+| McMaster.Extensions.CommandLineUtils |   166.45 us |  1.111 us |   1.039 us |  3.31 |    0.03 |    5 |
+|                   System.CommandLine |   170.27 us |  0.599 us |   0.560 us |  3.39 |    0.02 |    6 |
+|                            PowerArgs |   306.12 us |  1.495 us |   1.398 us |  6.09 |    0.03 |    7 |
+|                               Cocona | 1,856.07 us | 48.727 us | 141.367 us | 37.88 |    2.60 |    8 |
 
 ## Etymology
 
-CliFx is made out of "Cli" for "Command Line Interface" and "Fx" for "Framework". It's pronounced as "cliff ex".
+Typin is made out of "Typ" for "Type" and "in" for "interactive". It's pronounced as "Typein".
