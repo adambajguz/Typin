@@ -73,7 +73,7 @@
             MiddlewareComponentNode? node = null;
 
             LinkedList<MiddlewareComponentNode> middlewareComponenets = new LinkedList<MiddlewareComponentNode>();
-            foreach (var middlewareType in middlewareTypes)
+            foreach (Type middlewareType in middlewareTypes)
             {
                 CommandPipelineHandlerDelegate next = node is null ? (CommandPipelineHandlerDelegate)ExecuteCommandMiddleware : node.ProcessAsync;
 

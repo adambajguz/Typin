@@ -20,7 +20,7 @@
         [Benchmark(Description = "Typin - 1 command", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(CliFxCommand))
+            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -28,7 +28,7 @@
         [Benchmark(Description = "Typin - 2 commands")]
         public async ValueTask<int> ExecuteWithTypin2Commands()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(CliFxCommand))
+            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
                                                     .AddCommand(typeof(TypinNamedCommand))
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
@@ -37,7 +37,7 @@
         [Benchmark(Description = "Typin - 10 commands")]
         public async ValueTask<int> ExecuteWithTypin10Commands()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(CliFxCommand))
+            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
                                                     .AddCommand(typeof(TypinNamedCommand))
                                                     .AddCommand(typeof(TypinNamedCommand00))
                                                     .AddCommand(typeof(TypinNamedCommand01))
@@ -59,7 +59,7 @@
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }
 
-        [Benchmark(Description = "CliFx", Baseline = true)]
+        [Benchmark(Description = "CliFx")]
         public async ValueTask<int> ExecuteWithCliFx()
         {
             return await new CliFx.CliApplicationBuilder().AddCommand(typeof(CliFxCommand))

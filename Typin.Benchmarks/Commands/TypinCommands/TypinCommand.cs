@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using Typin.Attributes;
 
-    [Command("named-command")]
+    [Command]
     public class TypinCommand : ICommand
     {
         [CommandOption("str", 's')]

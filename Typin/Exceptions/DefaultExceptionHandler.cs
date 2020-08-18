@@ -35,10 +35,7 @@
         {
             IConsole console = context.Console;
 
-            if (context.CommandSchema is null)
-                WriteError(console, $"Fatal error occured in {context.Metadata.ExecutableName}.");
-            else
-                WriteError(console, $"Fatal error occured in {context.Metadata.ExecutableName} during execution of '{context.CommandSchema.Name ?? "default"}' command.");
+            WriteError(console, $"Fatal error occured in {context.Metadata.ExecutableName}.");
 
             console.Error.WriteLine();
             WriteError(console, ex.ToString());
