@@ -291,7 +291,7 @@
             }
 
             // Execute the command
-            await _processMiddlewareComponenets(CliContext, _console.GetCancellationToken());
+            await _processMiddlewareComponenets(CliContext, _console.GetCancellationToken()); //TODO: all steps in ExecuteCommand should be inside a middleware pipeline to allow e.g. writing command suggestions after when no command was found
             return CliContext.ExitCode ??= ExitCode.Error;
         }
 
