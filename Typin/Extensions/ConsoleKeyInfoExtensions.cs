@@ -10,6 +10,8 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public static readonly ConsoleKeyInfo Backspace = new ConsoleKeyInfo('\0', ConsoleKey.Backspace, false, false, false);
         public static readonly ConsoleKeyInfo Delete = new ConsoleKeyInfo('\0', ConsoleKey.Delete, false, false, false);
+        public static readonly ConsoleKeyInfo Enter = new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false);
+        public static readonly ConsoleKeyInfo Escape = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, false, false, false);
 
         public static readonly ConsoleKeyInfo Home = new ConsoleKeyInfo('\0', ConsoleKey.Home, false, false, false);
         public static readonly ConsoleKeyInfo End = new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, false);

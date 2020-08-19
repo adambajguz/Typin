@@ -36,7 +36,7 @@
             {
                 _autoCompleteInput = new AutoCompleteInput(cliContext.Console)
                 {
-                    AutoCompletionHandler = new AutoCompletionHandler(),
+                    AutoCompletionHandler = new AutoCompletionHandler(cliContext),
                 };
 
                 _autoCompleteInput.History.IsEnabled = true;

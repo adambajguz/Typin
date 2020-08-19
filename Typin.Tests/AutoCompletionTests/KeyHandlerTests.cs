@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.AutoCompleteTests
+﻿namespace Typin.Tests.AutoCompletionTests
 {
     using System;
     using System.Collections.Generic;
@@ -29,7 +29,7 @@
                                           error: stdErr);
         }
 
-        private KeyHandler GetKeyHandlerInstanceForTests()
+        private KeyHandler GetKeyHandlerInstance()
         {
             // Arrange
             KeyHandler keyHandler = new KeyHandler(_console);
@@ -45,7 +45,7 @@
         internal void TestWriteChar()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Assert
             _keyHandler.Text.Should().Be("Hello");
@@ -63,7 +63,7 @@
         public void TestBackspace()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             _keyHandler.Handle(Backspace);
@@ -82,7 +82,7 @@
         public void TestDelete()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
@@ -103,7 +103,7 @@
         public void TestDelete_EndOfLine()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             _keyHandler.Handle(Delete);
@@ -116,7 +116,7 @@
         public void TestHome()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             new List<ConsoleKeyInfo>() { Home, 'S'.ToConsoleKeyInfo() }
@@ -130,7 +130,7 @@
         public void TestEnd()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             new List<ConsoleKeyInfo>() { Home, End, ExclamationPoint }
@@ -144,7 +144,7 @@
         public void TestLeftArrow()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             " N".Select(c => c.ToConsoleKeyInfo())
@@ -160,7 +160,7 @@
         public void TestRightArrow()
         {
             // Arrange
-            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+            KeyHandler _keyHandler = GetKeyHandlerInstance();
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, RightArrow, ExclamationPoint }

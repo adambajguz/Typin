@@ -24,20 +24,27 @@
         }
 
         /// <summary>
-        /// Adds entry to the history.
+        /// Tries to adds entry to the history. If entry wasn't added (because is whitespace) returns false.
         /// </summary>
-        public void AddEntry(string entry)
+        public bool TryAddEntry(string entry)
         {
-            _history.AddLast(entry.TrimEnd('\n', '\r'));
+            string value = entry.TrimEnd('\n', '\r');
+
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            _history.AddLast(value);
+
+            return true;
         }
 
         /// <summary>
         /// Adds multiple entries to the history.
         /// </summary>
-        public void AddEntry(params string[] entries)
+        public void AddEntries(params string[] entries)
         {
             foreach (string entry in entries)
-                AddEntry(entry);
+                TryAddEntry(entry);
         }
 
         /// <summary>

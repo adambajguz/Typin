@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.AutoCompleteTests
+﻿namespace Typin.Tests.AutoCompletionTests
 {
     using System.Linq;
     using FluentAssertions;
@@ -19,7 +19,7 @@
             history.IsEnabled = true;
 
             // Act
-            history.AddEntry(_history);
+            history.AddEntries(_history);
 
             // Assert
             history.GetEntries().Should().Equal(_history);
@@ -34,13 +34,13 @@
             history.IsEnabled = true;
 
             // Act
-            history.AddEntry(_history);
+            history.AddEntries(_history);
 
             // Assert
             history.GetEntries().Should().Equal(_history);
 
             // Act
-            history.AddEntry("mkdir");
+            history.AddEntries("mkdir");
 
             // Assert
             history.GetEntries().Should().ContainInOrder(_history);
@@ -56,7 +56,7 @@
             history.IsEnabled = true;
 
             // Act
-            history.AddEntry("mkdir");
+            history.AddEntries("mkdir");
 
             // Assert
             history.GetEntries().Should().Equal(new string[] { "mkdir" });
@@ -71,7 +71,7 @@
             history.IsEnabled = true;
 
             // Act
-            history.AddEntry(_history);
+            history.AddEntries(_history);
 
             // Assert
             history.GetEntries().Count.Should().Be(3);
@@ -92,14 +92,14 @@
             history.IsEnabled = true;
 
             // Act
-            history.AddEntry(_history);
+            history.AddEntries(_history);
             history.Clear();
 
             // Assert
             history.GetEntries().Count.Should().Be(0);
 
             // Act
-            history.AddEntry("mkdir");
+            history.AddEntries("mkdir");
 
             // Assert
             history.GetEntries().Should().Equal(new string[] { "mkdir" });

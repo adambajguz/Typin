@@ -1,23 +1,35 @@
 ﻿namespace Typin.Internal
 {
-    using System;
+    using System.Linq;
     using Typin.AutoCompletion;
 
-    internal class AutoCompletionHandler : IAutoCompleteHandler
+    /// <summary>
+    /// Default auto completion handler.
+    /// /// </summary>
+    internal class AutoCompletionHandler : IAutoCompletionHandler
     {
-        // characters to start completion from
-        public char[] Separators { get; set; } = new char[] { ' ', '.', '/' };
+        private readonly ICliContext _cliContext;
 
-        // text - The current text entered in the console
-        // index - The index of the terminal cursor within {text}
+        /// <inheritdoc/>
+        public char[] Separators { get; set; } = new char[] { ' ' };
+
+        /// <summary>
+        /// Initializes an instance of <see cref="AutoCompletionHandler"/>.
+        /// </summary>
+        public AutoCompletionHandler(ICliContext cliContext)
+        {
+            _cliContext = cliContext;
+        }
+
+        /// <inheritdoc/>
         public string[] GetSuggestions(string text, int index)
         {
-            if (text.StartsWith("git "))
-                return new string[] { "init", "clone", "pull", "push" };
-            else if (text.StartsWith("test "))
-                return new string[] { "aa", "bb", "cc", "dd" };
-            else
-                return Array.Empty<string>();
+            //TODO: possibly needs fixing
+            return _cliContext.RootSchema.GetCommandNames().AsParallel()
+                                                           .Where(x => x.StartsWith(text))
+                                                           .OrderBy(x => x)
+                                                           //.Select(x => x.Substring(text.Length))
+                                                           .ToArray();
         }
     }
 }
