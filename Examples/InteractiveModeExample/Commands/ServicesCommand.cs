@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Typin.Attributes;
-using Typin.Utilities;
-
-namespace Typin.InteractiveModeDemo.Commands
+﻿namespace Typin.InteractiveModeDemo.Commands
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.Extensions.DependencyInjection;
+    using Typin.Attributes;
+    using Typin.Console;
+    using Typin.Utilities;
+
     [Command("services", Description = "Prints a list of registered services in application.")]
     public class ServicesCommand : ICommand
     {

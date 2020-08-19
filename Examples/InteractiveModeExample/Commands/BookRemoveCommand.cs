@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using InteractiveModeExample.Services;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Exceptions;
 
     [Command("book remove", Description = "Remove a book from the library.")]

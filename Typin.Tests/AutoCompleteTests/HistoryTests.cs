@@ -2,12 +2,13 @@
 {
     using System.Linq;
     using FluentAssertions;
+    using Typin.Console;
     using Typin.Internal.AutoComplete;
     using Xunit;
 
     public sealed class HistoryTests
     {
-        private string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
+        private readonly string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
 
         [Fact]
         public void Should_add_collection_to_history()

@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("named-command09")]
     public class TypinNamedCommand09 : ICommand

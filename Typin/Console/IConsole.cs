@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Console
 {
     using System;
     using System.IO;

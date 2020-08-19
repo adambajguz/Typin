@@ -81,6 +81,7 @@ Produced: {string.Join(", ", producedIds)}
                 "using System.Threading.Tasks;",
                 "using Typin;",
                 "using Typin.Attributes;",
+                "using Typin.Console;",
                 "using Typin.Exceptions;",
                 "using Typin.Utilities;"
             };

@@ -6,6 +6,7 @@
     using CliWrap;
     using CliWrap.Buffered;
     using FluentAssertions;
+    using Typin.Console;
     using Xunit;
 
     public class ConsoleSpecs

@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin;
+    using Typin.Console;
     using Typin.Exceptions;
 
     public class BackgroundWebHostProvider : IBackgroundWebHostProvider

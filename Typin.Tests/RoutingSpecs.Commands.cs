@@ -4,11 +4,12 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     public partial class RoutingSpecs
     {
         [Command]
-        public class BenchmarkTypinCommand : ICommand
+        private class BenchmarkTypinCommand : ICommand
         {
             [CommandOption("str", 's')]
             public string? StrOption { get; set; }

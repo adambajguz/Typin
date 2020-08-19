@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using FluentAssertions;
+    using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
     using Typin.Schemas;

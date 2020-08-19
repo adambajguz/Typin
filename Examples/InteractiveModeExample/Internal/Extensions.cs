@@ -2,7 +2,7 @@
 {
     using System;
     using InteractiveModeExample.Models;
-    using Typin;
+    using Typin.Console;
 
     internal static class Extensions
     {

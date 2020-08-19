@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
+    using Typin.Console;
 
     public sealed class ExitCodeMiddleware : ICommandMiddleware
     {

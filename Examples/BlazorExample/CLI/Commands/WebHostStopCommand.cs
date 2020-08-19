@@ -4,6 +4,7 @@
     using BlazorExample.CLI.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("webhost stop", Description = "Stops the webhost background worker in the interactive mode.", InteractiveModeOnly = true)]
     public class WebHostStopCommand : ICommand

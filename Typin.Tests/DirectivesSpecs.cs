@@ -4,6 +4,7 @@
     using System.IO;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Console;
     using Typin.Directives;
     using Xunit;
 

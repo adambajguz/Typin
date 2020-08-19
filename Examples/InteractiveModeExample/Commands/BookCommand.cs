@@ -6,6 +6,7 @@
     using InteractiveModeExample.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("book", Description = "List all books in the library.")]
     public class BookCommand : ICommand

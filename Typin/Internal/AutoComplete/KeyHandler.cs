@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Typin.Console;
 
     internal class KeyHandler
     {
@@ -11,7 +12,7 @@
         private readonly StringBuilder _text = new StringBuilder();
 
         private readonly LinkedList<string> _history;
-        private LinkedListNode<string> _historyPosition;
+        private LinkedListNode<string>? _historyPosition;
 
         private ConsoleKeyInfo _keyInfo;
         private readonly Dictionary<string, Action> _keyActions;
@@ -73,7 +74,6 @@
                         StartAutoComplete();
                     }
                 },
-
                 ["ShiftTab"] = () =>
                 {
                     if (IsInAutoCompleteMode)
@@ -302,7 +302,10 @@
 
         private void PrevHistory()
         {
-            if (_historyPosition.Previous is LinkedListNode<string> node)
+            if (_historyPosition is null)
+                _historyPosition = _history.Last;
+
+            if (_historyPosition?.Previous is LinkedListNode<string> node)
             {
                 WriteNewString(node.Value);
                 _historyPosition = node;
@@ -311,7 +314,10 @@
 
         private void NextHistory()
         {
-            if (_historyPosition.Next is LinkedListNode<string> node)
+            if (_historyPosition is null)
+                _historyPosition = _history.Last;
+
+            if (_historyPosition?.Next is LinkedListNode<string> node)
             {
                 _historyPosition = node;
                 WriteNewString(node.Value);

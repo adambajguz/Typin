@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     /// <summary>
     /// Normally if application rans in interactive mode, an empty line does nothing; but [default] will override this behaviour, executing a root (empty) command or scoped command without arguments.
@@ -9,17 +10,15 @@
     [Directive("default", Description = "Executes a root (empty) command or scoped command without arguments (parameters and options).", InteractiveModeOnly = true)]
     public sealed class DefaultDirective : IDirective
     {
-        private readonly ICliContext _cliContext;
-
         /// <inheritdoc/>
-        public bool ContinueExecution { get; private set; }
+        public bool ContinueExecution => true;
 
         /// <summary>
         /// Initializes an instance of <see cref="DefaultDirective"/>.
         /// </summary>
-        public DefaultDirective(ICliContext cliContext)
+        public DefaultDirective()
         {
-            _cliContext = cliContext;
+
         }
 
         /// <inheritdoc/>
@@ -31,7 +30,7 @@
             //CommandInput input = _cliContext.CurrentInput;
 
             // if (input.IsDefaultCommandOrEmpty)
-            ContinueExecution = true;
+            //ContinueExecution = true;
 
             return default;
         }

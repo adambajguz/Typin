@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Console;
     using Xunit;
 
     public partial class CancellationSpecs

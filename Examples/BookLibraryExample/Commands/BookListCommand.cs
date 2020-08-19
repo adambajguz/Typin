@@ -6,6 +6,7 @@
     using BookLibraryExample.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("book list", Description = "List all books in the library.")]
     public class BookListCommand : ICommand

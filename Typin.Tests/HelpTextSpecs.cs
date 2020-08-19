@@ -3,6 +3,7 @@
     using System.IO;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Console;
     using Xunit;
     using Xunit.Abstractions;
 

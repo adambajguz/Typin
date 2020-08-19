@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("console-test")]
     public class ConsoleTestCommand : ICommand

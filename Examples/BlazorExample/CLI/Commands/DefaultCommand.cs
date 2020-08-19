@@ -4,6 +4,7 @@
     using BlazorExample.CLI.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command(Description = "Runs webhost in normal mode.")]
     public class DefaultCommand : ICommand

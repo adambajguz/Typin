@@ -2,7 +2,7 @@
 {
     using System;
     using BookLibraryExample.Models;
-    using Typin;
+    using Typin.Console;
 
     internal static class Extensions
     {

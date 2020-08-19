@@ -6,16 +6,15 @@
     using ShellProgressBar;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Utilities;
 
     [Command("database verify", Description = "Migrates the database.")]
     public class DatabaseVerifyCommand : ICommand
     {
-        private readonly ICliContext _cliContext;
-
-        public DatabaseVerifyCommand(ICliContext cliContext)
+        public DatabaseVerifyCommand()
         {
-            _cliContext = cliContext;
+
         }
 
         private bool RequestToQuit { get; set; }

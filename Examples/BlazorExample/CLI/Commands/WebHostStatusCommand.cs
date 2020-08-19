@@ -4,6 +4,7 @@
     using BlazorExample.CLI.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("webhost status", Description = "Returns webhost worker status in the interactive mode.", InteractiveModeOnly = true)]
     public class WebHostStatusCommand : ICommand

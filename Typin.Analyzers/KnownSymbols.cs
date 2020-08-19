@@ -27,7 +27,7 @@
 
         public static bool IsConsoleInterface(ISymbol symbol)
         {
-            return symbol.DisplayNameMatches("Typin.IConsole");
+            return symbol.DisplayNameMatches("Typin.Console.IConsole");
         }
 
         public static bool IsCommandInterface(ISymbol symbol)

@@ -6,6 +6,7 @@
     using BookLibraryExample.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Exceptions;
 
     [Command("book", Description = "View, list, add or remove books.",

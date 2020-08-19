@@ -8,6 +8,7 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
     using Typin.Internal.Extensions;

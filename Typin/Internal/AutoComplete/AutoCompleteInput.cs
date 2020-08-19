@@ -2,15 +2,22 @@
 {
     using System;
     using System.Collections.Generic;
+    using Typin.Console;
 
     internal class AutoCompleteInput
     {
-        private IConsole _console;
-        private LinkedList<string> _history = new LinkedList<string>();
-        private KeyHandler _keyHandler;
+        private readonly IConsole _console;
+        private readonly LinkedList<string> _history = new LinkedList<string>();
+        private readonly KeyHandler _keyHandler;
 
         public bool IsHistoryEnabled { get; set; }
         public IAutoCompleteHandler? AutoCompletionHandler { private get; set; }
+
+        public AutoCompleteInput(IConsole console)
+        {
+            _console = console;
+            _keyHandler = new KeyHandler(console, _history, AutoCompletionHandler);
+        }
 
         public void AddHistory(params string[] text)
         {
@@ -26,12 +33,6 @@
         public void ClearHistory()
         {
             _history.Clear();
-        }
-
-        public AutoCompleteInput(SystemConsole console)
-        {
-            _console = console;
-            _keyHandler = new KeyHandler(console, _history, AutoCompletionHandler);
         }
 
         public string Read()

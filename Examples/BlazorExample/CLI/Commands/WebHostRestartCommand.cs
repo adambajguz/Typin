@@ -4,6 +4,7 @@
     using BlazorExample.CLI.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Exceptions;
 
     [Command("webhost restart", Description = "Restarts the webhost worker in the interactive mode.", InteractiveModeOnly = true)]

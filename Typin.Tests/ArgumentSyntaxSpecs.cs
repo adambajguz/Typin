@@ -23,6 +23,7 @@
             input.Should().BeEquivalentTo(CommandInput.Empty);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public static object[][] DirectivesTestData => new[]
         {
             new object[]
@@ -57,6 +58,7 @@
             input.Should().BeEquivalentTo(expectedInput);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public static object[][] OptionsTestData => new[]
         {
             new object[]
@@ -142,6 +144,7 @@
             input.Should().BeEquivalentTo(expectedInput);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public static object[][] ShortOptionsTestData => new[]
         {
             new object[]
@@ -257,6 +260,7 @@
             input.Should().BeEquivalentTo(expectedInput);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public static object[][] ParametersTestData => new[]
         {
             new object[]
@@ -327,6 +331,7 @@
             input.Should().BeEquivalentTo(expectedInput);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public static object[][] CommandNameTestData => new[]
         {
             new object[]

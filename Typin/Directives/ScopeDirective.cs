@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     /// <summary>
     /// If application rans in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to ommit specified command name(s).

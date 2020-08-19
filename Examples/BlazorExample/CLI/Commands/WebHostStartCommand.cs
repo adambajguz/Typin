@@ -4,6 +4,7 @@
     using BlazorExample.CLI.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command("webhost start", Description = "Starts the webhost worker in background in the interactive mode.", InteractiveModeOnly = true)]
     public class WebHostStartCommand : ICommand

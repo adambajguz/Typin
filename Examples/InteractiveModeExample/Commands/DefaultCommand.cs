@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Typin.Attributes;
-
-namespace Typin.InteractiveModeDemo.Commands
+﻿namespace Typin.InteractiveModeDemo.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Typin.Attributes;
+    using Typin.Console;
+
     [Command]
     public class DefaultCommand : ICommand
     {
-        private readonly ICliContext _cliContext;
-
         [CommandParameter(0)]
         public IReadOnlyList<string> Values { get; set; } = default!;
 
-        public DefaultCommand(ICliContext cliContext)
+        public DefaultCommand()
         {
-            _cliContext = cliContext;
+
         }
 
         public ValueTask ExecuteAsync(IConsole console)

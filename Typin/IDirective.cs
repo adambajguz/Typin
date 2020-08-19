@@ -1,6 +1,7 @@
 ﻿namespace Typin
 {
     using System.Threading.Tasks;
+    using Typin.Console;
 
     /// <summary>
     /// Directive handler.

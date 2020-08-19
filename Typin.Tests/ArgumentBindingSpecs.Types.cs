@@ -55,9 +55,10 @@
 
         private class DummyType
         {
+
         }
 
-        public class CustomEnumerable<T> : IEnumerable<T>
+        private class CustomEnumerable<T> : IEnumerable<T>
         {
             public IEnumerator<T> GetEnumerator()
             {

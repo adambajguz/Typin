@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
 
     /// <summary>
     /// If application rans in interactive mode, this [..] directive can be used to reset current scope to default (global scope).

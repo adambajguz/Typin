@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command]
     public class TypinBenchmarkCommand : ICommand

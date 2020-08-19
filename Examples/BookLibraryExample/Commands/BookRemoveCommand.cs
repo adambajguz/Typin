@@ -5,6 +5,7 @@
     using BookLibraryExample.Services;
     using Typin;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Exceptions;
 
     [Command("book remove", Description = "Remove a book from the library.")]

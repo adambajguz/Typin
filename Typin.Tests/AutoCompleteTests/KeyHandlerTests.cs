@@ -1,22 +1,21 @@
-﻿using Typin.Extensions;
-
-namespace Typin.Tests.AutoCompleteTests
+﻿namespace Typin.Tests.AutoCompleteTests
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using FluentAssertions;
+    using Typin.Console;
     using Typin.Extensions;
     using Typin.Internal.AutoComplete;
     using Xunit;
-    using static ConsoleKeyInfoExtensions;
+    using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class KeyHandlerTests : IDisposable
     {
         private readonly LinkedList<string> _history = new LinkedList<string>(new string[] { "dotnet run", "git init", "clear" });
         private readonly TestAutoCompleteHandler _autoCompleteHandler;
-        private string[] _completions;
+        private readonly string[] _completions;
 
         private readonly IConsole _console;
         private readonly MemoryStream stdIn;
@@ -278,6 +277,26 @@ namespace Typin.Tests.AutoCompleteTests
             // Act
             _keyHandler.Handle(LeftArrow);
             _keyHandler.Handle(UpArrow);
+
+            // Assert
+            _keyHandler.Text.Should().Be("git init");
+        }
+
+        [Fact]
+        public void PreviousThenMoveCursorThenNextHistory()
+        {
+            // Arrange
+            KeyHandler _keyHandler = GetKeyHandlerInstanceForTests();
+
+            // Act
+            _keyHandler.Handle(UpArrow);
+
+            // Assert
+            _keyHandler.Text.Should().Be("git init");
+
+            // Act
+            _keyHandler.Handle(LeftArrow);
+            _keyHandler.Handle(DownArrow);
 
             // Assert
             _keyHandler.Text.Should().Be("clear");

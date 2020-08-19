@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Typin.Attributes;
-using Typin.Input;
-
-namespace Typin.Directives
+﻿namespace Typin.Directives
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Typin.Attributes;
+    using Typin.Console;
+    using Typin.Input;
+
     /// <summary>
     /// When preview mode is specified (using the [preview] directive), the app will short-circuit by printing consumed command line arguments as they were parsed.
     /// This is useful when troubleshooting issues related to command routing and argument binding.

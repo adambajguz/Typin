@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
-    using Typin;
+    using Typin.Console;
 
     public class WebHostRunnerService : IWebHostRunnerService
     {

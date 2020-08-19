@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Internal;
 
     /// <summary>
