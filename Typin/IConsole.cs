@@ -100,6 +100,17 @@
         /// - Any code executing prior to calling this method is not cancellation-aware and as such will terminate instantly when cancellation is requested.
         /// </remarks>
         CancellationToken GetCancellationToken();
+
+        /// <summary>
+        /// Sets cursor position.
+        /// </summary>
+        void SetCursorPosition(int left, int top);
+
+        /// <summary>
+        /// Obtains the next character or function key pressed by the user. The pressed key is optionally displayed in the console window.
+        /// </summary>
+        /// <param name="intercept">Determines whether to display the pressed key in the console window. true to not display the pressed key; otherwise, false.</param>
+        ConsoleKeyInfo ReadKey(bool intercept = false);
     }
 
     /// <summary>

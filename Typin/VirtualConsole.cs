@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Threading;
+    using Typin.Extensions;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that routes all data to preconfigured streams.
@@ -36,6 +37,43 @@
 
         /// <inheritdoc />
         public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
+
+        /// <summary>
+        /// Initializes an instance of <see cref="VirtualConsole"/>.
+        /// Use named parameters to specify the streams you want to override.
+        /// </summary>
+        public VirtualConsole(StreamReader? input = null, bool isInputRedirected = true,
+                              StreamWriter? output = null, bool isOutputRedirected = true,
+                              StreamWriter? error = null, bool isErrorRedirected = true,
+                              CancellationToken cancellationToken = default)
+        {
+            Input = input ?? StreamReader.Null;
+            IsInputRedirected = isInputRedirected;
+
+            Output = output ?? StreamWriter.Null;
+            IsOutputRedirected = isOutputRedirected;
+
+            Error = error ?? StreamWriter.Null;
+            IsErrorRedirected = isErrorRedirected;
+
+            _cancellationToken = cancellationToken;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="VirtualConsole"/>.
+        /// Use named parameters to specify the streams you want to override.
+        /// </summary>
+        public VirtualConsole(Stream? input = null, bool isInputRedirected = true,
+                              Stream? output = null, bool isOutputRedirected = true,
+                              Stream? error = null, bool isErrorRedirected = true,
+                              CancellationToken cancellationToken = default)
+            : this(WrapInput(input), isInputRedirected,
+                   WrapOutput(output), isOutputRedirected,
+                   WrapOutput(error), isErrorRedirected,
+                   cancellationToken)
+        {
+
+        }
 
         /// <inheritdoc />
         public void Clear()
@@ -74,40 +112,17 @@
             return _cancellationToken;
         }
 
-        /// <summary>
-        /// Initializes an instance of <see cref="VirtualConsole"/>.
-        /// Use named parameters to specify the streams you want to override.
-        /// </summary>
-        public VirtualConsole(
-            StreamReader? input = null, bool isInputRedirected = true,
-            StreamWriter? output = null, bool isOutputRedirected = true,
-            StreamWriter? error = null, bool isErrorRedirected = true,
-            CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public void SetCursorPosition(int left, int top)
         {
-            Input = input ?? StreamReader.Null;
-            IsInputRedirected = isInputRedirected;
-            Output = output ?? StreamWriter.Null;
-            IsOutputRedirected = isOutputRedirected;
-            Error = error ?? StreamWriter.Null;
-            IsErrorRedirected = isErrorRedirected;
-            _cancellationToken = cancellationToken;
+            CursorLeft = left;
+            CursorTop = top;
         }
 
-        /// <summary>
-        /// Initializes an instance of <see cref="VirtualConsole"/>.
-        /// Use named parameters to specify the streams you want to override.
-        /// </summary>
-        public VirtualConsole(
-            Stream? input = null, bool isInputRedirected = true,
-            Stream? output = null, bool isOutputRedirected = true,
-            Stream? error = null, bool isErrorRedirected = true,
-            CancellationToken cancellationToken = default)
-            : this(
-                WrapInput(input), isInputRedirected,
-                WrapOutput(output), isOutputRedirected,
-                WrapOutput(error), isErrorRedirected,
-                cancellationToken)
+        /// <inheritdoc/>
+        public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
+            return ((char)Input.Read()).ToConsoleKeyInfo();
         }
     }
 

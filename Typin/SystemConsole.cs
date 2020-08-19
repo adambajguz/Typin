@@ -127,6 +127,18 @@
 
             return (_cancellationTokenSource = cts).Token;
         }
+
+        /// <inheritdoc/>
+        public void SetCursorPosition(int left, int top)
+        {
+            Console.SetCursorPosition(left, top);
+        }
+
+        /// <inheritdoc/>
+        public ConsoleKeyInfo ReadKey(bool intercept = false)
+        {
+            return Console.ReadKey(intercept);
+        }
     }
 
     public partial class SystemConsole

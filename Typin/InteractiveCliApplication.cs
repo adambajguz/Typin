@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Typin.Input;
+    using Typin.Internal;
+    using Typin.Internal.AutoComplete;
     using Typin.Schemas;
 
     /// <summary>
@@ -14,6 +16,7 @@
     {
         private readonly ConsoleColor _promptForeground;
         private readonly ConsoleColor _commandForeground;
+        private readonly AutoCompleteInput? _autoCompleteInput;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveCliApplication"/>.
@@ -27,6 +30,15 @@
         {
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
+
+            if (cliContext.Console is SystemConsole s)
+            {
+                _autoCompleteInput = new AutoCompleteInput(s)
+                {
+                    AutoCompletionHandler = new AutoCompletionHandler(),
+                    IsHistoryEnabled = true
+                };
+            }
         }
 
         /// <inheritdoc/>
@@ -57,7 +69,6 @@
             IConsole console = CliContext.Console;
             string executableName = CliContext.Metadata.ExecutableName;
 
-            //TODO: Add behaviours like in mediatr
             while (true) //TODO maybe add CliContext.Exit and CliContext.Status
             {
                 string[] commandLineArguments = GetInput(console, executableName);
@@ -99,7 +110,10 @@
                 // Read user input
                 console.WithForegroundColor(_commandForeground, () =>
                 {
-                    line = console.Input.ReadLine();
+                    if (_autoCompleteInput is null)
+                        line = console.Input.ReadLine();
+                    else
+                        line = _autoCompleteInput.Read();
                 });
 
                 if (string.IsNullOrWhiteSpace(CliContext.Scope)) // handle unscoped command input
