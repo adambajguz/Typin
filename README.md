@@ -33,9 +33,16 @@
 
 
 
-**Typin** is a simple to use, yet powerful framework for building both interactive command line applications and command line tools. It is build based on the code of [CliFx](https://github.com/Tyrrrz/CliFx). Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application. This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
+**Typin** is a simple to use, yet powerful framework for building both interactive command line applications and command line tools. 
 
-An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework. The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications. At its core, Typin is highly opinionated, giving preference to convention over configuration, strictness over extensibility, consistency over ambiguity, and so on.
+> **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Type in".
+
+It is build based on the code of [CliFx](https://github.com/Tyrrrz/CliFx). Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
+This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
+
+An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework.
+The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications.
+At its core, Typin is highly opinionated, giving preference to convention over configuration, strictness over extensibility, consistency over ambiguity, and so on.
 
 ## Features
 
@@ -101,7 +108,3 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 |                            PowerArgs |   275.738 us |  3.5869 us |  3.3552 us |  3.72 |    0.17 |    7 |
 |                'Typin - 22 commands' |   564.404 us | 11.2229 us | 10.4979 us |  7.62 |    0.30 |    8 |
 |                               Cocona | 1,326.940 us | 29.2181 us | 85.6915 us | 18.23 |    1.51 |    9 |
-
-## Etymology
-
-Typin is made out of "Typ" for "Type" and "in" for "interactive". It's pronounced as "Type in".
