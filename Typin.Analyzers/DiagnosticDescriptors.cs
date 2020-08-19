@@ -4,6 +4,7 @@
 
     public static class DiagnosticDescriptors
     {
+#pragma warning disable RS2008 // Enable analyzer release tracking
         public static readonly DiagnosticDescriptor Typin0001 =
             new DiagnosticDescriptor(nameof(Typin0001),
                 "Type must implement the 'Typin.ICommand' interface in order to be a valid command",
@@ -75,5 +76,6 @@
                 "Use the provided IConsole abstraction instead of System.Console to ensure that the command can be tested in isolation",
                 "Use the provided IConsole abstraction instead of System.Console to ensure that the command can be tested in isolation",
                 "Usage", DiagnosticSeverity.Warning, true);
+#pragma warning restore RS2008 // Enable analyzer release tracking
     }
 }

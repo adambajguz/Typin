@@ -2,14 +2,17 @@
 {
     using System.CommandLine;
     using System.CommandLine.Invocation;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     public class SystemCommandLineCommand
     {
+#pragma warning disable IDE0060 // Remove unused parameter
         public static int ExecuteHandler(string s, int i, bool b)
         {
             return 0;
         }
+#pragma warning restore IDE0060 // Remove unused parameter
 
         public Task<int> ExecuteAsync(string[] args)
         {
@@ -29,7 +32,8 @@
                 }
             };
 
-            command.Handler = CommandHandler.Create(typeof(SystemCommandLineCommand).GetMethod(nameof(ExecuteHandler)));
+            MethodInfo? method = typeof(SystemCommandLineCommand).GetMethod(nameof(ExecuteHandler));
+            command.Handler = CommandHandler.Create(method!);
 
             return command.InvokeAsync(args);
         }
