@@ -13,11 +13,11 @@
             Value3 = 3
         }
 
-        private class StringConstructable
+        private class StringConstructible
         {
             public string Value { get; }
 
-            public StringConstructable(string value)
+            public StringConstructible(string value)
             {
                 Value = value;
             }

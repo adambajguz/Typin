@@ -1,5 +1,6 @@
 ﻿namespace Typin.Schemas
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Text;
     using Typin.Attributes;
@@ -38,6 +39,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return $"{Property?.Name ?? "<implicit>"} ([{Order}] {GetUserFacingDisplayString()})";

@@ -1,4 +1,6 @@
-﻿namespace Typin.Input
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Typin.Input
 {
     /// <summary>
     /// Stores command parameter input.
@@ -19,6 +21,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return Value;

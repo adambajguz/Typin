@@ -20,7 +20,7 @@
         [Benchmark(Description = "Typin - 1 command", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
+            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -28,8 +28,8 @@
         [Benchmark(Description = "Typin - 2 commands")]
         public async ValueTask<int> ExecuteWithTypin2Commands()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
-                                                    .AddCommand(typeof(TypinNamedCommand))
+            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+                                                    .AddCommand<TypinNamedCommand>()
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -37,16 +37,16 @@
         [Benchmark(Description = "Typin - 10 commands")]
         public async ValueTask<int> ExecuteWithTypin10Commands()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(TypinCommand))
-                                                    .AddCommand(typeof(TypinNamedCommand))
-                                                    .AddCommand(typeof(TypinNamedCommand00))
-                                                    .AddCommand(typeof(TypinNamedCommand01))
-                                                    .AddCommand(typeof(TypinNamedCommand02))
-                                                    .AddCommand(typeof(TypinNamedCommand03))
-                                                    .AddCommand(typeof(TypinNamedCommand04))
-                                                    .AddCommand(typeof(TypinNamedCommand05))
-                                                    .AddCommand(typeof(TypinNamedCommand06))
-                                                    .AddCommand(typeof(TypinNamedCommand07))
+            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+                                                    .AddCommand<TypinNamedCommand>()
+                                                    .AddCommand<TypinNamedCommand00>()
+                                                    .AddCommand<TypinNamedCommand01>()
+                                                    .AddCommand<TypinNamedCommand02>()
+                                                    .AddCommand<TypinNamedCommand03>()
+                                                    .AddCommand<TypinNamedCommand04>()
+                                                    .AddCommand<TypinNamedCommand05>()
+                                                    .AddCommand<TypinNamedCommand06>()
+                                                    .AddCommand<TypinNamedCommand07>()
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }

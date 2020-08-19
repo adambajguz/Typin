@@ -25,7 +25,7 @@
             var console = new VirtualConsole(error: stdErr);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(GenericExceptionCommand))
+                .AddCommand<GenericExceptionCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -54,7 +54,7 @@
             var console = new VirtualConsole(error: stdErr);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(CommandExceptionCommand))
+                .AddCommand<CommandExceptionCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -80,7 +80,7 @@
             var console = new VirtualConsole(error: stdErr);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(CommandExceptionCommand))
+                .AddCommand<CommandExceptionCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -111,7 +111,7 @@
             var console = new VirtualConsole(output: stdOut, error: stdErr);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(CommandExceptionCommand))
+                .AddCommand<CommandExceptionCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -146,7 +146,7 @@
             var console = new VirtualConsole(output: stdOut, error: stdErr);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(CommandExceptionCommand))
+                .AddCommand<CommandExceptionCommand>()
                 .UseConsole(console)
                 .Build();
 

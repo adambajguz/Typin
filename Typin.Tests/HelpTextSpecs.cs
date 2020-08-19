@@ -24,9 +24,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(NamedCommand))
-                .AddCommand(typeof(NamedSubCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<NamedCommand>()
+                .AddCommand<NamedSubCommand>()
                 .UseVersionText("v6.9")
                 .UseConsole(console)
                 .Build();
@@ -50,9 +50,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(NamedCommand))
-                .AddCommand(typeof(NamedSubCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<NamedCommand>()
+                .AddCommand<NamedSubCommand>()
                 .UseTitle("AppTitle")
                 .UseVersionText("AppVer")
                 .UseDescription("AppDesc")
@@ -91,9 +91,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(NamedCommand))
-                .AddCommand(typeof(NamedSubCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<NamedCommand>()
+                .AddCommand<NamedSubCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -129,9 +129,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(NamedCommand))
-                .AddCommand(typeof(NamedSubCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<NamedCommand>()
+                .AddCommand<NamedSubCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -164,8 +164,8 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(NamedCommand))
-                .AddCommand(typeof(NamedSubCommand))
+                .AddCommand<NamedCommand>()
+                .AddCommand<NamedSubCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -196,7 +196,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(ParametersCommand))
+                .AddCommand<ParametersCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -221,7 +221,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(RequiredOptionsCommand))
+                .AddCommand<RequiredOptionsCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -250,7 +250,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(EnumArgumentsCommand))
+                .AddCommand<EnumArgumentsCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -280,7 +280,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(EnvironmentVariableCommand))
+                .AddCommand<EnvironmentVariableCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -306,7 +306,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(ArgumentsWithDefaultValuesCommand))
+                .AddCommand<ArgumentsWithDefaultValuesCommand>()
                 .UseConsole(console)
                 .Build();
 

@@ -18,9 +18,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(ConcatCommand))
-                .AddCommand(typeof(DivideCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ConcatCommand>()
+                .AddCommand<DivideCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -44,7 +44,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
+                .AddCommand<DefaultCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -70,7 +70,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(BenchmarkTypinCommand))
+                .AddCommand<BenchmarkTypinCommand>()
                 .UseConsole(console)
                 .Build();
 
@@ -94,8 +94,8 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(ConcatCommand))
-                .AddCommand(typeof(DivideCommand))
+                .AddCommand<ConcatCommand>()
+                .AddCommand<DivideCommand>()
                 .UseConsole(console)
                 .UseDescription("This will be visible in help")
                 .Build();
@@ -120,9 +120,9 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
-                .AddCommand(typeof(ConcatCommand))
-                .AddCommand(typeof(DivideCommand))
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ConcatCommand>()
+                .AddCommand<DivideCommand>()
                 .UseConsole(console)
                 .Build();
 

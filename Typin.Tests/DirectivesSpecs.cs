@@ -18,7 +18,7 @@
             var console = new VirtualConsole(output: stdOut);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(NamedCommand))
+                .AddCommand<NamedCommand>()
                 .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .Build();

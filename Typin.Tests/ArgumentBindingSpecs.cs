@@ -761,7 +761,7 @@
         {
             // Arrange
             var input = new CommandInputBuilder()
-                .AddOption(nameof(AllSupportedTypesCommand.TestStringConstructable), "foobar")
+                .AddOption(nameof(AllSupportedTypesCommand.TestStringConstructible), "foobar")
                 .Build();
 
             // Act
@@ -770,7 +770,7 @@
             // Assert
             instance.Should().BeEquivalentTo(new AllSupportedTypesCommand
             {
-                TestStringConstructable = new StringConstructable("foobar")
+                TestStringConstructible = new StringConstructible("foobar")
             });
         }
 
@@ -779,7 +779,7 @@
         {
             // Arrange
             var input = new CommandInputBuilder()
-                .AddOption(nameof(AllSupportedTypesCommand.TestStringConstructableArray), "foo", "bar")
+                .AddOption(nameof(AllSupportedTypesCommand.TestStringConstructibleArray), "foo", "bar")
                 .Build();
 
             // Act
@@ -788,7 +788,7 @@
             // Assert
             instance.Should().BeEquivalentTo(new AllSupportedTypesCommand
             {
-                TestStringConstructableArray = new[] { new StringConstructable("foo"), new StringConstructable("bar") }
+                TestStringConstructibleArray = new[] { new StringConstructible("foo"), new StringConstructible("bar") }
             });
         }
 

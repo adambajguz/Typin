@@ -36,10 +36,9 @@
             using var stdOut = new MemoryStream();
             using var stdErr = new MemoryStream();
 
-            var console = new VirtualConsole(
-                input: stdIn,
-                output: stdOut,
-                error: stdErr);
+            var console = new VirtualConsole(input: stdIn,
+                                             output: stdOut,
+                                             error: stdErr);
 
             // Act
             console.Output.Write("output");

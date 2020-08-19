@@ -37,7 +37,7 @@
         {
             // Act
             var app = new CliApplicationBuilder()
-                .AddCommand(typeof(DefaultCommand))
+                .AddCommand<DefaultCommand>()
                 .AddCommandsFrom(typeof(DefaultCommand).Assembly)
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })

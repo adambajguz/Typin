@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Typin.Internal.Extensions;
@@ -102,6 +103,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             var buffer = new StringBuilder();

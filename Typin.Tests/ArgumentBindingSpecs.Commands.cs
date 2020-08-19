@@ -78,8 +78,8 @@
             [CommandOption(nameof(TimeSpanNullable))]
             public TimeSpan? TimeSpanNullable { get; set; }
 
-            [CommandOption(nameof(TestStringConstructable))]
-            public StringConstructable? TestStringConstructable { get; set; }
+            [CommandOption(nameof(TestStringConstructible))]
+            public StringConstructible? TestStringConstructible { get; set; }
 
             [CommandOption(nameof(TestStringParseable))]
             public StringParseable? TestStringParseable { get; set; }
@@ -102,8 +102,8 @@
             [CommandOption(nameof(IntNullableArray))]
             public int?[]? IntNullableArray { get; set; }
 
-            [CommandOption(nameof(TestStringConstructableArray))]
-            public StringConstructable[]? TestStringConstructableArray { get; set; }
+            [CommandOption(nameof(TestStringConstructibleArray))]
+            public StringConstructible[]? TestStringConstructibleArray { get; set; }
 
             [CommandOption(nameof(Enumerable))]
             public IEnumerable? Enumerable { get; set; }

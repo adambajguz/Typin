@@ -1,6 +1,7 @@
 ﻿namespace Typin.Input
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
@@ -61,6 +62,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return $"{GetRawAlias()} {GetRawValues()}";

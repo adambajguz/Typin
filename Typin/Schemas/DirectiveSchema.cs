@@ -1,6 +1,7 @@
 ﻿namespace Typin.Schemas
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -62,6 +63,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
             return GetInternalDisplayString();

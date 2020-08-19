@@ -12,7 +12,7 @@
 
         public static async Task<int> Main()
         {
-            return await new CliApplicationBuilder().AddCommand(typeof(TypinBenchmarkCommand))
+            return await new CliApplicationBuilder().AddCommand<TypinBenchmarkCommand>()
                                                     .AddDirective<DebugDirective>()
                                                     .AddDirective<PreviewDirective>()
                                                     .Build()

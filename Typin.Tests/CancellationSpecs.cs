@@ -23,7 +23,7 @@
             var console = new VirtualConsole(output: stdOut, cancellationToken: cts.Token);
 
             var application = new CliApplicationBuilder()
-                .AddCommand(typeof(CancellableCommand))
+                .AddCommand<CancellableCommand>()
                 .UseConsole(console)
                 .Build();
 

@@ -64,7 +64,7 @@
                         : null;
                 }
 
-                // String-constructable
+                // String-constructible
                 ConstructorInfo? stringConstructor = targetType.GetConstructor(new[] { typeof(string) });
                 if (stringConstructor != null)
                     return stringConstructor.Invoke(new object[] { value! });
@@ -98,7 +98,7 @@
             if (targetEnumerableType.IsAssignableFrom(arrayType))
                 return array;
 
-            // Constructable from an array
+            // Constructible from an array
             ConstructorInfo? arrayConstructor = targetEnumerableType.GetConstructor(new[] { arrayType });
             if (arrayConstructor != null)
                 return arrayConstructor.Invoke(new object[] { array });
