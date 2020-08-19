@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Schemas;
@@ -44,26 +45,37 @@
         /// <summary>
         /// Root schema.
         /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when uninitialized.</exception>
         RootSchema RootSchema { get; }
 
         /// <summary>
         /// Parsed CLI input.
         /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when uninitialized</exception>
         CommandInput Input { get; }
+
+        /// <summary>
+        /// Command input history in interactive mode.
+        /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when uninitialized or in normal mode.</exception>
+        InputHistoryProvider InputHistory { get; }
 
         /// <summary>
         /// Current command schema.
         /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when uninitialized.</exception>
         CommandSchema CommandSchema { get; }
 
         /// <summary>
         /// Current command instance.
         /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when not uninitialized.</exception>
         ICommand Command { get; }
 
         /// <summary>
         /// Collection of command's default values.
         /// </summary>
+        /// <exception cref="System.NullReferenceException"> Throws when uninitialized.</exception>
         IReadOnlyDictionary<ArgumentSchema, object?> CommandDefaultValues { get; }
 
         /// <summary>

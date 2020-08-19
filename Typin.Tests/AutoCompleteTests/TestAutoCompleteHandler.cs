@@ -1,6 +1,6 @@
 ﻿namespace Typin.Tests.AutoCompleteTests
 {
-    using Typin.Internal.AutoComplete;
+    using Typin.AutoCompletion;
 
     internal class TestAutoCompleteHandler : IAutoCompleteHandler
     {

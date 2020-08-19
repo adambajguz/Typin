@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Internal;
-    using Typin.Internal.AutoComplete;
     using Typin.Schemas;
 
     /// <summary>
@@ -32,13 +32,15 @@
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
 
-            if (cliContext.Console is SystemConsole s)
+            if (cliContext.Configuration.IsAdvancedInputAllowed)
             {
-                _autoCompleteInput = new AutoCompleteInput(s)
+                _autoCompleteInput = new AutoCompleteInput(cliContext.Console)
                 {
                     AutoCompletionHandler = new AutoCompletionHandler(),
-                    IsHistoryEnabled = true
                 };
+
+                _autoCompleteInput.History.IsEnabled = true;
+                cliContext.InputHistory = _autoCompleteInput.History;
             }
         }
 
@@ -114,7 +116,7 @@
                     if (_autoCompleteInput is null)
                         line = console.Input.ReadLine();
                     else
-                        line = _autoCompleteInput.Read();
+                        line = _autoCompleteInput.ReadLine();
                 });
 
                 if (string.IsNullOrWhiteSpace(CliContext.Scope)) // handle unscoped command input

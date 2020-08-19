@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal.AutoComplete
+﻿namespace Typin.AutoCompletion
 {
     internal interface IAutoCompleteHandler
     {

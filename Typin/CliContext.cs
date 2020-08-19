@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Schemas;
@@ -12,6 +13,7 @@
     {
         private RootSchema? root;
         private CommandInput? currentInput;
+        private InputHistoryProvider? inputHistoryProvider;
         private CommandSchema? currentCommand;
         private ICommand? command;
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
@@ -37,35 +39,42 @@
         /// <inheritdoc/>
         public RootSchema RootSchema
         {
-            get => root ?? throw new NullReferenceException("Root schema is not initialized in this context.");
+            get => root ?? throw new NullReferenceException("Root schema is uninitialized in this context.");
             internal set => root = value;
         }
 
         /// <inheritdoc/>
         public CommandInput Input
         {
-            get => currentInput ?? throw new NullReferenceException("Input is not initialized in this context.");
+            get => currentInput ?? throw new NullReferenceException("Input is uninitialized in this context.");
             internal set => currentInput = value;
+        }
+
+        /// <inheritdoc/>
+        public InputHistoryProvider InputHistory
+        {
+            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to normal mode.");
+            internal set => inputHistoryProvider = value;
         }
 
         /// <inheritdoc/>
         public CommandSchema CommandSchema
         {
-            get => currentCommand ?? throw new NullReferenceException("Current command schema is not initialized in this context.");
+            get => currentCommand ?? throw new NullReferenceException("Current command schema is uninitialized in this context.");
             internal set => currentCommand = value;
         }
 
         /// <inheritdoc/>
         public ICommand Command
         {
-            get => command ?? throw new NullReferenceException("Current command is not initialized in this context.");
+            get => command ?? throw new NullReferenceException("Current command is uninitialized in this context.");
             internal set => command = value;
         }
 
         /// <inheritdoc/>
         public IReadOnlyDictionary<ArgumentSchema, object?> CommandDefaultValues
         {
-            get => commandDefaultValues ?? throw new NullReferenceException("Current command default values is not initialized in this context.");
+            get => commandDefaultValues ?? throw new NullReferenceException("Current command default values is uninitialized in this context.");
             internal set => commandDefaultValues = value;
         }
 

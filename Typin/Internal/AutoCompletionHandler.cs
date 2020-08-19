@@ -1,7 +1,7 @@
 ﻿namespace Typin.Internal
 {
     using System;
-    using Typin.Internal.AutoComplete;
+    using Typin.AutoCompletion;
 
     internal class AutoCompletionHandler : IAutoCompleteHandler
     {
@@ -14,9 +14,10 @@
         {
             if (text.StartsWith("git "))
                 return new string[] { "init", "clone", "pull", "push" };
+            else if (text.StartsWith("test "))
+                return new string[] { "aa", "bb", "cc", "dd" };
             else
                 return Array.Empty<string>();
         }
     }
-
 }

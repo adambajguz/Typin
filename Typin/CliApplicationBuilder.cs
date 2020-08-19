@@ -41,6 +41,7 @@ namespace Typin
 
         //Interactive mode settings
         private bool _useInteractiveMode = false;
+        private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
 
@@ -290,11 +291,16 @@ namespace Typin
         #region Interactive Mode
         /// <summary>
         /// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
-        /// By default this adds [default], [>], [.], and [..]. If you wish to add only [default] directive, set addScopeDirectives to false.
+        /// By default this adds [default], [>], [.], and [..] and advanced command input.
+        ///
+        /// If you wish to add only [default] directive, set addScopeDirectives to false.
+        /// If you wish to disable history and auto completion set useAdvancedInput to false.
         /// </summary>
-        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true)
+        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true, bool useAdvancedInput = true)
         {
             _useInteractiveMode = true;
+            _useAdvancedInput = useAdvancedInput;
+
             AddDirective<DefaultDirective>();
 
             if (addScopeDirectives)
@@ -323,6 +329,16 @@ namespace Typin
         public CliApplicationBuilder UseCommandInputForeground(ConsoleColor color)
         {
             _commandForeground = color;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures whether the command input in interactive mode should use support history and auto completion.
+        /// </summary>
+        public CliApplicationBuilder UseAdvancedInput(bool useAdvancedInput = true)
+        {
+            _useAdvancedInput = useAdvancedInput;
 
             return this;
         }
@@ -422,7 +438,8 @@ namespace Typin
             var configuration = new ApplicationConfiguration(_commandTypes,
                                                              _customDirectives,
                                                              _exceptionHandler,
-                                                             _useInteractiveMode);
+                                                             _useInteractiveMode,
+                                                             _useAdvancedInput);
 
             CliContext cliContext = new CliContext(metadata, configuration, _serviceCollection, _console);
 
