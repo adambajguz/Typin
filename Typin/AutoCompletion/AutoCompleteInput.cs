@@ -28,6 +28,7 @@
             _console = console;
             History = new InputHistoryProvider();
 
+            // TODO: allow user to add custom shortcuts
             var keyActions = new Dictionary<string, Action>
             {
                 // History

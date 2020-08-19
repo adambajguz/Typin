@@ -260,7 +260,7 @@
             if (command.IsHelpOptionAvailable && input.IsHelpOptionSpecified ||
                 command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any())
             {
-                _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help
+                _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help?
                 return ExitCode.Success;
             }
 
