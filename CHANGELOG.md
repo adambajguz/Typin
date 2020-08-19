@@ -15,3 +15,8 @@
 - Removed `CliApplicationBuilder.UseTypeActivator` and added Microsoft.Extensions.DependencyInjection
 - Added support for middlewares.
 - Added `TableUtils` and `TextUtils`.
+- Added history and auto-completion in interactive mode.
+
+### v0.1 (Aug-2020)
+
+- Indirect fork from CliFx.

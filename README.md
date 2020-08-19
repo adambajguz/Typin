@@ -53,6 +53,7 @@ An important property of Typin, when compared to some other libraries, is that i
 - Comes with built-in analyzers to help catch common mistakes
 - Targets .NET Standard 2.0+
 - Uses `Microsoft.Extensions.DependencyInjection` but no other external dependencies
+- Auto-completion (Tab / Shift + Tab) interactive mode and command history (Up/Down arrow)
 
 ## Installing Typin
 
