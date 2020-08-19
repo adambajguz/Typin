@@ -11,7 +11,7 @@
     <Description>Declarative framework for interactive CLI applications</Description>
     <PackageTags>command line executable interactive interface framework parser arguments net core terminal shell console</PackageTags>
     <PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageIcon>typin-favicon-64px.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
