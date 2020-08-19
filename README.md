@@ -45,6 +45,8 @@ An important property of Typin, when compared to some other libraries, is that i
 - Handles conversions to various types, including custom types
 - Supports multi-level command hierarchies
 - Supports interactive mode
+- Intuitive auto-completion (Tab / Shift + Tab) in interactive mode.
+- Intuitive command history (Up and Down arrows) in interactive mode, accessible also from user code.
 - Exposes raw input, output, error streams to handle binary data
 - Allows graceful command cancellation
 - Prints errors and routes exit codes on exceptions
@@ -53,7 +55,6 @@ An important property of Typin, when compared to some other libraries, is that i
 - Comes with built-in analyzers to help catch common mistakes
 - Targets .NET Standard 2.0+
 - Uses `Microsoft.Extensions.DependencyInjection` but no other external dependencies
-- Auto-completion (Tab / Shift + Tab) interactive mode and command history (Up/Down arrow)
 
 ## Installing Typin
 
