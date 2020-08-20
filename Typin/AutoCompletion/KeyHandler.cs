@@ -188,6 +188,29 @@
             int left = _console.CursorLeft;
             int top = _console.CursorTop;
 
+            /* TODO: FIX:
+             * dotnet BlazorExample.dll> webhost Unhandled exception. System.ArgumentOutOfRangeException: Length cannot be less than zero. (Parameter 'length')
+   at System.Text.StringBuilder.Remove(Int32 startIndex, Int32 length)
+   at Typin.AutoCompletion.KeyHandler.Backspace(Int32 count) in X:\GitHub\Typin\Typin\AutoCompletion\KeyHandler.cs:line 185
+   at Typin.AutoCompletion.AutoCompleteInput.NextAutoComplete() in X:\GitHub\Typin\Typin\AutoCompletion\AutoCompleteInput.cs:line 157
+   at Typin.AutoCompletion.AutoCompleteInput.<.ctor>b__14_2() in X:\GitHub\Typin\Typin\AutoCompletion\AutoCompleteInput.cs:line 56
+   at Typin.AutoCompletion.KeyHandler.Handle(ConsoleKeyInfo keyInfo) in X:\GitHub\Typin\Typin\AutoCompletion\KeyHandler.cs:line 88
+   at Typin.AutoCompletion.AutoCompleteInput.ReadLine() in X:\GitHub\Typin\Typin\AutoCompletion\AutoCompleteInput.cs:line 87
+   at Typin.InteractiveCliApplication.<>c__DisplayClass6_0.<GetInput>b__3() in X:\GitHub\Typin\Typin\InteractiveCliApplication.cs:line 117
+   at Typin.Console.ConsoleExtensions.WithForegroundColor(IConsole console, ConsoleColor foregroundColor, Action action) in X:\GitHub\Typin\Typin\Console\IConso
+le.cs:line 129
+   at Typin.InteractiveCliApplication.GetInput(IConsole console, String executableName) in X:\GitHub\Typin\Typin\InteractiveCliApplication.cs:line 112
+   at Typin.InteractiveCliApplication.RunInteractivelyAsync(RootSchema root) in X:\GitHub\Typin\Typin\InteractiveCliApplication.cs:line 75
+   at Typin.InteractiveCliApplication.PreExecuteCommand(IReadOnlyList`1 commandLineArguments, RootSchema root) in X:\GitHub\Typin\Typin\InteractiveCliApplicatio
+n.cs:line 62
+   at Typin.CliApplication.RunAsync(IReadOnlyList`1 commandLineArguments, IReadOnlyDictionary`2 environmentVariables) in X:\GitHub\Typin\Typin\CliApplication.cs
+:line 175
+   at Typin.CliApplication.RunAsync(IReadOnlyList`1 commandLineArguments) in X:\GitHub\Typin\Typin\CliApplication.cs:line 149
+   at Typin.CliApplication.RunAsync() in X:\GitHub\Typin\Typin\CliApplication.cs:line 128
+   at BlazorExample.Program.Main() in X:\GitHub\Typin\Examples\BlazorExample\Program.cs:line 10
+   at BlazorExample.Program.<Main>()
+             */
+
             string spaces = new string(' ', count);
             _console.Output.Write(string.Format("{0}{1}", replacement, spaces));
             _console.SetCursorPosition(left, top);

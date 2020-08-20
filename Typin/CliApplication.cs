@@ -82,6 +82,9 @@
                 middlewareComponenets.AddFirst(node);
             }
 
+            //TODO: all steps in ExecuteCommand should be inside a middleware pipeline to allow e.g. writing command suggestions after when no command was found
+            //TOOD: ExecuteCommand should be divided into multiple classes with ICommandMiddleware
+
             return middlewareComponenets;
         }
 
@@ -162,12 +165,14 @@
                 _console.ResetColor();
                 _console.ForegroundColor = ConsoleColor.Gray;
 
+                CliContext.EnvironmentVariables = environmentVariables;
+
                 PrintStartupMessage();
 
                 RootSchema root = RootSchema.Resolve(_configuration.CommandTypes, _configuration.DirectiveTypes);
                 CliContext.RootSchema = root;
 
-                int exitCode = await PreExecuteCommand(commandLineArguments, environmentVariables, root);
+                int exitCode = await PreExecuteCommand(commandLineArguments, root);
 
                 return exitCode;
             }
@@ -187,20 +192,18 @@
         /// Runs before command execution.
         /// </summary>
         protected virtual async Task<int> PreExecuteCommand(IReadOnlyList<string> commandLineArguments,
-                                                            IReadOnlyDictionary<string, string> environmentVariables,
                                                             RootSchema root)
         {
             CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;
 
-            return await ExecuteCommand(environmentVariables, root, input);
+            return await ExecuteCommand(root, input);
         }
 
         /// <summary>
         /// Executes command.
         /// </summary>
-        protected async Task<int> ExecuteCommand(IReadOnlyDictionary<string, string> environmentVariables,
-                                                 RootSchema root,
+        protected async Task<int> ExecuteCommand(RootSchema root,
                                                  CommandInput input)
         {
             // Create service scope
@@ -278,7 +281,7 @@
             // Bind arguments
             try
             {
-                command.Bind(instance, input, environmentVariables);
+                command.Bind(instance, input, CliContext.EnvironmentVariables);
             }
             // This may throw exceptions which are useful only to the end-user
             catch (TypinException ex)
