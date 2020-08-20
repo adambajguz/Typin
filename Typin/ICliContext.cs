@@ -33,9 +33,14 @@
         ApplicationConfiguration Configuration { get; }
 
         /// <summary>
+        /// Collection of environment variables.
+        /// </summary>
+        IReadOnlyDictionary<string, string> EnvironmentVariables { get; }
+
+        /// <summary>
         /// Service collection.
         /// </summary>
-        public IEnumerable<ServiceDescriptor> Services { get; }
+        IEnumerable<ServiceDescriptor> Services { get; }
 
         /// <summary>
         /// Console instance.

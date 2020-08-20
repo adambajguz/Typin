@@ -31,6 +31,9 @@
         public ApplicationConfiguration Configuration { get; }
 
         /// <inheritdoc/>
+        public IReadOnlyDictionary<string, string> EnvironmentVariables { get; internal set; }
+
+        /// <inheritdoc/>
         public IEnumerable<ServiceDescriptor> Services { get; }
 
         /// <inheritdoc/>

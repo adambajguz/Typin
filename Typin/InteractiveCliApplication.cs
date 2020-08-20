@@ -46,7 +46,6 @@
 
         /// <inheritdoc/>
         protected override async Task<int> PreExecuteCommand(IReadOnlyList<string> commandLineArguments,
-                                                             IReadOnlyDictionary<string, string> environmentVariables,
                                                              RootSchema root)
         {
             CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
@@ -58,16 +57,15 @@
 
                 // we don't want to run default command for e.g. `[interactive]` but we want to run if there is sth else
                 if (!input.IsDefaultCommandOrEmpty)
-                    await ExecuteCommand(environmentVariables, root, input);
+                    await ExecuteCommand(root, input);
 
-                await RunInteractivelyAsync(environmentVariables, root);
+                await RunInteractivelyAsync(root);
             }
 
-            return await ExecuteCommand(environmentVariables, root, input);
+            return await ExecuteCommand(root, input);
         }
 
-        private async Task RunInteractivelyAsync(IReadOnlyDictionary<string, string> environmentVariables,
-                                                 RootSchema root)
+        private async Task RunInteractivelyAsync(RootSchema root)
         {
             IConsole console = CliContext.Console;
             string executableName = CliContext.Metadata.ExecutableName;
@@ -79,7 +77,7 @@
                 CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
                 CliContext.Input = input; //TODO maybe refactor with some clever IDisposable class
 
-                await ExecuteCommand(environmentVariables, root, input);
+                await ExecuteCommand(root, input);
                 console.ResetColor();
             }
         }
