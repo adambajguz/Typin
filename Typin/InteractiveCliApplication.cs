@@ -60,6 +60,8 @@
                     await ExecuteCommand();
 
                 await RunInteractivelyAsync(root);
+
+                return ExitCode.Success; // called after Ctrl+C
             }
 
             return await ExecuteCommand();
@@ -70,9 +72,15 @@
             IConsole console = CliContext.Console;
             string executableName = CliContext.Metadata.ExecutableName;
 
-            while (true) //TODO maybe add CliContext.Exit and CliContext.Status
+            do
             {
-                string[] commandLineArguments = GetInput(console, executableName);
+                string[]? commandLineArguments = GetInput(console, executableName);
+
+                if (commandLineArguments is null)
+                {
+                    console.ResetColor();
+                    return;
+                }
 
                 CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
                 CliContext.Input = input; //TODO maybe refactor with some clever IDisposable class
@@ -80,12 +88,19 @@
                 await ExecuteCommand();
                 console.ResetColor();
             }
+            while (!console.GetCancellationToken().IsCancellationRequested);
         }
 
-        private string[] GetInput(IConsole console, string executableName)
+        /// <summary>
+        /// Gets user input and returns arguments or null if cancelled.
+        /// </summary>
+        /// <param name="console"></param>
+        /// <param name="executableName"></param>
+        /// <returns></returns>
+        private string[]? GetInput(IConsole console, string executableName)
         {
             string[] arguments;
-            string line = string.Empty;
+            string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
             do
             {
                 // Print prompt
@@ -116,6 +131,9 @@
                     else
                         line = _autoCompleteInput.ReadLine();
                 });
+
+                if (line is null)
+                    return null;
 
                 if (string.IsNullOrWhiteSpace(CliContext.Scope)) // handle unscoped command input
                 {

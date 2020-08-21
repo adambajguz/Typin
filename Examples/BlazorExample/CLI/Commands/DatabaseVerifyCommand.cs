@@ -19,14 +19,14 @@
 
         private bool RequestToQuit { get; set; }
 
-        private void TickToCompletion(IProgressBar pbar, int ticks, int sleep = 1750, Action<int>? childAction = null)
+        private void TickToCompletion(IConsole console, IProgressBar pbar, int ticks, int sleep = 1750, Action<int>? childAction = null)
         {
             var initialMessage = pbar.Message;
             for (var i = 0; i < ticks && !RequestToQuit; i++)
             {
                 pbar.Message = $"Start {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}";
                 childAction?.Invoke(i);
-                Thread.Sleep(sleep);
+                Task.Delay(sleep, console.GetCancellationToken());
                 pbar.Tick($"End {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}");
             }
         }
@@ -41,7 +41,7 @@
                 for (var i = 0.0; i <= 1.01; i += 0.01)
                 {
                     progressTicker.Report(i);
-                    await Task.Delay(15);
+                    await Task.Delay(15, console.GetCancellationToken());
                 }
                 console.Output.WriteLine();
             }
@@ -63,10 +63,10 @@
                     CollapseWhenFinished = true
                 };
                 using (var pbar = new ProgressBar(totalTicks, "main progressbar", options))
-                    TickToCompletion(pbar, totalTicks, sleep: 10, childAction: (i) =>
+                    TickToCompletion(console, pbar, totalTicks, sleep: 10, childAction: (i) =>
                     {
                         using (var child = pbar.Spawn(totalTicks, "child actions", childOptions))
-                            TickToCompletion(child, totalTicks, sleep: 100);
+                            TickToCompletion(console, child, totalTicks, sleep: 100);
                     });
             }
         }

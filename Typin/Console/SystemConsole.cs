@@ -113,19 +113,19 @@
             if (_cancellationTokenSource != null)
                 return _cancellationTokenSource.Token;
 
-            var cts = new CancellationTokenSource();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             Console.CancelKeyPress += (_, args) =>
             {
                 // If cancellation hasn't been requested yet - cancel shutdown and fire the token
-                if (!cts.IsCancellationRequested)
+                if (!_cancellationTokenSource.IsCancellationRequested)
                 {
                     args.Cancel = true;
-                    cts.Cancel();
+                    _cancellationTokenSource.Cancel();
                 }
             };
 
-            return (_cancellationTokenSource = cts).Token;
+            return _cancellationTokenSource.Token;
         }
 
         /// <inheritdoc/>
@@ -137,7 +137,9 @@
         /// <inheritdoc/>
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            return Console.ReadKey(intercept);
+            //TODO: cancellation token handling / Ctrl+C needs to be improved when using ReadKey (it's not cancelling)
+            ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(intercept);
+            return consoleKeyInfo;
         }
     }
 

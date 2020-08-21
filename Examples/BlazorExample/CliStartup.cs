@@ -18,7 +18,7 @@
         {
             app.AddCommandsFromThisAssembly()
                .AddDirective<DebugDirective>()
-               .UseInteractiveMode();
+               .UseInteractiveMode(useAdvancedInput: false);
         }
     }
 }
