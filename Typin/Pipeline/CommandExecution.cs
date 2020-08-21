@@ -12,13 +12,13 @@
     using Typin.Internal;
     using Typin.Schemas;
 
-    internal class CommadExecution : ICliMiddleware
+    internal class CommandExecution : ICliMiddleware
     {
         private readonly CliContext _cliContext;
         private readonly IServiceProvider _serviceProvider;
         private readonly HelpTextWriter _helpTextWriter;
 
-        public CommadExecution(ICliContext cliContext, IServiceProvider serviceProvider)
+        public CommandExecution(ICliContext cliContext, IServiceProvider serviceProvider)
         {
             _cliContext = (CliContext)cliContext;
             _serviceProvider = serviceProvider;
@@ -27,11 +27,10 @@
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            await ExecuteCommand();
+            _cliContext.ExitCode ??= await ExecuteCommand();
 
             await next(context, cancellationToken);
         }
-
 
         private ICommand GetCommandInstance(CommandSchema command)
         {
@@ -131,6 +130,7 @@
                 command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any())
             {
                 _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help?
+
                 return ExitCode.Success;
             }
 
@@ -166,7 +166,7 @@
             {
                 await _cliContext.Command.ExecuteAsync(_console);
 
-                _cliContext.ExitCode ??= ExitCode.Success;
+                return _cliContext.ExitCode ??= ExitCode.Success;
             }
             // Swallow command exceptions and route them to the console
             catch (CommandException ex)
@@ -176,10 +176,8 @@
                 if (ex.ShowHelp)
                     _helpTextWriter.Write(_cliContext.RootSchema, _cliContext.CommandSchema, _cliContext.CommandDefaultValues);
 
-                _cliContext.ExitCode = ex.ExitCode;
+                return ex.ExitCode;
             }
-
-            return _cliContext.ExitCode ??= ExitCode.Error;
         }
     }
 }

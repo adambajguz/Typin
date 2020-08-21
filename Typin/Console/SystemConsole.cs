@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
@@ -137,9 +138,8 @@
         /// <inheritdoc/>
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            //TODO: cancellation token handling / Ctrl+C needs to be improved when using ReadKey (it's not cancelling)
-            ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(intercept);
-            return consoleKeyInfo;
+            return Console.ReadKey(intercept);
+            //return Task.Run(() => Console.ReadKey(intercept)).Result;
         }
     }
 

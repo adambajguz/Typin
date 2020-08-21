@@ -451,7 +451,7 @@ namespace Typin
             _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
 
             // Add core middlewares
-            UseMiddleware<CommadExecution>();
+            UseMiddleware<CommandExecution>();
 
             ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
 
