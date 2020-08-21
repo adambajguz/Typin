@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Typin.props" />
+  <Import Project="../../Typin.props" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Typin\Typin.csproj" />
+    <ProjectReference Include="..\..\Typin\Typin.csproj" />
   </ItemGroup>
 
 </Project>
