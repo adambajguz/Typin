@@ -56,6 +56,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Typin.Analyzers\Typin.Analyzers.csproj" ReferenceOutputAssembly="true" IncludeAssets="Typin.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
 
   <Target Name="CopyAnalyzerToPackage">
     <ItemGroup>

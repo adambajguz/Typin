@@ -12,6 +12,7 @@ namespace Typin
     using Typin.Directives;
     using Typin.Exceptions;
     using Typin.Internal.Extensions;
+    using Typin.Pipeline;
     using Typin.Schemas;
 
     /// <summary>
@@ -385,7 +386,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
-            _serviceCollection.AddSingleton(typeof(ICommandMiddleware), middleware);
+            _serviceCollection.AddSingleton(typeof(ICliMiddleware), middleware);
             _serviceCollection.AddSingleton(middleware);
             _middlewareTypes.AddFirst(middleware);
 
@@ -448,6 +449,9 @@ namespace Typin
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
             _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
             _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
+
+            // Add core middlewares
+            UseMiddleware<CommadExecution>();
 
             ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
 

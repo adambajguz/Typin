@@ -13,7 +13,7 @@
     /// Pipeline middleware to surround the inner handler.
     /// Implementations add additional behavior and await the next delegate.
     /// </summary>
-    public interface ICommandMiddleware
+    public interface ICliMiddleware
     {
         /// <summary>
         /// Pipeline handler. Perform any additional behavior and await the next delegate as necessary

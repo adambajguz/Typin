@@ -6,7 +6,7 @@
     using Typin;
     using Typin.Console;
 
-    public sealed class ExitCodeMiddleware : ICommandMiddleware
+    public sealed class ExitCodeMiddleware : ICliMiddleware
     {
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {

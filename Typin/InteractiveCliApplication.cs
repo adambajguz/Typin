@@ -57,12 +57,12 @@
 
                 // we don't want to run default command for e.g. `[interactive]` but we want to run if there is sth else
                 if (!input.IsDefaultCommandOrEmpty)
-                    await ExecuteCommand(root, input);
+                    await ExecuteCommand();
 
                 await RunInteractivelyAsync(root);
             }
 
-            return await ExecuteCommand(root, input);
+            return await ExecuteCommand();
         }
 
         private async Task RunInteractivelyAsync(RootSchema root)
@@ -77,7 +77,7 @@
                 CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
                 CliContext.Input = input; //TODO maybe refactor with some clever IDisposable class
 
-                await ExecuteCommand(root, input);
+                await ExecuteCommand();
                 console.ResetColor();
             }
         }

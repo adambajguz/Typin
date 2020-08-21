@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Typin;
 
-    public sealed class ExecutionTimingMiddleware : ICommandMiddleware
+    public sealed class ExecutionTimingMiddleware : ICliMiddleware
     {
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
