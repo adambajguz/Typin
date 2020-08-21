@@ -11,10 +11,11 @@
     /// <inheritdoc/>
     public class CliContext : ICliContext
     {
-        private RootSchema? root;
-        private CommandInput? currentInput;
+        private IReadOnlyDictionary<string, string>? environmentVariables;
+        private RootSchema? rootSchema;
+        private CommandInput? input;
         private InputHistoryProvider? inputHistoryProvider;
-        private CommandSchema? currentCommand;
+        private CommandSchema? commandSchema;
         private ICommand? command;
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
 
@@ -31,7 +32,11 @@
         public ApplicationConfiguration Configuration { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, string> EnvironmentVariables { get; internal set; }
+        public IReadOnlyDictionary<string, string> EnvironmentVariables
+        {
+            get => environmentVariables ?? throw new NullReferenceException("Environment variables are uninitialized in this context.");
+            internal set => environmentVariables = value;
+        }
 
         /// <inheritdoc/>
         public IEnumerable<ServiceDescriptor> Services { get; }
@@ -42,15 +47,15 @@
         /// <inheritdoc/>
         public RootSchema RootSchema
         {
-            get => root ?? throw new NullReferenceException("Root schema is uninitialized in this context.");
-            internal set => root = value;
+            get => rootSchema ?? throw new NullReferenceException("Root schema is uninitialized in this context.");
+            internal set => rootSchema = value;
         }
 
         /// <inheritdoc/>
         public CommandInput Input
         {
-            get => currentInput ?? throw new NullReferenceException("Input is uninitialized in this context.");
-            internal set => currentInput = value;
+            get => input ?? throw new NullReferenceException("Input is uninitialized in this context.");
+            internal set => input = value;
         }
 
         /// <inheritdoc/>
@@ -63,8 +68,8 @@
         /// <inheritdoc/>
         public CommandSchema CommandSchema
         {
-            get => currentCommand ?? throw new NullReferenceException("Current command schema is uninitialized in this context.");
-            internal set => currentCommand = value;
+            get => commandSchema ?? throw new NullReferenceException("Current command schema is uninitialized in this context.");
+            internal set => commandSchema = value;
         }
 
         /// <inheritdoc/>

@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Internal;
 
     /// <summary>
     /// When application is ran in debug mode (using the [debug] directive), it will wait for debugger to be attached before proceeding.
@@ -20,7 +19,7 @@
         /// <inheritdoc/>
         public async ValueTask HandleAsync(IConsole console)
         {
-            var processId = ProcessEx.GetCurrentProcessId();
+            int processId = Process.GetCurrentProcess().Id;
 
             console.WithForegroundColor(ConsoleColor.Green, () =>
                 console.Output.WriteLine($"Attach debugger to PID {processId} to continue."));
