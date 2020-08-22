@@ -7,11 +7,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ErrorReportingSpecs
+    public class ErrorReportingTests
     {
         private readonly ITestOutputHelper _output;
 
-        public ErrorReportingSpecs(ITestOutputHelper output)
+        public ErrorReportingTests(ITestOutputHelper output)
         {
             _output = output;
         }

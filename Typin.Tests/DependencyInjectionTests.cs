@@ -13,15 +13,8 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class DependencyInjectionSpecs
+    public class DependencyInjectionTests
     {
-        private readonly ITestOutputHelper _output;
-
-        public DependencyInjectionSpecs(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-
         [Fact]
         public async Task Should_scoped_services_be_resolved()
         {
@@ -51,7 +44,7 @@
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
-            output.Should().HaveCount(2);
+            output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
                                     .Select(x => char.Parse(x))
@@ -61,10 +54,13 @@
                                     .Select(x => Guid.Parse(x))
                                     .ToArray();
 
+            Guid depGuid = Guid.Parse(output[2]);
+
             chars.Should().HaveCount(3);
             chars.Should().Equal(new char[] { 'A', 'B', 'B' });
 
             guids.Should().HaveCount(3);
+            depGuid.Should().Be(guids[1]);
         }
 
         [Fact]
@@ -96,7 +92,7 @@
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
-            output.Should().HaveCount(2);
+            output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
                                     .Select(x => char.Parse(x))
@@ -106,10 +102,13 @@
                                     .Select(x => Guid.Parse(x))
                                     .ToArray();
 
+            Guid depGuid = Guid.Parse(output[2]);
+
             chars.Should().HaveCount(3);
             chars.Should().Equal(new char[] { 'A', 'B', 'B' });
 
             guids.Should().HaveCount(3);
+            depGuid.Should().Be(guids[1]);
         }
 
         [Fact]
@@ -141,7 +140,7 @@
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
-            output.Should().HaveCount(2);
+            output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
                                     .Select(x => char.Parse(x))
@@ -151,10 +150,13 @@
                                     .Select(x => Guid.Parse(x))
                                     .ToArray();
 
+            Guid depGuid = Guid.Parse(output[2]);
+
             chars.Should().HaveCount(3);
             chars.Should().Equal(new char[] { 'A', 'B', 'B' });
 
             guids.Should().HaveCount(3);
+            depGuid.Should().NotBe(guids[1]);
         }
     }
 }

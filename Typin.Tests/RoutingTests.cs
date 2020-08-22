@@ -8,11 +8,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class RoutingSpecs
+    public class RoutingTests
     {
         private readonly ITestOutputHelper _output;
 
-        public RoutingSpecs(ITestOutputHelper testOutput)
+        public RoutingTests(ITestOutputHelper testOutput)
         {
             _output = testOutput;
         }

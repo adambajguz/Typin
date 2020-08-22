@@ -11,7 +11,7 @@
     using Typin.Tests.Internal;
     using Xunit;
 
-    public class EnvironmentVariablesSpecs
+    public class EnvironmentVariablesTests
     {
         // This test uses a real application to make sure environment variables are actually read correctly
         [Fact]

@@ -6,6 +6,8 @@
     {
         public char Value { get; set; } = 'C';
         public Guid Id { get; } = Guid.NewGuid();
+        public Guid DependencyBId => _dependencyB.Id;
+
 
         private readonly DependencyB _dependencyB;
 

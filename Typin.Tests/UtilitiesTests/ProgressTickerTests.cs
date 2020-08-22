@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests
+﻿namespace Typin.Tests.UtilitiesTests
 {
     using System.Linq;
     using FluentAssertions;
@@ -7,11 +7,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class UtilitiesSpecs
+    public class ProgressTickerTests
     {
         private readonly ITestOutputHelper _output;
 
-        public UtilitiesSpecs(ITestOutputHelper output)
+        public ProgressTickerTests(ITestOutputHelper output)
         {
             _output = output;
         }

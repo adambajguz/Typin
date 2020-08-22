@@ -12,11 +12,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ArgumentConversionSpecs
+    public class ArgumentConversionTests
     {
         private readonly ITestOutputHelper _output;
 
-        public ArgumentConversionSpecs(ITestOutputHelper output)
+        public ArgumentConversionTests(ITestOutputHelper output)
         {
             _output = output;
         }

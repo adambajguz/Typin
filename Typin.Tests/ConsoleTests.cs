@@ -9,7 +9,7 @@
     using Typin.Console;
     using Xunit;
 
-    public class ConsoleSpecs
+    public class ConsoleTests
     {
         [Fact]
         public async Task Real_implementation_of_console_maps_directly_to_system_console()

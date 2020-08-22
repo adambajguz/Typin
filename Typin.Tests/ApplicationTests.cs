@@ -12,11 +12,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ApplicationSpecs
+    public class ApplicationTests
     {
         private readonly ITestOutputHelper _output;
 
-        public ApplicationSpecs(ITestOutputHelper output)
+        public ApplicationTests(ITestOutputHelper output)
         {
             _output = output;
         }

@@ -9,11 +9,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class DirectivesSpecs
+    public class DirectivesTests
     {
         private readonly ITestOutputHelper _output;
 
-        public DirectivesSpecs(ITestOutputHelper output)
+        public DirectivesTests(ITestOutputHelper output)
         {
             _output = output;
         }

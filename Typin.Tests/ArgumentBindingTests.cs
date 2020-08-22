@@ -8,11 +8,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ArgumentBindingSpecs
+    public class ArgumentBindingTests
     {
         private readonly ITestOutputHelper _output;
 
-        public ArgumentBindingSpecs(ITestOutputHelper output)
+        public ArgumentBindingTests(ITestOutputHelper output)
         {
             _output = output;
         }

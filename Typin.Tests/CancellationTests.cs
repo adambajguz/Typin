@@ -8,7 +8,7 @@
     using Typin.Tests.Commands.Valid;
     using Xunit;
 
-    public class CancellationSpecs
+    public class CancellationTests
     {
         [Fact]
         public async Task Command_can_perform_additional_cleanup_if_cancellation_is_requested()

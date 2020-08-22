@@ -7,11 +7,11 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class HelpTextSpecs
+    public class HelpTextTests
     {
         private readonly ITestOutputHelper _output;
 
-        public HelpTextSpecs(ITestOutputHelper output)
+        public HelpTextTests(ITestOutputHelper output)
         {
             _output = output;
         }
