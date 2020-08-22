@@ -17,6 +17,7 @@
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
 
+        //TODO: there is a problem with code: high mem usage at the end of Typin benchmark
         [Benchmark(Description = "Typin", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {

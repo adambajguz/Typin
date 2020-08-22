@@ -26,7 +26,6 @@
   - [Documentation](#documentation)
   - [Screenshots](#screenshots)
   - [Benchmarks](#benchmarks)
-  - [Etymology](#etymology)
   
   </td>
  </tr>
@@ -95,13 +94,22 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
   DefaultJob : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
 ```
 
-|                               Method |         Mean |      Error |     StdDev |       Median | Ratio | RatioSD | Rank |
-|------------------------------------- |-------------:|-----------:|-----------:|-------------:|------:|--------:|-----:|
-|                    CommandLineParser |     2.459 us |  0.0416 us |  0.0369 us |     2.455 us |  0.01 |    0.00 |    1 |
-|                                CliFx |    52.064 us |  0.6804 us |  0.6032 us |    52.090 us |  0.24 |    0.02 |    2 |
-|                                Clipr |   133.519 us |  2.6883 us |  4.5650 us |   133.679 us |  0.64 |    0.09 |    3 |
-| McMaster.Extensions.CommandLineUtils |   134.350 us |  1.7527 us |  1.5537 us |   134.076 us |  0.61 |    0.07 |    3 |
-|                                Typin |   204.328 us | 11.0929 us | 31.2877 us |   196.450 us |  1.00 |    0.00 |    4 |
-|                   System.CommandLine |   205.282 us |  4.1898 us |  5.5932 us |   202.731 us |  0.97 |    0.13 |    4 |
-|                            PowerArgs |   265.280 us |  3.1048 us |  2.9042 us |   264.349 us |  1.18 |    0.14 |    5 |
-|                               Cocona | 1,282.893 us | 25.5067 us | 74.8066 us | 1,303.211 us |  6.42 |    1.10 |    6 |
+|                               Method |         Mean |     Error |    StdDev | Ratio | RatioSD | Rank |
+|-------------------------------------:|-------------:|----------:|----------:|------:|--------:|-----:|
+|                    CommandLineParser |     2.278 us | 0.0065 us | 0.0054 us |  0.02 |    0.00 |    1 |
+|                                CliFx |    46.173 us | 0.2461 us | 0.2302 us |  0.46 |    0.01 |    2 |
+|                                Typin |   101.267 us | 1.0089 us | 0.8943 us |  1.00 |    0.00 |    3 |
+|                                Clipr |   126.073 us | 0.6684 us | 0.5581 us |  1.25 |    0.01 |    4 |
+| McMaster.Extensions.CommandLineUtils |   126.572 us | 0.2780 us | 0.2600 us |  1.25 |    0.01 |    4 |
+|                   System.CommandLine |   192.502 us | 0.5573 us | 0.4940 us |  1.90 |    0.02 |    5 |
+|                            PowerArgs |   243.405 us | 0.8565 us | 0.7152 us |  2.40 |    0.02 |    6 |
+|                               Cocona | 1,132.327 us | 8.5110 us | 7.5448 us | 11.18 |    0.10 |    7 |
+
+Legends:
+  * Mean    : Arithmetic mean of all measurements
+  * Error   : Half of 99.9% confidence interval
+  * StdDev  : Standard deviation of all measurements
+  * Ratio   : Mean of the ratio distribution ([Current]/[Baseline])
+  * RatioSD : Standard deviation of the ratio distribution ([Current]/[Baseline])
+  * Rank    : Relative position of current benchmark mean among all benchmarks (Arabic style)
+  * 1 us    : 1 Microsecond (0.000001 sec)
