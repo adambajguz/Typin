@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin;
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Input;
@@ -84,7 +85,7 @@
             {
                 _console.Output.WriteLine(_cliContext.Metadata.VersionText);
 
-                return ExitCode.Success;
+                return ExitCodes.Success;
             }
 
             // Get command instance (also used in help text)
@@ -103,7 +104,7 @@
                     throw TypinException.InteractiveModeNotSupported();
 
                 if (!await ProcessDefinedDirectives(_cliContext.RootSchema, _cliContext.Input))
-                    return ExitCode.Success;
+                    return ExitCodes.Success;
             }
             catch (DirectiveException ex)
             {
@@ -112,7 +113,7 @@
                 if (ex.ShowHelp)
                     _helpTextWriter.Write(root, command, defaultValues);
 
-                return ExitCode.FromException(ex);
+                return ExitCodes.FromException(ex);
             }
             // This may throw exceptions which are useful only to the end-user
             catch (TypinException ex)
@@ -122,7 +123,7 @@
                 if (ex.ShowHelp)
                     _helpTextWriter.Write(root, command, defaultValues);
 
-                return ExitCode.FromException(ex);
+                return ExitCodes.FromException(ex);
             }
 
             // Help option
@@ -131,7 +132,7 @@
             {
                 _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help?
 
-                return ExitCode.Success;
+                return ExitCodes.Success;
             }
 
             // Handle directives not supported in normal mode
@@ -158,7 +159,7 @@
                 if (ex.ShowHelp)
                     _helpTextWriter.Write(root, command, defaultValues);
 
-                return ExitCode.FromException(ex);
+                return ExitCodes.FromException(ex);
             }
 
             // Execute the command
@@ -166,7 +167,7 @@
             {
                 await _cliContext.Command.ExecuteAsync(_console);
 
-                return _cliContext.ExitCode ??= ExitCode.Success;
+                return _cliContext.ExitCode ??= ExitCodes.Success;
             }
             // Swallow command exceptions and route them to the console
             catch (CommandException ex)

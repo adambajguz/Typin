@@ -8,6 +8,7 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>opencover</CoverletOutputFormat>
     <CoverletOutput>bin/$(Configuration)/Coverage.xml</CoverletOutput>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

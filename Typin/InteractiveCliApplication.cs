@@ -61,7 +61,7 @@
 
                 await RunInteractivelyAsync(root);
 
-                return ExitCode.Success; // called after Ctrl+C
+                return ExitCodes.Success; // called after Ctrl+C
             }
 
             return await ExecuteCommand();

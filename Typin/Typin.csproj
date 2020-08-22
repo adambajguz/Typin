@@ -21,6 +21,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CopyAnalyzerToPackage</TargetsForTfmSpecificContentInPackage>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->

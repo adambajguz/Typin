@@ -63,7 +63,7 @@
             _middlewareTypes = middlewareTypes;
         }
 
-        private (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) BuildMiddlewares2(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
+        private (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) GetMiddlewarePipeline(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
         {
             CancellationToken cancellationToken = _console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = ICliMiddlewareExtensions.PipelineTermination;
@@ -166,7 +166,7 @@
             {
                 _configuration.ExceptionHandler.HandleException(CliContext, ex);
 
-                return ExitCode.FromException(ex);
+                return ExitCodes.FromException(ex);
             }
         }
 
@@ -188,48 +188,23 @@
         protected async Task<int> ExecuteCommand()
         {
             // Create service scope
-            using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
+            using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
+            {
+                (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = GetMiddlewarePipeline(serviceScope, _middlewareTypes);
+                await runPipelineAsync(CliContext, _console.GetCancellationToken());
+            }
 
-            (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = BuildMiddlewares2(serviceScope, _middlewareTypes);
-            await runPipelineAsync(CliContext, _console.GetCancellationToken());
+            //TODO: CliContext.BeginExecutionContext() would be more elegant
+            CliContext.Input = default!;
+            CliContext.Command = default!;
+            CliContext.CommandDefaultValues = default!;
+            CliContext.CommandSchema = default!;
 
-            return CliContext.ExitCode ??= ExitCode.Error;
+            int exitCode = CliContext.ExitCode ??= ExitCodes.Error;
+            CliContext.ExitCode = null;
+
+            return exitCode;
         }
         #endregion
-    }
-
-    /// <summary>
-    /// Static exit codes helper class.
-    /// </summary>
-    internal static class ExitCode
-    {
-        /// <summary>
-        /// Success exit code.
-        /// </summary>
-        public const int Success = 0;
-
-        /// <summary>
-        /// Error exit code.
-        /// </summary>
-        public const int Error = 1;
-
-        /// <summary>
-        /// Gets an exit code from exception.
-        /// </summary>
-        public static int FromException(Exception ex)
-        {
-            return ex is CommandException cmdEx ? cmdEx.ExitCode : Error;
-        }
-    }
-
-    [Command]
-    internal class StubDefaultCommand : ICommand
-    {
-        public static CommandSchema Schema { get; } = CommandSchema.TryResolve(typeof(StubDefaultCommand))!;
-
-        public ValueTask ExecuteAsync(IConsole console)
-        {
-            return default;
-        }
     }
 }

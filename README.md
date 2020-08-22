@@ -92,16 +92,16 @@ BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18363
 Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=3.1.302
   [Host]     : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
-  Job-YRJDTM : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
 ```
 
-|                               Method |         Mean |      Error |     StdDev | Ratio | RatioSD | Rank |
-|------------------------------------- |-------------:|-----------:|-----------:|------:|--------:|-----:|
-|                    CommandLineParser |     2.876 us |  0.0631 us |  0.1812 us |  0.04 |    0.00 |    1 |
-|                                CliFx |    51.839 us |  1.0130 us |  1.6643 us |  0.70 |    0.04 |    2 |
-|                                Typin |    73.327 us |  1.4587 us |  3.0449 us |  1.00 |    0.00 |    3 |
-|                                Clipr |   132.516 us |  1.4895 us |  1.3933 us |  1.79 |    0.07 |    4 |
-| McMaster.Extensions.CommandLineUtils |   134.784 us |  2.6727 us |  2.6250 us |  1.82 |    0.08 |    4 |
-|                   System.CommandLine |   190.910 us |  3.8168 us |  4.5436 us |  2.56 |    0.12 |    5 |
-|                            PowerArgs |   275.738 us |  3.5869 us |  3.3552 us |  3.72 |    0.17 |    6 |
-|                               Cocona | 1,326.940 us | 29.2181 us | 85.6915 us | 18.23 |    1.51 |    7 |
+|                               Method |         Mean |      Error |     StdDev |       Median | Ratio | RatioSD | Rank |
+|------------------------------------- |-------------:|-----------:|-----------:|-------------:|------:|--------:|-----:|
+|                    CommandLineParser |     2.459 us |  0.0416 us |  0.0369 us |     2.455 us |  0.01 |    0.00 |    1 |
+|                                CliFx |    52.064 us |  0.6804 us |  0.6032 us |    52.090 us |  0.24 |    0.02 |    2 |
+|                                Clipr |   133.519 us |  2.6883 us |  4.5650 us |   133.679 us |  0.64 |    0.09 |    3 |
+| McMaster.Extensions.CommandLineUtils |   134.350 us |  1.7527 us |  1.5537 us |   134.076 us |  0.61 |    0.07 |    3 |
+|                                Typin |   204.328 us | 11.0929 us | 31.2877 us |   196.450 us |  1.00 |    0.00 |    4 |
+|                   System.CommandLine |   205.282 us |  4.1898 us |  5.5932 us |   202.731 us |  0.97 |    0.13 |    4 |
+|                            PowerArgs |   265.280 us |  3.1048 us |  2.9042 us |   264.349 us |  1.18 |    0.14 |    5 |
+|                               Cocona | 1,282.893 us | 25.5067 us | 74.8066 us | 1,303.211 us |  6.42 |    1.10 |    6 |
