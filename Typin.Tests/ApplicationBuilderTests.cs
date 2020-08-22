@@ -3,8 +3,10 @@
     using System;
     using System.IO;
     using FluentAssertions;
+    using InteractiveModeExample.Middlewares;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Tests.Commands.Startups;
     using Typin.Tests.Commands.Valid;
     using Xunit;
 
@@ -40,6 +42,34 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(new VirtualConsole(Stream.Null))
+                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Application_in_normal_mode_can_be_created_with_a_custom_configuration_and_middlewares()
+        {
+            // Act
+            var app = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommandsFrom(typeof(DefaultCommand).Assembly)
+                .AddCommands(new[] { typeof(DefaultCommand) })
+                .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
+                .AddCommandsFromThisAssembly()
+                .AddDirective<DebugDirective>()
+                .AddDirective<PreviewDirective>()
+                .AddDirective(typeof(CustomDirective))
+                .UseMiddleware<ExecutionTimingMiddleware>()
+                .UseMiddleware(typeof(ExitCodeMiddleware))
+                .UseTitle("test")
+                .UseExecutableName("test")
+                .UseVersionText("test")
+                .UseDescription("test")
+                .UseConsole(new VirtualConsole(Stream.Null))
+                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .Build();
 
             // Assert
@@ -66,14 +96,19 @@
                 .UseDescription("test")
                 .UseInteractiveMode()
                 .UsePromptForeground(ConsoleColor.Magenta)
+                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .UseConsole(new VirtualConsole(Stream.Null))
                 .Build();
 
             // Assert
             app.Should().NotBeNull();
+        }
 
+        [Fact]
+        public void Application_in_interactive_mode_with_params_can_be_created_with_a_custom_configuration()
+        {
             // Act
-            app = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                .AddCommand<DefaultCommand>()
                .AddCommandsFrom(typeof(DefaultCommand).Assembly)
                .AddCommands(new[] { typeof(DefaultCommand) })
@@ -89,7 +124,8 @@
                .UseDescription("test")
                .UseInteractiveMode(false, false)
                .UsePromptForeground(ConsoleColor.Magenta)
-               .UseConsole(new VirtualConsole(Stream.Null))
+               .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+               .UseConsole<SystemConsole>()
                .Build();
 
             // Assert
@@ -118,6 +154,49 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(console)
+                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Application_can_be_created_with_startup_class()
+        {
+            // Act
+            var app = new CliApplicationBuilder()
+                .UseStartup<CustomStartupClass>()
+                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Application_can_be_created_with_configuration_action()
+        {
+            // Act
+            var app = new CliApplicationBuilder()
+                .Configure(cfg =>
+                {
+                    cfg.AddCommand<DefaultCommand>()
+                       .AddCommandsFrom(typeof(DefaultCommand).Assembly)
+                       .AddCommands(new[] { typeof(DefaultCommand) })
+                       .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
+                       .AddCommandsFromThisAssembly()
+                       .AddDirective<DebugDirective>()
+                       .AddDirective<PreviewDirective>()
+                       .AddDirective<CustomInteractiveModeOnlyDirective>()
+                       .AddDirective<CustomDirective>();
+                })
+                .Configure(cfg =>
+                {
+                    cfg.UseTitle("test")
+                       .UseExecutableName("test")
+                       .UseVersionText("test")
+                       .UseDescription("test")
+                       .UseConsole<SystemConsole>();
+                })
                 .Build();
 
             // Assert

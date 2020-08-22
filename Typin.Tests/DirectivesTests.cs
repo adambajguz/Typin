@@ -145,7 +145,7 @@
 
         //    // Act
         //    int exitCode = await application.RunAsync(
-        //        new[] { "[interactive]", "[custom-interactive]", "named" },
+        //        new[] { "[interactive]", "[custom-interactive]", "named", Environment.NewLine },
         //        new Dictionary<string, string>());
 
         //    // Assert

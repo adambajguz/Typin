@@ -8,7 +8,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin.Attributes;
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Input;
