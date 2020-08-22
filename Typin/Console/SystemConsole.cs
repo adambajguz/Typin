@@ -4,7 +4,6 @@
     using System.Diagnostics;
     using System.IO;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.

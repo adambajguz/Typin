@@ -1,21 +1,28 @@
 ﻿namespace Typin.Tests
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Tests.Commands.Valid;
     using Xunit;
+    using Xunit.Abstractions;
 
-    public partial class DirectivesSpecs
+    public class DirectivesSpecs
     {
+        private readonly ITestOutputHelper _output;
+
+        public DirectivesSpecs(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public async Task Preview_directive_can_be_specified_to_print_provided_arguments_as_they_were_parsed()
         {
             // Arrange
-            await using var stdOut = new MemoryStream();
-            var console = new VirtualConsole(output: stdOut);
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
 
             var application = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
@@ -24,15 +31,17 @@
                 .Build();
 
             // Act
-            var exitCode = await application.RunAsync(
-                new[] { "[preview]", "cmd", "param", "-abc", "--option", "foo" },
+            int exitCode = await application.RunAsync(
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
                 new Dictionary<string, string>());
-
-            var stdOutData = console.Output.Encoding.GetString(stdOut.ToArray()).TrimEnd();
 
             // Assert
             exitCode.Should().Be(0);
-            stdOutData.Should().ContainAll("cmd", "<param>", "[-a]", "[-b]", "[-c]", "[--option \"foo\"]");
+            stdOut.GetString().Should().ContainAll(
+                "named", "<param>", "[-a]", "[-b]", "[-c]", "[--option \"foo\"]"
+            );
+
+            _output.WriteLine(stdOut.GetString());
         }
     }
 }

@@ -4,6 +4,7 @@
     using System.IO;
     using System.Threading;
     using Typin.Extensions;
+    using Typin.Utilities.CliFx.Utilities;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that routes all data to preconfigured streams.
@@ -173,6 +174,25 @@
             {
                 AutoFlush = true
             };
+        }
+
+        /// <summary>
+        /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
+        /// Use the exposed streams to easily get the current output.
+        /// </summary>
+        public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isOutputRedirected = true,
+                                                                                                                   bool isErrorRedirected = true,
+                                                                                                                   CancellationToken cancellationToken = default)
+        {
+            // Memory streams don't need to be disposed
+            var output = new MemoryStreamWriter(Console.OutputEncoding);
+            var error = new MemoryStreamWriter(Console.OutputEncoding);
+
+            var console = new VirtualConsole(output: output, isOutputRedirected: isOutputRedirected,
+                                             error: error, isErrorRedirected: isErrorRedirected,
+                                             cancellationToken: cancellationToken);
+
+            return (console, output, error);
         }
     }
 }

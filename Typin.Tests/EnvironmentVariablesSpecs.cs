@@ -6,15 +6,16 @@
     using CliWrap;
     using CliWrap.Buffered;
     using FluentAssertions;
-    using Typin.Input;
+    using Typin.Console;
+    using Typin.Tests.Commands.Valid;
     using Typin.Tests.Internal;
     using Xunit;
 
-    public partial class EnvironmentVariablesSpecs
+    public class EnvironmentVariablesSpecs
     {
         // This test uses a real application to make sure environment variables are actually read correctly
         [Fact]
-        public async Task Option_can_use_a_specific_environment_variable_as_fallback()
+        public async Task Option_can_use_an_environment_variable_as_fallback()
         {
             // Arrange
             var command = Cli.Wrap("dotnet")
@@ -27,12 +28,12 @@
             var stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
 
             // Assert
-            stdOut.TrimEnd().Should().Be("Hello Mars!");
+            stdOut.Trim().Should().Be("Hello Mars!");
         }
 
         // This test uses a real application to make sure environment variables are actually read correctly
         [Fact]
-        public async Task Option_only_uses_environment_variable_as_fallback_if_the_value_was_not_directly_provided()
+        public async Task Option_only_uses_an_environment_variable_as_fallback_if_the_value_is_not_directly_provided()
         {
             // Arrange
             var command = Cli.Wrap("dotnet")
@@ -47,68 +48,94 @@
             var stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
 
             // Assert
-            stdOut.TrimEnd().Should().Be("Hello Jupiter!");
+            stdOut.Trim().Should().Be("Hello Jupiter!");
         }
 
         [Fact]
-        public void Option_of_non_scalar_type_can_take_multiple_separated_values_from_an_environment_variable()
+        public async Task Option_only_uses_an_environment_variable_as_fallback_if_the_name_matches_case_sensitively()
         {
-            // Arrange
-            var input = CommandInput.Empty;
-            var envVars = new Dictionary<string, string>
-            {
-                ["ENV_OPT"] = $"foo{Path.PathSeparator}bar"
-            };
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>()
+                .UseConsole(console)
+                .Build();
 
             // Act
-            var instance = CommandHelper.ResolveCommand<EnvironmentVariableCollectionCommand>(input, envVars);
+            int exitCode = await application.RunAsync(
+                new[] { "cmd" },
+                new Dictionary<string, string>
+                {
+                    ["ENV_opt_A"] = "incorrect",
+                    ["ENV_OPT_A"] = "correct"
+                }
+            );
+
+            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            instance.Should().BeEquivalentTo(new EnvironmentVariableCollectionCommand
+            exitCode.Should().Be(0);
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
             {
-                Option = new[] { "foo", "bar" }
+                OptA = "correct"
             });
         }
 
         [Fact]
-        public void Option_of_scalar_type_can_only_take_a_single_value_from_an_environment_variable_even_if_it_contains_separators()
+        public async Task Option_of_non_scalar_type_can_use_an_environment_variable_as_fallback_and_extract_multiple_values()
         {
-            // Arrange
-            var input = CommandInput.Empty;
-            var envVars = new Dictionary<string, string>
-            {
-                ["ENV_OPT"] = $"foo{Path.PathSeparator}bar"
-            };
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>()
+                .UseConsole(console)
+                .Build();
 
             // Act
-            var instance = CommandHelper.ResolveCommand<EnvironmentVariableCommand>(input, envVars);
+            int exitCode = await application.RunAsync(
+                new[] { "cmd" },
+                new Dictionary<string, string>
+                {
+                    ["ENV_OPT_B"] = $"foo{Path.PathSeparator}bar"
+                }
+            );
+
+            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            instance.Should().BeEquivalentTo(new EnvironmentVariableCommand
+            exitCode.Should().Be(0);
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
             {
-                Option = $"foo{Path.PathSeparator}bar"
+                OptB = new[] { "foo", "bar" }
             });
         }
 
         [Fact]
-        public void Option_can_use_a_specific_environment_variable_as_fallback_while_respecting_case()
+        public async Task Option_of_scalar_type_can_use_an_environment_variable_as_fallback_regardless_of_separators()
         {
-            // Arrange
-            const string expected = "foobar";
-            var input = CommandInput.Empty;
-            var envVars = new Dictionary<string, string>
-            {
-                ["ENV_OPT"] = expected,
-                ["env_opt"] = "2"
-            };
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>()
+                .UseConsole(console)
+                .Build();
 
             // Act
-            var instance = CommandHelper.ResolveCommand<EnvironmentVariableCommand>(input, envVars);
+            int exitCode = await application.RunAsync(
+                new[] { "cmd" },
+                new Dictionary<string, string>
+                {
+                    ["ENV_OPT_A"] = $"foo{Path.PathSeparator}bar"
+                }
+            );
+
+            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            instance.Should().BeEquivalentTo(new EnvironmentVariableCommand
+            exitCode.Should().Be(0);
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
             {
-                Option = expected
+                OptA = $"foo{Path.PathSeparator}bar"
             });
         }
     }

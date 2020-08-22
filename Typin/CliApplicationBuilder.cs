@@ -333,16 +333,6 @@ namespace Typin
 
             return this;
         }
-
-        /// <summary>
-        /// Configures whether the command input in interactive mode should use support history and auto completion.
-        /// </summary>
-        public CliApplicationBuilder UseAdvancedInput(bool useAdvancedInput = true)
-        {
-            _useAdvancedInput = useAdvancedInput;
-
-            return this;
-        }
         #endregion
 
         #region Configuration

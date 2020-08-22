@@ -21,7 +21,7 @@
                     .Add("console-test"));
 
             // Act
-            var result = await command.ExecuteBufferedAsync();
+            BufferedCommandResult result = await command.ExecuteBufferedAsync();
 
             // Assert
             result.StandardOutput.TrimEnd().Should().Be("Hello world");
@@ -36,9 +36,9 @@
             using var stdOut = new MemoryStream();
             using var stdErr = new MemoryStream();
 
-            var console = new VirtualConsole(input: stdIn,
-                                             output: stdOut,
-                                             error: stdErr);
+            using IConsole console = new VirtualConsole(input: stdIn,
+                                                        output: stdOut,
+                                                        error: stdErr);
 
             // Act
             console.Output.Write("output");

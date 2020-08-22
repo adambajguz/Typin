@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests
 {
-    using System.IO;
     using System.Linq;
     using FluentAssertions;
     using Typin.Console;
@@ -21,19 +20,18 @@
         public void Progress_ticker_can_be_used_to_report_progress_to_console()
         {
             // Arrange
-            using var stdOut = new MemoryStream();
-            var console = new VirtualConsole(output: stdOut, isOutputRedirected: false);
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered(isOutputRedirected: false, isErrorRedirected: false);
 
-            var ticker = console.CreateProgressTicker();
+            ProgressTicker ticker = console.CreateProgressTicker();
 
-            var progressValues = Enumerable.Range(0, 100).Select(p => p / 100.0).ToArray();
-            var progressStringValues = progressValues.Select(p => p.ToString("P2")).ToArray();
+            double[] progressValues = Enumerable.Range(0, 100).Select(p => p / 100.0).ToArray();
+            string[] progressStringValues = progressValues.Select(p => p.ToString("P2")).ToArray();
 
             // Act
-            foreach (var progress in progressValues)
+            foreach (double progress in progressValues)
                 ticker.Report(progress);
 
-            var stdOutData = console.Output.Encoding.GetString(stdOut.ToArray());
+            string stdOutData = console.Output.Encoding.GetString(stdOut.GetBytes());
 
             // Assert
             stdOutData.Should().ContainAll(progressStringValues);
@@ -45,18 +43,17 @@
         public void Progress_ticker_does_not_write_to_console_if_output_is_redirected()
         {
             // Arrange
-            using var stdOut = new MemoryStream();
-            var console = new VirtualConsole(output: stdOut);
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
 
-            var ticker = console.CreateProgressTicker();
+            ProgressTicker ticker = console.CreateProgressTicker();
 
-            var progressValues = Enumerable.Range(0, 100).Select(p => p / 100.0).ToArray();
+            double[] progressValues = Enumerable.Range(0, 100).Select(p => p / 100.0).ToArray();
 
             // Act
-            foreach (var progress in progressValues)
+            foreach (double progress in progressValues)
                 ticker.Report(progress);
 
-            var stdOutData = console.Output.Encoding.GetString(stdOut.ToArray());
+            string stdOutData = console.Output.Encoding.GetString(stdOut.GetBytes());
 
             // Assert
             stdOutData.Should().BeEmpty();

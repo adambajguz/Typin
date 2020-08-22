@@ -3,15 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Exceptions;
-    using Typin.Schemas;
+    using Typin.Tests.Commands.Invalid;
+    using Typin.Tests.Commands.Valid;
     using Xunit;
     using Xunit.Abstractions;
 
-    public partial class ApplicationSpecs
+    public class ApplicationSpecs
     {
         private readonly ITestOutputHelper _output;
 
@@ -21,276 +22,384 @@
         }
 
         [Fact]
-        public void Application_can_be_created_with_a_default_configuration()
+        public async Task Application_can_be_created_and_executed_with_benchmark_default_command()
         {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
             // Act
-            var app = new CliApplicationBuilder()
-                .AddCommandsFromThisAssembly()
-                .Build();
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .Build();
 
             // Assert
             app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
+
+            // Asert
+            exitCode.Should().Be(0);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+        [Fact]
+        public async Task Application_can_be_created_and_executed_with_benchmark_commands()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            // Act
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .AddCommand<BenchmarkNamedCommand>()
+                                                 .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(0);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
-        public void Application_can_be_created_with_a_custom_configuration()
+        public async Task At_least_one_command_must_be_defined_in_an_application()
         {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .UseConsole(console)
+                .Build();
+
             // Act
+            int exitCode = await application.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Commands_must_implement_the_corresponding_interface()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand(typeof(NonImplementedCommand))
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Commands_must_be_annotated_by_an_attribute()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NonAnnotatedCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Commands_must_have_unique_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<GenericExceptionCommand>()
+                .AddCommand<CommandExceptionCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_can_be_default_but_only_if_it_is_the_only_such_command()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
             var app = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
-                .AddCommandsFrom(typeof(DefaultCommand).Assembly)
-                .AddCommands(new[] { typeof(DefaultCommand) })
-                .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
-                .AddCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
-                .UseTitle("test")
-                .UseExecutableName("test")
-                .UseVersionText("test")
-                .UseDescription("test")
-                .UseConsole(new VirtualConsole(Stream.Null))
+                .AddCommand<OtherDefaultCommand>()
+                .UseConsole(console)
                 .Build();
 
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
             // Assert
-            app.Should().NotBeNull();
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
-        public void At_least_one_command_must_be_defined_in_an_application()
+        public async Task Command_parameters_must_have_unique_order()
         {
             // Arrange
-            var commandTypes = Array.Empty<Type>();
-            var directiveTypes = Array.Empty<Type>();
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Commands_must_implement_the_corresponding_interface()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(NonImplementedCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Commands_must_be_annotated_by_an_attribute()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(NonAnnotatedCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Commands_must_have_unique_names()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateNameCommandA), typeof(DuplicateNameCommandB) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_can_be_default_but_only_if_it_is_the_only_such_command()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DefaultCommand), typeof(AnotherDefaultCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_parameters_must_have_unique_order()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateParameterOrderCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_parameters_must_have_unique_names()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateParameterNameCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_parameter_can_be_non_scalar_only_if_no_other_such_parameter_is_present()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(MultipleNonScalarParametersCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_parameter_can_be_non_scalar_only_if_it_is_the_last_in_order()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(NonLastNonScalarParameterCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_have_names_that_are_not_empty()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(EmptyOptionNameCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_have_names_that_are_longer_than_one_character()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(SingleCharacterOptionNameCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_have_unique_names()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateOptionNamesCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_have_unique_short_names()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateOptionShortNamesCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_not_have_conflicts_with_the_implicit_help_option()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(ConflictWithHelpOptionCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_not_have_conflicts_with_the_implicit_version_option()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(ConflictWithVersionOptionCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_must_have_unique_environment_variable_names()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(DuplicateOptionEnvironmentVariableNamesCommand) };
-            var directiveTypes = Array.Empty<Type>();
-
-            // Act & assert
-            var ex = Assert.Throws<TypinException>(() => RootSchema.Resolve(commandTypes, directiveTypes));
-            _output.WriteLine(ex.Message);
-        }
-
-        [Fact]
-        public void Command_options_and_parameters_must_be_annotated_by_corresponding_attributes()
-        {
-            // Arrange
-            var commandTypes = new[] { typeof(HiddenPropertiesCommand) };
-            var directiveTypes = Array.Empty<Type>();
+            var app = new CliApplicationBuilder()
+                .AddCommand<DuplicateParameterOrderCommand>()
+                .UseConsole(console)
+                .Build();
 
             // Act
-            var schema = RootSchema.Resolve(commandTypes, directiveTypes);
+            int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            schema.Should().BeEquivalentTo(new RootSchema(new Dictionary<string, DirectiveSchema>(),
-                new Dictionary<string, CommandSchema>
-                {
-                    { "hidden",
-                      new CommandSchema(
-                          typeof(HiddenPropertiesCommand),
-                          "hidden",
-                          "Description",
-                          "Manual",
-                          false,
-                          new[]
-                          {
-                              new CommandParameterSchema(
-                                  typeof(HiddenPropertiesCommand).GetProperty(nameof(HiddenPropertiesCommand.Parameter))!,
-                                  13,
-                                  "param",
-                                  "Param description")
-                          },
-                          new[]
-                          {
-                              new CommandOptionSchema(
-                                  typeof(HiddenPropertiesCommand).GetProperty(nameof(HiddenPropertiesCommand.Option))!,
-                                  "option",
-                                  'o',
-                                  "ENV",
-                                  false,
-                                  "Option description"),
-                              CommandOptionSchema.HelpOption
-                          })
-                    }
-                }, null));
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
-            schema.ToString().Should().NotBeNullOrWhiteSpace(); // this is only for coverage, I'm sorry
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_parameters_must_have_unique_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DuplicateParameterNameCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_parameter_can_be_non_scalar_only_if_no_other_such_parameter_is_present()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<MultipleNonScalarParametersCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_parameter_can_be_non_scalar_only_if_it_is_the_last_in_order()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<NonLastNonScalarParameterCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_have_names_that_are_not_empty()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<EmptyOptionNameCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_have_names_that_are_longer_than_one_character()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<SingleCharacterOptionNameCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_have_unique_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionNamesCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_have_unique_short_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionShortNamesCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_have_unique_environment_variable_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionEnvironmentVariableNamesCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_not_have_conflicts_with_the_implicit_help_option()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<ConflictWithHelpOptionCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_options_must_not_have_conflicts_with_the_implicit_version_option()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<ConflictWithVersionOptionCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(0);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
         }
     }
 }
