@@ -1,6 +1,7 @@
 ﻿namespace Typin.Console
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
@@ -11,6 +12,7 @@
     public partial class SystemConsole : IConsole
     {
         private CancellationTokenSource? _cancellationTokenSource;
+        private bool disposedValue;
 
         /// <inheritdoc />
         public StreamReader Input { get; }
@@ -141,22 +143,54 @@
             return Console.ReadKey(intercept);
             //return Task.Run(() => Console.ReadKey(intercept)).Result;
         }
+
+        /// <summary>
+        /// Disposes console.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            Debug.WriteLine("DISPOSE");
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Input.Dispose();
+                    Output.Dispose();
+                    Error.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     public partial class SystemConsole
     {
         private static StreamReader WrapInput(Stream? stream)
         {
-            return stream != null
-                    ? new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false)
-                    : StreamReader.Null;
+            if (stream is null)
+                return StreamReader.Null;
+
+            return new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false);
         }
 
         private static StreamWriter WrapOutput(Stream? stream)
         {
-            return stream != null
-                    ? new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding) { AutoFlush = true }
-                    : StreamWriter.Null;
+            if (stream is null)
+                return StreamWriter.Null;
+
+            return new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding)
+            {
+                AutoFlush = true
+            };
         }
     }
 }

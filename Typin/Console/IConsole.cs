@@ -7,7 +7,7 @@
     /// <summary>
     /// Abstraction for interacting with the console.
     /// </summary>
-    public interface IConsole
+    public interface IConsole : IDisposable
     {
         /// <summary>
         /// Input stream (stdin).

@@ -13,6 +13,7 @@
     public partial class VirtualConsole : IConsole
     {
         private readonly CancellationToken _cancellationToken;
+        private bool disposedValue;
 
         /// <inheritdoc />
         public StreamReader Input { get; }
@@ -124,22 +125,54 @@
         {
             return ((char)Input.Read()).ToConsoleKeyInfo();
         }
+
+
+        /// <summary>
+        /// Disposes console.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Input.Dispose();
+                    Output.Dispose();
+                    Error.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     public partial class VirtualConsole
     {
         private static StreamReader WrapInput(Stream? stream)
         {
-            return stream != null
-                    ? new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false)
-                    : StreamReader.Null;
+            if (stream is null)
+                return StreamReader.Null;
+
+            return new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false);
         }
 
         private static StreamWriter WrapOutput(Stream? stream)
         {
-            return stream != null
-                    ? new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding) { AutoFlush = true }
-                    : StreamWriter.Null;
+            if (stream is null)
+                return StreamWriter.Null;
+
+            return new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding)
+            {
+                AutoFlush = true
+            };
         }
     }
 }

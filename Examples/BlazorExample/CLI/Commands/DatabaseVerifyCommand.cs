@@ -1,7 +1,6 @@
 ﻿namespace BlazorExample.CLI.Commands
 {
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
     using ShellProgressBar;
     using Typin;
