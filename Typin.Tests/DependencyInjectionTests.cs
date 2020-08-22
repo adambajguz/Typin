@@ -43,7 +43,7 @@
             exitCode.Should().Be(0);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
-            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
@@ -91,7 +91,7 @@
             exitCode.Should().Be(0);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
-            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
@@ -139,7 +139,7 @@
             exitCode.Should().Be(0);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
-            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             output.Should().HaveCount(3);
 
             char[] chars = output[0].Split('|')
