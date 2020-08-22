@@ -99,12 +99,9 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 |------------------------------------- |-------------:|-----------:|-----------:|------:|--------:|-----:|
 |                    CommandLineParser |     2.876 us |  0.0631 us |  0.1812 us |  0.04 |    0.00 |    1 |
 |                                CliFx |    51.839 us |  1.0130 us |  1.6643 us |  0.70 |    0.04 |    2 |
-|                  'Typin - 1 command' |    73.327 us |  1.4587 us |  3.0449 us |  1.00 |    0.00 |    3 |
-|                 'Typin - 2 commands' |    94.696 us |  1.8546 us |  2.3455 us |  1.27 |    0.05 |    4 |
-|                                Clipr |   132.516 us |  1.4895 us |  1.3933 us |  1.79 |    0.07 |    5 |
-| McMaster.Extensions.CommandLineUtils |   134.784 us |  2.6727 us |  2.6250 us |  1.82 |    0.08 |    5 |
-|                   System.CommandLine |   190.910 us |  3.8168 us |  4.5436 us |  2.56 |    0.12 |    6 |
-|                'Typin - 10 commands' |   270.005 us |  5.3565 us |  5.5007 us |  3.64 |    0.15 |    7 |
-|                            PowerArgs |   275.738 us |  3.5869 us |  3.3552 us |  3.72 |    0.17 |    7 |
-|                'Typin - 22 commands' |   564.404 us | 11.2229 us | 10.4979 us |  7.62 |    0.30 |    8 |
-|                               Cocona | 1,326.940 us | 29.2181 us | 85.6915 us | 18.23 |    1.51 |    9 |
+|                                Typin |    73.327 us |  1.4587 us |  3.0449 us |  1.00 |    0.00 |    3 |
+|                                Clipr |   132.516 us |  1.4895 us |  1.3933 us |  1.79 |    0.07 |    4 |
+| McMaster.Extensions.CommandLineUtils |   134.784 us |  2.6727 us |  2.6250 us |  1.82 |    0.08 |    4 |
+|                   System.CommandLine |   190.910 us |  3.8168 us |  4.5436 us |  2.56 |    0.12 |    5 |
+|                            PowerArgs |   275.738 us |  3.5869 us |  3.3552 us |  3.72 |    0.17 |    6 |
+|                               Cocona | 1,326.940 us | 29.2181 us | 85.6915 us | 18.23 |    1.51 |    7 |
