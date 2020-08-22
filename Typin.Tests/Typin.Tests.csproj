@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Typin.props" />
+  <Import Project="..\Typin.props" />
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../Typin.Tests.Dummy/bin/$(Configuration)/$(TargetFramework)/Typin.Tests.Dummy.runtimeconfig.json">
+    <None Include="..\Typin.Tests.Dummy\$(OutDir)Typin.Tests.Dummy.runtimeconfig.json">
       <Link>Typin.Tests.Dummy.runtimeconfig.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>

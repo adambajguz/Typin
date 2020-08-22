@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Typin.props" />
+  <Import Project="..\Typin.props" />
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../.img/typin-favicon-64px.png" Pack="true" PackagePath="" />
+    <None Include="..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <!-- The following item group and target ensure that the analyzer project is copied into the output NuGet package -->
