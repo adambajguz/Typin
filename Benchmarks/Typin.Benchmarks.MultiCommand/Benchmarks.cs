@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks
+namespace Typin.Benchmarks.MultiCommand
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

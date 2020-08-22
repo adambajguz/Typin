@@ -115,19 +115,50 @@
             if (_cancellationTokenSource != null)
                 return _cancellationTokenSource.Token;
 
-            _cancellationTokenSource = new CancellationTokenSource();
+            /* ====================================================================================================================
+             *
+             *  This methods must  use local variable, because removing cts and using _cancellationTokenSource
+             *  would lead to very high RAM usage when many CliApplication were created in single process e.g. in benchmarks.
+             *
+             *  (Memory leak? - this needs further investigation)
+             *
+             * ====================================================================================================================
+             *
+             *   public CancellationToken GetCancellationToken()
+             *   {
+             *       if (_cancellationTokenSource != null)
+             *           return _cancellationTokenSource.Token;
+             *
+             *       _cancellationTokenSource = new CancellationTokenSource();
+             *
+             *       Console.CancelKeyPress += (_, args) =>
+             *       {
+             *           // If cancellation hasn't been requested yet - cancel shutdown and fire the token
+             *           if (!_cancellationTokenSource.IsCancellationRequested)
+             *           {
+             *               args.Cancel = true;
+             *               _cancellationTokenSource.Cancel();
+             *           }
+             *       };
+             *
+             *       return _cancellationTokenSource.Token;
+             *   }
+             * ====================================================================================================================
+             */
+
+            var cts = new CancellationTokenSource();
 
             Console.CancelKeyPress += (_, args) =>
             {
                 // If cancellation hasn't been requested yet - cancel shutdown and fire the token
-                if (!_cancellationTokenSource.IsCancellationRequested)
+                if (!cts.IsCancellationRequested)
                 {
                     args.Cancel = true;
-                    _cancellationTokenSource.Cancel();
+                    cts.Cancel();
                 }
             };
 
-            return _cancellationTokenSource.Token;
+            return (_cancellationTokenSource = cts).Token;
         }
 
         /// <inheritdoc/>
@@ -148,7 +179,6 @@
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            Debug.WriteLine("DISPOSE");
             if (!disposedValue)
             {
                 if (disposing)
