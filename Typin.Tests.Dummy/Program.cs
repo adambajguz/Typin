@@ -1,5 +1,6 @@
 ﻿namespace Typin.Tests.Dummy
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@
 
     public static partial class Program
     {
+        [ExcludeFromCodeCoverage]
         public static async Task Main()
         {
             await new CliApplicationBuilder()
