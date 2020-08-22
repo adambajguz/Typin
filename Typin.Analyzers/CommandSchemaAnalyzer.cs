@@ -223,12 +223,12 @@
         private static void CheckCommandType(SymbolAnalysisContext context)
         {
             // Named type: MyCommand
-            if (!(context.Symbol is INamedTypeSymbol namedTypeSymbol))
+            if (!(context.Symbol is INamedTypeSymbol namedTypeSymbol) ||
+                // Only classes
+                namedTypeSymbol.TypeKind != TypeKind.Class)
+            {
                 return;
-
-            // Only classes
-            if (namedTypeSymbol.TypeKind != TypeKind.Class)
-                return;
+            }
 
             // Implements ICommand?
             var implementsCommandInterface = namedTypeSymbol
