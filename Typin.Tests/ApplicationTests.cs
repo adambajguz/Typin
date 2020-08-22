@@ -23,7 +23,7 @@
         public async Task Application_can_be_created_and_executed_with_benchmark_default_command()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
@@ -40,11 +40,12 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
+
         [Fact]
         public async Task Application_can_be_created_and_executed_with_benchmark_commands()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()

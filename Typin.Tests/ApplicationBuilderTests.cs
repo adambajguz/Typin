@@ -34,6 +34,7 @@
                 .AddCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
+                .AddDirective<CustomDirective>()
                 .UseTitle("test")
                 .UseExecutableName("test")
                 .UseVersionText("test")
@@ -57,6 +58,8 @@
                 .AddCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .AddDirective<CustomDirective>()
                 .UseTitle("test")
                 .UseExecutableName("test")
                 .UseVersionText("test")
@@ -78,6 +81,8 @@
                .AddCommandsFromThisAssembly()
                .AddDirective<DebugDirective>()
                .AddDirective<PreviewDirective>()
+               .AddDirective<CustomInteractiveModeOnlyDirective>()
+               .AddDirective<CustomDirective>()
                .UseTitle("test")
                .UseExecutableName("test")
                .UseVersionText("test")
@@ -95,7 +100,7 @@
         public void Application_can_be_created_with_VirtualConsole_CreateBuffered()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+            var (console, _, _) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder()
@@ -106,6 +111,8 @@
                 .AddCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .AddDirective<CustomDirective>()
                 .UseTitle("test")
                 .UseExecutableName("test")
                 .UseVersionText("test")
