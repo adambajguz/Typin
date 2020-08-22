@@ -1,6 +1,8 @@
 ﻿namespace Typin.Tests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,7 @@
         }
 
         [Fact]
-        public async Task Delegate_type_activator_throws_if_the_underlying_function_returns_null()
+        public async Task Should_scoped_services_be_resolved()
         {
             // Arrange
             var (console, stdOut, _) = VirtualConsole.CreateBuffered();
@@ -29,9 +31,6 @@
             var app = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<WithDependenciesCommand>()
-                .AddCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
                 .UseConsole(console)
                 .ConfigureServices(services =>
                 {
@@ -45,17 +44,117 @@
             app.Should().NotBeNull();
 
             // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
-            var commandInstance = stdOut.GetString().DeserializeJson<WithDependenciesCommand>();
+            int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
 
             // Assert
             exitCode.Should().Be(0);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
-            var dependencyB = new DependencyB();
-            commandInstance.Should().BeEquivalentTo(new WithDependenciesCommand(new DependencyA(),
-                                                                                dependencyB,
-                                                                                new DependencyC(dependencyB)));
+            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            output.Should().HaveCount(2);
+
+            char[] chars = output[0].Split('|')
+                                    .Select(x => char.Parse(x))
+                                    .ToArray();
+
+            Guid[] guids = output[1].Split('|')
+                                    .Select(x => Guid.Parse(x))
+                                    .ToArray();
+
+            chars.Should().HaveCount(3);
+            chars.Should().Equal(new char[] { 'A', 'B', 'B' });
+
+            guids.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task Should_singleton_services_be_resolved()
+        {
+            // Arrange
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<WithDependenciesCommand>()
+                .UseConsole(console)
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<DependencyA>();
+                    services.AddSingleton<DependencyB>();
+                    services.AddSingleton<DependencyC>();
+                })
+                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(0);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+
+            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            output.Should().HaveCount(2);
+
+            char[] chars = output[0].Split('|')
+                                    .Select(x => char.Parse(x))
+                                    .ToArray();
+
+            Guid[] guids = output[1].Split('|')
+                                    .Select(x => Guid.Parse(x))
+                                    .ToArray();
+
+            chars.Should().HaveCount(3);
+            chars.Should().Equal(new char[] { 'A', 'B', 'B' });
+
+            guids.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task Should_transient_services_be_resolved()
+        {
+            // Arrange
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<WithDependenciesCommand>()
+                .UseConsole(console)
+                .ConfigureServices(services =>
+                {
+                    services.AddTransient<DependencyA>();
+                    services.AddTransient<DependencyB>();
+                    services.AddTransient<DependencyC>();
+                })
+                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(0);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+
+            string[] output = stdOut.GetString().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            output.Should().HaveCount(2);
+
+            char[] chars = output[0].Split('|')
+                                    .Select(x => char.Parse(x))
+                                    .ToArray();
+
+            Guid[] guids = output[1].Split('|')
+                                    .Select(x => Guid.Parse(x))
+                                    .ToArray();
+
+            chars.Should().HaveCount(3);
+            chars.Should().Equal(new char[] { 'A', 'B', 'B' });
+
+            guids.Should().HaveCount(3);
         }
     }
 }

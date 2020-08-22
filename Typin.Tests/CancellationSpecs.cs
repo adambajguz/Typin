@@ -17,7 +17,7 @@
 
             // Arrange
             using var cts = new CancellationTokenSource();
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered(cts.Token);
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered(cancellationToken: cts.Token);
 
             var application = new CliApplicationBuilder()
                 .AddCommand<CancellableCommand>()

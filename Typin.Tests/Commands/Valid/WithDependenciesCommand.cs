@@ -20,9 +20,8 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            console.Output.WriteLine(_dependencyA.Value);
-            console.Output.WriteLine(_dependencyB.Value);
-            console.Output.WriteLine(_dependencyC.Value);
+            console.Output.WriteLine($"{_dependencyA.Value}|{_dependencyB.Value}|{_dependencyC.Value}");
+            console.Output.WriteLine($"{_dependencyA.Id}|{_dependencyB.Id}|{_dependencyC.Id}");
 
             return default;
         }

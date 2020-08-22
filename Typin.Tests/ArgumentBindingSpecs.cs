@@ -23,13 +23,13 @@
             // Arrange
             var (console, stdOut, _) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithStringArrayOptionCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
@@ -51,13 +51,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithSingleRequiredOptionCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "--opt-a", "foo"
             });
@@ -75,13 +75,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithSingleRequiredOptionCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "--opt-a"
             });
@@ -99,13 +99,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithRequiredOptionsCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "--opt-a", "foo"
             });
@@ -123,13 +123,13 @@
             // Arrange
             var (console, stdOut, _) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithParametersCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "foo", "13", "bar", "baz"
             });
@@ -153,13 +153,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithSingleParameterCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd"
             });
@@ -177,13 +177,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<WithParametersCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "foo", "13"
             });
@@ -201,13 +201,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<SupportedArgumentTypesCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cmd", "--non-existing-option", "13"
             });
@@ -225,13 +225,13 @@
             // Arrange
             var (console, _, stdErr) = VirtualConsole.CreateBuffered();
 
-            var application = new CliApplicationBuilder()
+            var app = new CliApplicationBuilder()
                 .AddCommand<SupportedArgumentTypesCommand>()
                 .UseConsole(console)
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[]
+            int exitCode = await app.RunAsync(new[]
             {
                 "cnd", "non-existing-parameter"
             });
