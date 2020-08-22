@@ -27,15 +27,11 @@
                     return true;
 
                 // In case with Console.Error.WriteLine that wouldn't work, we need to check parent member access too
-                if (!(memberAccessSyntax.Expression is MemberAccessExpressionSyntax parentMemberAccessSyntax))
-                    return false;
-
-                // Get the semantic model for the parent member
-                if (!(context.SemanticModel.GetSymbolInfo(parentMemberAccessSyntax).Symbol is IPropertySymbol propertySymbol))
-                    return false;
-
-                // Check if contained within System.Console
-                if (KnownSymbols.IsSystemConsole(propertySymbol.ContainingType))
+                if (memberAccessSyntax.Expression is MemberAccessExpressionSyntax parentMemberAccessSyntax &&
+                    // Get the semantic model for the parent member
+                    context.SemanticModel.GetSymbolInfo(parentMemberAccessSyntax).Symbol is IPropertySymbol propertySymbol &&
+                    // Check if contained within System.Console
+                    KnownSymbols.IsSystemConsole(propertySymbol.ContainingType))
                     return true;
             }
 
