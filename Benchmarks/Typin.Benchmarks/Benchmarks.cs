@@ -62,7 +62,7 @@
         [Benchmark(Description = "CliFx")]
         public async ValueTask<int> ExecuteWithCliFx()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand(typeof(CliFxCommand))
+            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxCommand>()
                                                           .Build()
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
         }
