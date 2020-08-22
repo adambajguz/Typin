@@ -1,16 +1,12 @@
 ﻿namespace Typin.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Tests.Commands.Invalid;
     using Typin.Tests.Commands.Valid;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class ApplicationBuilderTests
     {
@@ -74,22 +70,22 @@
             app.Should().NotBeNull();
 
             // Act
-             app = new CliApplicationBuilder()
-                .AddCommand<DefaultCommand>()
-                .AddCommandsFrom(typeof(DefaultCommand).Assembly)
-                .AddCommands(new[] { typeof(DefaultCommand) })
-                .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
-                .AddCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
-                .UseTitle("test")
-                .UseExecutableName("test")
-                .UseVersionText("test")
-                .UseDescription("test")
-                .UseInteractiveMode(false, false)
-                .UsePromptForeground(ConsoleColor.Magenta)
-                .UseConsole(new VirtualConsole(Stream.Null))
-                .Build();
+            app = new CliApplicationBuilder()
+               .AddCommand<DefaultCommand>()
+               .AddCommandsFrom(typeof(DefaultCommand).Assembly)
+               .AddCommands(new[] { typeof(DefaultCommand) })
+               .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
+               .AddCommandsFromThisAssembly()
+               .AddDirective<DebugDirective>()
+               .AddDirective<PreviewDirective>()
+               .UseTitle("test")
+               .UseExecutableName("test")
+               .UseVersionText("test")
+               .UseDescription("test")
+               .UseInteractiveMode(false, false)
+               .UsePromptForeground(ConsoleColor.Magenta)
+               .UseConsole(new VirtualConsole(Stream.Null))
+               .Build();
 
             // Assert
             app.Should().NotBeNull();

@@ -7,11 +7,8 @@
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Console;
-    using Typin.Directives;
     using Typin.Tests.Commands.Valid;
-    using Typin.Tests.Internal;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class DependencyInjectionTests
     {

@@ -9,7 +9,7 @@
 
 </p>
 
-<table>
+<table border="0">
  <tr>
     <td>
       <p align="center">
@@ -27,7 +27,8 @@
   - [Screenshots](#screenshots)
   - [Benchmarks](#benchmarks)
   - [Etymology](#etymology)
-
+  
+  </td>
  </tr>
 </table>
 

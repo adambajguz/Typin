@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Directives;
     using Typin.Tests.Commands.Invalid;
     using Typin.Tests.Commands.Valid;
     using Xunit;
