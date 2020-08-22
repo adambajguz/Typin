@@ -42,7 +42,6 @@ This framework uses a declarative class-first approach for defining commands, av
 
 An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework.
 The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications.
-At its core, Typin is highly opinionated, giving preference to convention over configuration, strictness over extensibility, consistency over ambiguity, and so on.
 
 ## Features
 
