@@ -9,7 +9,7 @@
 
 </p>
 
-<table border="0">
+<table>
  <tr>
     <td>
       <p align="center">
