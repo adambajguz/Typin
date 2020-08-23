@@ -5,7 +5,7 @@
     using Typin.Console;
 
     [Directive("invalid-no-interface", Description = "Abstract directive.")]
-    public class NoInterafaceDirective
+    public sealed class NoInterafaceDirective
     {
         public bool ContinueExecution => true;
 
@@ -14,7 +14,7 @@
 
         }
 
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask HandleAsync(IConsole _)
         {
             return default;
         }

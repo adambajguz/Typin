@@ -1,6 +1,7 @@
 ﻿namespace Typin.Benchmarks.FrameworksComparison
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
@@ -13,11 +14,11 @@
     [SimpleJob]
     [RankColumn]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public class Benchmarks
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
 
-        //TODO: there is a problem with code: high mem usage at the end of Typin benchmark
         [Benchmark(Description = "Typin", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {

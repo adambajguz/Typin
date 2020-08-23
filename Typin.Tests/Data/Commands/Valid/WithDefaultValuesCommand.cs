@@ -1,11 +1,12 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Typin.Attributes;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
+    [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
     public class WithDefaultValuesCommand : SelfSerializeCommandBase
     {
         public enum CustomEnum { Value1, Value2, Value3 };

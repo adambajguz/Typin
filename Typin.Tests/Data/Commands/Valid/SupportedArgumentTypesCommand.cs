@@ -2,12 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using Typin.Attributes;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.Initializable;
 
     [Command("cmd")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
+    [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
     public partial class SupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [CommandOption("obj")]

@@ -115,8 +115,7 @@
             _text.Clear();
         }
 
-        //TODO: rewrite
-        //TODO: should work when line is wrapped
+        //TODO: rewrite: must work when line is wrapped
         private void MoveCursorLeft(int count = 1)
         {
             if (CursorPosition < count)
