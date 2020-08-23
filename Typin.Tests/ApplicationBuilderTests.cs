@@ -2,12 +2,14 @@
 {
     using System;
     using System.IO;
+    using System.Text;
     using FluentAssertions;
     using InteractiveModeExample.Middlewares;
     using Typin.Console;
     using Typin.Directives;
     using Typin.Tests.Commands.Startups;
     using Typin.Tests.Commands.Valid;
+    using Typin.Utilities.CliFx.Utilities;
     using Xunit;
 
     public class ApplicationBuilderTests
@@ -127,6 +129,35 @@
                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                .UseConsole<SystemConsole>()
                .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
+        {
+            // Arrange
+            IConsole console = new VirtualConsole(output: new MemoryStreamWriter(), isOutputRedirected: false,
+                                                  error: new MemoryStreamWriter(Encoding.UTF8), isErrorRedirected: true);
+
+            // Act
+            var app = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommandsFrom(typeof(DefaultCommand).Assembly)
+                .AddCommands(new[] { typeof(DefaultCommand) })
+                .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
+                .AddCommandsFromThisAssembly()
+                .AddDirective<DebugDirective>()
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .AddDirective<CustomDirective>()
+                .UseTitle("test")
+                .UseExecutableName("test")
+                .UseVersionText("test")
+                .UseDescription("test")
+                .UseConsole(console)
+                .Build();
 
             // Assert
             app.Should().NotBeNull();
