@@ -1,6 +1,7 @@
 ﻿namespace Typin.Console
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
     using Typin.Extensions;
@@ -122,11 +123,11 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
             return ((char)Input.Read()).ToConsoleKeyInfo();
         }
-
 
         /// <summary>
         /// Disposes console.

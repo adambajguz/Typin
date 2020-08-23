@@ -1,6 +1,7 @@
 ﻿namespace Typin.Console
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
 
@@ -55,6 +56,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public void Clear()
         {
             Console.Clear();
@@ -67,6 +69,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int CursorLeft
         {
             get => Console.CursorLeft;
@@ -74,6 +77,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int CursorTop
         {
             get => Console.CursorTop;
@@ -81,6 +85,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int WindowWidth
         {
             get => Console.WindowWidth;
@@ -88,6 +93,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int WindowHeight
         {
             get => Console.WindowHeight;
@@ -95,6 +101,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int BufferWidth
         {
             get => Console.BufferWidth;
@@ -102,6 +109,7 @@
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int BufferHeight
         {
             get => Console.BufferHeight;
@@ -161,12 +169,14 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public void SetCursorPosition(int left, int top)
         {
             Console.SetCursorPosition(left, top);
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
             return Console.ReadKey(intercept);

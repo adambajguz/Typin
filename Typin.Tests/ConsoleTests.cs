@@ -29,6 +29,26 @@
         }
 
         [Fact]
+        public void Real_implementation_of_console_can_be_used_to_execute_commands()
+        {
+            // Arrange
+            using IConsole console = new SystemConsole();
+
+            // Act
+            console.ResetColor();
+            console.ForegroundColor = ConsoleColor.DarkMagenta;
+            console.BackgroundColor = ConsoleColor.DarkMagenta;
+
+            // Assert
+            console.IsInputRedirected.Should().BeFalse();
+            console.IsOutputRedirected.Should().BeTrue(); // true in tests
+            console.IsErrorRedirected.Should().BeTrue(); // true in tests
+
+            console.ForegroundColor.Should().Be(Console.ForegroundColor);
+            console.BackgroundColor.Should().Be(Console.BackgroundColor);
+        }
+
+        [Fact]
         public void Fake_implementation_of_console_can_be_used_to_execute_commands_in_isolation()
         {
             // Arrange
@@ -48,11 +68,18 @@
             var stdOutData = console.Output.Encoding.GetString(stdOut.ToArray());
             var stdErrData = console.Error.Encoding.GetString(stdErr.ToArray());
 
+            console.Clear();
             console.ResetColor();
             console.ForegroundColor = ConsoleColor.DarkMagenta;
             console.BackgroundColor = ConsoleColor.DarkMagenta;
             console.CursorLeft = 42;
             console.CursorTop = 24;
+            console.BufferHeight = 80;
+            console.BufferWidth = 120;
+            console.WindowWidth = 45;
+            console.WindowHeight = 70;
+
+            console.SetCursorPosition(24, 42);
 
             // Assert
             stdInData.Should().Be("input");
@@ -69,6 +96,12 @@
 
             console.ForegroundColor.Should().NotBe(Console.ForegroundColor);
             console.BackgroundColor.Should().NotBe(Console.BackgroundColor);
+            //console.CursorLeft.Should().NotBe(Console.CursorLeft);
+            //console.CursorTop.Should().NotBe(Console.CursorTop);
+            //console.BufferHeight.Should().NotBe(Console.BufferHeight);
+            //console.BufferWidth.Should().NotBe(Console.BufferWidth);
+            //console.WindowWidth.Should().NotBe(Console.WindowWidth);
+            //console.WindowHeight.Should().NotBe(Console.WindowWidth);
         }
     }
 }
