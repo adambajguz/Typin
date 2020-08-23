@@ -1,6 +1,7 @@
 ﻿namespace Typin
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Typin.Exceptions;
 
     /// <summary>
@@ -21,6 +22,7 @@
         /// <summary>
         /// Gets an exit code from exception.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public static int FromException(Exception ex)
         {
             return ex is CommandException cmdEx ? cmdEx.ExitCode : Error;

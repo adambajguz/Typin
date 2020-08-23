@@ -1,5 +1,6 @@
 ﻿namespace Typin.Directives
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -13,6 +14,7 @@
     ///             >
     /// </example>
     /// </summary>
+    [ExcludeFromCodeCoverage]
     [Directive("..", Description = "Resets the scope to default value.", InteractiveModeOnly = true)]
     public sealed class ScopeResetDirective : IDirective
     {

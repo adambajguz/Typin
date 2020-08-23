@@ -1,5 +1,6 @@
 ﻿namespace Typin.Directives
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -22,6 +23,7 @@
     ///              > cmd1 -h
     /// </example>
     /// </summary>
+    [ExcludeFromCodeCoverage]
     [Directive(">", Description = "Sets a scope to command(s).", InteractiveModeOnly = true)]
     public sealed class ScopeDirective : IDirective
     {
