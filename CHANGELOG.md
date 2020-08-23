@@ -8,7 +8,7 @@
 - Added `ICliExceptionHandler` and `CliApplicationBuilder.UseExceptionHandler(...)`
 - Added	`Manual` property in `CommandAttribute` that can be used to provide a long, extended description of a commmand.
 - Added `CliContext` that can be injected to services and commands with DI.
-- Added `WindowWidth`, `WindowHeight`, `BufferWidth`, and `BufferHeight` to `IConsole`.
+- Added `ReadKey`, `SetCursorPosition`, `WindowWidth`, `WindowHeight`, `BufferWidth`, and `BufferHeight` to `IConsole`.
 - Added new demo apps and improved existing demo.
 - Added `Debugger attached to PID {processId}.` message after debugger attachment.
 - Added benchmarks for multiple commands.
