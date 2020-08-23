@@ -5,8 +5,8 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Tests.Commands.Invalid;
-    using Typin.Tests.Commands.Valid;
+    using Typin.Tests.Data.Commands.Invalid;
+    using Typin.Tests.Data.Commands.Valid;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -27,6 +27,29 @@
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
+
+            // Asert
+            exitCode.Should().Be(0);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task Application_with_interactive_mode_can_be_created_and_executed_in_normal_mode_with_benchmark_default_command()
+        {
+            // Arrange
+            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            // Act
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .UseInteractiveMode()
                                                  .Build();
 
             // Assert

@@ -7,7 +7,7 @@
     using CliWrap.Buffered;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Tests.Commands.Valid;
+    using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Internal;
     using Xunit;
 

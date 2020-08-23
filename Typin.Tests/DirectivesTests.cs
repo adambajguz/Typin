@@ -5,9 +5,13 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Tests.Commands.Valid;
+    using Typin.Tests.Data.Valid;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.CustomDirectives.Valid;
+    using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Data.CustomDirectives.Invalid;
+    using System;
 
     public class DirectivesTests
     {
@@ -224,6 +228,132 @@
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());
         }
+
+        [Fact]
+        public void Custom_directive_should_not_be_abstract()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            // Act & Assert
+            Func<CliApplication> act = () =>
+            {
+                return new CliApplicationBuilder()
+                    .AddCommand<NamedCommand>()
+                    .UseConsole(console)
+                    .AddDirective<AbstractDirective>()
+                    .Build();
+            };
+
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Fact]
+        public async Task Custom_directive_should_have_proper_interface()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective(typeof(NoInterafaceDirective))
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[invalid-no-interface]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_directive_should_have_proper_attribute()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<NoAttributeDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+
+        [Fact]
+        public async Task Custom_directive_should_be_registered_once()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<DuplicatedDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("[preview]");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        //[Fact]
+        //public async Task Custom_directive_should_not_be_abstract()
+        //{
+        //    // Arrange
+        //    var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+        //    var application = new CliApplicationBuilder()
+        //        .AddCommand<NamedCommand>()
+        //        .UseConsole(console)
+        //        .AddDirective<AbstractDirective>()
+        //        .Build();
+
+        //    // Act
+        //    int exitCode = await application.RunAsync(
+        //        new[] { "[invalid-abstract]", "named", "param", "-abc", "--option", "foo" },
+        //        new Dictionary<string, string>());
+
+        //    // Assert
+        //    exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
+        //    stdOut.GetString().Should().BeNullOrWhiteSpace();
+        //    stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+        //    _output.WriteLine(stdOut.GetString());
+        //    _output.WriteLine(stdErr.GetString());
+        //}
 
         //[Fact]
         //public async Task Custom_interactive_directive_should_run_in_interactive_mode()

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
     using Typin.AutoCompletion;
@@ -67,6 +68,7 @@
             return await ExecuteCommand();
         }
 
+        [ExcludeFromCodeCoverage]
         private async Task RunInteractivelyAsync(RootSchema root)
         {
             IConsole console = CliContext.Console;
@@ -94,9 +96,7 @@
         /// <summary>
         /// Gets user input and returns arguments or null if cancelled.
         /// </summary>
-        /// <param name="console"></param>
-        /// <param name="executableName"></param>
-        /// <returns></returns>
+        [ExcludeFromCodeCoverage]
         private string[]? GetInput(IConsole console, string executableName)
         {
             string[] arguments;

@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Tests.Commands.Valid;
+    using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Internal;
     using Xunit;
     using Xunit.Abstractions;
