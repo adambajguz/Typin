@@ -1,17 +1,16 @@
 ﻿namespace Typin.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Tests.Data.Valid;
-    using Xunit;
-    using Xunit.Abstractions;
-    using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Invalid;
-    using System;
+    using Typin.Tests.Data.CustomDirectives.Valid;
+    using Xunit;
+    using Xunit.Abstractions;
 
     public class DirectivesTests
     {

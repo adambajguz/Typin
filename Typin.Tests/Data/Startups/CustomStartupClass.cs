@@ -3,9 +3,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Tests.Data.Services;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
+    using Typin.Tests.Data.Services;
 
     public class CustomStartupClass : ICliStartup
     {

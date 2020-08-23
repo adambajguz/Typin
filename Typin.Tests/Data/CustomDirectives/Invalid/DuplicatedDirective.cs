@@ -4,7 +4,6 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Tests.Data.CustomDirectives.Valid;
 
     [Directive("preview", Description = "Duplicate directive.")]
     public class DuplicatedDirective : IDirective

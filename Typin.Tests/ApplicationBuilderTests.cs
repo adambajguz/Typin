@@ -6,12 +6,12 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Data.CustomDirectives.Valid;
+    using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Startups;
     using Typin.Utilities.CliFx.Utilities;
     using Xunit;
-    using Typin.Tests.Data.Middlewares;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.CustomDirectives.Valid;
 
     public class ApplicationBuilderTests
     {
