@@ -8,7 +8,7 @@
     /// </summary>
     public static class TextUtils
     {
-        private static readonly Regex _newLinesRegex = new Regex(@"\n\r", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _newLinesRegex = new Regex(@"\r\n?|\n", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// Replaces new line characters to match 'Environment.NewLine'.
