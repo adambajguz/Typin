@@ -124,7 +124,105 @@
             stdErr.GetString().Should().ContainAll(
                 "Directive", "[custom-interactive]", "is for interactive mode only."
             );
+
             _output.WriteLine(stdOut.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_throwable_directive_should_throw_exception()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomThrowableDirective>()
+                .AddDirective<CustomThrowableDirectiveWithMessage>()
+                .AddDirective<CustomThrowableDirectiveWithInnerException>()
+                .AddDirective<CustomDirective>()
+                .AddDirective<CustomStopDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-throwable]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(CustomThrowableDirective.ExpectedExitCode);
+            stdOut.GetString().Should().Be(CustomThrowableDirective.ExpectedOutput);
+            stdErr.GetString().Should().ContainEquivalentOf(
+                "Typin.Exceptions.DirectiveException: Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
+            );
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_throwable_directive_with_message_should_throw_exception()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomThrowableDirective>()
+                .AddDirective<CustomThrowableDirectiveWithMessage>()
+                .AddDirective<CustomThrowableDirectiveWithInnerException>()
+                .AddDirective<CustomDirective>()
+                .AddDirective<CustomStopDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-throwable-with-message]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(CustomThrowableDirectiveWithMessage.ExpectedExitCode);
+            stdOut.GetString().Should().Be(CustomThrowableDirectiveWithMessage.ExpectedOutput);
+            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessage.ExpectedExceptionMessage);
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_throwable_directive_with_inner_exception_should_throw_exception()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomThrowableDirective>()
+                .AddDirective<CustomThrowableDirectiveWithMessage>()
+                .AddDirective<CustomThrowableDirectiveWithInnerException>()
+                .AddDirective<CustomDirective>()
+                .AddDirective<CustomStopDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-throwable-with-inner-exception]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
+            stdOut.GetString().Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedOutput);
+            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithInnerException.ExpectedExceptionMessage);
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
         }
 
         //[Fact]

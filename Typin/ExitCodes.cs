@@ -25,7 +25,13 @@
         [ExcludeFromCodeCoverage]
         public static int FromException(Exception ex)
         {
-            return ex is CommandException cmdEx ? cmdEx.ExitCode : Error;
+            return ex switch
+            {
+                CommandException cmdEx => cmdEx.ExitCode,
+                DirectiveException dirEx => dirEx.ExitCode,
+                TypinException _ => Error,
+                _ => Error
+            };
         }
     }
 }
