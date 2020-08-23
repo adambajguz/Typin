@@ -11,6 +11,7 @@ namespace Typin
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
+    using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.Pipeline;
     using Typin.Schemas;
@@ -20,6 +21,8 @@ namespace Typin
     /// </summary>
     public sealed partial class CliApplicationBuilder
     {
+        private bool _cliApplicationBuilt;
+
         //Directives and commands settings
         private readonly List<Type> _commandTypes = new List<Type>();
         private readonly List<Type> _customDirectives = new List<Type>();
@@ -34,11 +37,13 @@ namespace Typin
         //Exceptions
         private ICliExceptionHandler? _exceptionHandler;
 
-        // Console
+        //Console
         private IConsole? _console;
 
         //Dependency injection
-        private readonly ServiceCollection _serviceCollection = new ServiceCollection();
+        private IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
+        private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
+        private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
         //Interactive mode settings
         private bool _useInteractiveMode = false;
@@ -56,8 +61,12 @@ namespace Typin
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
             _customDirectives.Add(directiveType);
-            _serviceCollection.TryAddTransient(directiveType);
-            _serviceCollection.AddTransient(typeof(IDirective), directiveType);
+
+            _configureServicesActions.Add(services =>
+            {
+                services.TryAddTransient(directiveType);
+                services.AddTransient(typeof(IDirective), directiveType);
+            });
 
             return this;
         }
@@ -123,8 +132,12 @@ namespace Typin
         public CliApplicationBuilder AddCommand(Type commandType)
         {
             _commandTypes.Add(commandType);
-            _serviceCollection.TryAddTransient(commandType);
-            _serviceCollection.AddTransient(typeof(ICommand), commandType);
+
+            _configureServicesActions.Add(services =>
+            {
+                services.TryAddTransient(commandType);
+                services.AddTransient(typeof(ICommand), commandType);
+            });
 
             return this;
         }
@@ -336,6 +349,8 @@ namespace Typin
         #endregion
 
         #region Configuration
+        //TODO add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
         /// <summary>
         /// Configures application services.
         /// </summary>
@@ -351,7 +366,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder ConfigureServices(Action<IServiceCollection> action)
         {
-            action.Invoke(_serviceCollection);
+            _configureServicesActions.Add(action);
 
             return this;
         }
@@ -363,11 +378,36 @@ namespace Typin
             where T : class, ICliStartup, new()
         {
             ICliStartup t = new T();
-            t.ConfigureServices(_serviceCollection);
+            _configureServicesActions.Add(t.ConfigureServices);
             t.Configure(this);
 
             return this;
         }
+
+        /*
+         * https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+        /// <summary>
+        /// Overrides the factory used to create the service provider.
+        /// </summary>
+        public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+        {
+            _serviceProviderFactory = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Enables configuring the instantiated dependency container. This can be called multiple times and
+        /// the results will be additive.
+        /// </summary>
+        public CliApplicationBuilder ConfigureContainer<TContainerBuilder>(Action<TContainerBuilder> configureDelegate)
+        {
+            _configureContainerActions.Add(new ConfigureContainerAdapter<TContainerBuilder>(configureDelegate
+                ?? throw new ArgumentNullException(nameof(configureDelegate))));
+
+            return this;
+        }
+        */
         #endregion
 
         #region Middleware
@@ -376,8 +416,12 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
-            _serviceCollection.AddSingleton(typeof(IMiddleware), middleware);
-            _serviceCollection.AddSingleton(middleware);
+            _configureServicesActions.Add(services =>
+            {
+                services.AddSingleton(typeof(IMiddleware), middleware);
+                services.AddSingleton(middleware);
+            });
+
             _middlewareTypes.AddFirst(middleware);
 
             return this;
@@ -399,6 +443,11 @@ namespace Typin
         /// </summary>
         public CliApplication Build()
         {
+            if (_cliApplicationBuilt)
+                throw new InvalidOperationException("Build can only be called once.");
+
+            _cliApplicationBuilt = true;
+
             // Set default values
             _title ??= TryGetDefaultTitle() ?? "App";
             _executableName ??= TryGetDefaultExecutableName() ?? "app";
@@ -424,6 +473,9 @@ namespace Typin
                 });
             }
 
+            // Add core middlewares
+            UseMiddleware<CommandExecution>();
+
             // Create context
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
             var configuration = new ApplicationConfiguration(_commandTypes,
@@ -432,19 +484,10 @@ namespace Typin
                                                              _useInteractiveMode,
                                                              _useAdvancedInput);
 
+            var _serviceCollection = new ServiceCollection();
             CliContext cliContext = new CliContext(metadata, configuration, _serviceCollection, _console);
 
-            //TODO: check how to use other DI containers like AutoFac
-            // Add core services
-            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
-            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
-            _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
-            _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
-
-            // Add core middlewares
-            UseMiddleware<CommandExecution>();
-
-            ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
+            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection, metadata, configuration, cliContext);
 
             // Create application instance
             if (_useInteractiveMode)
@@ -457,6 +500,31 @@ namespace Typin
             }
 
             return new CliApplication(_middlewareTypes, serviceProvider, cliContext);
+        }
+
+        private IServiceProvider CreateServiceProvider(ServiceCollection services, ApplicationMetadata metadata, ApplicationConfiguration configuration, CliContext cliContext)
+        {
+            // Add core services
+            services.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
+            services.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
+            services.AddSingleton(typeof(ICliContext), (provider) => cliContext);
+            services.AddSingleton(typeof(IConsole), (provider) => _console);
+
+            foreach (Action<IServiceCollection> configureServicesAction in _configureServicesActions)
+            {
+                configureServicesAction(services);
+            }
+
+            object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
+
+            foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
+            {
+                containerAction.ConfigureContainer(containerBuilder);
+            }
+
+            IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
+
+            return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");
         }
     }
 

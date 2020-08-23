@@ -28,6 +28,23 @@
         }
 
         [Fact]
+        public void Application_can_be_build_only_once()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommandsFromThisAssembly();
+
+            // Act
+            Action act = () =>
+            {
+                builder.Build();
+                builder.Build();
+            };
+
+            // Assert
+            act.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
         public void Application_in_normal_mode_can_be_created_with_a_custom_configuration()
         {
             // Act
