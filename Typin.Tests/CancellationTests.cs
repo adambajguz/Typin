@@ -30,7 +30,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(CancellableCommand.CancellationOutputText);
         }
     }

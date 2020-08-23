@@ -37,7 +37,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithStringArrayOptionCommand>();
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);;
 
             commandInstance.Should().BeEquivalentTo(new WithStringArrayOptionCommand
             {
@@ -63,7 +63,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -87,7 +87,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -111,7 +111,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -137,7 +137,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);;
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
             {
@@ -165,7 +165,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -189,7 +189,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -213,7 +213,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -237,7 +237,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());

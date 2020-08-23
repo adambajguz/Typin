@@ -95,6 +95,35 @@
         }
 
         [Fact]
+        public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands_even_if_supports_interactive_mode_but_is_not_started()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            // Act
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .AddCommand<NamedInteractiveOnlyCommand>()
+                                                 .UseConsole(console)
+                                                 .UseInteractiveMode()
+                                                 .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "named-interactive-only" }, new Dictionary<string, string>());
+
+            // Asert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this is a application is not running in this mode.");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
         public async Task Application_can_be_created_and_executed_with_benchmark_commands()
         {
             // Arrange
@@ -132,7 +161,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -153,7 +182,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -174,7 +203,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -196,7 +225,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -218,7 +247,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -239,7 +268,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -260,7 +289,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -281,7 +310,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -302,7 +331,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -323,7 +352,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -344,7 +373,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -365,7 +394,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -386,7 +415,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -407,7 +436,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -428,7 +457,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -449,7 +478,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);;
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());

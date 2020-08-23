@@ -34,7 +34,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(DefaultCommand.ExpectedOutputText);
 
             _output.WriteLine(stdOut.GetString());
@@ -57,7 +57,7 @@
             int exitCode = await application.RunAsync(new[] { "named" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedCommand.ExpectedOutputText);
 
             _output.WriteLine(stdOut.GetString());
@@ -80,7 +80,7 @@
             int exitCode = await application.RunAsync(new[] { "named", "sub" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedSubCommand.ExpectedOutputText);
 
             _output.WriteLine(stdOut.GetString());
@@ -103,7 +103,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
 
             _output.WriteLine(stdOut.GetString());
@@ -126,7 +126,7 @@
             int exitCode = await application.RunAsync(new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Default command description",
                 "Usage"
@@ -152,7 +152,7 @@
             int exitCode = await application.RunAsync(new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
 
             _output.WriteLine(stdOut.GetString());
@@ -175,7 +175,7 @@
             int exitCode = await application.RunAsync(new[] { "named", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named command description",
                 "Usage",
@@ -202,7 +202,7 @@
             int exitCode = await application.RunAsync(new[] { "named", "sub", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named sub command description",
                 "Usage",
@@ -230,7 +230,7 @@
             int exitCode = await application.RunAsync(new[] { "--version" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be("v6.9");
 
             _output.WriteLine(stdOut.GetString());

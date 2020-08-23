@@ -31,7 +31,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "-m", "Kaput" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().BeEmpty();
             stdErr.GetString().Should().ContainAll(
                 "System.Exception:",
@@ -81,7 +81,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().BeEmpty();
             stdErr.GetString().Should().ContainAll(
                 "Typin.Exceptions.CommandException:",
@@ -108,7 +108,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "-m", "Kaput", "--show-help" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Usage",
                 "Options",
@@ -135,7 +135,7 @@
             int exitCode = await application.RunAsync(new[] { "not-a-valid-command", "-r", "foo" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Usage",
                 "Options",

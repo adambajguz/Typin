@@ -100,7 +100,7 @@
             try
             {
                 // Handle directives not supported in normal mode
-                if (!_configuration.IsInteractiveModeAllowed && (input.HasDirective(BuiltInDirectives.Interactive)))
+                if (!_configuration.IsInteractiveModeAllowed && input.IsInteractiveDirectiveSpecified)
                     throw TypinException.InteractiveModeNotSupported();
 
                 if (!await ProcessDefinedDirectives(_cliContext.RootSchema, _cliContext.Input))

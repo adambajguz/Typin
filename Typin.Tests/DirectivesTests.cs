@@ -22,6 +22,34 @@
         }
 
         [Fact]
+        public async Task Normal_mode_application_cannot_process_interactive_directive()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[interactive]" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll("-h", "--help");
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("This application does not support interactive mode.");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
         public async Task Preview_directive_can_be_specified_to_print_provided_arguments_as_they_were_parsed()
         {
             // Arrange
@@ -39,7 +67,8 @@
                 new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
                 "named", "<param>", "[-a]", "[-b]", "[-c]", "[--option \"foo\"]"
             );
@@ -67,7 +96,8 @@
                 new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Be(CustomStopDirective.ExpectedOutput);
         }
 
@@ -91,7 +121,8 @@
                 new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
                 CustomDirective.ExpectedOutput, NamedCommand.ExpectedOutputText
             );
@@ -121,6 +152,7 @@
 
             // Assert
             exitCode.Should().NotBe(0);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
@@ -401,7 +433,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace(); //help
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
 
@@ -431,7 +464,7 @@
         //        new Dictionary<string, string>());
 
         //    // Assert
-        //    exitCode.Should().Be(0);
+        //    exitCode.Should().Be(ExitCodes.Success);
         //    stdOut.GetString().Should().NotContainAll(
         //        "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
         //    );

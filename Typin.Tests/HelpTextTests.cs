@@ -31,7 +31,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Usage",
                 "cmd", "<parama>", "<paramb>", "<paramc...>"
@@ -55,7 +55,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Usage",
                 "cmd", "--opt-a <value>", "--opt-c <values...>", "[options]",
@@ -83,7 +83,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Parameters",
                 "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
@@ -110,7 +110,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Options",
                 "-a|--opt-a", "Environment variable:", "ENV_OPT_A",
@@ -135,7 +135,7 @@
             int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Options",
                 "--obj", "Default: \"42\"",
