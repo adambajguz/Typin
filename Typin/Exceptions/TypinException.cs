@@ -21,14 +21,6 @@
         public bool ShowHelp { get; set; } = true;
 
         /// <summary>
-        /// Initializes an instance of <see cref="TypinException"/>.
-        /// </summary>
-        public TypinException()
-        {
-
-        }
-
-        /// <summary>
         /// Initializes an instance of <see cref="TypinException"/> with a specified error message.
         /// </summary>
         public TypinException(string? message)
