@@ -1,3 +1,7 @@
+### v1.0.1 (23-Aug-2020)
+
+- Removed middleware delegate parameters.
+
 ### v1.0 (23-Aug-2020)
 
 - Added interactive mode `CliInteractiveApplication` and interactive only commands.

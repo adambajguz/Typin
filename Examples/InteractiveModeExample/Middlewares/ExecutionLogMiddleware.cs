@@ -18,7 +18,7 @@
         {
             context.Console.Output.WriteLine($"-- Log Command {_library.GetLibrary().Books.Count}");
 
-            await next(context, cancellationToken);
+            await next();
 
             context.Console.Output.WriteLine("-- Finished Log Command");
         }

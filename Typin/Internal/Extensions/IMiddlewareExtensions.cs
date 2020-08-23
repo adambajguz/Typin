@@ -3,16 +3,16 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal static class ICliMiddlewareExtensions
+    internal static class IMiddlewareExtensions
     {
-        public static CommandPipelineHandlerDelegate PipelineTermination => (context, cancelationToken) => Task.CompletedTask;
+        public static CommandPipelineHandlerDelegate PipelineTermination => () => Task.CompletedTask;
 
         public static CommandPipelineHandlerDelegate Next(this IMiddleware commandMiddleware,
                                                           ICliContext cliContext,
                                                           CommandPipelineHandlerDelegate next,
                                                           CancellationToken cancellationToken)
         {
-            return (c, t) => commandMiddleware.HandleAsync(cliContext, next, cancellationToken);
+            return () => commandMiddleware.HandleAsync(cliContext, next, cancellationToken);
         }
     }
 }

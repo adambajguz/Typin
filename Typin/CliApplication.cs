@@ -65,7 +65,7 @@
         private (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) GetMiddlewarePipeline(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
         {
             CancellationToken cancellationToken = _console.GetCancellationToken();
-            CommandPipelineHandlerDelegate next = ICliMiddlewareExtensions.PipelineTermination;
+            CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
 
             LinkedList<IMiddleware> middlewareComponenets = new LinkedList<IMiddleware>();
             foreach (Type middlewareType in middlewareTypes)
@@ -190,7 +190,7 @@
             using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
             {
                 (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = GetMiddlewarePipeline(serviceScope, _middlewareTypes);
-                await runPipelineAsync(CliContext, _console.GetCancellationToken());
+                await runPipelineAsync();
             }
 
             //TODO: CliContext.BeginExecutionContext() would be more elegant

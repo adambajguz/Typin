@@ -30,7 +30,7 @@
         {
             _cliContext.ExitCode ??= await ExecuteCommand();
 
-            await next(context, cancellationToken);
+            await next();
         }
 
         private ICommand GetCommandInstance(CommandSchema command)

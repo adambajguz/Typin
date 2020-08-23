@@ -12,7 +12,7 @@
             context.Console.Output.WriteLine("-- Handling Command");
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            await next(context, cancellationToken);
+            await next();
 
             stopwatch.Stop();
             context.Console.Output.WriteLine("-- Finished Command after {0} ms", stopwatch.Elapsed.TotalMilliseconds);
