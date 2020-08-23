@@ -38,7 +38,7 @@
             int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
@@ -86,7 +86,7 @@
             int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
@@ -134,7 +134,7 @@
             int exitCode = await app.RunAsync(new string[] { "cmd" }, new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
 
             string[] output = stdOut.GetString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);

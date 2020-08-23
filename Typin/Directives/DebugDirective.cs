@@ -31,6 +31,7 @@
             while (!Debugger.IsAttached)
                 await Task.Delay(100);
 
+            //Replace with an event
             console.WithForegroundColor(ConsoleColor.Green, () =>
                 console.Output.WriteLine($"Debugger attached to PID {processId}."));
         }

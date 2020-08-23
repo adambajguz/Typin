@@ -161,7 +161,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -182,7 +182,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -203,7 +203,7 @@
             int exitCode = await application.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -225,7 +225,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -247,7 +247,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -268,7 +268,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -289,7 +289,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -310,7 +310,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -331,7 +331,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -352,7 +352,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -373,7 +373,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -394,7 +394,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -415,7 +415,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -436,7 +436,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -457,7 +457,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -478,7 +478,7 @@
             int exitCode = await app.RunAsync(Array.Empty<string>());
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());

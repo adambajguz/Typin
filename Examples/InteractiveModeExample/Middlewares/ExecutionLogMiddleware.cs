@@ -5,7 +5,7 @@
     using InteractiveModeExample.Services;
     using Typin;
 
-    public sealed class ExecutionLogMiddleware : ICliMiddleware
+    public sealed class ExecutionLogMiddleware : IMiddleware
     {
         private readonly LibraryService _library;
 

@@ -376,7 +376,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
-            _serviceCollection.AddSingleton(typeof(ICliMiddleware), middleware);
+            _serviceCollection.AddSingleton(typeof(IMiddleware), middleware);
             _serviceCollection.AddSingleton(middleware);
             _middlewareTypes.AddFirst(middleware);
 
@@ -434,6 +434,7 @@ namespace Typin
 
             CliContext cliContext = new CliContext(metadata, configuration, _serviceCollection, _console);
 
+            //TODO: check how to use other DI containers like AutoFac
             // Add core services
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);

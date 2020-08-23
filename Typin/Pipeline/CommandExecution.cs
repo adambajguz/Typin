@@ -13,7 +13,7 @@
     using Typin.Internal;
     using Typin.Schemas;
 
-    internal class CommandExecution : ICliMiddleware
+    internal class CommandExecution : IMiddleware
     {
         private readonly CliContext _cliContext;
         private readonly IServiceProvider _serviceProvider;

@@ -7,7 +7,7 @@
     {
         public static CommandPipelineHandlerDelegate PipelineTermination => (context, cancelationToken) => Task.CompletedTask;
 
-        public static CommandPipelineHandlerDelegate Next(this ICliMiddleware commandMiddleware,
+        public static CommandPipelineHandlerDelegate Next(this IMiddleware commandMiddleware,
                                                           ICliContext cliContext,
                                                           CommandPipelineHandlerDelegate next,
                                                           CancellationToken cancellationToken)

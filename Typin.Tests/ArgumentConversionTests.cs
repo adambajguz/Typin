@@ -41,7 +41,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -69,7 +69,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -97,7 +97,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -125,7 +125,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -153,7 +153,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -181,7 +181,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -209,7 +209,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -237,7 +237,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -265,7 +265,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -293,7 +293,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -321,7 +321,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -349,7 +349,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -377,7 +377,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -405,7 +405,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -433,7 +433,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -461,7 +461,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -489,7 +489,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -517,7 +517,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -545,7 +545,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -573,7 +573,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -601,7 +601,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -629,7 +629,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -657,7 +657,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -685,7 +685,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -713,7 +713,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -741,7 +741,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -769,7 +769,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -797,7 +797,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -825,7 +825,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -853,7 +853,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -881,7 +881,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -909,7 +909,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -937,7 +937,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -965,7 +965,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -993,7 +993,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1021,7 +1021,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1049,7 +1049,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1077,7 +1077,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1105,7 +1105,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1133,7 +1133,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1161,7 +1161,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1189,7 +1189,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1221,7 +1221,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1249,7 +1249,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);;
+            exitCode.Should().Be(ExitCodes.Success);
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
@@ -1275,7 +1275,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -1299,7 +1299,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -1323,7 +1323,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
@@ -1347,7 +1347,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);;
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());

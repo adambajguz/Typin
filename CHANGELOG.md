@@ -1,4 +1,4 @@
-### v1.0 (XX-Aug-2020)
+### v1.0 (23-Aug-2020)
 
 - Added interactive mode `CliInteractiveApplication` and interactive only commands.
 - Added `ICliExceptionHandler` and `CliApplicationBuilder.UseExceptionHandler(...)`
@@ -6,7 +6,7 @@
 - Added `CliContext` that can be injected to services and commands with DI.
 - Added `WindowWidth`, `WindowHeight`, `BufferWidth`, and `BufferHeight` to `IConsole`.
 - Added new demo apps and improved existing demo.
-- Added `"Debugger attached to PID {processId}.` message after debugger attachment.
+- Added `Debugger attached to PID {processId}.` message after debugger attachment.
 - Added benchmarks for multiple commands.
 - Added startup message option with macros.
 - Rewritten `RootSchema` with HashSet for faster execution, esspecially in interactive mode.

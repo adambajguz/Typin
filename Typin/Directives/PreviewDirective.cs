@@ -22,7 +22,7 @@
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        public PreviewDirective(ICliContext cliContext) //TODO: use Microsoft.Extensions.depenedcyInjection by default or resolve ICliContext
+        public PreviewDirective(ICliContext cliContext)
         {
             _cliContext = cliContext;
         }

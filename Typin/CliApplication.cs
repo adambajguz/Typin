@@ -62,15 +62,15 @@
             _middlewareTypes = middlewareTypes;
         }
 
-        private (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) GetMiddlewarePipeline(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
+        private (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) GetMiddlewarePipeline(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
         {
             CancellationToken cancellationToken = _console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = ICliMiddlewareExtensions.PipelineTermination;
 
-            LinkedList<ICliMiddleware> middlewareComponenets = new LinkedList<ICliMiddleware>();
+            LinkedList<IMiddleware> middlewareComponenets = new LinkedList<IMiddleware>();
             foreach (Type middlewareType in middlewareTypes)
             {
-                ICliMiddleware instance = (ICliMiddleware)serviceScope.ServiceProvider.GetRequiredService(middlewareType);
+                IMiddleware instance = (IMiddleware)serviceScope.ServiceProvider.GetRequiredService(middlewareType);
                 next = instance.Next(CliContext, next, cancellationToken);
 
                 middlewareComponenets.AddFirst(instance);
@@ -189,7 +189,7 @@
             // Create service scope
             using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
             {
-                (LinkedList<ICliMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = GetMiddlewarePipeline(serviceScope, _middlewareTypes);
+                (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = GetMiddlewarePipeline(serviceScope, _middlewareTypes);
                 await runPipelineAsync(CliContext, _console.GetCancellationToken());
             }
 

@@ -20,7 +20,7 @@
         /// <summary>
         /// Middleware instance.
         /// </summary>
-        public ICliMiddleware Instance { get; }
+        public IMiddleware Instance { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
@@ -30,7 +30,7 @@
                                        CommandPipelineHandlerDelegate next)
         {
             Type = type;
-            Instance = (ICliMiddleware)serviceProvider.GetRequiredService(Type);
+            Instance = (IMiddleware)serviceProvider.GetRequiredService(Type);
             _next = next;
         }
 
