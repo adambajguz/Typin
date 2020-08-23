@@ -23,10 +23,11 @@
         public async Task Application_can_be_created_and_executed_with_benchmark_default_command()
         {
             // Arrange
-            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .UseConsole(console)
                                                  .Build();
 
             // Assert
@@ -45,11 +46,12 @@
         public async Task Application_with_interactive_mode_can_be_created_and_executed_in_normal_mode_with_benchmark_default_command()
         {
             // Arrange
-            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
                                                  .UseInteractiveMode()
+                                                 .UseConsole(console)
                                                  .Build();
 
             // Assert
@@ -65,14 +67,43 @@
         }
 
         [Fact]
+        public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            // Act
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                 .AddCommand<NamedInteractiveOnlyCommand>()
+                                                 .UseConsole(console)
+                                                 .Build();
+
+            // Assert
+            app.Should().NotBeNull();
+
+            // Act
+            int exitCode = await app.RunAsync(new string[] { "named-interactive-only" }, new Dictionary<string, string>());
+
+            // Asert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this is a application is using CliApplication.");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
         public async Task Application_can_be_created_and_executed_with_benchmark_commands()
         {
             // Arrange
-            var (_, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
             var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
                                                  .AddCommand<BenchmarkNamedCommand>()
+                                                 .UseConsole(console)
                                                  .Build();
 
             // Assert

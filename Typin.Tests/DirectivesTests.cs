@@ -329,31 +329,86 @@
             _output.WriteLine(stdErr.GetString());
         }
 
-        //[Fact]
-        //public async Task Custom_directive_should_not_be_abstract()
-        //{
-        //    // Arrange
-        //    var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+        [Fact]
+        public async Task Custom_directive_should_have_non_empty_name()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
-        //    var application = new CliApplicationBuilder()
-        //        .AddCommand<NamedCommand>()
-        //        .UseConsole(console)
-        //        .AddDirective<AbstractDirective>()
-        //        .Build();
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<EmptyNameDirective>()
+                .Build();
 
-        //    // Act
-        //    int exitCode = await application.RunAsync(
-        //        new[] { "[invalid-abstract]", "named", "param", "-abc", "--option", "foo" },
-        //        new Dictionary<string, string>());
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
 
-        //    // Assert
-        //    exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
-        //    stdOut.GetString().Should().BeNullOrWhiteSpace();
-        //    stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("[  ]");
 
-        //    _output.WriteLine(stdOut.GetString());
-        //    _output.WriteLine(stdErr.GetString());
-        //}
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_directive_should_be_registered_to_be_used()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("Unknown directive '[preview]'.");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Interactive_only_directive_cannot_be_executed_in_normal_mode()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace(); //help
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
 
         //[Fact]
         //public async Task Custom_interactive_directive_should_run_in_interactive_mode()
