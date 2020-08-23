@@ -40,10 +40,6 @@
             console.BackgroundColor = ConsoleColor.DarkMagenta;
 
             // Assert
-            console.IsInputRedirected.Should().BeFalse();
-            console.IsOutputRedirected.Should().BeTrue(because: "this is text context");
-            console.IsErrorRedirected.Should().BeTrue(because: "this is text context");
-
             console.ForegroundColor.Should().Be(Console.ForegroundColor);
             console.BackgroundColor.Should().Be(Console.BackgroundColor);
         }
