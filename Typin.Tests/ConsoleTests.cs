@@ -41,8 +41,8 @@
 
             // Assert
             console.IsInputRedirected.Should().BeFalse();
-            console.IsOutputRedirected.Should().BeTrue(); // true in tests
-            console.IsErrorRedirected.Should().BeTrue(); // true in tests
+            console.IsOutputRedirected.Should().BeTrue(because: "this is text context");
+            console.IsErrorRedirected.Should().BeTrue(because: "this is text context");
 
             console.ForegroundColor.Should().Be(Console.ForegroundColor);
             console.BackgroundColor.Should().Be(Console.BackgroundColor);
@@ -96,12 +96,6 @@
 
             console.ForegroundColor.Should().NotBe(Console.ForegroundColor);
             console.BackgroundColor.Should().NotBe(Console.BackgroundColor);
-            //console.CursorLeft.Should().NotBe(Console.CursorLeft);
-            //console.CursorTop.Should().NotBe(Console.CursorTop);
-            //console.BufferHeight.Should().NotBe(Console.BufferHeight);
-            //console.BufferWidth.Should().NotBe(Console.BufferWidth);
-            //console.WindowWidth.Should().NotBe(Console.WindowWidth);
-            //console.WindowHeight.Should().NotBe(Console.WindowWidth);
         }
     }
 }
