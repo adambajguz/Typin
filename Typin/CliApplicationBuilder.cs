@@ -41,7 +41,7 @@ namespace Typin
         private IConsole? _console;
 
         //Dependency injection
-        private readonly IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
+        private IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
         private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
@@ -310,7 +310,9 @@ namespace Typin
         /// If you wish to add only [default] directive, set addScopeDirectives to false.
         /// If you wish to disable history and auto completion set useAdvancedInput to false.
         /// </summary>
-        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true, bool useAdvancedInput = true)
+        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
+                                                        bool useAdvancedInput = true,
+                                                        Dictionary<string, Action>? advancedInputHotkeys = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -323,6 +325,8 @@ namespace Typin
                 AddDirective<ScopeResetDirective>();
                 AddDirective<ScopeUpDirective>();
             }
+
+            advancedInputHotkeys ??= new Dictionary<string, Action>();
 
             return this;
         }
@@ -384,8 +388,9 @@ namespace Typin
             return this;
         }
 
-        /*
-         * https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
+        //https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
         /// <summary>
         /// Overrides the factory used to create the service provider.
         /// </summary>
@@ -407,7 +412,6 @@ namespace Typin
 
             return this;
         }
-        */
         #endregion
 
         #region Middleware
