@@ -27,7 +27,8 @@
                                          IServiceProvider serviceProvider,
                                          CliContext cliContext,
                                          ConsoleColor promptForeground,
-                                         ConsoleColor commandForeground) :
+                                         ConsoleColor commandForeground,
+                                         Dictionary<ShortcutDefinition, Action> userDefinedShortcut) :
             base(middlewareTypes, serviceProvider, cliContext)
         {
             _promptForeground = promptForeground;
@@ -35,7 +36,7 @@
 
             if (cliContext.Configuration.IsAdvancedInputAllowed)
             {
-                _autoCompleteInput = new AutoCompleteInput(cliContext.Console)
+                _autoCompleteInput = new AutoCompleteInput(cliContext.Console, userDefinedShortcut)
                 {
                     AutoCompletionHandler = new AutoCompletionHandler(cliContext),
                 };

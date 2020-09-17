@@ -8,6 +8,7 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
@@ -50,6 +51,7 @@ namespace Typin
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
+        private Dictionary<ShortcutDefinition, Action>? _advancedInputHotkeys;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -312,7 +314,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
                                                         bool useAdvancedInput = true,
-                                                        Dictionary<string, Action>? advancedInputHotkeys = null)
+                                                        Dictionary<ShortcutDefinition, Action>? advancedInputHotkeys = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -326,7 +328,7 @@ namespace Typin
                 AddDirective<ScopeUpDirective>();
             }
 
-            advancedInputHotkeys ??= new Dictionary<string, Action>();
+            _advancedInputHotkeys = advancedInputHotkeys;
 
             return this;
         }
@@ -496,11 +498,14 @@ namespace Typin
             // Create application instance
             if (_useInteractiveMode)
             {
+                _advancedInputHotkeys ??= new Dictionary<ShortcutDefinition, Action>();
+
                 return new InteractiveCliApplication(_middlewareTypes,
                                                      serviceProvider,
                                                      cliContext,
                                                      _promptForeground,
-                                                     _commandForeground);
+                                                     _commandForeground,
+                                                     _advancedInputHotkeys);
             }
 
             return new CliApplication(_middlewareTypes, serviceProvider, cliContext);

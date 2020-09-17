@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
     using Typin.Console;
+    using Typin.Exceptions;
 
     internal sealed class KeyHandler
     {
@@ -67,13 +68,31 @@
         /// <summary>
         /// Initializes an instance of <see cref="KeyHandler"/>.
         /// </summary>
-        public KeyHandler(IConsole console, Dictionary<string, Action> actions) :
+        public KeyHandler(IConsole console,
+                          Dictionary<string, Action> actions,
+                          Dictionary<ShortcutDefinition, Action>? userDefinedShortcut = null) :
             this(console)
         {
             foreach (KeyValuePair<string, Action> action in actions)
+            {
                 if (!_keyActions.TryAdd(action.Key, action.Value))
-                    //Replace when alreadey exists
+                {
+                    //Replace when already exists
                     _keyActions[action.Key] = action.Value;
+                }
+            }
+
+            if (userDefinedShortcut != null)
+            {
+                foreach (KeyValuePair<ShortcutDefinition, Action> shortcut in userDefinedShortcut)
+                {
+                    if (!_keyActions.TryAdd(shortcut.Key.ToString(), shortcut.Value))
+                    {
+                        //Throw an error when already exists
+                        throw TypinException.DuplicatdShortcut(shortcut.Key);
+                    }
+                }
+            }
         }
 
         /// <summary>

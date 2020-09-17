@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Attributes;
+    using Typin.AutoCompletion;
     using Typin.Input;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
@@ -50,6 +51,14 @@
     // Provide more diagnostic information here
     public partial class TypinException
     {
+        internal static TypinException DuplicatdShortcut(ShortcutDefinition definition)
+        {
+            var message = $@"
+Shortcut '{definition.Modifiers}+{definition.Key}' is already used by Typin.";
+
+            return new TypinException(message.Trim());
+        }
+
         internal static TypinException InvalidCommandType(Type type)
         {
             var message = $@"

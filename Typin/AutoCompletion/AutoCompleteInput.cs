@@ -23,7 +23,8 @@
         /// <summary>
         /// Initializes an instance of <see cref="AutoCompleteInput"/>.
         /// </summary>
-        public AutoCompleteInput(IConsole console)
+        public AutoCompleteInput(IConsole console,
+                                 Dictionary<ShortcutDefinition, Action>? userDefinedShortcut = null)
         {
             _console = console;
             History = new InputHistoryProvider();
@@ -73,7 +74,7 @@
                 }
             };
 
-            _keyHandler = new KeyHandler(console, keyActions);
+            _keyHandler = new KeyHandler(console, keyActions, userDefinedShortcut);
         }
 
         public string ReadLine()
