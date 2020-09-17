@@ -3,7 +3,7 @@
     internal interface IAutoCompletionHandler
     {
         /// <summary>
-        /// Chharacters to start completion from.
+        /// Characters to start completion from.
         /// </summary>
         char[] Separators { get; set; }
 
