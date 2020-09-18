@@ -232,9 +232,11 @@
             bool test = false;
 
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(_console, new Dictionary<ShortcutDefinition, Action>
+            AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
             {
-                { new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control), () => { test = true; } }
+                new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { test = true; }),
+                new ShortcutDefinition(ConsoleKey.B, ConsoleModifiers.Control, () => { test = true; }),
+                new ShortcutDefinition(ConsoleKey.B, () => { test = true; }),
             })
             {
                 AutoCompletionHandler = new TestAutoCompleteHandler()
@@ -256,10 +258,10 @@
             // Arrange
             Action act = () =>
             {
-                AutoCompleteInput input = new AutoCompleteInput(_console, new Dictionary<ShortcutDefinition, Action>
+                AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
                 {
-                    { new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control), () => { } },
-                    { new ShortcutDefinition(ConsoleKey.Delete), () => { } }
+                    new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { }),
+                    new ShortcutDefinition(ConsoleKey.Delete, () => { }),
                 })
                 {
                     AutoCompletionHandler = new TestAutoCompleteHandler()

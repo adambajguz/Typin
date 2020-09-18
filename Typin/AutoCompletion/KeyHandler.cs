@@ -70,7 +70,7 @@
         /// </summary>
         public KeyHandler(IConsole console,
                           Dictionary<string, Action> actions,
-                          Dictionary<ShortcutDefinition, Action>? userDefinedShortcut = null) :
+                          HashSet<ShortcutDefinition>? userDefinedShortcut = null) :
             this(console)
         {
             foreach (KeyValuePair<string, Action> action in actions)
@@ -84,12 +84,12 @@
 
             if (userDefinedShortcut != null)
             {
-                foreach (KeyValuePair<ShortcutDefinition, Action> shortcut in userDefinedShortcut)
+                foreach (ShortcutDefinition shortcut in userDefinedShortcut)
                 {
-                    if (!_keyActions.TryAdd(shortcut.Key.ToString(), shortcut.Value))
+                    if (!_keyActions.TryAdd(shortcut.ToString(), shortcut.Action))
                     {
                         //Throw an error when already exists
-                        throw TypinException.DuplicatedShortcut(shortcut.Key);
+                        throw TypinException.DuplicatedShortcut(shortcut);
                     }
                 }
             }

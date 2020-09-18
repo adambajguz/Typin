@@ -24,7 +24,7 @@
         /// Initializes an instance of <see cref="AutoCompleteInput"/>.
         /// </summary>
         public AutoCompleteInput(IConsole console,
-                                 Dictionary<ShortcutDefinition, Action>? userDefinedShortcut = null)
+                                 HashSet<ShortcutDefinition>? userDefinedShortcut = null)
         {
             _console = console;
             History = new InputHistoryProvider();

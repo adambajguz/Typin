@@ -51,7 +51,7 @@ namespace Typin
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
-        private Dictionary<ShortcutDefinition, Action>? _advancedInputHotkeys;
+        private HashSet<ShortcutDefinition>? _advancedInputHotkeys;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -314,7 +314,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
                                                         bool useAdvancedInput = true,
-                                                        Dictionary<ShortcutDefinition, Action>? advancedInputHotkeys = null)
+                                                        HashSet<ShortcutDefinition>? advancedInputHotkeys = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -498,7 +498,7 @@ namespace Typin
             // Create application instance
             if (_useInteractiveMode)
             {
-                _advancedInputHotkeys ??= new Dictionary<ShortcutDefinition, Action>();
+                _advancedInputHotkeys ??= new HashSet<ShortcutDefinition>();
 
                 return new InteractiveCliApplication(_middlewareTypes,
                                                      serviceProvider,

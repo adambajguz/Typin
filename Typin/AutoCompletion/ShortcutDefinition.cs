@@ -10,10 +10,21 @@
         /// <summary>
         /// Initializes an instance of <see cref="ShortcutDefinition"/>.
         /// </summary>
-        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers = 0)
+        public ShortcutDefinition(ConsoleKey key, Action action)
+        {
+            Key = key;
+            Modifiers = 0;
+            Action = action;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
+        /// </summary>
+        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers, Action action)
         {
             Key = key;
             Modifiers = modifiers;
+            Action = action;
         }
 
         /// <summary>
@@ -26,6 +37,11 @@
         /// </summary>
         public ConsoleModifiers Modifiers { get; }
 
+        /// <summary>
+        /// An action associated with the shortcut.
+        /// </summary>
+        public Action Action { get; }
+
         /// <inheritdoc/>
         public static bool operator ==(ShortcutDefinition left, ShortcutDefinition right)
         {
@@ -35,7 +51,7 @@
         /// <inheritdoc/>
         public static bool operator !=(ShortcutDefinition left, ShortcutDefinition right)
         {
-            return !(left == right);
+            return !left.Equals(right);
         }
 
         /// <inheritdoc/>

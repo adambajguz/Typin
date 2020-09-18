@@ -28,7 +28,7 @@
                                          CliContext cliContext,
                                          ConsoleColor promptForeground,
                                          ConsoleColor commandForeground,
-                                         Dictionary<ShortcutDefinition, Action> userDefinedShortcut) :
+                                         HashSet<ShortcutDefinition> userDefinedShortcut) :
             base(middlewareTypes, serviceProvider, cliContext)
         {
             _promptForeground = promptForeground;
