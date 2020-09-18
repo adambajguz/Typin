@@ -29,49 +29,47 @@
             _console = console;
             History = new InputHistoryProvider();
 
-            // TODO: allow user to add custom shortcuts
-            var keyActions = new Dictionary<string, Action>
+            var keyActions = new HashSet<ShortcutDefinition>
             {
                 // History
-                ["UpArrow"] = () =>
+                new ShortcutDefinition(ConsoleKey.UpArrow, () =>
                 {
                     if (History.SelectionUp())
                     {
                         _keyHandler.ClearLine();
                         _keyHandler.Write(History.GetSelection());
                     }
-                },
-                ["DownArrow"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.DownArrow, () =>
                 {
-                    if (History.SelectionDown())
+                  if (History.SelectionDown())
                     {
                         _keyHandler.ClearLine();
                         _keyHandler.Write(History.GetSelection());
                     }
-                },
+                }),
 
                 // AutoComplete
-                ["Tab"] = () =>
+                new ShortcutDefinition(ConsoleKey.Tab, () =>
                 {
                     if (IsInAutoCompleteMode)
                         NextAutoComplete();
                     else
                         InitAutoComplete();
-                },
-                ["ShiftTab"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.Tab, ConsoleModifiers.Shift, () =>
                 {
                     if (IsInAutoCompleteMode)
                         PreviousAutoComplete();
                     else
                         InitAutoComplete(true);
-                },
-
-                ["Escape"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.Escape, () =>
                 {
                     _keyHandler.ClearLine();
                     History.ResetSelection();
                     ResetAutoComplete();
-                }
+                })
             };
 
             _keyHandler = new KeyHandler(console, keyActions, userDefinedShortcut);

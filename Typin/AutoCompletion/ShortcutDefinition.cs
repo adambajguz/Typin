@@ -72,7 +72,7 @@
             if (Modifiers == 0)
                 return Key.ToString();
 
-            return Modifiers.ToString() + Key.ToString();
+            return string.Concat(Modifiers, Key);
         }
     }
 }

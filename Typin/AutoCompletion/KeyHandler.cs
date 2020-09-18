@@ -69,16 +69,17 @@
         /// Initializes an instance of <see cref="KeyHandler"/>.
         /// </summary>
         public KeyHandler(IConsole console,
-                          Dictionary<string, Action> actions,
+                          HashSet<ShortcutDefinition> internalShortcuts,
                           HashSet<ShortcutDefinition>? userDefinedShortcut = null) :
             this(console)
         {
-            foreach (KeyValuePair<string, Action> action in actions)
+            foreach (ShortcutDefinition shortcut in internalShortcuts)
             {
-                if (!_keyActions.TryAdd(action.Key, action.Value))
+                string key = shortcut.ToString();
+                if (!_keyActions.TryAdd(key, shortcut.Action))
                 {
                     //Replace when already exists
-                    _keyActions[action.Key] = action.Value;
+                    _keyActions[shortcut.ToString()] = shortcut.Action;
                 }
             }
 
@@ -118,8 +119,7 @@
 
         private string BuildKeyInput(ConsoleKeyInfo keyInfo)
         {
-            if (keyInfo.Modifiers != ConsoleModifiers.Control &&
-                keyInfo.Modifiers != ConsoleModifiers.Shift)
+            if (keyInfo.Modifiers == 0)
                 return keyInfo.Key.ToString();
 
             return string.Concat(keyInfo.Modifiers.ToString(), keyInfo.Key.ToString());
