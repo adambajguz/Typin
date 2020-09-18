@@ -51,7 +51,7 @@
     // Provide more diagnostic information here
     public partial class TypinException
     {
-        internal static TypinException DuplicatdShortcut(ShortcutDefinition definition)
+        internal static TypinException DuplicatedShortcut(ShortcutDefinition definition)
         {
             var message = $@"
 Shortcut '{definition.Modifiers}+{definition.Key}' is already used by Typin.";

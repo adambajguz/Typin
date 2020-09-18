@@ -89,7 +89,7 @@
                     if (!_keyActions.TryAdd(shortcut.Key.ToString(), shortcut.Value))
                     {
                         //Throw an error when already exists
-                        throw TypinException.DuplicatdShortcut(shortcut.Key);
+                        throw TypinException.DuplicatedShortcut(shortcut.Key);
                     }
                 }
             }

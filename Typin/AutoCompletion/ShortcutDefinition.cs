@@ -10,7 +10,7 @@
         /// <summary>
         /// Initializes an instance of <see cref="ShortcutDefinition"/>.
         /// </summary>
-        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers)
+        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers = 0)
         {
             Key = key;
             Modifiers = modifiers;
@@ -53,6 +53,9 @@
         /// <inheritdoc/>
         public override string ToString()
         {
+            if (Modifiers == 0)
+                return Key.ToString();
+
             return Modifiers.ToString() + Key.ToString();
         }
     }
