@@ -2,14 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Typin.Console;
-    using Typin.Extensions;
 
     internal class AutoCompleteInput
     {
         private readonly IConsole _console;
-        private readonly KeyHandler _keyHandler;
+        private readonly LineInputHandler _lineInputHandler;
 
         public InputHistoryProvider History { get; }
         public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
@@ -36,16 +34,16 @@
                 {
                     if (History.SelectionUp())
                     {
-                        _keyHandler.ClearLine();
-                        _keyHandler.Write(History.GetSelection());
+                        _lineInputHandler.ClearLine();
+                        _lineInputHandler.Write(History.GetSelection());
                     }
                 }),
                 new ShortcutDefinition(ConsoleKey.DownArrow, () =>
                 {
-                  if (History.SelectionDown())
+                    if (History.SelectionDown())
                     {
-                        _keyHandler.ClearLine();
-                        _keyHandler.Write(History.GetSelection());
+                        _lineInputHandler.ClearLine();
+                        _lineInputHandler.Write(History.GetSelection());
                     }
                 }),
 
@@ -66,32 +64,23 @@
                 }),
                 new ShortcutDefinition(ConsoleKey.Escape, () =>
                 {
-                    _keyHandler.ClearLine();
+                    _lineInputHandler.ClearLine();
                     History.ResetSelection();
                     ResetAutoComplete();
                 })
             };
 
-            _keyHandler = new KeyHandler(console, keyActions, userDefinedShortcut);
+            _lineInputHandler = new LineInputHandler(console, keyActions, userDefinedShortcut);
         }
 
+
+        /// <summary>
+        /// Reads a line from input.
+        /// </summary>
         public string ReadLine()
         {
-            //Get line
-            {
-                ConsoleKeyInfo keyInfo;
-                do
-                {
-                    keyInfo = _console.ReadKey(true);
-                    _keyHandler.Handle(keyInfo);
+            string text = _lineInputHandler.ReadLine();
 
-                } while (keyInfo.Key != ConsoleKey.Enter);
-
-                _console.Output.WriteLine();
-            }
-
-            string text = _keyHandler.Text.TrimEnd('\n', '\r');
-            _keyHandler.Reset();
             ResetAutoComplete();
 
             if (History.IsEnabled)
@@ -103,20 +92,13 @@
             return text;
         }
 
+        /// <summary>
+        /// Reads a line from array.
+        /// </summary>
         public string ReadLine(params ConsoleKeyInfo[] line)
         {
-            foreach (var keyInfo in line)
-            {
-                _keyHandler.Handle(keyInfo);
-            }
+            string text = _lineInputHandler.ReadLine(line);
 
-            if (line.LastOrDefault().Key != ConsoleKey.Enter)
-                _keyHandler.Handle(ConsoleKeyInfoExtensions.Enter);
-
-            _console.Output.WriteLine();
-
-            string text = _keyHandler.Text.TrimEnd('\n', '\r');
-            _keyHandler.Reset();
             ResetAutoComplete();
 
             if (History.IsEnabled)
@@ -130,10 +112,10 @@
 
         private void InitAutoComplete(bool fromEnd = false)
         {
-            if (AutoCompletionHandler is null || !_keyHandler.IsEndOfLine)
+            if (AutoCompletionHandler is null || !_lineInputHandler.IsEndOfLine)
                 return;
 
-            string text = _keyHandler.Text;
+            string text = _lineInputHandler.Text;
 
             _completionStart = text.LastIndexOfAny(AutoCompletionHandler.Separators);
             _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
@@ -144,31 +126,31 @@
                 return;
 
             //StartAutoComplete;
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             _completionsIndex = fromEnd ? _completions.Length - 1 : 0;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void NextAutoComplete()
         {
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             if (++_completionsIndex == _completions.Length)
                 _completionsIndex = 0;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void PreviousAutoComplete()
         {
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             if (--_completionsIndex == -1)
                 _completionsIndex = _completions.Length - 1;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void ResetAutoComplete()

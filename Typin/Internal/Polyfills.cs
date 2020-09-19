@@ -3,6 +3,8 @@
 // Polyfills to bridge the missing APIs in older versions of the framework/standard.
 
 #if NETSTANDARD2_0
+using System.Linq;
+
 namespace System
 {
     using Linq;
@@ -53,6 +55,19 @@ namespace System.Collections.Generic
                 dic.Add(key, value);
                 return true;
             }
+
+            return false;
+        }
+
+        public static bool TryGetValue<T>(this HashSet<T> hashSet, T equalValue, out T actualValue)
+        {
+            if (!hashSet.Contains(equalValue))
+            {
+                actualValue = hashSet.Where(x => x.Equals(equalValue)).Single();
+                return true;
+            }
+
+            actualValue = default;
 
             return false;
         }
