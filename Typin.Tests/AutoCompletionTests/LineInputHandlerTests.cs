@@ -34,29 +34,27 @@
             // Arrange
             LineInputHandler handler = new LineInputHandler(_console);
 
-            "Hello".Select(c => c.ToConsoleKeyInfo())
-                   .ToList()
-                   .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = "Hello".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
 
             return handler;
         }
 
         [Fact]
-        internal void TestWriteChar()
+        public void TestWriteChar()
         {
             // Arrange
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Assert
-            handler.Text.Should().Be("Hello");
+            handler.CurrentInput.Should().Be("Hello");
 
             // Act
-            " World".Select(c => c.ToConsoleKeyInfo())
-                    .ToList()
-                    .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
 
             // Assert
-            handler.Text.Should().Be("Hello World");
+            handler.CurrentInput.Should().Be("Hello World");
         }
 
         [Fact]
@@ -66,16 +64,16 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            handler.ReadLine(Backspace);
+            handler.Read(Backspace);
 
             // Assert
-            handler.Text.Should().Be("Hell");
+            handler.CurrentInput.Should().Be("Hell");
 
             // Act
-            handler.ReadLine(Backspace);
+            handler.Read(Backspace);
 
             // Assert
-            handler.Text.Should().Be("Hel");
+            handler.CurrentInput.Should().Be("Hel");
         }
 
         [Fact]
@@ -86,17 +84,17 @@
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+                .ForEach((keyInfo) => handler.Read(keyInfo));
 
             // Assert
-            handler.Text.Should().Be("Hell");
+            handler.CurrentInput.Should().Be("Hell");
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+                .ForEach((keyInfo) => handler.Read(keyInfo));
 
             // Assert
-            handler.Text.Should().Be("Hel");
+            handler.CurrentInput.Should().Be("Hel");
         }
 
         [Fact]
@@ -106,10 +104,10 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            handler.ReadLine(Delete);
+            handler.Read(Delete);
 
             // Assert
-            handler.Text.Should().Be("Hello");
+            handler.CurrentInput.Should().Be("Hello");
         }
 
         [Fact]
@@ -119,11 +117,11 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            new List<ConsoleKeyInfo>() { Home, 'S'.ToConsoleKeyInfo() }
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, 'S'.ToConsoleKeyInfo() };
+            handler.Read(input);
 
             // Assert
-            handler.Text.Should().Be("SHello");
+            handler.CurrentInput.Should().Be("SHello");
         }
 
         [Fact]
@@ -133,11 +131,11 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            new List<ConsoleKeyInfo>() { Home, End, ExclamationPoint }
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, End, ExclamationPoint };
+            handler.Read(input);
 
             // Assert
-            handler.Text.Should().Be("Hello!");
+            handler.CurrentInput.Should().Be("Hello!");
         }
 
         [Fact]
@@ -147,13 +145,13 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            " N".Select(c => c.ToConsoleKeyInfo())
-                .Prepend(LeftArrow)
-                .ToList()
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = " N".Select(c => c.ToConsoleKeyInfo())
+                                         .Prepend(LeftArrow)
+                                         .ToArray();
+            handler.Read(input);
 
             // Assert
-            handler.Text.Should().Be("Hell No");
+            handler.CurrentInput.Should().Be("Hell No");
         }
 
         [Fact]
@@ -163,11 +161,11 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            new List<ConsoleKeyInfo>() { LeftArrow, RightArrow, ExclamationPoint }
-                .ForEach((keyInfo) => handler.ReadLine(keyInfo));
+            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, RightArrow, ExclamationPoint };
+            handler.Read(input);
 
             // Assert
-            handler.Text.Should().Be("Hello!");
+            handler.CurrentInput.Should().Be("Hello!");
         }
 
         public void Dispose()

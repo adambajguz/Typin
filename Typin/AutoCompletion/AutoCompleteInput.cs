@@ -6,17 +6,15 @@
 
     internal class AutoCompleteInput
     {
-        private readonly IConsole _console;
         private readonly LineInputHandler _lineInputHandler;
-
-        public InputHistoryProvider History { get; }
-        public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
-
         private string[] _completions = Array.Empty<string>();
         private int _completionStart;
         private int _completionsIndex;
 
-        public bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+        private bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+
+        public InputHistoryProvider History { get; }
+        public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="AutoCompleteInput"/>.
@@ -24,7 +22,6 @@
         public AutoCompleteInput(IConsole console,
                                  HashSet<ShortcutDefinition>? userDefinedShortcut = null)
         {
-            _console = console;
             History = new InputHistoryProvider();
 
             var keyActions = new HashSet<ShortcutDefinition>
@@ -97,7 +94,7 @@
         /// </summary>
         public string ReadLine(params ConsoleKeyInfo[] line)
         {
-            string text = _lineInputHandler.ReadLine(line);
+            string text = _lineInputHandler.Read(line);
 
             ResetAutoComplete();
 
@@ -115,7 +112,7 @@
             if (AutoCompletionHandler is null || !_lineInputHandler.IsEndOfLine)
                 return;
 
-            string text = _lineInputHandler.Text;
+            string text = _lineInputHandler.CurrentInput;
 
             _completionStart = text.LastIndexOfAny(AutoCompletionHandler.Separators);
             _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;

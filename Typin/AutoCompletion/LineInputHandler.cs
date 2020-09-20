@@ -12,27 +12,47 @@
         private readonly KeyHandler _keyHandler;
         private readonly HashSet<ShortcutDefinition> _shortcuts;
         private readonly StringBuilder _text = new StringBuilder();
-        private bool _isReading;
 
         /// <summary>
         /// Cursor position relative to input.
         /// </summary>
         public int CursorPosition { get; private set; }
 
+        /// <summary>
+        /// Whether input is at the start of line.
+        /// </summary>
         public bool IsStartOfLine => CursorPosition == 0;
+
+        /// <summary>
+        /// Whether input is at the end of line.
+        /// </summary>
         public bool IsEndOfLine => CursorPosition == _text.Length;
+
+        /// <summary>
+        /// Whether input is at the start of console buffer.
+        /// </summary>
         public bool IsEndOfBuffer => _console.CursorLeft == _console.BufferWidth - 1;
+
+        /// <summary>
+        /// Whether text is being read from console (false line reading is finished).
+        /// </summary>
+        public bool IsReading { get; private set; }
 
         /// <summary>
         /// Current input text.
         /// </summary>
-        public string Text => _text.ToString();
+        public string CurrentInput => _text.ToString().TrimEnd('\n', '\r');
+
+        /// <summary>
+        /// Last input text.
+        /// </summary>
+        public string LastInput { get; private set; } = string.Empty;
 
         #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="LineInputHandler"/>.
         /// </summary>
-        public LineInputHandler(IConsole console)
+        private LineInputHandler(IConsole console)
         {
             _console = console;
 
@@ -71,26 +91,29 @@
         /// Initializes an instance of <see cref="LineInputHandler"/>.
         /// </summary>
         public LineInputHandler(IConsole console,
-                                HashSet<ShortcutDefinition> internalShortcuts,
-                                HashSet<ShortcutDefinition>? userDefinedShortcut = null) :
+                                HashSet<ShortcutDefinition>? internalShortcuts = null,
+                                HashSet<ShortcutDefinition>? userDefinedShortcuts = null) :
             this(console)
         {
-            //TODO: maybe hashset is not the best collection
-            //_shortcuts.Union(internalShortcuts);
-            foreach (ShortcutDefinition shortcut in internalShortcuts)
+            if (internalShortcuts != null)
             {
-                if (!_shortcuts.Add(shortcut))
+                //TODO: maybe hashset is not the best collection
+                //_shortcuts.Union(internalShortcuts);
+                foreach (ShortcutDefinition shortcut in internalShortcuts)
                 {
-                    //Replace when already exists
-                    _shortcuts.Remove(shortcut);
-                    _shortcuts.Add(shortcut);
+                    if (!_shortcuts.Add(shortcut))
+                    {
+                        //Replace when already exists
+                        _shortcuts.Remove(shortcut);
+                        _shortcuts.Add(shortcut);
+                    }
                 }
             }
 
-            if (userDefinedShortcut != null)
+            if (userDefinedShortcuts != null)
             {
                 //_shortcuts.Union(userDefinedShortcut);
-                foreach (ShortcutDefinition shortcut in userDefinedShortcut)
+                foreach (ShortcutDefinition shortcut in userDefinedShortcuts)
                 {
                     if (!_shortcuts.Add(shortcut))
                     {
@@ -105,7 +128,14 @@
         #region KeyHandler callbacks
         private void NewLineDetected()
         {
-            _isReading = false;
+            LastInput = _text.ToString().TrimEnd('\n', '\r');
+            _text.Clear();
+
+            IsReading = false;
+
+            //Reset key handler to allow proper process of next line.
+            _console.Output.WriteLine();
+            CursorPosition = 0;
         }
 
         private void UnhandledKeyDetected(ref ConsoleKeyInfo keyInfo)
@@ -126,55 +156,62 @@
         /// </summary>
         public string ReadLine()
         {
-            _isReading = true;
+            IsReading = true;
             do
             {
                 _keyHandler.ReadKey();
-            } while (_isReading);
+            } while (IsReading);
 
-            string text = Text.TrimEnd('\n', '\r');
-            _console.Output.WriteLine();
-            Reset();
-
-            return text;
+            return LastInput;
         }
 
         /// <summary>
-        /// Reads a line from array.
+        /// Reads a sequence from array. When sequence is terminated with Enter, acts as ReadLine.
         /// </summary>
-        public string ReadLine(params ConsoleKeyInfo[] line)
+        public string Read(params ConsoleKeyInfo[] line)
         {
-            //TODO: To fix
-            _isReading = true;
-
-            int i = 0;
-            for (; i < line.Length && _isReading; ++i)
+            IsReading = true;
+            for (int i = 0; i < line.Length && IsReading; ++i)
             {
                 ConsoleKeyInfo keyInfo = line[i];
                 _keyHandler.ReadKey(keyInfo);
             }
-            _isReading = false;
 
-            //if (line.ElementAtOrDefault(i - 1).Key != ConsoleKey.Enter)
-            //    _keyHandler.ReadKey(ConsoleKeyInfoExtensions.Enter);
-
-            string text = Text.TrimEnd('\n', '\r');
-            _console.Output.WriteLine();
-            Reset();
-
-            return text;
+            return IsReading ? CurrentInput : LastInput;
         }
         #endregion
 
-        /// <summary>
-        /// Resets key handler to allow proper process of next line.
-        /// </summary>
-        private void Reset()
+        #region Write
+        public void Write(string str)
         {
-            CursorPosition = 0;
-            _text.Clear();
+            foreach (char character in str)
+                Write(character);
         }
 
+        public void Write(char c)
+        {
+            if (IsEndOfLine)
+            {
+                _text.Append(c);
+                _console.Output.Write(c.ToString());
+                CursorPosition++;
+            }
+            else
+            {
+                int left = _console.CursorLeft;
+                int top = _console.CursorTop;
+                string str = _text.ToString().Substring(CursorPosition);
+
+                _text.Insert(CursorPosition, c);
+                _console.Output.Write(c.ToString() + str);
+                _console.SetCursorPosition(left, top);
+
+                MoveCursorRight();
+            }
+        }
+        #endregion
+
+        #region MoveCursor
         //TODO: rewrite: must work when line is wrapped
         private void MoveCursorLeft(int count = 1)
         {
@@ -201,7 +238,9 @@
 
             ++CursorPosition;
         }
+        #endregion
 
+        #region Input text deletion
         public void ClearLine()
         {
             while (!IsStartOfLine)
@@ -210,31 +249,6 @@
             _text.Clear();
         }
 
-        public void Write(string str)
-        {
-            foreach (char character in str)
-                Write(character);
-        }
-
-        public void Write(char c)
-        {
-            if (IsEndOfLine)
-            {
-                _text.Append(c);
-                _console.Output.Write(c.ToString());
-                CursorPosition++;
-            }
-            else
-            {
-                int left = _console.CursorLeft;
-                int top = _console.CursorTop;
-                string str = _text.ToString().Substring(CursorPosition);
-                _text.Insert(CursorPosition, c);
-                _console.Output.Write(c.ToString() + str);
-                _console.SetCursorPosition(left, top);
-                MoveCursorRight();
-            }
-        }
         public void Backspace(int count = 1)
         {
             for (; count > 0; --count)
@@ -272,10 +286,13 @@
             string replacement = _text.ToString().Substring(index);
             int left = _console.CursorLeft;
             int top = _console.CursorTop;
+
             _console.Output.Write(string.Format("{0} ", replacement));
             _console.SetCursorPosition(left, top);
         }
+        #endregion
 
+        #region DoUntil
         private void DoUntilPrevWordOrWhitespace(Action action)
         {
             int v = CursorPosition - 1;
@@ -322,5 +339,6 @@
             }
             while (!IsEndOfLine && !char.IsWhiteSpace(_text[CursorPosition]));
         }
+        #endregion
     }
 }
