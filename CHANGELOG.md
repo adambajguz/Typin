@@ -1,3 +1,10 @@
+### v2.0 (xx-xxx-2020)
+
+- Added custom DI containter support.
+- Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
+- Improvements in shortcuts handling.
+- Improvements in `Ctrl+[Delete/Backspace/ArrowLeft/ArrowRight]` handling.
+
 ### v1.0.1 (23-Aug-2020)
 
 - Removed middleware delegate parameters.
