@@ -22,7 +22,7 @@
         public string? Description { get; }
 
         /// <summary>
-        /// Whetehr command argument is scalar.
+        /// Whether command argument is scalar.
         /// </summary>
         public bool IsScalar => TryGetEnumerableArgumentUnderlyingType() == null;
 
@@ -131,7 +131,8 @@
 
         internal void BindOn(ICommand command, IReadOnlyList<string> values)
         {
-            Property?.SetValue(command, Convert(values));
+            object? value = Convert(values);
+            Property?.SetValue(command, value);
         }
 
         internal void BindOn(ICommand command, params string[] values)

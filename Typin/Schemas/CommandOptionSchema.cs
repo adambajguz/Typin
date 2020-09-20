@@ -75,15 +75,6 @@
                    alias.Length == 1 && MatchesShortName(alias.Single());
         }
 
-        /// <summary>
-        /// Whether command's environment variable matches the passed environment variable name.
-        /// </summary>
-        public bool MatchesEnvironmentVariableName(string environmentVariableName)
-        {
-            return !string.IsNullOrWhiteSpace(EnvironmentVariableName) &&
-                   string.Equals(EnvironmentVariableName, environmentVariableName, StringComparison.Ordinal);
-        }
-
         internal string GetUserFacingDisplayString()
         {
             var buffer = new StringBuilder();

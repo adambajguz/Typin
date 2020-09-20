@@ -176,27 +176,23 @@
             List<CommandOptionSchema> unsetRequiredOptions = Options.Where(o => o.IsRequired)
                                                                     .ToList();
 
-            // Environment variables
-            foreach ((string name, string value) in environmentVariables)
-            {
-                CommandOptionSchema? option = Options.FirstOrDefault(o => o.MatchesEnvironmentVariableName(name));
-                if (option is null)
-                    continue;
-
-                string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
-
-                option.BindOn(instance, values);
-                unsetRequiredOptions.Remove(option);
-            }
-
-            // Direct input
+            // Direct or fallback input
             foreach (CommandOptionSchema option in Options)
             {
                 CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
                                                           .ToArray();
 
-                // Skip if the inputs weren't provided for this option
-                if (!inputs.Any())
+                // Check fallback value
+                if (!inputs.Any() && option.EnvironmentVariableName is string v && environmentVariables.TryGetValue(v, out string value))
+                {
+                    string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
+
+                    option.BindOn(instance, values);
+                    unsetRequiredOptions.Remove(option);
+
+                    continue;
+                }
+                else if (!inputs.Any()) // Skip if the inputs weren't provided for this option
                     continue;
 
                 string[] inputValues = inputs.SelectMany(i => i.Values)
