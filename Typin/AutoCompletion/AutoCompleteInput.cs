@@ -2,97 +2,82 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Typin.Console;
-    using Typin.Extensions;
 
     internal class AutoCompleteInput
     {
-        private readonly IConsole _console;
-        private readonly KeyHandler _keyHandler;
-
-        public InputHistoryProvider History { get; }
-        public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
-
+        private readonly LineInputHandler _lineInputHandler;
         private string[] _completions = Array.Empty<string>();
         private int _completionStart;
         private int _completionsIndex;
 
-        public bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+        private bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+
+        public InputHistoryProvider History { get; }
+        public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="AutoCompleteInput"/>.
         /// </summary>
-        public AutoCompleteInput(IConsole console)
+        public AutoCompleteInput(IConsole console,
+                                 HashSet<ShortcutDefinition>? userDefinedShortcut = null)
         {
-            _console = console;
             History = new InputHistoryProvider();
 
-            // TODO: allow user to add custom shortcuts
-            var keyActions = new Dictionary<string, Action>
+            var keyActions = new HashSet<ShortcutDefinition>
             {
                 // History
-                ["UpArrow"] = () =>
+                new ShortcutDefinition(ConsoleKey.UpArrow, () =>
                 {
                     if (History.SelectionUp())
                     {
-                        _keyHandler.ClearLine();
-                        _keyHandler.Write(History.GetSelection());
+                        _lineInputHandler.ClearLine();
+                        _lineInputHandler.Write(History.GetSelection());
                     }
-                },
-                ["DownArrow"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.DownArrow, () =>
                 {
                     if (History.SelectionDown())
                     {
-                        _keyHandler.ClearLine();
-                        _keyHandler.Write(History.GetSelection());
+                        _lineInputHandler.ClearLine();
+                        _lineInputHandler.Write(History.GetSelection());
                     }
-                },
+                }),
 
                 // AutoComplete
-                ["Tab"] = () =>
+                new ShortcutDefinition(ConsoleKey.Tab, () =>
                 {
                     if (IsInAutoCompleteMode)
                         NextAutoComplete();
                     else
                         InitAutoComplete();
-                },
-                ["ShiftTab"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.Tab, ConsoleModifiers.Shift, () =>
                 {
                     if (IsInAutoCompleteMode)
                         PreviousAutoComplete();
                     else
                         InitAutoComplete(true);
-                },
-
-                ["Escape"] = () =>
+                }),
+                new ShortcutDefinition(ConsoleKey.Escape, () =>
                 {
-                    _keyHandler.ClearLine();
+                    _lineInputHandler.ClearLine();
                     History.ResetSelection();
                     ResetAutoComplete();
-                }
+                })
             };
 
-            _keyHandler = new KeyHandler(console, keyActions);
+            _lineInputHandler = new LineInputHandler(console, keyActions, userDefinedShortcut);
         }
 
+
+        /// <summary>
+        /// Reads a line from input.
+        /// </summary>
         public string ReadLine()
         {
-            //Get line
-            {
-                ConsoleKeyInfo keyInfo;
-                do
-                {
-                    keyInfo = _console.ReadKey(true);
-                    _keyHandler.Handle(keyInfo);
+            string text = _lineInputHandler.ReadLine();
 
-                } while (keyInfo.Key != ConsoleKey.Enter);
-
-                _console.Output.WriteLine();
-            }
-
-            string text = _keyHandler.Text.TrimEnd('\n', '\r');
-            _keyHandler.Reset();
             ResetAutoComplete();
 
             if (History.IsEnabled)
@@ -104,20 +89,13 @@
             return text;
         }
 
+        /// <summary>
+        /// Reads a line from array.
+        /// </summary>
         public string ReadLine(params ConsoleKeyInfo[] line)
         {
-            foreach (var keyInfo in line)
-            {
-                _keyHandler.Handle(keyInfo);
-            }
+            string text = _lineInputHandler.Read(line);
 
-            if (line.LastOrDefault().Key != ConsoleKey.Enter)
-                _keyHandler.Handle(ConsoleKeyInfoExtensions.Enter);
-
-            _console.Output.WriteLine();
-
-            string text = _keyHandler.Text.TrimEnd('\n', '\r');
-            _keyHandler.Reset();
             ResetAutoComplete();
 
             if (History.IsEnabled)
@@ -131,10 +109,10 @@
 
         private void InitAutoComplete(bool fromEnd = false)
         {
-            if (AutoCompletionHandler is null || !_keyHandler.IsEndOfLine)
+            if (AutoCompletionHandler is null || !_lineInputHandler.IsEndOfLine)
                 return;
 
-            string text = _keyHandler.Text;
+            string text = _lineInputHandler.CurrentInput;
 
             _completionStart = text.LastIndexOfAny(AutoCompletionHandler.Separators);
             _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
@@ -145,31 +123,31 @@
                 return;
 
             //StartAutoComplete;
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             _completionsIndex = fromEnd ? _completions.Length - 1 : 0;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void NextAutoComplete()
         {
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             if (++_completionsIndex == _completions.Length)
                 _completionsIndex = 0;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void PreviousAutoComplete()
         {
-            _keyHandler.Backspace(_keyHandler.CursorPosition - _completionStart);
+            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             if (--_completionsIndex == -1)
                 _completionsIndex = _completions.Length - 1;
 
-            _keyHandler.Write(_completions[_completionsIndex]);
+            _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void ResetAutoComplete()

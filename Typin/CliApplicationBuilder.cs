@@ -8,6 +8,7 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
@@ -50,6 +51,7 @@ namespace Typin
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
+        private HashSet<ShortcutDefinition>? _userDefinedShortcuts;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -312,7 +314,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
                                                         bool useAdvancedInput = true,
-                                                        Dictionary<string, Action>? advancedInputHotkeys = null)
+                                                        HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -326,7 +328,7 @@ namespace Typin
                 AddDirective<ScopeUpDirective>();
             }
 
-            advancedInputHotkeys ??= new Dictionary<string, Action>();
+            _userDefinedShortcuts = userDefinedShortcuts;
 
             return this;
         }
@@ -458,6 +460,7 @@ namespace Typin
             _versionText ??= TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
             _exceptionHandler ??= new DefaultExceptionHandler();
+            _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
 
             // Format startup message
             if (_startupMessage != null)
@@ -500,7 +503,8 @@ namespace Typin
                                                      serviceProvider,
                                                      cliContext,
                                                      _promptForeground,
-                                                     _commandForeground);
+                                                     _commandForeground,
+                                                     _userDefinedShortcuts);
             }
 
             return new CliApplication(_middlewareTypes, serviceProvider, cliContext);
