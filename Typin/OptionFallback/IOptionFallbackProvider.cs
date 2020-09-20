@@ -1,12 +1,11 @@
 ﻿namespace Typin.OptionFallback
 {
     using System.Collections.Generic;
-    using Typin.Attributes;
 
     /// <summary>
-    /// Fallback value store. Values stored in class implementing this interaface will be used as fallback if no option value is specified (<see cref="CommandOptionAttribute"/>).
+    /// Option fallback value provider.
     /// </summary>
-    public interface IFallbackValuesStore : IReadOnlyDictionary<string, string>
+    public interface IOptionFallbackProvider : IReadOnlyDictionary<string, string>
     {
         //TODO: maybe IReadOnlyDictionary<string, object>
         //or maybe only IReadOnlyCollection

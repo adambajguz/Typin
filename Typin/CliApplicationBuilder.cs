@@ -14,6 +14,7 @@ namespace Typin
     using Typin.Exceptions;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
+    using Typin.OptionFallback;
     using Typin.Pipeline;
     using Typin.Schemas;
 
@@ -55,6 +56,8 @@ namespace Typin
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
+
+        // Value fallback
 
         #region Directives
         /// <summary>
@@ -440,6 +443,30 @@ namespace Typin
             where TMiddleware : class
         {
             return UseMiddleware(typeof(TMiddleware));
+        }
+        #endregion
+
+        #region Value fallback
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), fallbackProviderType, lifetime));
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where T : IOptionFallbackProvider
+        {
+            return UseOptionFallbackProvider(typeof(T), lifetime);
         }
         #endregion
 

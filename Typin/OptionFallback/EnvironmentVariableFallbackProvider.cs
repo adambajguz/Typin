@@ -6,14 +6,14 @@
     /// <summary>
     /// Environment variable fallback value store.
     /// </summary>
-    public class EnvironmentVariablesFallbackStore : IFallbackValuesStore
+    public class EnvironmentVariableFallbackProvider : IOptionFallbackProvider
     {
         private readonly IReadOnlyDictionary<string, string> _environmentVariables;
 
         /// <summary>
-        /// Initializes an instance of <see cref="EnvironmentVariablesFallbackStore"/>.
+        /// Initializes an instance of <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
-        public EnvironmentVariablesFallbackStore(IReadOnlyDictionary<string, string> environmentVariables)
+        public EnvironmentVariableFallbackProvider(IReadOnlyDictionary<string, string> environmentVariables)
         {
             _environmentVariables = environmentVariables;
         }
