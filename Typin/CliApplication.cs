@@ -168,7 +168,9 @@
                 return ExitCodes.FromException(ex);
             }
         }
+        #endregion
 
+        #region Execute command
         /// <summary>
         /// Runs before command execution.
         /// </summary>
