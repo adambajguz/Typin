@@ -182,8 +182,10 @@
                 CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
                                                           .ToArray();
 
+                bool inputsProvided = inputs.Any();
+
                 // Check fallback value
-                if (!inputs.Any() && option.EnvironmentVariableName is string v && environmentVariables.TryGetValue(v, out string value))
+                if (!inputsProvided && option.EnvironmentVariableName is string v && environmentVariables.TryGetValue(v, out string value))
                 {
                     string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
 
@@ -192,7 +194,7 @@
 
                     continue;
                 }
-                else if (!inputs.Any()) // Skip if the inputs weren't provided for this option
+                else if (!inputsProvided) // Skip if the inputs weren't provided for this option
                     continue;
 
                 string[] inputValues = inputs.SelectMany(i => i.Values)

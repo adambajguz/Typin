@@ -13,7 +13,9 @@
     /// </summary>
     public abstract partial class ArgumentSchema
     {
-        // Property can be null on built-in arguments (help and version options)
+        /// <summary>
+        /// Property info can be null on built-in arguments (help and version options)
+        /// </summary>
         internal PropertyInfo? Property { get; }
 
         /// <summary>
@@ -109,14 +111,14 @@
         private object? Convert(IReadOnlyList<string> values)
         {
             // Short-circuit built-in arguments
-            if (Property == null)
+            if (Property is null)
                 return null;
 
             Type targetType = Property.PropertyType;
             Type? enumerableUnderlyingType = TryGetEnumerableArgumentUnderlyingType();
 
             // Scalar
-            if (enumerableUnderlyingType == null)
+            if (enumerableUnderlyingType is null)
             {
                 return values.Count <= 1
                     ? ConvertScalar(values.SingleOrDefault(), targetType)
@@ -131,8 +133,11 @@
 
         internal void BindOn(ICommand command, IReadOnlyList<string> values)
         {
+            if (Property is null)
+                return;
+
             object? value = Convert(values);
-            Property?.SetValue(command, value);
+            Property.SetValue(command, value);
         }
 
         internal void BindOn(ICommand command, params string[] values)
@@ -142,7 +147,7 @@
 
         internal IReadOnlyList<string> GetValidValues()
         {
-            if (Property == null)
+            if (Property is null)
                 return Array.Empty<string>();
 
             Type underlyingType = Property.PropertyType.GetNullableUnderlyingType() ?? Property.PropertyType;
