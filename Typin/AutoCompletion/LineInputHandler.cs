@@ -78,7 +78,7 @@
                 new ShortcutDefinition(ConsoleKey.LeftArrow, ConsoleModifiers.Control, () => DoUntilPrevWordOrWhitespace(() => MoveCursorLeft())),
                 new ShortcutDefinition(ConsoleKey.RightArrow, ConsoleModifiers.Control, () => DoUntilNextWordOrWhitespace(MoveCursorRight)),
                 new ShortcutDefinition(ConsoleKey.Backspace, ConsoleModifiers.Control, BackspacePrevWord),
-                new ShortcutDefinition(ConsoleKey.Delete, ConsoleModifiers.Control, () => DoUntilPrevWordOrWhitespace(Delete))
+                new ShortcutDefinition(ConsoleKey.Delete, ConsoleModifiers.Control, DeleteNextWord)
             };
 
             _keyHandler = new KeyHandler(console, _shortcuts);
@@ -275,6 +275,16 @@
             DoUntilPrevWordOrWhitespace(() => Backspace());
         }
 
+        public void DeleteNextWord()
+        {
+            //TODO: Use Delete instead of Backspace or maybe remove delete?
+            if (IsEndOfLine)
+                return;
+
+            DoUntilNextWordOrWhitespace(MoveCursorRight);
+            DoUntilPrevWordOrWhitespace(() => Backspace());
+        }
+
         private void Delete()
         {
             if (IsEndOfLine)
@@ -293,13 +303,12 @@
         #endregion
 
         #region DoUntil
-        private void DoUntilPrevWordOrWhitespace(Action action)
+        private void DoUntilPrevWordOrWhitespace(Action action, bool treatSpacesAsWord = false)
         {
-            int v = CursorPosition - 1;
-            if (v < 0)
+            if (IsStartOfLine)
                 return;
 
-            if (char.IsWhiteSpace(_text[v]))
+            if (char.IsWhiteSpace(_text[CursorPosition - 1]))
             {
                 do
                 {
@@ -307,7 +316,8 @@
                 }
                 while (!IsStartOfLine && char.IsWhiteSpace(_text[CursorPosition - 1]));
 
-                return;
+                if (treatSpacesAsWord)
+                    return;
             }
 
             do
@@ -317,27 +327,29 @@
             while (!IsStartOfLine && !char.IsWhiteSpace(_text[CursorPosition - 1]));
         }
 
-        private void DoUntilNextWordOrWhitespace(Action action)
+        private void DoUntilNextWordOrWhitespace(Action action, bool treatSpacesAsWord = false)
         {
             if (IsEndOfLine)
                 return;
 
-            if (char.IsWhiteSpace(_text[CursorPosition]))
+            if (char.IsWhiteSpace(_text[CursorPosition + 1]))
             {
                 do
                 {
                     action();
                 }
-                while (!IsEndOfLine && char.IsWhiteSpace(_text[CursorPosition]));
+                while (!IsEndOfLine && char.IsWhiteSpace(_text[CursorPosition + 1]));
 
-                return;
+                if (treatSpacesAsWord)
+                    return;
             }
 
+            int v = treatSpacesAsWord ? 0 : 1;
             do
             {
                 action();
             }
-            while (!IsEndOfLine && !char.IsWhiteSpace(_text[CursorPosition]));
+            while (!IsEndOfLine && (char.IsWhiteSpace(_text[CursorPosition]) || !char.IsWhiteSpace(_text[CursorPosition - 1])));
         }
         #endregion
     }

@@ -98,6 +98,86 @@
         }
 
         [Fact]
+        public void TestCtrlBackspace()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World");
+
+            // Act
+            handler.Read(CtrlBackspace);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello ");
+        }
+
+        [Fact]
+        public void TestCtrlBackspaceMultiple()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World");
+
+            // Act
+            handler.Read(CtrlBackspace, CtrlBackspace, CtrlBackspace, CtrlBackspace);
+
+            // Assert
+            handler.CurrentInput.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void TestCtrlDelete()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World  Test");
+
+            // Act
+            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello Test");
+        }
+
+        [Fact]
+        public void TestCtrlDeleteMultiple()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World  Test");
+
+            // Act
+            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete, CtrlDelete, CtrlDelete);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello ");
+        }
+
+        [Fact]
         public void TestDelete_EndOfLine()
         {
             // Arrange
@@ -145,13 +225,14 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
+            handler.Read(LeftArrow, LeftArrow);
+
             ConsoleKeyInfo[] input = " N".Select(c => c.ToConsoleKeyInfo())
-                                         .Prepend(LeftArrow)
                                          .ToArray();
             handler.Read(input);
 
             // Assert
-            handler.CurrentInput.Should().Be("Hell No");
+            handler.CurrentInput.Should().Be("Hel Nlo");
         }
 
         [Fact]
@@ -161,11 +242,61 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, RightArrow, ExclamationPoint };
+            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, LeftArrow, RightArrow, ExclamationPoint };
             handler.Read(input);
 
             // Assert
-            handler.CurrentInput.Should().Be("Hello!");
+            handler.CurrentInput.Should().Be("Hell!o");
+        }
+
+        [Fact]
+        public void TestCtrlLeftArrow()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World");
+
+            // Act
+            handler.Read(CtrlLeftArrow);
+
+            input = " N".Select(c => c.ToConsoleKeyInfo())
+                        .ToArray();
+
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello  NWorld");
+        }
+
+        [Fact]
+        public void TestCtrlRightArrow()
+        {
+            // Arrange
+            LineInputHandler handler = GetKeyHandlerInstance();
+
+            // Act
+            ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello World");
+
+            // Act
+            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlRightArrow);
+
+            input = " N".Select(c => c.ToConsoleKeyInfo())
+                        .ToArray();
+
+            handler.Read(input);
+
+            // Assert
+            handler.CurrentInput.Should().Be("Hello  NWorld");
         }
 
         public void Dispose()
