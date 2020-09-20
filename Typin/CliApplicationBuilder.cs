@@ -51,7 +51,7 @@ namespace Typin
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
-        private HashSet<ShortcutDefinition>? _advancedInputHotkeys;
+        private HashSet<ShortcutDefinition>? _userDefinedShortcuts;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -314,7 +314,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
                                                         bool useAdvancedInput = true,
-                                                        HashSet<ShortcutDefinition>? advancedInputHotkeys = null)
+                                                        HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -328,7 +328,7 @@ namespace Typin
                 AddDirective<ScopeUpDirective>();
             }
 
-            _advancedInputHotkeys = advancedInputHotkeys;
+            _userDefinedShortcuts = userDefinedShortcuts;
 
             return this;
         }
@@ -460,6 +460,7 @@ namespace Typin
             _versionText ??= TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
             _exceptionHandler ??= new DefaultExceptionHandler();
+            _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
 
             // Format startup message
             if (_startupMessage != null)
@@ -498,14 +499,12 @@ namespace Typin
             // Create application instance
             if (_useInteractiveMode)
             {
-                _advancedInputHotkeys ??= new HashSet<ShortcutDefinition>();
-
                 return new InteractiveCliApplication(_middlewareTypes,
                                                      serviceProvider,
                                                      cliContext,
                                                      _promptForeground,
                                                      _commandForeground,
-                                                     _advancedInputHotkeys);
+                                                     _userDefinedShortcuts);
             }
 
             return new CliApplication(_middlewareTypes, serviceProvider, cliContext);
