@@ -78,6 +78,15 @@
 
             // Try to get the command matching the input or fallback to default
             CommandSchema command = root.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
+
+            // Forbid to execute real default command in interactive mode without [!] directive.
+            if (_cliContext.IsInteractiveMode && command.IsDefault && !input.HasDirective(BuiltInDirectives.Default))
+            {
+                command = StubDefaultCommand.Schema;
+            }
+            //TODO: default is not executed for [!] book
+
+            // Update CommandSchema
             _cliContext.CommandSchema = command;
 
             // Version option

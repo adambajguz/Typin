@@ -3,6 +3,8 @@
 - Added custom DI containter support.
 - Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
 - Improvements in shortcuts handling.
+- Renamed `[default]` directive to `[!]`.
+- `[!]` directive is now required to execute user-defined default command. However, `-h`, `--help`, `--version` will still work without `[!]` directive.
 - Improvements in `Ctrl+[Delete/Backspace/ArrowLeft/ArrowRight]` handling.
 
 ### v1.0.1 (23-Aug-2020)
@@ -28,6 +30,6 @@
 - Added `TableUtils` and `TextUtils`.
 - Added history and auto-completion in interactive mode.
 
-### v0.1 (Aug-2020)
+### v0.1 (08-Aug-2020)
 
 - Indirect fork from CliFx.
