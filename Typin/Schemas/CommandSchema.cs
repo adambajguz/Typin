@@ -70,7 +70,10 @@
         /// </summary>
         public bool IsVersionOptionAvailable => Options.Contains(CommandOptionSchema.VersionOption);
 
-        internal CommandSchema(Type type,
+        /// <summary>
+        /// Initializes an instance of <see cref="CommandSchema"/>.
+        /// </summary>
+        private CommandSchema(Type type,
                               string? name,
                               string? description,
                               string? manual,

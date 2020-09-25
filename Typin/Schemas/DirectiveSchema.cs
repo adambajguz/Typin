@@ -35,6 +35,9 @@
         /// </summary>
         public bool InteractiveModeOnly { get; }
 
+        /// <summary>
+        /// Initializes an instance of <see cref="DirectiveSchema"/>.
+        /// </summary>
         private DirectiveSchema(Type type,
                                 string name,
                                 string? description,
