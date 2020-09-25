@@ -24,7 +24,7 @@
                 .UseMiddleware<ExitCodeMiddleware>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseMiddleware<ExecutionLogMiddleware>()
-                .UseInteractiveMode()
+                .UseInteractiveMode(useAdvancedInput: false)
                 .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .Build()
                 .RunAsync();

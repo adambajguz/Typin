@@ -80,7 +80,9 @@
             CommandSchema command = root.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
 
             // Forbid to execute real default command in interactive mode without [!] directive.
-            if (_cliContext.IsInteractiveMode && command.IsDefault && !input.HasDirective(BuiltInDirectives.Default))
+            if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
+                _cliContext.IsInteractiveMode &&
+                command.IsDefault && !input.HasDirective(BuiltInDirectives.Default))
             {
                 command = StubDefaultCommand.Schema;
             }
@@ -136,8 +138,8 @@
             }
 
             // Help option
-            if (command.IsHelpOptionAvailable && input.IsHelpOptionSpecified ||
-                command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any())
+            if ((command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
+                (command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
                 _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help?
 

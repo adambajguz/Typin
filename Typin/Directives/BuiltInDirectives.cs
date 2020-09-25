@@ -26,7 +26,7 @@
         public const string Interactive = "interactive";
 
         /// <summary>
-        /// Normally if application rans in interactive mode, an empty line does nothing; but [default] will override this behaviour, executing a root or scoped command.
+        /// Normally if application rans in interactive mode, an empty line does nothing; but [!] will override this behaviour, executing a root or scoped command.
         /// </summary>
         public const string Default = "!";
 
