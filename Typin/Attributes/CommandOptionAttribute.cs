@@ -33,9 +33,9 @@
         public string? Description { get; set; }
 
         /// <summary>
-        /// Environment variable that will be used as fallback if no option value is specified.
+        /// Fallback variable that will be used as fallback if no option value is specified.
         /// </summary>
-        public string? EnvironmentVariableName { get; set; }
+        public string? FallbackVariableName { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionAttribute"/>.

@@ -122,7 +122,7 @@
                 property,
                 name,
                 attribute.ShortName,
-                attribute.EnvironmentVariableName,
+                attribute.FallbackVariableName,
                 attribute.IsRequired,
                 attribute.Description
             );

@@ -4,18 +4,18 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Environment variable fallback value provider.
+    /// Empty variable fallback value provider.
     /// </summary>
-    public class EnvironmentVariableFallbackProvider : IOptionFallbackProvider
+    public class EmptyFallbackProvider : IOptionFallbackProvider
     {
-        private readonly IReadOnlyDictionary<string, string> _environmentVariables;
+        private readonly IReadOnlyDictionary<string, string> _environmentVariables = new Dictionary<string, string>();
 
         /// <summary>
-        /// Initializes an instance of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Initializes an instance of <see cref="EmptyFallbackProvider"/>.
         /// </summary>
-        public EnvironmentVariableFallbackProvider(IReadOnlyDictionary<string, string> environmentVariables)
+        public EmptyFallbackProvider()
         {
-            _environmentVariables = environmentVariables;
+
         }
 
         /// <inheritdoc/>

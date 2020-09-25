@@ -6,10 +6,10 @@
     [Command("cmd")]
     public class DuplicateOptionEnvironmentVariableNamesCommand : SelfSerializeCommandBase
     {
-        [CommandOption("option-a", EnvironmentVariableName = "ENV_VAR")]
+        [CommandOption("option-a", FallbackVariableName = "ENV_VAR")]
         public string? OptionA { get; set; }
 
-        [CommandOption("option-b", EnvironmentVariableName = "ENV_VAR")]
+        [CommandOption("option-b", FallbackVariableName = "ENV_VAR")]
         public string? OptionB { get; set; }
     }
 }
