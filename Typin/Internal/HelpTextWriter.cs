@@ -345,9 +345,9 @@
                 }
 
                 // Environment variable
-                if (!string.IsNullOrWhiteSpace(option.EnvironmentVariableName))
+                if (!string.IsNullOrWhiteSpace(option.FallbackVariableName))
                 {
-                    Write($"Environment variable: \"{option.EnvironmentVariableName}\".");
+                    Write($"Environment variable: \"{option.FallbackVariableName}\".");
                     Write(' ');
                 }
 

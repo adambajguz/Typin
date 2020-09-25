@@ -557,6 +557,8 @@ namespace Typin
                 containerAction.ConfigureContainer(containerBuilder);
             }
 
+            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
+
             IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
 
             return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");

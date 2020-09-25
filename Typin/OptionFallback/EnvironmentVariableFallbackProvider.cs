@@ -1,5 +1,6 @@
 ﻿namespace Typin.OptionFallback
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -13,10 +14,13 @@
         /// <summary>
         /// Initializes an instance of <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
-        public EnvironmentVariableFallbackProvider(IReadOnlyDictionary<string, string> environmentVariables)
+        public EnvironmentVariableFallbackProvider(ICliContext cliContext)
         {
-            _environmentVariables = environmentVariables;
+            _environmentVariables = cliContext.EnvironmentVariables;
         }
+
+        /// <inheritdoc/>
+        public bool IsDynamic => false;
 
         /// <inheritdoc/>
         public IEnumerable<string> Keys => _environmentVariables.Keys;
@@ -28,21 +32,24 @@
         public int Count => _environmentVariables.Count;
 
         /// <inheritdoc/>
-        public bool ContainsKey(string key)
-        {
-            return _environmentVariables.ContainsKey(key);
-        }
+        public string this[string key] => _environmentVariables[key];
 
         /// <inheritdoc/>
-        public string this[string key]
-        {
-            get => _environmentVariables[key];
-        }
+        public string this[string key, Type? targetType] => _environmentVariables[key];
 
         /// <inheritdoc/>
         public bool TryGetValue(string key, out string value)
         {
             return _environmentVariables.TryGetValue(key, out value);
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetValue(string key, Type? targetType, out string value)
+        {
+            bool v = _environmentVariables.TryGetValue(key, out string str);
+            value = str;
+
+            return v;
         }
 
         /// <inheritdoc/>
@@ -55,6 +62,12 @@
         IEnumerator IEnumerable.GetEnumerator()
         {
             return (_environmentVariables as IEnumerable).GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        IEnumerator<KeyValuePair<(string, Type?), string>> IEnumerable<KeyValuePair<(string, Type?), string>>.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace Typin.OptionFallback
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Empty variable fallback value provider.
     /// </summary>
     public class EmptyFallbackProvider : IOptionFallbackProvider
     {
-        private readonly IReadOnlyDictionary<string, string> _environmentVariables = new Dictionary<string, string>();
-
         /// <summary>
         /// Initializes an instance of <see cref="EmptyFallbackProvider"/>.
         /// </summary>
@@ -19,42 +19,53 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<string> Keys => _environmentVariables.Keys;
+        public bool IsDynamic => true;
 
         /// <inheritdoc/>
-        public IEnumerable<string> Values => _environmentVariables.Values;
+        public IEnumerable<string> Keys => Enumerable.Empty<string>();
 
         /// <inheritdoc/>
-        public int Count => _environmentVariables.Count;
+        public IEnumerable<string> Values => Enumerable.Empty<string>();
 
         /// <inheritdoc/>
-        public bool ContainsKey(string key)
-        {
-            return _environmentVariables.ContainsKey(key);
-        }
+        public int Count => 0;
 
         /// <inheritdoc/>
-        public string this[string key]
-        {
-            get => _environmentVariables[key];
-        }
+        public string this[string key] => throw new KeyNotFoundException();
+
+        /// <inheritdoc/>
+        public string this[string key, Type? targetType] => throw new KeyNotFoundException();
 
         /// <inheritdoc/>
         public bool TryGetValue(string key, out string value)
         {
-            return _environmentVariables.TryGetValue(key, out value);
+            value = null!;
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetValue(string key, Type? targetType, out string value)
+        {
+            value = null!;
+            return false;
         }
 
         /// <inheritdoc/>
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
-            return _environmentVariables.GetEnumerator();
+            return Enumerable.Empty<KeyValuePair<string, string>>().GetEnumerator();
         }
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return (_environmentVariables as IEnumerable).GetEnumerator();
+            return (Enumerable.Empty<KeyValuePair<string, string>>() as IEnumerable).GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        IEnumerator<KeyValuePair<(string, Type?), string>> IEnumerable<KeyValuePair<(string, Type?), string>>.GetEnumerator()
+        {
+            return Enumerable.Empty<KeyValuePair<(string, Type?), string>>().GetEnumerator();
         }
     }
 }

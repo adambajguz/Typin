@@ -23,9 +23,9 @@
         public char? ShortName { get; }
 
         /// <summary>
-        /// Name of environment variable used as a fallback value.
+        /// Name of variable used as a fallback value.
         /// </summary>
-        public string? EnvironmentVariableName { get; }
+        public string? FallbackVariableName { get; }
 
         /// <summary>
         /// Whether option is required.
@@ -38,14 +38,14 @@
         private CommandOptionSchema(PropertyInfo? property,
                                     string? name,
                                     char? shortName,
-                                    string? environmentVariableName,
+                                    string? fallbackVariableName,
                                     bool isRequired,
                                     string? description)
             : base(property, description)
         {
             Name = name;
             ShortName = shortName;
-            EnvironmentVariableName = environmentVariableName;
+            FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
         }
 
