@@ -549,15 +549,13 @@ namespace Typin
             {
                 configureServicesAction(services);
             }
+            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
 
             object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
-
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
             {
                 containerAction.ConfigureContainer(containerBuilder);
             }
-
-            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
 
             IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
 

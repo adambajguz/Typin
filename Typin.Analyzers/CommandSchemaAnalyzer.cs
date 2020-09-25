@@ -20,8 +20,7 @@
             DiagnosticDescriptors.Typin0041,
             DiagnosticDescriptors.Typin0042,
             DiagnosticDescriptors.Typin0043,
-            DiagnosticDescriptors.Typin0044,
-            DiagnosticDescriptors.Typin0045
+            DiagnosticDescriptors.Typin0044
         );
 
         private static bool IsScalarType(ITypeSymbol typeSymbol)
@@ -203,20 +202,6 @@
             {
                 context.ReportDiagnostic(
                     Diagnostic.Create(DiagnosticDescriptors.Typin0044, option.Property.Locations.First()));
-            }
-
-            // Duplicate environment variable name
-            var duplicateEnvironmentVariableNameOptions = options
-                .Where(p => !string.IsNullOrWhiteSpace(p.EnvironmentVariableName))
-                .GroupBy(p => p.EnvironmentVariableName, StringComparer.Ordinal)
-                .Where(g => g.Count() > 1)
-                .SelectMany(g => g.AsEnumerable())
-                .ToArray();
-
-            foreach (var option in duplicateEnvironmentVariableNameOptions)
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(DiagnosticDescriptors.Typin0045, option.Property.Locations.First()));
             }
         }
 
