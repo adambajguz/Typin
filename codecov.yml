@@ -11,7 +11,7 @@ coverage:
         if_not_found: success
     patch:
       default:
-        if_no_uploads: success
+        enabled: false
     changes:
       default:
         if_not_found: success
