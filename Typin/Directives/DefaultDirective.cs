@@ -1,6 +1,5 @@
 ﻿namespace Typin.Directives
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
