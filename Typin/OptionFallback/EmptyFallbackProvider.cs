@@ -19,9 +19,6 @@
         }
 
         /// <inheritdoc/>
-        public bool IsDynamic => true;
-
-        /// <inheritdoc/>
         public IEnumerable<string> Keys => Enumerable.Empty<string>();
 
         /// <inheritdoc/>
@@ -34,7 +31,7 @@
         public string this[string key] => throw new KeyNotFoundException();
 
         /// <inheritdoc/>
-        public string this[string key, Type? targetType] => throw new KeyNotFoundException();
+        public string this[string key, Type targetType] => throw new KeyNotFoundException();
 
         /// <inheritdoc/>
         public bool TryGetValue(string key, out string value)
@@ -44,7 +41,7 @@
         }
 
         /// <inheritdoc/>
-        public bool TryGetValue(string key, Type? targetType, out string value)
+        public bool TryGetValue(string key, Type targetType, out string value)
         {
             value = null!;
             return false;
@@ -63,9 +60,9 @@
         }
 
         /// <inheritdoc/>
-        IEnumerator<KeyValuePair<(string, Type?), string>> IEnumerable<KeyValuePair<(string, Type?), string>>.GetEnumerator()
+        IEnumerator<KeyValuePair<(string, Type), string>> IEnumerable<KeyValuePair<(string, Type), string>>.GetEnumerator()
         {
-            return Enumerable.Empty<KeyValuePair<(string, Type?), string>>().GetEnumerator();
+            return Enumerable.Empty<KeyValuePair<(string, Type), string>>().GetEnumerator();
         }
     }
 }

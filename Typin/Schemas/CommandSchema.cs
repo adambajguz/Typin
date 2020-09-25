@@ -191,7 +191,7 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.Property?.PropertyType, out string value))
+                    optionFallbackProvider.TryGetValue(v, option.Property!.PropertyType, out string value))
                 {
                     string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
 

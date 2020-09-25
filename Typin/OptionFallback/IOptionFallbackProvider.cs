@@ -6,13 +6,8 @@
     /// <summary>
     /// Option fallback value provider.
     /// </summary>
-    public interface IOptionFallbackProvider : IEnumerable<KeyValuePair<string, string>>, IEnumerable<KeyValuePair<(string, Type?), string>>
+    public interface IOptionFallbackProvider : IEnumerable<KeyValuePair<string, string>>, IEnumerable<KeyValuePair<(string, Type), string>>
     {
-        /// <summary>
-        /// Indicates whether the provider cannot return keys, values, and count due to dynamic key resolving.
-        /// </summary>
-        bool IsDynamic { get; }
-
         /// <summary>
         /// Gets an enumerable collection that contains the keys that can be used as a fallback.
         /// </summary>
@@ -43,7 +38,7 @@
         /// <param name="targetType">The target type.</param>
         /// <returns>The element that has the specified key in the read-only dictionary.</returns>
         /// <exception cref="KeyNotFoundException">The property is retrieved and key is not found.</exception>
-        string this[string key, Type? targetType] { get; }
+        string this[string key, Type targetType] { get; }
 
         /// <summary>
         /// Gets the raw value that is associated with the specified key.
@@ -60,6 +55,6 @@
         /// <param name="targetType">The target type.</param>
         /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter. This parameter is passed uninitialized.</param>
         /// <returns>true if contains an element that has the specified key; otherwise, false.</returns>
-        bool TryGetValue(string key, Type? targetType, out string value);
+        bool TryGetValue(string key, Type targetType, out string value);
     }
 }

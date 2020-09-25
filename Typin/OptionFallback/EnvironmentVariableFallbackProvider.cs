@@ -20,9 +20,6 @@
         }
 
         /// <inheritdoc/>
-        public bool IsDynamic => false;
-
-        /// <inheritdoc/>
         public IEnumerable<string> Keys => _environmentVariables.Keys;
 
         /// <inheritdoc/>
@@ -35,7 +32,7 @@
         public string this[string key] => _environmentVariables[key];
 
         /// <inheritdoc/>
-        public string this[string key, Type? targetType] => _environmentVariables[key];
+        public string this[string key, Type targetType] => _environmentVariables[key];
 
         /// <inheritdoc/>
         public bool TryGetValue(string key, out string value)
@@ -44,12 +41,9 @@
         }
 
         /// <inheritdoc/>
-        public bool TryGetValue(string key, Type? targetType, out string value)
+        public bool TryGetValue(string key, Type targetType, out string value)
         {
-            bool v = _environmentVariables.TryGetValue(key, out string str);
-            value = str;
-
-            return v;
+            return _environmentVariables.TryGetValue(key, out value);
         }
 
         /// <inheritdoc/>
@@ -65,7 +59,7 @@
         }
 
         /// <inheritdoc/>
-        IEnumerator<KeyValuePair<(string, Type?), string>> IEnumerable<KeyValuePair<(string, Type?), string>>.GetEnumerator()
+        IEnumerator<KeyValuePair<(string, Type), string>> IEnumerable<KeyValuePair<(string, Type), string>>.GetEnumerator()
         {
             throw new NotImplementedException();
         }
