@@ -1,0 +1,17 @@
+codecov:
+  max_report_age: 24h
+
+coverage:
+  precision: 2
+  round: down
+  status:
+    project:
+      default:
+        threshold: 0.2
+        if_not_found: success
+    patch:
+      default:
+        enabled: false
+    changes:
+      default:
+        if_not_found: success

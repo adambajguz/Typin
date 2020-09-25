@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command]
+    [Command(Description = "Default Command Description")]
     public class DefaultCommand : ICommand
     {
         [CommandParameter(0)]

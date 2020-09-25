@@ -35,12 +35,12 @@
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionSchema"/>.
         /// </summary>
-        internal CommandOptionSchema(PropertyInfo? property,
-                                     string? name,
-                                     char? shortName,
-                                     string? environmentVariableName,
-                                     bool isRequired,
-                                     string? description)
+        private CommandOptionSchema(PropertyInfo? property,
+                                    string? name,
+                                    char? shortName,
+                                    string? environmentVariableName,
+                                    bool isRequired,
+                                    string? description)
             : base(property, description)
         {
             Name = name;

@@ -32,9 +32,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
-        internal RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                            IReadOnlyDictionary<string, CommandSchema> commands,
-                            CommandSchema? defaultCommand)
+        private RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
+                           IReadOnlyDictionary<string, CommandSchema> commands,
+                           CommandSchema? defaultCommand)
         {
             Directives = directives;
             Commands = commands;
@@ -64,9 +64,9 @@
         /// <summary>
         /// Finds command schema by name.
         /// </summary>
-        public CommandSchema? TryFindCommand(string? commandName)
+        public CommandSchema? TryFindCommand(string? commandName, bool hasDefaultDirective)
         {
-            if (string.IsNullOrWhiteSpace(commandName))
+            if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
                 return DefaultCommand;
 
             Commands.TryGetValue(commandName, out CommandSchema value);

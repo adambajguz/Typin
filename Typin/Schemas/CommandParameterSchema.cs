@@ -20,7 +20,10 @@
         /// </summary>
         public string Name { get; }
 
-        internal CommandParameterSchema(PropertyInfo? property, int order, string name, string? description)
+        /// <summary>
+        /// Initializes an instance of <see cref="CommandParameterSchema"/>.
+        /// </summary>
+        private CommandParameterSchema(PropertyInfo? property, int order, string name, string? description)
             : base(property, description)
         {
             Order = order;

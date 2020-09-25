@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using Typin.Internal.Extensions;
 
@@ -51,14 +52,14 @@
         public bool IsVersionOptionSpecified => Options.Any(o => o.IsVersionOption);
 
         /// <summary>
-        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives other than [interactive]_.
+        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives other than [interactive].
         /// </summary>
         public bool IsDefaultCommandOrEmpty { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandInput"/>.
         /// </summary>
-        public CommandInput(bool isInteractiveDirectiveSpecified,
+        private CommandInput(bool isInteractiveDirectiveSpecified,
                             IReadOnlyList<DirectiveInput> directives,
                             string? commandName,
                             IReadOnlyList<CommandParameterInput> parameters,
@@ -165,8 +166,12 @@
 
         private static string? ParseCommandName(IReadOnlyList<string> commandLineArguments,
                                                 ISet<string> commandNames,
+                                                bool isDefaultDirectiveSpecified,
                                                 ref int index)
         {
+            if (isDefaultDirectiveSpecified)
+                return null;
+
             var buffer = new List<string>();
 
             string? commandName = null;
@@ -272,9 +277,12 @@
                 out bool isInteractiveDirectiveSpecified
             );
 
+            bool isDefaultDirectiveSpecified = directives.Where(x => x.Name == BuiltInDirectives.Default).Any();
+
             string? commandName = ParseCommandName(
                 commandLineArguments,
                 availableCommandNamesSet,
+                isDefaultDirectiveSpecified,
                 ref index
             );
 
@@ -290,16 +298,5 @@
 
             return new CommandInput(isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
         }
-    }
-
-    public partial class CommandInput
-    {
-        internal static CommandInput Empty { get; } = new CommandInput(
-            false,
-            Array.Empty<DirectiveInput>(),
-            null,
-            Array.Empty<CommandParameterInput>(),
-            Array.Empty<CommandOptionInput>()
-        );
     }
 }
