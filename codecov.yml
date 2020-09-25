@@ -10,7 +10,7 @@ coverage:
         threshold: 2%
     patch:
       default:
-        threshold: 2%
+        enabled: false
     changes:
       default:
-        threshold: 2%
+        enabled: false
