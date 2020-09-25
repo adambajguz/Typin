@@ -8,11 +8,11 @@
     using Typin.Console;
 
     /// <summary>
-    /// When application is ran in debug mode (using the [debug] directive), it will wait for debugger to be attached before proceeding.
+    /// When application runs in debug mode (using the [debug] directive), it will wait for debugger to be attached before proceeding.
     /// This is useful for debugging apps that were ran outside of the IDE.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive("debug", Description = "Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
+    [Directive(BuiltInDirectives.Debug, Description = "Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
     public sealed class DebugDirective : IDirective
     {
         /// <inheritdoc/>

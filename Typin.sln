@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		.gitignore = .gitignore
 		.github\workflows\CD.yml = .github\workflows\CD.yml
 		.github\workflows\CI.yml = .github\workflows\CI.yml
+		codecov.yml = codecov.yml
 		Typin.props = Typin.props
 	EndProjectSection
 EndProject

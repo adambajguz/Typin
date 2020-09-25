@@ -77,7 +77,18 @@
             CommandInput input = _cliContext.Input;
 
             // Try to get the command matching the input or fallback to default
-            CommandSchema command = root.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
+            bool hasDefaultDirective = input.HasDirective(BuiltInDirectives.Default);
+            CommandSchema command = root.TryFindCommand(input.CommandName, hasDefaultDirective) ?? StubDefaultCommand.Schema;
+
+            // Forbid to execute real default command in interactive mode without [!] directive.
+            if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
+                _cliContext.IsInteractiveMode && command.IsDefault && !hasDefaultDirective)
+            {
+                command = StubDefaultCommand.Schema;
+            }
+            //TODO: default is not executed for [!] book
+
+            // Update CommandSchema
             _cliContext.CommandSchema = command;
 
             // Version option
@@ -127,8 +138,8 @@
             }
 
             // Help option
-            if (command.IsHelpOptionAvailable && input.IsHelpOptionSpecified ||
-                command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any())
+            if ((command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
+                (command == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
                 _helpTextWriter.Write(root, command, defaultValues); //TODO: add directives help?
 

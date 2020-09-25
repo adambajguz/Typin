@@ -40,8 +40,8 @@
 It is build based on the code of [CliFx](https://github.com/Tyrrrz/CliFx). Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
 This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
 
-An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework.
-The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications.
+Typin is not just a parser but a complete application framework. 
+Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
 
 ## Features
 

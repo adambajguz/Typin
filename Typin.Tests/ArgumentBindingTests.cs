@@ -1,8 +1,10 @@
 ﻿namespace Typin.Tests
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
+    using Typin.Directives;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Internal;
     using Xunit;
@@ -241,6 +243,32 @@
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
 
             _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Named_command_should_execute_even_when_default_takes_a_parameter()
+        {
+            // Arrange
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<DefaultCommandWithParameter>()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<DefaultDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "named" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
+
+            _output.WriteLine(stdOut.GetString());
         }
     }
 }

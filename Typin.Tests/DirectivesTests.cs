@@ -131,6 +131,34 @@
         }
 
         [Fact]
+        public async Task Default_directive_should_allow_default_command_to_execute_when_there_is_a_name_conflict()
+        {
+            // Arrange
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<DefaultCommandWithParameter>()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<DefaultDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[!]", "named" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll(
+                "named", DefaultCommandWithParameter.ExpectedOutputText
+            );
+
+            _output.WriteLine(stdOut.GetString());
+        }
+
+        [Fact]
         public async Task Custom_interactive_directive_should_not_run_in_normal_mode()
         {
             // Arrange
