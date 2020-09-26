@@ -130,6 +130,7 @@
                 RootSchema root = RootSchema.Resolve(_configuration.CommandTypes, _configuration.DirectiveTypes);
                 CliContext.RootSchema = root;
 
+                //TODO: when in commandLineArguments is a string.Empty application crashes
                 int exitCode = await ParseInput(commandLineArguments, root);
 
                 return exitCode;
