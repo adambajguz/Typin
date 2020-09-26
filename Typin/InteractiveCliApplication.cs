@@ -46,6 +46,7 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         protected override async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
                                                       RootSchema root)
         {
