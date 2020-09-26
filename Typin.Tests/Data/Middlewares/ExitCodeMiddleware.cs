@@ -8,6 +8,8 @@
 
     public sealed class ExitCodeMiddleware : IMiddleware
     {
+        public const string ExpectedOutput = "Command finished succesfully.";
+
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             await next();
@@ -17,7 +19,7 @@
 
             if (context.ExitCode == 0)
                 context.Console.WithForegroundColor(ConsoleColor.White, () =>
-                    context.Console.Output.WriteLine($"{context.Metadata.ExecutableName}: Command finished succesfully."));
+                    context.Console.Output.WriteLine($"{context.Metadata.ExecutableName}: {ExpectedOutput}."));
             else
                 context.Console.WithForegroundColor(ConsoleColor.White, () =>
                     context.Console.Output.WriteLine($"{context.Metadata.ExecutableName}: Command finished with exit code ({exitCode})."));

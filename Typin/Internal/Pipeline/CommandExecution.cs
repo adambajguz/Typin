@@ -1,4 +1,4 @@
-﻿namespace Typin.Pipeline
+﻿namespace Typin.Internal.Pipeline
 {
     using System;
     using System.Collections.Generic;

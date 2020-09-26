@@ -16,7 +16,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.401
+        dotnet-version: 3.1.402
 
     - name: Pack
       run: dotnet pack Typin --configuration Release

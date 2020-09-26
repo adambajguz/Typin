@@ -5,13 +5,12 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Input;
-    using Typin.Internal.Extensions;
+    using Typin.Internal;
     using Typin.Schemas;
 
     /// <summary>
@@ -19,11 +18,6 @@
     /// </summary>
     public partial class CliApplication
     {
-        /// <summary>
-        /// Services provider.
-        /// </summary>
-        protected IServiceProvider ServiceProvider { get; }
-
         /// <summary>
         /// Service scope factory.
         /// <remarks>
@@ -41,16 +35,12 @@
         private readonly ApplicationConfiguration _configuration;
         private readonly IConsole _console;
 
-        private readonly LinkedList<Type> _middlewareTypes;
-
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        public CliApplication(LinkedList<Type> middlewareTypes,
-                              IServiceProvider serviceProvider,
+        public CliApplication(IServiceProvider serviceProvider,
                               CliContext cliContext)
         {
-            ServiceProvider = serviceProvider;
             ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
             CliContext = cliContext;
@@ -58,25 +48,6 @@
             _metadata = cliContext.Metadata;
             _configuration = cliContext.Configuration;
             _console = cliContext.Console;
-
-            _middlewareTypes = middlewareTypes;
-        }
-
-        private (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) GetMiddlewarePipeline(IServiceScope serviceScope, LinkedList<Type> middlewareTypes)
-        {
-            CancellationToken cancellationToken = _console.GetCancellationToken();
-            CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
-
-            LinkedList<IMiddleware> middlewareComponenets = new LinkedList<IMiddleware>();
-            foreach (Type middlewareType in middlewareTypes)
-            {
-                IMiddleware instance = (IMiddleware)serviceScope.ServiceProvider.GetRequiredService(middlewareType);
-                next = instance.Next(CliContext, next, cancellationToken);
-
-                middlewareComponenets.AddFirst(instance);
-            }
-
-            return (middlewareComponenets, next);
         }
 
         /// <summary>
@@ -153,7 +124,8 @@
                 RootSchema root = RootSchema.Resolve(_configuration.CommandTypes, _configuration.DirectiveTypes);
                 CliContext.RootSchema = root;
 
-                int exitCode = await PreExecuteCommand(commandLineArguments, root);
+                //TODO: when in commandLineArguments is a string.Empty application crashes
+                int exitCode = await ParseInput(commandLineArguments, root);
 
                 return exitCode;
             }
@@ -172,11 +144,12 @@
 
         #region Execute command
         /// <summary>
-        /// Runs before command execution.
+        /// Parses input before pipeline execution.
         /// </summary>
-        protected virtual async Task<int> PreExecuteCommand(IReadOnlyList<string> commandLineArguments,
-                                                            RootSchema root)
+        protected virtual async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
+                                                     RootSchema root)
         {
+            //TODO: CommandInput.Parse as middleware step
             CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;
 
@@ -188,23 +161,12 @@
         /// </summary>
         protected async Task<int> ExecuteCommand()
         {
-            // Create service scope
-            using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
+            using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
             {
-                (LinkedList<IMiddleware> middlewares, CommandPipelineHandlerDelegate runPipelineAsync) = GetMiddlewarePipeline(serviceScope, _middlewareTypes);
-                await runPipelineAsync();
+                await executionScope.RunPipelineAsync();
+
+                return CliContext.ExitCode ??= ExitCodes.Error;
             }
-
-            //TODO: CliContext.BeginExecutionContext() would be more elegant
-            CliContext.Input = default!;
-            CliContext.Command = default!;
-            CliContext.CommandDefaultValues = default!;
-            CliContext.CommandSchema = default!;
-
-            int exitCode = CliContext.ExitCode ??= ExitCodes.Error;
-            CliContext.ExitCode = null;
-
-            return exitCode;
         }
         #endregion
     }

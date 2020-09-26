@@ -6,6 +6,7 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Exceptions;
     using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
@@ -109,10 +110,7 @@
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .AddDirective<CustomDirective>()
+                .AddDirectivesFrom(typeof(DefaultCommand).Assembly)
                 .UseTitle("test")
                 .UseExecutableName("test")
                 .UseVersionText("test")
@@ -139,8 +137,7 @@
                .AddCommandsFromThisAssembly()
                .AddDirective<DebugDirective>()
                .AddDirective<PreviewDirective>()
-               .AddDirective<CustomInteractiveModeOnlyDirective>()
-               .AddDirective<CustomDirective>()
+               .AddDirectivesFromThisAssembly()
                .UseTitle("test")
                .UseExecutableName("test")
                .UseVersionText("test")
@@ -169,14 +166,11 @@
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddCommandsFromThisAssembly()
+                .AddDirectivesFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .AddDirective<CustomDirective>()
-                .UseTitle("test")
-                .UseExecutableName("test")
-                .UseVersionText("test")
-                .UseDescription("test")
                 .UseConsole(console)
                 .Build();
 
@@ -197,6 +191,7 @@
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddCommandsFromThisAssembly()
+                .UseExceptionHandler(new DefaultExceptionHandler())
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
@@ -206,6 +201,7 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(console)
+                .UseCommandInputForeground(ConsoleColor.Yellow)
                 .Build();
 
             // Assert
@@ -236,6 +232,7 @@
                        .AddCommands(new[] { typeof(DefaultCommand) })
                        .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                        .AddCommandsFromThisAssembly()
+                       .UseExceptionHandler<DefaultExceptionHandler>()
                        .AddDirective<DebugDirective>()
                        .AddDirective<PreviewDirective>()
                        .AddDirective<CustomInteractiveModeOnlyDirective>()

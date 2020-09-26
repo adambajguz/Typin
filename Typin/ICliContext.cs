@@ -1,5 +1,6 @@
 ﻿namespace Typin
 {
+    using System;
     using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.AutoCompletion;
@@ -41,6 +42,11 @@
         /// Service collection.
         /// </summary>
         IEnumerable<ServiceDescriptor> Services { get; }
+
+        /// <summary>
+        /// Collection of middlewares in application.
+        /// </summary>
+        IReadOnlyCollection<Type> Middlewares { get; }
 
         /// <summary>
         /// Console instance.

@@ -155,6 +155,7 @@
 
             var application = new CliApplicationBuilder()
                 .UseConsole(console)
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .Build();
 
             // Act
@@ -175,6 +176,7 @@
 
             var application = new CliApplicationBuilder()
                 .AddCommand(typeof(NonImplementedCommand))
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .UseConsole(console)
                 .Build();
 
