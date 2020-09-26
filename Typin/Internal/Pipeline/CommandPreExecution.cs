@@ -148,7 +148,7 @@
                 return ExitCodes.Success;
             }
 
-            // Handle directives not supported in normal mode
+            // Handle commands not supported in normal mode
             if (!_configuration.IsInteractiveModeAllowed && command.InteractiveModeOnly)
             {
                 throw TypinException.InteractiveOnlyCommandButThisIsNormalApplication(command);
