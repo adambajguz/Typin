@@ -508,6 +508,8 @@ namespace Typin
             }
 
             // Add core middlewares
+            UseMiddleware<CommandPreExecution>();
+            UseMiddleware<CommandArgumentsBinding>();
             UseMiddleware<CommandExecution>();
 
             // Create context
