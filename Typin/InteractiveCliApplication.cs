@@ -23,13 +23,12 @@
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveCliApplication"/>.
         /// </summary>
-        public InteractiveCliApplication(LinkedList<Type> middlewareTypes,
-                                         IServiceProvider serviceProvider,
+        public InteractiveCliApplication(IServiceProvider serviceProvider,
                                          CliContext cliContext,
                                          ConsoleColor promptForeground,
                                          ConsoleColor commandForeground,
                                          HashSet<ShortcutDefinition> userDefinedShortcut) :
-            base(middlewareTypes, serviceProvider, cliContext)
+            base(serviceProvider, cliContext)
         {
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
@@ -47,8 +46,8 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task<int> PreExecuteCommand(IReadOnlyList<string> commandLineArguments,
-                                                             RootSchema root)
+        protected override async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
+                                                      RootSchema root)
         {
             CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;

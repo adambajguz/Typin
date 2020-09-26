@@ -2,10 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
+    using Typin.Internal;
+    using Typin.Internal.Extensions;
     using Typin.Schemas;
 
     /// <inheritdoc/>
@@ -43,6 +46,11 @@
 
         /// <inheritdoc/>
         public IConsole Console { get; }
+
+        /// <summary>
+        /// Collection of middlewares in application.
+        /// </summary>
+        internal LinkedList<Type> Middlewares { get; } //IEnumerable<MiddlewareDescriptor>?
 
         /// <inheritdoc/>
         public RootSchema RootSchema
@@ -95,13 +103,20 @@
         public CliContext(ApplicationMetadata metadata,
                           ApplicationConfiguration applicationConfiguration,
                           ServiceCollection serviceCollection,
-                          IConsole console)
+                          IConsole console,
+                          LinkedList<Type> middlewareTypes)
         {
             IsInteractiveMode = false;
             Metadata = metadata;
             Configuration = applicationConfiguration;
             Services = serviceCollection;
             Console = console;
+            Middlewares = middlewareTypes;
+        }
+
+        internal CliExecutionScope BeginExecutionScope(IServiceScopeFactory serviceScopeFactory)
+        {
+            return new CliExecutionScope(this, serviceScopeFactory);
         }
     }
 }

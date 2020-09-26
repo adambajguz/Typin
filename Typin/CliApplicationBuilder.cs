@@ -519,32 +519,31 @@ namespace Typin
                                                              _useAdvancedInput);
 
             var _serviceCollection = new ServiceCollection();
-            CliContext cliContext = new CliContext(metadata, configuration, _serviceCollection, _console);
+            var cliContext = new CliContext(metadata, configuration, _serviceCollection, _console, _middlewareTypes);
 
-            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection, metadata, configuration, cliContext);
+            // Add core services
+            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
+            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
+            _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
+            _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
+
+            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
             // Create application instance
             if (_useInteractiveMode)
             {
-                return new InteractiveCliApplication(_middlewareTypes,
-                                                     serviceProvider,
+                return new InteractiveCliApplication(serviceProvider,
                                                      cliContext,
                                                      _promptForeground,
                                                      _commandForeground,
                                                      _userDefinedShortcuts);
             }
 
-            return new CliApplication(_middlewareTypes, serviceProvider, cliContext);
+            return new CliApplication(serviceProvider, cliContext);
         }
 
-        private IServiceProvider CreateServiceProvider(ServiceCollection services, ApplicationMetadata metadata, ApplicationConfiguration configuration, CliContext cliContext)
+        private IServiceProvider CreateServiceProvider(ServiceCollection services)
         {
-            // Add core services
-            services.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
-            services.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
-            services.AddSingleton(typeof(ICliContext), (provider) => cliContext);
-            services.AddSingleton(typeof(IConsole), (provider) => _console);
-
             foreach (Action<IServiceCollection> configureServicesAction in _configureServicesActions)
             {
                 configureServicesAction(services);
