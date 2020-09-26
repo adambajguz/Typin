@@ -3,10 +3,12 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Environment variable fallback value provider.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class EnvironmentVariableFallbackProvider : IOptionFallbackProvider
     {
         private readonly IReadOnlyDictionary<string, string> _environmentVariables;
