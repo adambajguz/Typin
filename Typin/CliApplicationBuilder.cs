@@ -15,7 +15,7 @@ namespace Typin
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.OptionFallback;
-    using Typin.Pipeline;
+    using Typin.Internal.Pipeline;
     using Typin.Schemas;
 
     /// <summary>

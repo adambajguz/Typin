@@ -2,13 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Internal;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
 
     /// <inheritdoc/>
@@ -45,12 +43,15 @@
         public IEnumerable<ServiceDescriptor> Services { get; }
 
         /// <inheritdoc/>
-        public IConsole Console { get; }
+        public IReadOnlyCollection<Type> Middlewares => MiddlewareTypes;
 
         /// <summary>
         /// Collection of middlewares in application.
         /// </summary>
-        internal LinkedList<Type> Middlewares { get; } //IEnumerable<MiddlewareDescriptor>?
+        internal LinkedList<Type> MiddlewareTypes { get; }
+
+        /// <inheritdoc/>
+        public IConsole Console { get; }
 
         /// <inheritdoc/>
         public RootSchema RootSchema
@@ -111,7 +112,7 @@
             Configuration = applicationConfiguration;
             Services = serviceCollection;
             Console = console;
-            Middlewares = middlewareTypes;
+            MiddlewareTypes = middlewareTypes;
         }
 
         internal CliExecutionScope BeginExecutionScope(IServiceScopeFactory serviceScopeFactory)
