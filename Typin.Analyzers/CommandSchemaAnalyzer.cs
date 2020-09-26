@@ -138,18 +138,11 @@
                         .Select(a => a.Value)
                         .FirstOrDefault() as char?;
 
-                    var envVarName = attribute
-                        .NamedArguments
-                        .Where(a => a.Key == "EnvironmentVariableName")
-                        .Select(a => a.Value.Value)
-                        .FirstOrDefault() as string;
-
                     return new
                     {
                         Property = p,
                         Name = name,
-                        ShortName = shortName,
-                        EnvironmentVariableName = envVarName
+                        ShortName = shortName
                     };
                 })
                 .ToArray();
