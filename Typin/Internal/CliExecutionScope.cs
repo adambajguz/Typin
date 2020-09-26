@@ -18,7 +18,7 @@
             ServiceScope = serviceScopeFactory.CreateScope();
         }
 
-        internal async Task RunPipelineAsync()
+        public async Task RunPipelineAsync()
         {
             IServiceProvider serviceProvider = ServiceScope.ServiceProvider;
             LinkedList<Type> middlewareTypes = Context.MiddlewareTypes;
