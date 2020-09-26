@@ -19,11 +19,6 @@
     public partial class CliApplication
     {
         /// <summary>
-        /// Services provider.
-        /// </summary>
-        protected IServiceProvider ServiceProvider { get; }
-
-        /// <summary>
         /// Service scope factory.
         /// <remarks>
         /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
@@ -46,7 +41,6 @@
         public CliApplication(IServiceProvider serviceProvider,
                               CliContext cliContext)
         {
-            ServiceProvider = serviceProvider;
             ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
             CliContext = cliContext;
