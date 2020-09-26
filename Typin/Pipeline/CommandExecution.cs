@@ -11,18 +11,21 @@
     using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal;
+    using Typin.OptionFallback;
     using Typin.Schemas;
 
     internal class CommandExecution : IMiddleware
     {
         private readonly CliContext _cliContext;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IOptionFallbackProvider _optionFallbackProvider;
         private readonly HelpTextWriter _helpTextWriter;
 
-        public CommandExecution(ICliContext cliContext, IServiceProvider serviceProvider)
+        public CommandExecution(ICliContext cliContext, IServiceProvider serviceProvider, IOptionFallbackProvider optionFallbackProvider)
         {
             _cliContext = (CliContext)cliContext;
             _serviceProvider = serviceProvider;
+            _optionFallbackProvider = optionFallbackProvider;
             _helpTextWriter = new HelpTextWriter(cliContext);
         }
 
@@ -86,7 +89,6 @@
             {
                 command = StubDefaultCommand.Schema;
             }
-            //TODO: default is not executed for [!] book
 
             // Update CommandSchema
             _cliContext.CommandSchema = command;
@@ -160,7 +162,7 @@
             // Bind arguments
             try
             {
-                command.Bind(instance, input, _cliContext.EnvironmentVariables);
+                command.Bind(instance, input, _optionFallbackProvider);
             }
             // This may throw exceptions which are useful only to the end-user
             catch (TypinException ex)

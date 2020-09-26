@@ -11,6 +11,7 @@
     using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Extensions;
+    using Typin.OptionFallback;
 
     /// <summary>
     /// Stores command schema.
@@ -170,7 +171,7 @@
 
         private void BindOptions(ICommand instance,
                                  IReadOnlyList<CommandOptionInput> optionInputs,
-                                 IReadOnlyDictionary<string, string> environmentVariables)
+                                 IOptionFallbackProvider optionFallbackProvider)
         {
             // All inputs must be bound
             List<CommandOptionInput> remainingOptionInputs = optionInputs.ToList();
@@ -179,27 +180,27 @@
             List<CommandOptionSchema> unsetRequiredOptions = Options.Where(o => o.IsRequired)
                                                                     .ToList();
 
-            // Environment variables
-            foreach ((string name, string value) in environmentVariables)
-            {
-                CommandOptionSchema? option = Options.FirstOrDefault(o => o.MatchesEnvironmentVariableName(name));
-                if (option is null)
-                    continue;
-
-                string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
-
-                option.BindOn(instance, values);
-                unsetRequiredOptions.Remove(option);
-            }
-
-            // Direct input
+            // Direct or fallback input
             foreach (CommandOptionSchema option in Options)
             {
                 CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
                                                           .ToArray();
 
-                // Skip if the inputs weren't provided for this option
-                if (!inputs.Any())
+                bool inputsProvided = inputs.Any();
+
+                // Check fallback value
+                if (!inputsProvided &&
+                    option.FallbackVariableName is string v &&
+                    optionFallbackProvider.TryGetValue(v, option.Property!.PropertyType, out string value))
+                {
+                    string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
+
+                    option.BindOn(instance, values);
+                    unsetRequiredOptions.Remove(option);
+
+                    continue;
+                }
+                else if (!inputsProvided) // Skip if the inputs weren't provided for this option
                     continue;
 
                 string[] inputValues = inputs.SelectMany(i => i.Values)
@@ -225,10 +226,10 @@
 
         internal void Bind(ICommand instance,
                            CommandInput input,
-                           IReadOnlyDictionary<string, string> environmentVariables)
+                           IOptionFallbackProvider optionFallbackProvider)
         {
             BindParameters(instance, input.Parameters);
-            BindOptions(instance, input.Options, environmentVariables);
+            BindOptions(instance, input.Options, optionFallbackProvider);
         }
 
         internal string GetInternalDisplayString()
@@ -367,8 +368,8 @@
             }
 
             IGrouping<string, CommandOptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.EnvironmentVariableName))
-                .GroupBy(o => o.EnvironmentVariableName!, StringComparer.OrdinalIgnoreCase)
+                .Where(o => !string.IsNullOrWhiteSpace(o.FallbackVariableName))
+                .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateEnvironmentVariableNameGroup != null)

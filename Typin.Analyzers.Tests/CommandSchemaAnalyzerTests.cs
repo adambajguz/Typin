@@ -92,7 +92,7 @@ public class MyCommand : ICommand
 {
     [CommandParameter(13, Name = ""foo"")]
     public string ParamA { get; set; }
-    
+
     [CommandParameter(15, Name = ""bar"")]
     public string ParamB { get; set; }
 
@@ -196,7 +196,7 @@ public class MyCommand : ICommand
 {
     [CommandOption(""foo"")]
     public string ParamA { get; set; }
-    
+
     [CommandOption(""bar"")]
     public string ParamB { get; set; }
 
@@ -220,28 +220,6 @@ public class MyCommand : ICommand
     public string ParamA { get; set; }
     
     [CommandOption('x')]
-    public string ParamB { get; set; }
-
-    public ValueTask ExecuteAsync(IConsole console) => default;
-}"
-                )
-            };
-
-            yield return new object[]
-            {
-                new AnalyzerTestCase(
-                    "Options with unique environment variable names",
-                    Analyzer.SupportedDiagnostics,
-
-                    // language=cs
-                    @"
-[Command]
-public class MyCommand : ICommand
-{
-    [CommandOption('a', EnvironmentVariableName = ""env_var_a"")]
-    public string ParamA { get; set; }
-    
-    [CommandOption('b', EnvironmentVariableName = ""env_var_b"")]
     public string ParamB { get; set; }
 
     public ValueTask ExecuteAsync(IConsole console) => default;
@@ -318,7 +296,7 @@ public class MyCommand : ICommand
 {
     [CommandParameter(13, Name = ""foo"")]
     public string ParamA { get; set; }
-    
+
     [CommandParameter(15, Name = ""foo"")]
     public string ParamB { get; set; }
 
@@ -422,7 +400,7 @@ public class MyCommand : ICommand
 {
     [CommandOption(""foo"")]
     public string ParamA { get; set; }
-    
+
     [CommandOption(""foo"")]
     public string ParamB { get; set; }
 
@@ -446,28 +424,6 @@ public class MyCommand : ICommand
     public string ParamA { get; set; }
     
     [CommandOption('f')]
-    public string ParamB { get; set; }
-
-    public ValueTask ExecuteAsync(IConsole console) => default;
-}"
-                )
-            };
-
-            yield return new object[]
-            {
-                new AnalyzerTestCase(
-                    "Options with duplicate environment variable names",
-                    DiagnosticDescriptors.Typin0045,
-
-                    // language=cs
-                    @"
-[Command]
-public class MyCommand : ICommand
-{
-    [CommandOption('a', EnvironmentVariableName = ""env_var"")]
-    public string ParamA { get; set; }
-    
-    [CommandOption('b', EnvironmentVariableName = ""env_var"")]
     public string ParamB { get; set; }
 
     public ValueTask ExecuteAsync(IConsole console) => default;

@@ -14,6 +14,7 @@ namespace Typin
     using Typin.Exceptions;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
+    using Typin.OptionFallback;
     using Typin.Pipeline;
     using Typin.Schemas;
 
@@ -55,6 +56,8 @@ namespace Typin
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
+
+        // Value fallback
 
         #region Directives
         /// <summary>
@@ -443,6 +446,30 @@ namespace Typin
         }
         #endregion
 
+        #region Value fallback
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), fallbackProviderType, lifetime));
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where T : IOptionFallbackProvider
+        {
+            return UseOptionFallbackProvider(typeof(T), lifetime);
+        }
+        #endregion
+
         /// <summary>
         /// Creates an instance of <see cref="CliApplication"/> or <see cref="InteractiveCliApplication"/> using configured parameters.
         /// Default values are used in place of parameters that were not specified.
@@ -522,9 +549,9 @@ namespace Typin
             {
                 configureServicesAction(services);
             }
+            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
 
             object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
-
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
             {
                 containerAction.ConfigureContainer(containerBuilder);

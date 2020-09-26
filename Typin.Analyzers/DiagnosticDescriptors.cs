@@ -65,12 +65,6 @@
                 "Option short name must be unique within its command",
                 "Usage", DiagnosticSeverity.Error, true);
 
-        public static readonly DiagnosticDescriptor Typin0045 =
-            new DiagnosticDescriptor(nameof(Typin0045),
-                "Option environment variable name must be unique within its command",
-                "Option environment variable name must be unique within its command",
-                "Usage", DiagnosticSeverity.Error, true);
-
         public static readonly DiagnosticDescriptor Typin0100 =
             new DiagnosticDescriptor(nameof(Typin0100),
                 "Use the provided IConsole abstraction instead of System.Console to ensure that the command can be tested in isolation",

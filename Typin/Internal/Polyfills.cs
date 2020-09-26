@@ -3,8 +3,6 @@
 // Polyfills to bridge the missing APIs in older versions of the framework/standard.
 
 #if NETSTANDARD2_0
-using System.Linq;
-
 namespace System
 {
     using Linq;
@@ -35,6 +33,8 @@ namespace System
 
 namespace System.Collections.Generic
 {
+    using System.Linq;
+
     internal static class Extensions
     {
         public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> pair, out TKey key, out TValue value)

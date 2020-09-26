@@ -23,9 +23,9 @@
         public char? ShortName { get; }
 
         /// <summary>
-        /// Name of environment variable used as a fallback value.
+        /// Name of variable used as a fallback value.
         /// </summary>
-        public string? EnvironmentVariableName { get; }
+        public string? FallbackVariableName { get; }
 
         /// <summary>
         /// Whether option is required.
@@ -38,14 +38,14 @@
         private CommandOptionSchema(PropertyInfo? property,
                                     string? name,
                                     char? shortName,
-                                    string? environmentVariableName,
+                                    string? fallbackVariableName,
                                     bool isRequired,
                                     string? description)
             : base(property, description)
         {
             Name = name;
             ShortName = shortName;
-            EnvironmentVariableName = environmentVariableName;
+            FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
         }
 
@@ -73,15 +73,6 @@
         {
             return MatchesName(alias) ||
                    alias.Length == 1 && MatchesShortName(alias.Single());
-        }
-
-        /// <summary>
-        /// Whether command's environment variable matches the passed environment variable name.
-        /// </summary>
-        public bool MatchesEnvironmentVariableName(string environmentVariableName)
-        {
-            return !string.IsNullOrWhiteSpace(EnvironmentVariableName) &&
-                   string.Equals(EnvironmentVariableName, environmentVariableName, StringComparison.Ordinal);
         }
 
         internal string GetUserFacingDisplayString()
@@ -131,7 +122,7 @@
                 property,
                 name,
                 attribute.ShortName,
-                attribute.EnvironmentVariableName,
+                attribute.FallbackVariableName,
                 attribute.IsRequired,
                 attribute.Description
             );

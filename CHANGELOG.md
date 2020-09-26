@@ -6,6 +6,8 @@
 - Renamed `[default]` directive to `[!]`.
 - `[!]` directive is now required to execute user-defined default command. However, `-h`, `--help`, `--version` will still work without `[!]` directive.
 - Improvements in `Ctrl+[Delete/Backspace/ArrowLeft/ArrowRight]` handling.
+- Renamed `EnvironmentVariableName` to `FallbackVariableName`.
+- Added `IOptionFallbackProvider`, as well as `EnvironmentVariableFallbackProvider` as default implementation of `IOptionFallbackProvider` and `EmptyFallbackProvider` that can be used to disable fallback.
 
 ### v1.0.1 (23-Aug-2020)
 

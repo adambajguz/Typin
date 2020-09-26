@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Typin.Input
+﻿namespace Typin.Input
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Stores command directive input.
     /// </summary>
