@@ -1,6 +1,7 @@
 ﻿namespace InteractiveModeExample
 {
     using System.Threading.Tasks;
+    using InteractiveModeExample.Directives;
     using InteractiveModeExample.Middlewares;
     using InteractiveModeExample.Services;
     using Microsoft.Extensions.DependencyInjection;

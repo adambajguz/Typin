@@ -1,4 +1,4 @@
-﻿namespace InteractiveModeExample
+﻿namespace InteractiveModeExample.Directives
 {
     using System.Threading.Tasks;
     using Typin;
