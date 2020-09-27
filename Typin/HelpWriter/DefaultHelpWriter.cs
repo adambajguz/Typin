@@ -11,9 +11,9 @@
     using Typin.Utilities;
 
     /// <summary>
-    /// Default implementation of <see cref="IHelpTextWriter"/> that prints help to console.
+    /// Default implementation of <see cref="IHelpWriter"/> that prints help to console.
     /// </summary>
-    public partial class DefaultHelpTextWriter : IHelpTextWriter
+    public partial class DefaultHelpWriter : IHelpWriter
     {
         private const ConsoleColor TitleColor = ConsoleColor.Yellow;
         private const ConsoleColor VersionColor = ConsoleColor.Yellow;
@@ -27,7 +27,7 @@
         private const ConsoleColor RequiredParameterNameColor = ConsoleColor.White;
         private const ConsoleColor OptionNameColor = ConsoleColor.White;
 
-        private readonly ICliContext _cliContext;
+        private readonly ICliContext _context;
         private readonly IConsole _console;
 
         private int _column;
@@ -36,14 +36,43 @@
         private bool IsEmpty => _column == 0 && _row == 0;
 
         /// <summary>
-        /// Initializes an instance of <see cref="DefaultHelpTextWriter"/>.
+        /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpTextWriter(ICliContext cliContext)
+        public DefaultHelpWriter(ICliContext cliContext)
         {
-            _cliContext = cliContext;
+            _context = cliContext;
             _console = cliContext.Console;
         }
 
+        /// <inheritdoc/>
+        public void Write()
+        {
+            Write(_context.CommandSchema, _context.CommandDefaultValues);
+        }
+
+        /// <inheritdoc/>
+        public void Write(CommandSchema command,
+                          IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
+        {
+            RootSchema root = _context.RootSchema;
+            IReadOnlyList<CommandSchema> childCommands = root.GetChildCommands(command.Name);
+
+            _console.ResetColor();
+            _console.ForegroundColor = ConsoleColor.Gray;
+
+            if (command.IsDefault)
+                WriteApplicationInfo();
+
+            WriteCommandDescription(command);
+            WriteCommandUsage(root.Directives, command, childCommands);
+            WriteCommandParameters(command);
+            WriteCommandOptions(command, defaultValues);
+            WriteCommandChildren(command, childCommands);
+            WriteDirectivesManual(root.Directives);
+            WriteCommandManual(command);
+        }
+
+        #region Console Output Helpers
         private void Write(char value)
         {
             _console.Output.Write(value);
@@ -92,10 +121,12 @@
             Write(HeaderColor, text);
             WriteLine();
         }
+        #endregion
 
+        #region Application Info
         private void WriteApplicationInfo()
         {
-            ApplicationMetadata metadata = _cliContext.Metadata;
+            ApplicationMetadata metadata = _context.Metadata;
 
             // Title and version
             Write(TitleColor, metadata.Title);
@@ -111,7 +142,9 @@
                 WriteLine();
             }
         }
+        #endregion
 
+        #region Directives
         private void WriteDirectivesManual(IReadOnlyDictionary<string, DirectiveSchema> directives)
         {
             if (directives.Count == 0)
@@ -151,7 +184,9 @@
             WriteColumnMargin();
             Write(directive.Description);
         }
+        #endregion
 
+        #region Command
         private void WriteCommandDescription(CommandSchema command)
         {
             if (string.IsNullOrWhiteSpace(command.Description))
@@ -204,8 +239,8 @@
             else
                 WriteHorizontalMargin();
 
-            if (!command.InteractiveModeOnly && !_cliContext.IsInteractiveMode)
-                Write(_cliContext.Metadata.ExecutableName);
+            if (!command.InteractiveModeOnly && !_context.IsInteractiveMode)
+                Write(_context.Metadata.ExecutableName);
 
             // Child command placeholder
             if (directives.Any())
@@ -232,9 +267,7 @@
             foreach (CommandParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
-                Write(parameter.IsScalar
-                    ? $"<{parameter.Name}>"
-                    : $"<{parameter.Name}...>"
+                Write(parameter.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>"
                 );
             }
 
@@ -242,15 +275,11 @@
             foreach (CommandOptionSchema option in command.Options.Where(o => o.IsRequired))
             {
                 Write(' ');
-                Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name)
-                    ? $"--{option.Name}"
-                    : $"-{option.ShortName}"
+                Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}"
                 );
 
                 Write(' ');
-                Write(option.IsScalar
-                    ? "<value>"
-                    : "<values...>"
+                Write(option.IsScalar ? "<value>" : "<values...>"
                 );
             }
 
@@ -371,7 +400,9 @@
                 WriteLine();
             }
         }
+        #endregion
 
+        #region Command Children
         private void WriteCommandChildren(CommandSchema command,
                                           IReadOnlyList<CommandSchema> childCommands)
         {
@@ -414,9 +445,9 @@
             WriteVerticalMargin();
             Write("You can run `");
 
-            bool isNormalMode = !command.InteractiveModeOnly && !_cliContext.IsInteractiveMode;
+            bool isNormalMode = !command.InteractiveModeOnly && !_context.IsInteractiveMode;
             if (isNormalMode)
-                Write(_cliContext.Metadata.ExecutableName);
+                Write(_context.Metadata.ExecutableName);
 
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
@@ -438,38 +469,9 @@
 
             WriteLine();
         }
+        #endregion
 
-        /// <inheritdoc/>
-        public void Write()
-        {
-            Write(_cliContext.CommandSchema, _cliContext.CommandDefaultValues);
-        }
-
-        /// <inheritdoc/>
-        public void Write(CommandSchema command,
-                          IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
-        {
-            RootSchema root = _cliContext.RootSchema;
-            IReadOnlyList<CommandSchema> childCommands = root.GetChildCommands(command.Name);
-
-            _console.ResetColor();
-            _console.ForegroundColor = ConsoleColor.Gray;
-
-            if (command.IsDefault)
-                WriteApplicationInfo();
-
-            WriteCommandDescription(command);
-            WriteCommandUsage(root.Directives, command, childCommands);
-            WriteCommandParameters(command);
-            WriteCommandOptions(command, defaultValues);
-            WriteCommandChildren(command, childCommands);
-            WriteDirectivesManual(root.Directives);
-            WriteCommandManual(command);
-        }
-    }
-
-    public partial class DefaultHelpTextWriter
-    {
+        #region Helpers
         private static string FormatValidValues(IReadOnlyList<string> values)
         {
             return values.Select(v => v.Quote()).JoinToString(", ");
@@ -504,5 +506,6 @@
                 return defaultValue.ToFormattableString(CultureInfo.InvariantCulture).Quote();
             }
         }
+        #endregion
     }
 }

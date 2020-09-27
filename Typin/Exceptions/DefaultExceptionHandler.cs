@@ -67,7 +67,7 @@
 
         private static void PrintHelp(ICliContext context)
         {
-            IHelpTextWriter helpTextWriter = new DefaultHelpTextWriter(context);
+            IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
             helpTextWriter.Write();
         }
     }

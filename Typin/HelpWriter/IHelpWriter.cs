@@ -6,7 +6,7 @@
     /// <summary>
     /// Help text writer.
     /// </summary>
-    public interface IHelpTextWriter
+    public interface IHelpWriter
     {
         /// <summary>
         /// Writes help for the current command in context.

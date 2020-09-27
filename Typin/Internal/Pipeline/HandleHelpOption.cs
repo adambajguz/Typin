@@ -33,7 +33,7 @@
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
                 (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
-                IHelpTextWriter helpTextWriter = new DefaultHelpTextWriter(context);
+                IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
                 helpTextWriter.Write(commandSchema, context.CommandDefaultValues); //TODO: add directives help?
 
                 return ExitCodes.Success;
