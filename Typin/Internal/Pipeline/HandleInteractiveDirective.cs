@@ -26,7 +26,7 @@
             ApplicationConfiguration _configuration = context.Configuration;
             CommandInput input = context.Input;
 
-            // Handle interactive directive not supported in normal mode
+            // Handle interactive directive not supported in application
             if (!_configuration.IsInteractiveModeAllowed && input.IsInteractiveDirectiveSpecified)
                 throw TypinException.InteractiveModeNotSupported();
 
