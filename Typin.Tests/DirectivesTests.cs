@@ -257,6 +257,43 @@
         }
 
         [Fact]
+        public async Task Custom_throwable_directive_with_message_and_show_help_should_throw_exception()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomThrowableDirective>()
+                .AddDirective<CustomThrowableDirectiveWithMessage>()
+                .AddDirective<CustomThrowableDirectiveWithInnerException>()
+                .AddDirective<CustomThrowableDirectiveWithMessageAndShowHelp>()
+                .AddDirective<CustomDirective>()
+                .AddDirective<CustomStopDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
+            stdOut.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedOutput);
+            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExceptionMessage);
+
+            stdOut.GetString().Should().ContainAll(
+                "  [custom-throwable-with-message-and-show-help]", "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
+            );
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
         public async Task Custom_throwable_directive_with_inner_exception_should_throw_exception()
         {
             // Arrange
