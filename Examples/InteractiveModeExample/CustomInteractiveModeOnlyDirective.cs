@@ -19,7 +19,7 @@
 
         public ValueTask HandleAsync(IConsole console)
         {
-            console.Output.Write(ExpectedOutput);
+            console.Output.WriteLine(ExpectedOutput);
 
             return default;
         }

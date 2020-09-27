@@ -13,7 +13,6 @@
         public void HandleTypinException(ICliContext context, TypinException ex)
         {
             WriteError(context.Console, ex.ToString());
-            context.Console.Error.WriteLine();
 
             //PrintHelp(context);
         }
@@ -24,7 +23,8 @@
             WriteError(context.Console, ex.ToString());
             context.Console.Error.WriteLine();
 
-            //PrintHelp(context);
+            if (ex.ShowHelp)
+                PrintHelp(context);
         }
 
         /// <inheritdoc/>
