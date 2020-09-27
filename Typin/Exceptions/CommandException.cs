@@ -9,7 +9,7 @@
     /// </summary>
     public class CommandException : Exception
     {
-        private const int DefaultExitCode = 1;
+        private const int DefaultExitCode = ExitCodes.Error;
 
         private readonly bool _isMessageSet;
 

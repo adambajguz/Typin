@@ -508,7 +508,13 @@ namespace Typin
             }
 
             // Add core middlewares
-            UseMiddleware<CommandExecution>();
+            UseMiddleware<ResolveCommandSchema>();
+            UseMiddleware<HandleVersionOption>();
+            UseMiddleware<ResolveCommandInstance>();
+            UseMiddleware<HandleInteractiveDirective>();
+            UseMiddleware<HandleHelpOption>();
+            UseMiddleware<HandleInteractiveCommands>();
+            UseMiddleware<ExecuteCommand>();
 
             // Create context
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);

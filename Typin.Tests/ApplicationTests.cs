@@ -88,7 +88,7 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this is a application is using CliApplication.");
+            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is using CliApplication.");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());
@@ -117,7 +117,7 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this is a application is not running in this mode.");
+            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is not running in this mode.");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

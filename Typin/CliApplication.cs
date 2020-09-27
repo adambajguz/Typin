@@ -163,7 +163,32 @@
         {
             using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
             {
-                await executionScope.RunPipelineAsync();
+                try
+                {
+                    // Execute middleware pipeline
+                    await executionScope.RunPipelineAsync();
+                }
+                // Swallow directive exceptions and route them to the console
+                catch (DirectiveException ex)
+                {
+                    _configuration.ExceptionHandler.HandleDirectiveException(CliContext, ex);
+
+                    return ExitCodes.FromException(ex);
+                }
+                // Swallow command exceptions and route them to the console
+                catch (CommandException ex)
+                {
+                    _configuration.ExceptionHandler.HandleCommandException(CliContext, ex);
+
+                    return ExitCodes.FromException(ex);
+                }
+                // This may throw exceptions which are useful only to the end-user
+                catch (TypinException ex)
+                {
+                    _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
+
+                    return ExitCodes.FromException(ex);
+                }
 
                 return CliContext.ExitCode ??= ExitCodes.Error;
             }

@@ -26,13 +26,10 @@
             CancellationToken cancellationToken = Context.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
 
-            LinkedList<IMiddleware> middlewareComponenets = new LinkedList<IMiddleware>();
             foreach (Type middlewareType in middlewareTypes)
             {
                 IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
                 next = instance.Next(Context, next, cancellationToken);
-
-                middlewareComponenets.AddFirst(instance);
             }
 
             await next();
