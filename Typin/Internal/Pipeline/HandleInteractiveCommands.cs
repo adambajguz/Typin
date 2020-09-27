@@ -1,14 +1,10 @@
 ﻿namespace Typin.Internal.Pipeline
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Exceptions;
     using Typin.Input;
-    using Typin.OptionFallback;
     using Typin.Schemas;
 
     internal sealed class HandleInteractiveCommands : IMiddleware

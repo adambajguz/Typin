@@ -2,7 +2,7 @@
 {
     using System;
     using Typin.Console;
-    using Typin.Internal;
+    using Typin.HelpWriter;
 
     /// <summary>
     /// Implementation of <see cref="ICliExceptionHandler"/> that prints all exceptions to console.
@@ -67,8 +67,8 @@
 
         private static void PrintHelp(ICliContext context)
         {
-            HelpTextWriter helpTextWriter = new HelpTextWriter(context);
-            helpTextWriter.Write(context.RootSchema, context.CommandSchema, context.CommandDefaultValues);
+            IHelpTextWriter helpTextWriter = new DefaultHelpTextWriter(context);
+            helpTextWriter.Write();
         }
     }
 }

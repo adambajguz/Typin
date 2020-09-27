@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
+    using Typin.HelpWriter;
     using Typin.Input;
     using Typin.Internal;
     using Typin.Schemas;
@@ -32,8 +33,8 @@
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
                 (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
-                HelpTextWriter helpTextWriter = new HelpTextWriter(context);
-                helpTextWriter.Write(context.RootSchema, commandSchema, context.CommandDefaultValues); //TODO: add directives help?
+                IHelpTextWriter helpTextWriter = new DefaultHelpTextWriter(context);
+                helpTextWriter.Write(commandSchema, context.CommandDefaultValues); //TODO: add directives help?
 
                 return ExitCodes.Success;
             }

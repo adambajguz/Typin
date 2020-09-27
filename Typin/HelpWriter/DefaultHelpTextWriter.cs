@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal
+﻿namespace Typin.HelpWriter
 {
     using System;
     using System.Collections;
@@ -11,9 +11,9 @@
     using Typin.Utilities;
 
     /// <summary>
-    /// Help text writer.
+    /// Default implementation of <see cref="IHelpTextWriter"/> that prints help to console.
     /// </summary>
-    public partial class HelpTextWriter
+    public partial class DefaultHelpTextWriter : IHelpTextWriter
     {
         private const ConsoleColor TitleColor = ConsoleColor.Yellow;
         private const ConsoleColor VersionColor = ConsoleColor.Yellow;
@@ -36,9 +36,9 @@
         private bool IsEmpty => _column == 0 && _row == 0;
 
         /// <summary>
-        /// Initializes an instance of <see cref="HelpTextWriter"/>.
+        /// Initializes an instance of <see cref="DefaultHelpTextWriter"/>.
         /// </summary>
-        public HelpTextWriter(ICliContext cliContext)
+        public DefaultHelpTextWriter(ICliContext cliContext)
         {
             _cliContext = cliContext;
             _console = cliContext.Console;
@@ -439,13 +439,17 @@
             WriteLine();
         }
 
-        /// <summary>
-        /// Writes help for a command.
-        /// </summary>
-        public void Write(RootSchema root,
-                          CommandSchema command,
+        /// <inheritdoc/>
+        public void Write()
+        {
+            Write(_cliContext.CommandSchema, _cliContext.CommandDefaultValues);
+        }
+
+        /// <inheritdoc/>
+        public void Write(CommandSchema command,
                           IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
         {
+            RootSchema root = _cliContext.RootSchema;
             IReadOnlyList<CommandSchema> childCommands = root.GetChildCommands(command.Name);
 
             _console.ResetColor();
@@ -464,7 +468,7 @@
         }
     }
 
-    public partial class HelpTextWriter
+    public partial class DefaultHelpTextWriter
     {
         private static string FormatValidValues(IReadOnlyList<string> values)
         {
