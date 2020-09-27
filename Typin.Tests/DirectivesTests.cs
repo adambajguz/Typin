@@ -40,8 +40,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll("-h", "--help");
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("This application does not support interactive mode.");
 
@@ -180,8 +180,8 @@
 
             // Assert
             exitCode.Should().NotBe(0);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll(
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
             stdErr.GetString().Should().ContainAll(
@@ -434,7 +434,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Unknown directive '[preview]'.");
 
@@ -461,8 +461,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll("-h", "--help");
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
 

@@ -17,11 +17,6 @@
         private readonly bool _isMessageSet;
 
         /// <summary>
-        /// Whether to show the help text after handling this exception.
-        /// </summary>
-        public bool ShowHelp { get; set; } = true;
-
-        /// <summary>
         /// Initializes an instance of <see cref="TypinException"/> with a specified error message.
         /// </summary>
         public TypinException(string? message)
@@ -442,7 +437,7 @@ Unrecognized options provided:
         internal static TypinException InteractiveOnlyCommandButThisIsNormalApplication(CommandSchema command)
         {
             var message = $@"
-Command '{command.Type.FullName}' can be executed only in interactive mode, but this is a application is using {nameof(CliApplication)}.
+Command '{command.Type.FullName}' can be executed only in interactive mode, but this application is using {nameof(CliApplication)}.
 
 Please consider switching to interactive application or removing the command.";
 
@@ -460,7 +455,7 @@ Unknown directive '{directive}'.";
         internal static TypinException InteractiveOnlyCommandButInteractiveModeNotStarted(CommandSchema command)
         {
             var message = $@"
-Command '{command.Type.FullName}' can be executed only in interactive mode, but this is a application is not running in this mode.
+Command '{command.Type.FullName}' can be executed only in interactive mode, but this application is not running in this mode.
 
 You can start the interactive mode with [{BuiltInDirectives.Interactive}].";
 

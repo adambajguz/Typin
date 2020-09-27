@@ -10,7 +10,10 @@
     using Typin.Schemas;
     using Typin.Utilities;
 
-    internal partial class HelpTextWriter
+    /// <summary>
+    /// Help text writer.
+    /// </summary>
+    public partial class HelpTextWriter
     {
         private const ConsoleColor TitleColor = ConsoleColor.Yellow;
         private const ConsoleColor VersionColor = ConsoleColor.Yellow;
@@ -32,6 +35,9 @@
 
         private bool IsEmpty => _column == 0 && _row == 0;
 
+        /// <summary>
+        /// Initializes an instance of <see cref="HelpTextWriter"/>.
+        /// </summary>
         public HelpTextWriter(ICliContext cliContext)
         {
             _cliContext = cliContext;
@@ -433,6 +439,9 @@
             WriteLine();
         }
 
+        /// <summary>
+        /// Writes help for a command.
+        /// </summary>
         public void Write(RootSchema root,
                           CommandSchema command,
                           IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
@@ -455,7 +464,7 @@
         }
     }
 
-    internal partial class HelpTextWriter
+    public partial class HelpTextWriter
     {
         private static string FormatValidValues(IReadOnlyList<string> values)
         {
