@@ -10,7 +10,7 @@
 - Added `IOptionFallbackProvider`, as well as `EnvironmentVariableFallbackProvider` as default implementation of `IOptionFallbackProvider` and `EmptyFallbackProvider` that can be used to disable fallback.
 - Command execution now heavily uses middleware pipeline (`ResolveCommandSchema` -> `HandleVersionOption` -> `ResolveCommandInstance` -> `HandleInteractiveDirective` -> `HandleHelpOption` -> `HandleInteractiveCommands` -> `ExecuteCommand`).
 - Added `CliExecutionScope` and ensured that `Context.Input`, `Context.Command`, `Context.CommandDefaultValues`, `Context.CommandSchema`, and `Context.ExitCode` are reset to default values after middleware pipeline execution.
-- Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter', and made `DefaultHelpWriter` a public class.
+- Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter`, and made `DefaultHelpWriter` a public class.
 - Fixed `AddDirectivesFrom(Assembly directiveAssembly)` and `AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)`.
 - Removed partial classes.
 
