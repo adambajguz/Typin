@@ -12,7 +12,7 @@
     /// Does not leak to system console in any way.
     /// Use this class as a substitute for system console when running tests.
     /// </summary>
-    public partial class VirtualConsole : IConsole
+    public class VirtualConsole : IConsole
     {
         private readonly CancellationToken _cancellationToken;
         private bool disposedValue;
@@ -41,6 +41,7 @@
         /// <inheritdoc />
         public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="VirtualConsole"/>.
         /// Use named parameters to specify the streams you want to override.
@@ -77,6 +78,26 @@
         {
 
         }
+
+        /// <summary>
+        /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
+        /// Use the exposed streams to easily get the current output.
+        /// </summary>
+        public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isOutputRedirected = true,
+                                                                                                                   bool isErrorRedirected = true,
+                                                                                                                   CancellationToken cancellationToken = default)
+        {
+            // Memory streams don't need to be disposed
+            var output = new MemoryStreamWriter(Console.OutputEncoding);
+            var error = new MemoryStreamWriter(Console.OutputEncoding);
+
+            var console = new VirtualConsole(output: output, isOutputRedirected: isOutputRedirected,
+                                             error: error, isErrorRedirected: isErrorRedirected,
+                                             cancellationToken: cancellationToken);
+
+            return (console, output, error);
+        }
+        #endregion
 
         /// <inheritdoc />
         public void Clear()
@@ -154,10 +175,8 @@
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-    }
 
-    public partial class VirtualConsole
-    {
+        #region Helpers
         private static StreamReader WrapInput(Stream? stream)
         {
             if (stream is null)
@@ -176,24 +195,6 @@
                 AutoFlush = true
             };
         }
-
-        /// <summary>
-        /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
-        /// Use the exposed streams to easily get the current output.
-        /// </summary>
-        public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isOutputRedirected = true,
-                                                                                                                   bool isErrorRedirected = true,
-                                                                                                                   CancellationToken cancellationToken = default)
-        {
-            // Memory streams don't need to be disposed
-            var output = new MemoryStreamWriter(Console.OutputEncoding);
-            var error = new MemoryStreamWriter(Console.OutputEncoding);
-
-            var console = new VirtualConsole(output: output, isOutputRedirected: isOutputRedirected,
-                                             error: error, isErrorRedirected: isErrorRedirected,
-                                             cancellationToken: cancellationToken);
-
-            return (console, output, error);
-        }
+        #endregion
     }
 }

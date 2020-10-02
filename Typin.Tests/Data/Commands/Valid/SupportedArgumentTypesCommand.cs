@@ -9,7 +9,7 @@
 
     [Command("cmd")]
     [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
-    public partial class SupportedArgumentTypesCommand : SelfSerializeCommandBase
+    public class SupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [CommandOption("obj")]
         public object? Object { get; set; } = 42;

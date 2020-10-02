@@ -13,7 +13,7 @@
     /// Command schema is `{directives} {command name} {parameters} {options}`.
     /// </remarks>
     /// </summary>
-    public partial class CommandInput
+    public class CommandInput
     {
         /// <summary>
         /// Whether interactive directive [interactive] is specified.
@@ -134,10 +134,8 @@
 
             return buffer.ToString();
         }
-    }
 
-    public partial class CommandInput
-    {
+        #region Parser
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
                                                                             ref int index,
                                                                             out bool isInteractiveDirectiveSpecified)
@@ -247,7 +245,7 @@
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))
                             result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
 
-                        currentOptionAlias = alias.AsString();
+                        currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
                 }
@@ -297,5 +295,6 @@
 
             return new CommandInput(isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
         }
+        #endregion
     }
 }

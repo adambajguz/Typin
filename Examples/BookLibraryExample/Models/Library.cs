@@ -3,18 +3,15 @@
     using System;
     using System.Collections.Generic;
 
-    public partial class Library
+    public class Library
     {
+        public static Library Empty { get; } = new Library(Array.Empty<Book>());
+
         public IReadOnlyList<Book> Books { get; }
 
         public Library(IReadOnlyList<Book> books)
         {
             Books = books;
         }
-    }
-
-    public partial class Library
-    {
-        public static Library Empty { get; } = new Library(Array.Empty<Book>());
     }
 }

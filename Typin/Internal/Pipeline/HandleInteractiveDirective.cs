@@ -5,6 +5,7 @@
     using Typin;
     using Typin.Exceptions;
     using Typin.Input;
+    using Typin.Internal.Exceptions;
 
     internal sealed class HandleInteractiveDirective : IMiddleware
     {
@@ -28,7 +29,7 @@
 
             // Handle interactive directive not supported in application
             if (!_configuration.IsInteractiveModeAllowed && input.IsInteractiveDirectiveSpecified)
-                throw TypinException.InteractiveModeNotSupported();
+                throw EndUserTypinExceptions.InteractiveModeNotSupported();
 
             return null;
         }

@@ -13,7 +13,7 @@
     /// <summary>
     /// Default implementation of <see cref="IHelpWriter"/> that prints help to console.
     /// </summary>
-    public partial class DefaultHelpWriter : IHelpWriter
+    public class DefaultHelpWriter : IHelpWriter
     {
         private const ConsoleColor TitleColor = ConsoleColor.Yellow;
         private const ConsoleColor VersionColor = ConsoleColor.Yellow;

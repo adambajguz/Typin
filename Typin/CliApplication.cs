@@ -16,7 +16,7 @@
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public partial class CliApplication
+    public class CliApplication
     {
         /// <summary>
         /// Service scope factory.

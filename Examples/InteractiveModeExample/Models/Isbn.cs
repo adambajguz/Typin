@@ -2,7 +2,7 @@
 {
     using System;
 
-    public partial class Isbn
+    public class Isbn
     {
         public int EanPrefix { get; }
 
@@ -22,15 +22,6 @@
             Publication = publication;
             CheckDigit = checkDigit;
         }
-
-        public override string ToString()
-        {
-            return $"{EanPrefix:000}-{RegistrationGroup:00}-{Registrant:00000}-{Publication:00}-{CheckDigit:0}";
-        }
-    }
-
-    public partial class Isbn
-    {
         public static Isbn Parse(string value, IFormatProvider formatProvider)
         {
             var components = value.Split('-', 5, StringSplitOptions.RemoveEmptyEntries);
@@ -42,6 +33,11 @@
                 int.Parse(components[3], formatProvider),
                 int.Parse(components[4], formatProvider)
             );
+        }
+
+        public override string ToString()
+        {
+            return $"{EanPrefix:000}-{RegistrationGroup:00}-{Registrant:00000}-{Publication:00}-{CheckDigit:0}";
         }
     }
 }

@@ -8,6 +8,7 @@
     using Typin;
     using Typin.Exceptions;
     using Typin.Input;
+    using Typin.Internal.Exceptions;
     using Typin.OptionFallback;
     using Typin.Schemas;
 
@@ -57,10 +58,10 @@
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw TypinException.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw EndUserTypinExceptions.UnknownDirectiveName(directiveInput);
 
                 if (!isInteractiveMode && directive.InteractiveModeOnly)
-                    throw TypinException.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
+                    throw EndUserTypinExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);

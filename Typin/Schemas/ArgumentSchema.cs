@@ -6,13 +6,39 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Exceptions;
+    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
 
     /// <summary>
     /// Abstract command argument schema used in <see cref="CommandParameterSchema"/> and <see cref="CommandOptionSchema"/>
     /// </summary>
-    public abstract partial class ArgumentSchema
+    public abstract class ArgumentSchema
     {
+        private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
+
+        private static readonly IReadOnlyDictionary<Type, Func<string?, object?>> PrimitiveConverters =
+            new Dictionary<Type, Func<string?, object?>>
+            {
+                [typeof(object)] = v => v,
+                [typeof(string)] = v => v,
+                [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
+                [typeof(char)] = v => v.Single(),
+                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
+                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
+                [typeof(short)] = v => short.Parse(v, FormatProvider),
+                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
+                [typeof(int)] = v => int.Parse(v, FormatProvider),
+                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
+                [typeof(long)] = v => long.Parse(v, FormatProvider),
+                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
+                [typeof(float)] = v => float.Parse(v, FormatProvider),
+                [typeof(double)] = v => double.Parse(v, FormatProvider),
+                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
+                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
+                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
+                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
+            };
+
         /// <summary>
         /// Property info can be null on built-in arguments (help and version options)
         /// </summary>
@@ -44,6 +70,7 @@
                    : null;
         }
 
+        #region Value Converter
         private object? ConvertScalar(string? value, Type targetType)
         {
             try
@@ -83,10 +110,10 @@
             }
             catch (Exception ex)
             {
-                throw TypinException.CannotConvertToType(this, value, targetType, ex);
+                throw EndUserTypinExceptions.CannotConvertToType(this, value, targetType, ex);
             }
 
-            throw TypinException.CannotConvertToType(this, value, targetType);
+            throw EndUserTypinExceptions.CannotConvertToType(this, value, targetType);
         }
 
         private object ConvertNonScalar(IReadOnlyList<string> values, Type targetEnumerableType, Type targetElementType)
@@ -105,7 +132,7 @@
             if (arrayConstructor != null)
                 return arrayConstructor.Invoke(new object[] { array });
 
-            throw TypinException.CannotConvertNonScalar(this, values, targetEnumerableType);
+            throw EndUserTypinExceptions.CannotConvertNonScalar(this, values, targetEnumerableType);
         }
 
         private object? Convert(IReadOnlyList<string> values)
@@ -122,7 +149,7 @@
             {
                 return values.Count <= 1
                     ? ConvertScalar(values.SingleOrDefault(), targetType)
-                    : throw TypinException.CannotConvertMultipleValuesToNonScalar(this, values);
+                    : throw EndUserTypinExceptions.CannotConvertMultipleValuesToNonScalar(this, values);
             }
             // Non-scalar
             else
@@ -130,7 +157,9 @@
                 return ConvertNonScalar(values, targetType, enumerableUnderlyingType);
             }
         }
+        #endregion
 
+        #region Bind
         internal void BindOn(ICommand command, IReadOnlyList<string> values)
         {
             if (Property is null)
@@ -144,6 +173,7 @@
         {
             BindOn(command, (IReadOnlyList<string>)values);
         }
+        #endregion
 
         internal IReadOnlyList<string> GetValidValues()
         {
@@ -158,33 +188,5 @@
 
             return Array.Empty<string>();
         }
-    }
-
-    public partial class ArgumentSchema
-    {
-        private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
-
-        private static readonly IReadOnlyDictionary<Type, Func<string?, object?>> PrimitiveConverters =
-            new Dictionary<Type, Func<string?, object?>>
-            {
-                [typeof(object)] = v => v,
-                [typeof(string)] = v => v,
-                [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
-                [typeof(char)] = v => v.Single(),
-                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
-                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
-                [typeof(short)] = v => short.Parse(v, FormatProvider),
-                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
-                [typeof(int)] = v => int.Parse(v, FormatProvider),
-                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
-                [typeof(long)] = v => long.Parse(v, FormatProvider),
-                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-                [typeof(float)] = v => float.Parse(v, FormatProvider),
-                [typeof(double)] = v => double.Parse(v, FormatProvider),
-                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
-                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
-                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
-                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
-            };
     }
 }

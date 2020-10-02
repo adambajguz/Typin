@@ -94,24 +94,24 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
   DefaultJob : .NET Core 3.1.8 (CoreCLR 4.700.20.41105, CoreFX 4.700.20.41903), X64 RyuJIT
 ```
 
-|                               Method |         Mean |      Error |     StdDev | Ratio | RatioSD | Rank |
-|------------------------------------- |-------------:|-----------:|-----------:|------:|--------:|-----:|
-|                    CommandLineParser |     2.385 us |  0.0291 us |  0.0258 us |  0.03 |    0.00 |    1 |
-|                                CliFx |    49.646 us |  0.2748 us |  0.2436 us |  0.64 |    0.00 |    2 |
-|                                Typin |    77.431 us |  0.3132 us |  0.2930 us |  1.00 |    0.00 |    3 |
-|                                Clipr |   126.747 us |  0.2351 us |  0.2084 us |  1.64 |    0.01 |    4 |
-| McMaster.Extensions.CommandLineUtils |   130.208 us |  2.8264 us |  3.5745 us |  1.70 |    0.05 |    4 |
-|                   System.CommandLine |   194.457 us |  0.4901 us |  0.4584 us |  2.51 |    0.01 |    5 |
-|                            PowerArgs |   253.751 us |  0.9615 us |  0.8994 us |  3.28 |    0.02 |    6 |
-|                               Cocona | 1,155.237 us | 23.0767 us | 30.0062 us | 15.09 |    0.41 |    7 |
+|                               Method |         Mean |     Error |    StdDev |       Median | Ratio | RatioSD | Rank |
+|------------------------------------- |-------------:|----------:|----------:|-------------:|------:|--------:|-----:|
+|                    CommandLineParser |     2.489 us | 0.0481 us | 0.0573 us |     2.500 us |  0.03 |    0.00 |    1 |
+|                                CliFx |    51.513 us | 0.3411 us | 0.3024 us |    51.551 us |  0.57 |    0.00 |    2 |
+|                                Typin |    90.748 us | 0.4652 us | 0.4351 us |    90.759 us |  1.00 |    0.00 |    3 |
+| McMaster.Extensions.CommandLineUtils |   129.112 us | 1.5520 us | 1.3758 us |   128.436 us |  1.42 |    0.02 |    4 |
+|                                Clipr |   131.652 us | 2.8059 us | 4.1129 us |   129.439 us |  1.47 |    0.05 |    4 |
+|                   System.CommandLine |   198.114 us | 3.7021 us | 3.4630 us |   195.986 us |  2.18 |    0.04 |    5 |
+|                            PowerArgs |   257.859 us | 1.4766 us | 1.3812 us |   258.043 us |  2.84 |    0.02 |    6 |
+|                               Cocona |      1166 us | 7.3347 us | 6.1248 us |      1167 us | 12.86 |    0.10 |    7 |
 
 |                Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Rank |
 |---------------------- |----------:|---------:|---------:|------:|--------:|-----:|
-|   'Typin - 1 command' |  77.30 us | 0.429 us | 0.380 us |  1.00 |    0.00 |    1 |
-|  'Typin - 2 commands' |  98.45 us | 0.334 us | 0.296 us |  1.27 |    0.01 |    2 |
-|  'Typin - 5 commands' | 162.13 us | 2.984 us | 2.791 us |  2.10 |    0.04 |    3 |
-| 'Typin - 10 commands' | 260.74 us | 0.478 us | 0.424 us |  3.37 |    0.02 |    4 |
-| 'Typin - 20 commands' | 500.15 us | 0.697 us | 0.582 us |  6.47 |    0.03 |    5 |
+|   'Typin - 1 command' |  93.14 us | 1.690 us | 1.581 us |  1.00 |    0.00 |    1 |
+|  'Typin - 2 commands' | 112.83 us | 1.226 us | 1.147 us |  1.21 |    0.03 |    2 |
+|  'Typin - 5 commands' | 172.43 us | 1.958 us | 1.831 us |  1.85 |    0.04 |    3 |
+| 'Typin - 10 commands' | 282.39 us | 2.706 us | 2.531 us |  3.03 |    0.06 |    4 |
+| 'Typin - 20 commands' | 499.48 us | 3.784 us | 3.354 us |  5.36 |    0.09 |    5 |
 
 Legends:
   * Mean    : Arithmetic mean of all measurements

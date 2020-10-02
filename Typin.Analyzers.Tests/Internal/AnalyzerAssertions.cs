@@ -10,7 +10,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
 
-    internal partial class AnalyzerAssertions : ReferenceTypeAssertions<DiagnosticAnalyzer, AnalyzerAssertions>
+    internal class AnalyzerAssertions : ReferenceTypeAssertions<DiagnosticAnalyzer, AnalyzerAssertions>
     {
         protected override string Identifier { get; } = "analyzer";
 
@@ -65,10 +65,8 @@ Produced: {string.Join(", ", producedIds)}
         {
             NotProduceDiagnostics(testCase.TestedDiagnostics, testCase.SourceCodes);
         }
-    }
 
-    internal partial class AnalyzerAssertions
-    {
+        #region Helpers
         private static IReadOnlyList<MetadataReference> DefaultMetadataReferences { get; } =
             MetadataReferences.Transitive(typeof(CliApplication).Assembly).ToArray();
 
@@ -103,6 +101,7 @@ Produced: {string.Join(", ", producedIds)}
                 .SelectMany(d => d)
                 .ToArray();
         }
+        #endregion
     }
 
     internal static class AnalyzerAssertionsExtensions
