@@ -6,19 +6,9 @@
 
     internal static class StringExtensions
     {
-        public static string Repeat(this char c, int count)
-        {
-            return new string(c, count);
-        }
-
-        public static string AsString(this char c)
-        {
-            return new string(c, 1);
-        }
-
         public static string Quote(this string str)
         {
-            return $"\"{str}\"";
+            return string.Concat("\"", str, "\"");
         }
 
         public static string JoinToString<T>(this IEnumerable<T> source, string separator)

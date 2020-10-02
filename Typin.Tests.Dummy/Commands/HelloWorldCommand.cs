@@ -7,7 +7,7 @@
     [Command]
     public class HelloWorldCommand : ICommand
     {
-        [CommandOption("target", EnvironmentVariableName = "ENV_TARGET")]
+        [CommandOption("target", FallbackVariableName = "ENV_TARGET")]
         public string Target { get; set; } = "World";
 
         public ValueTask ExecuteAsync(IConsole console)

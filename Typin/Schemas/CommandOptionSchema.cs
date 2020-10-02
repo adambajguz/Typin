@@ -10,8 +10,14 @@
     /// <summary>
     /// Stores command option schema.
     /// </summary>
-    public partial class CommandOptionSchema : ArgumentSchema
+    public class CommandOptionSchema : ArgumentSchema
     {
+        internal static CommandOptionSchema HelpOption { get; } =
+            new CommandOptionSchema(null, "help", 'h', null, false, "Shows help text.");
+
+        internal static CommandOptionSchema VersionOption { get; } =
+            new CommandOptionSchema(null, "version", null, null, false, "Shows version information.");
+
         /// <summary>
         /// Option name.
         /// </summary>
@@ -23,31 +29,55 @@
         public char? ShortName { get; }
 
         /// <summary>
-        /// Name of environment variable used as a fallback value.
+        /// Name of variable used as a fallback value.
         /// </summary>
-        public string? EnvironmentVariableName { get; }
+        public string? FallbackVariableName { get; }
 
         /// <summary>
         /// Whether option is required.
         /// </summary>
         public bool IsRequired { get; }
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionSchema"/>.
         /// </summary>
-        internal CommandOptionSchema(PropertyInfo? property,
-                                     string? name,
-                                     char? shortName,
-                                     string? environmentVariableName,
-                                     bool isRequired,
-                                     string? description)
+        private CommandOptionSchema(PropertyInfo? property,
+                                    string? name,
+                                    char? shortName,
+                                    string? fallbackVariableName,
+                                    bool isRequired,
+                                    string? description)
             : base(property, description)
         {
             Name = name;
             ShortName = shortName;
-            EnvironmentVariableName = environmentVariableName;
+            FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
         }
+
+        /// <summary>
+        /// Resolves <see cref="CommandOptionSchema"/>.
+        /// </summary>
+        internal static CommandOptionSchema? TryResolve(PropertyInfo property)
+        {
+            CommandOptionAttribute? attribute = property.GetCustomAttribute<CommandOptionAttribute>();
+            if (attribute is null)
+                return null;
+
+            // The user may mistakenly specify dashes, thinking it's required, so trim them
+            string? name = attribute.Name?.TrimStart('-');
+
+            return new CommandOptionSchema(
+                property,
+                name,
+                attribute.ShortName,
+                attribute.FallbackVariableName,
+                attribute.IsRequired,
+                attribute.Description
+            );
+        }
+        #endregion
 
         /// <summary>
         /// Whether command's name matches the passed name.
@@ -73,15 +103,6 @@
         {
             return MatchesName(alias) ||
                    alias.Length == 1 && MatchesShortName(alias.Single());
-        }
-
-        /// <summary>
-        /// Whether command's environment variable matches the passed environment variable name.
-        /// </summary>
-        public bool MatchesEnvironmentVariableName(string environmentVariableName)
-        {
-            return !string.IsNullOrWhiteSpace(EnvironmentVariableName) &&
-                   string.Equals(EnvironmentVariableName, environmentVariableName, StringComparison.Ordinal);
         }
 
         internal string GetUserFacingDisplayString()
@@ -114,36 +135,5 @@
         {
             return $"{Property?.Name ?? "<implicit>"} ('{GetUserFacingDisplayString()}')";
         }
-    }
-
-    public partial class CommandOptionSchema
-    {
-        internal static CommandOptionSchema? TryResolve(PropertyInfo property)
-        {
-            CommandOptionAttribute? attribute = property.GetCustomAttribute<CommandOptionAttribute>();
-            if (attribute is null)
-                return null;
-
-            // The user may mistakenly specify dashes, thinking it's required, so trim them
-            string? name = attribute.Name?.TrimStart('-');
-
-            return new CommandOptionSchema(
-                property,
-                name,
-                attribute.ShortName,
-                attribute.EnvironmentVariableName,
-                attribute.IsRequired,
-                attribute.Description
-            );
-        }
-    }
-
-    public partial class CommandOptionSchema
-    {
-        internal static CommandOptionSchema HelpOption { get; } =
-            new CommandOptionSchema(null, "help", 'h', null, false, "Shows help text.");
-
-        internal static CommandOptionSchema VersionOption { get; } =
-            new CommandOptionSchema(null, "version", null, null, false, "Shows version information.");
     }
 }

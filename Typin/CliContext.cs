@@ -6,6 +6,7 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
+    using Typin.Internal;
     using Typin.Schemas;
 
     /// <inheritdoc/>
@@ -40,6 +41,14 @@
 
         /// <inheritdoc/>
         public IEnumerable<ServiceDescriptor> Services { get; }
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<Type> Middlewares => MiddlewareTypes;
+
+        /// <summary>
+        /// Collection of middlewares in application.
+        /// </summary>
+        internal LinkedList<Type> MiddlewareTypes { get; }
 
         /// <inheritdoc/>
         public IConsole Console { get; }
@@ -95,13 +104,20 @@
         public CliContext(ApplicationMetadata metadata,
                           ApplicationConfiguration applicationConfiguration,
                           ServiceCollection serviceCollection,
-                          IConsole console)
+                          IConsole console,
+                          LinkedList<Type> middlewareTypes)
         {
             IsInteractiveMode = false;
             Metadata = metadata;
             Configuration = applicationConfiguration;
             Services = serviceCollection;
             Console = console;
+            MiddlewareTypes = middlewareTypes;
+        }
+
+        internal CliExecutionScope BeginExecutionScope(IServiceScopeFactory serviceScopeFactory)
+        {
+            return new CliExecutionScope(this, serviceScopeFactory);
         }
     }
 }

@@ -8,13 +8,12 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
-    using Typin.Internal;
     using Typin.Schemas;
 
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public partial class InteractiveCliApplication : CliApplication
+    public sealed class InteractiveCliApplication : CliApplication
     {
         private readonly ConsoleColor _promptForeground;
         private readonly ConsoleColor _commandForeground;
@@ -23,19 +22,19 @@
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveCliApplication"/>.
         /// </summary>
-        public InteractiveCliApplication(LinkedList<Type> middlewareTypes,
-                                         IServiceProvider serviceProvider,
+        public InteractiveCliApplication(IServiceProvider serviceProvider,
                                          CliContext cliContext,
                                          ConsoleColor promptForeground,
-                                         ConsoleColor commandForeground) :
-            base(middlewareTypes, serviceProvider, cliContext)
+                                         ConsoleColor commandForeground,
+                                         HashSet<ShortcutDefinition> userDefinedShortcut) :
+            base(serviceProvider, cliContext)
         {
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
 
             if (cliContext.Configuration.IsAdvancedInputAllowed)
             {
-                _autoCompleteInput = new AutoCompleteInput(cliContext.Console)
+                _autoCompleteInput = new AutoCompleteInput(cliContext.Console, userDefinedShortcut)
                 {
                     AutoCompletionHandler = new AutoCompletionHandler(cliContext),
                 };
@@ -46,8 +45,9 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task<int> PreExecuteCommand(IReadOnlyList<string> commandLineArguments,
-                                                             RootSchema root)
+        [ExcludeFromCodeCoverage]
+        protected override async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
+                                                      RootSchema root)
         {
             CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;

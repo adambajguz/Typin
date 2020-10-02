@@ -1,7 +1,6 @@
-﻿namespace Typin.Internal
+﻿namespace Typin.AutoCompletion
 {
     using System.Linq;
-    using Typin.AutoCompletion;
 
     /// <summary>
     /// Default auto completion handler.
@@ -24,7 +23,6 @@
         /// <inheritdoc/>
         public string[] GetSuggestions(string text, int index)
         {
-            //TODO: possibly needs fixing
             return _cliContext.RootSchema.GetCommandNames().AsParallel()
                                                            .Where(x => x.StartsWith(text))
                                                            .OrderBy(x => x)

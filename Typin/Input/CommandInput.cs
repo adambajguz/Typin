@@ -13,7 +13,7 @@
     /// Command schema is `{directives} {command name} {parameters} {options}`.
     /// </remarks>
     /// </summary>
-    public partial class CommandInput
+    public class CommandInput
     {
         /// <summary>
         /// Whether interactive directive [interactive] is specified.
@@ -51,14 +51,14 @@
         public bool IsVersionOptionSpecified => Options.Any(o => o.IsVersionOption);
 
         /// <summary>
-        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives other than [interactive]_.
+        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives other than [interactive].
         /// </summary>
         public bool IsDefaultCommandOrEmpty { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandInput"/>.
         /// </summary>
-        public CommandInput(bool isInteractiveDirectiveSpecified,
+        private CommandInput(bool isInteractiveDirectiveSpecified,
                             IReadOnlyList<DirectiveInput> directives,
                             string? commandName,
                             IReadOnlyList<CommandParameterInput> parameters,
@@ -134,10 +134,8 @@
 
             return buffer.ToString();
         }
-    }
 
-    public partial class CommandInput
-    {
+        #region Parser
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
                                                                             ref int index,
                                                                             out bool isInteractiveDirectiveSpecified)
@@ -165,8 +163,12 @@
 
         private static string? ParseCommandName(IReadOnlyList<string> commandLineArguments,
                                                 ISet<string> commandNames,
+                                                bool isDefaultDirectiveSpecified,
                                                 ref int index)
         {
+            if (isDefaultDirectiveSpecified)
+                return null;
+
             var buffer = new List<string>();
 
             string? commandName = null;
@@ -243,7 +245,7 @@
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))
                             result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
 
-                        currentOptionAlias = alias.AsString();
+                        currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
                 }
@@ -272,9 +274,12 @@
                 out bool isInteractiveDirectiveSpecified
             );
 
+            bool isDefaultDirectiveSpecified = directives.Where(x => x.Name == BuiltInDirectives.Default).Any();
+
             string? commandName = ParseCommandName(
                 commandLineArguments,
                 availableCommandNamesSet,
+                isDefaultDirectiveSpecified,
                 ref index
             );
 
@@ -290,16 +295,6 @@
 
             return new CommandInput(isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
         }
-    }
-
-    public partial class CommandInput
-    {
-        internal static CommandInput Empty { get; } = new CommandInput(
-            false,
-            Array.Empty<DirectiveInput>(),
-            null,
-            Array.Empty<CommandParameterInput>(),
-            Array.Empty<CommandOptionInput>()
-        );
+        #endregion
     }
 }

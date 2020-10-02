@@ -121,7 +121,7 @@
         }
 
         [Fact]
-        public async Task Command_shows_help_text_on_invalid_user_input()
+        public async Task Command_do_not_show_help_text_on_invalid_user_input_with_default_exception_handler()
         {
             // Arrange
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
@@ -136,7 +136,7 @@
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll(
+            stdOut.GetString().Should().NotContainAll(
                 "Usage",
                 "Options",
                 "-h|--help"

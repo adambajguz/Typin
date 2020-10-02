@@ -33,6 +33,8 @@ namespace System
 
 namespace System.Collections.Generic
 {
+    using System.Linq;
+
     internal static class Extensions
     {
         public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> pair, out TKey key, out TValue value)
@@ -53,6 +55,19 @@ namespace System.Collections.Generic
                 dic.Add(key, value);
                 return true;
             }
+
+            return false;
+        }
+
+        public static bool TryGetValue<T>(this HashSet<T> hashSet, T equalValue, out T actualValue)
+        {
+            if (!hashSet.Contains(equalValue))
+            {
+                actualValue = hashSet.Where(x => x.Equals(equalValue)).Single();
+                return true;
+            }
+
+            actualValue = default;
 
             return false;
         }

@@ -1,6 +1,7 @@
 ﻿namespace InteractiveModeExample
 {
     using System.Threading.Tasks;
+    using InteractiveModeExample.Directives;
     using InteractiveModeExample.Middlewares;
     using InteractiveModeExample.Services;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@
                 .AddCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .UseMiddleware<ExitCodeMiddleware>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseMiddleware<ExecutionLogMiddleware>()

@@ -8,18 +8,20 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
-    using Typin.Pipeline;
+    using Typin.Internal.Pipeline;
+    using Typin.OptionFallback;
     using Typin.Schemas;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
     /// </summary>
-    public sealed partial class CliApplicationBuilder
+    public sealed class CliApplicationBuilder
     {
         private bool _cliApplicationBuilt;
 
@@ -41,7 +43,7 @@ namespace Typin
         private IConsole? _console;
 
         //Dependency injection
-        private readonly IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
+        private IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
         private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
@@ -50,6 +52,7 @@ namespace Typin
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
         private ConsoleColor _commandForeground = ConsoleColor.Yellow;
+        private HashSet<ShortcutDefinition>? _userDefinedShortcuts;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -85,7 +88,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectives(IEnumerable<Type> directiveTypes)
         {
-            foreach (var directiveType in directiveTypes)
+            foreach (Type directiveType in directiveTypes)
                 AddDirective(directiveType);
 
             return this;
@@ -97,8 +100,8 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (var directiveType in directiveAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
-                AddCommand(directiveType);
+            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(DirectiveSchema.IsDirectiveType))
+                AddDirective(directiveType);
 
             return this;
         }
@@ -109,8 +112,8 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)
         {
-            foreach (var directiveType in directiveAssemblies)
-                AddCommandsFrom(directiveType);
+            foreach (Assembly directiveType in directiveAssemblies)
+                AddDirectivesFrom(directiveType);
 
             return this;
         }
@@ -156,7 +159,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommands(IEnumerable<Type> commandTypes)
         {
-            foreach (var commandType in commandTypes)
+            foreach (Type commandType in commandTypes)
                 AddCommand(commandType);
 
             return this;
@@ -168,7 +171,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (var commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
                 AddCommand(commandType);
 
             return this;
@@ -180,7 +183,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(IEnumerable<Assembly> commandAssemblies)
         {
-            foreach (var commandAssembly in commandAssemblies)
+            foreach (Assembly commandAssembly in commandAssemblies)
                 AddCommandsFrom(commandAssembly);
 
             return this;
@@ -310,7 +313,9 @@ namespace Typin
         /// If you wish to add only [default] directive, set addScopeDirectives to false.
         /// If you wish to disable history and auto completion set useAdvancedInput to false.
         /// </summary>
-        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true, bool useAdvancedInput = true)
+        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
+                                                        bool useAdvancedInput = true,
+                                                        HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
         {
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
@@ -323,6 +328,8 @@ namespace Typin
                 AddDirective<ScopeResetDirective>();
                 AddDirective<ScopeUpDirective>();
             }
+
+            _userDefinedShortcuts = userDefinedShortcuts;
 
             return this;
         }
@@ -384,8 +391,9 @@ namespace Typin
             return this;
         }
 
-        /*
-         * https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
+        //https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
         /// <summary>
         /// Overrides the factory used to create the service provider.
         /// </summary>
@@ -407,7 +415,6 @@ namespace Typin
 
             return this;
         }
-        */
         #endregion
 
         #region Middleware
@@ -437,6 +444,30 @@ namespace Typin
         }
         #endregion
 
+        #region Value fallback
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), fallbackProviderType, lifetime));
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where T : IOptionFallbackProvider
+        {
+            return UseOptionFallbackProvider(typeof(T), lifetime);
+        }
+        #endregion
+
         /// <summary>
         /// Creates an instance of <see cref="CliApplication"/> or <see cref="InteractiveCliApplication"/> using configured parameters.
         /// Default values are used in place of parameters that were not specified.
@@ -449,11 +480,12 @@ namespace Typin
             _cliApplicationBuilt = true;
 
             // Set default values
-            _title ??= TryGetDefaultTitle() ?? "App";
-            _executableName ??= TryGetDefaultExecutableName() ?? "app";
-            _versionText ??= TryGetDefaultVersionText() ?? "v1.0";
+            _title ??= AssemblyExtensions.TryGetDefaultTitle() ?? "App";
+            _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
+            _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
             _exceptionHandler ??= new DefaultExceptionHandler();
+            _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
 
             // Format startup message
             if (_startupMessage != null)
@@ -474,7 +506,13 @@ namespace Typin
             }
 
             // Add core middlewares
-            UseMiddleware<CommandExecution>();
+            UseMiddleware<ResolveCommandSchema>();
+            UseMiddleware<HandleVersionOption>();
+            UseMiddleware<ResolveCommandInstance>();
+            UseMiddleware<HandleInteractiveDirective>();
+            UseMiddleware<HandleHelpOption>();
+            UseMiddleware<HandleInteractiveCommands>();
+            UseMiddleware<ExecuteCommand>();
 
             // Create context
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
@@ -485,38 +523,38 @@ namespace Typin
                                                              _useAdvancedInput);
 
             var _serviceCollection = new ServiceCollection();
-            CliContext cliContext = new CliContext(metadata, configuration, _serviceCollection, _console);
+            var cliContext = new CliContext(metadata, configuration, _serviceCollection, _console, _middlewareTypes);
 
-            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection, metadata, configuration, cliContext);
+            // Add core services
+            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
+            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
+            _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
+            _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
+
+            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
             // Create application instance
             if (_useInteractiveMode)
             {
-                return new InteractiveCliApplication(_middlewareTypes,
-                                                     serviceProvider,
+                return new InteractiveCliApplication(serviceProvider,
                                                      cliContext,
                                                      _promptForeground,
-                                                     _commandForeground);
+                                                     _commandForeground,
+                                                     _userDefinedShortcuts);
             }
 
-            return new CliApplication(_middlewareTypes, serviceProvider, cliContext);
+            return new CliApplication(serviceProvider, cliContext);
         }
 
-        private IServiceProvider CreateServiceProvider(ServiceCollection services, ApplicationMetadata metadata, ApplicationConfiguration configuration, CliContext cliContext)
+        private IServiceProvider CreateServiceProvider(ServiceCollection services)
         {
-            // Add core services
-            services.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
-            services.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
-            services.AddSingleton(typeof(ICliContext), (provider) => cliContext);
-            services.AddSingleton(typeof(IConsole), (provider) => _console);
-
             foreach (Action<IServiceCollection> configureServicesAction in _configureServicesActions)
             {
                 configureServicesAction(services);
             }
+            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
 
             object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
-
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
             {
                 containerAction.ConfigureContainer(containerBuilder);
@@ -525,36 +563,6 @@ namespace Typin
             IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
 
             return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");
-        }
-    }
-
-    public partial class CliApplicationBuilder
-    {
-        private static readonly Lazy<Assembly?> LazyEntryAssembly = new Lazy<Assembly?>(Assembly.GetEntryAssembly);
-
-        // Entry assembly is null in tests
-        private static Assembly? EntryAssembly => LazyEntryAssembly.Value;
-
-        private static string? TryGetDefaultTitle()
-        {
-            return EntryAssembly?.GetName().Name;
-        }
-
-        private static string? TryGetDefaultExecutableName()
-        {
-            string? entryAssemblyLocation = EntryAssembly?.Location;
-
-            // The assembly can be an executable or a dll, depending on how it was packaged
-            bool isDll = string.Equals(Path.GetExtension(entryAssemblyLocation), ".dll", StringComparison.OrdinalIgnoreCase);
-
-            return isDll
-                ? "dotnet " + Path.GetFileName(entryAssemblyLocation)
-                : Path.GetFileNameWithoutExtension(entryAssemblyLocation);
-        }
-
-        private static string? TryGetDefaultVersionText()
-        {
-            return EntryAssembly != null ? $"v{EntryAssembly.GetName().Version.ToSemanticString()}" : null;
         }
     }
 }

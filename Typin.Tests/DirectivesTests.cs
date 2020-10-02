@@ -40,8 +40,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll("-h", "--help");
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("This application does not support interactive mode.");
 
@@ -131,6 +131,34 @@
         }
 
         [Fact]
+        public async Task Default_directive_should_allow_default_command_to_execute_when_there_is_a_name_conflict()
+        {
+            // Arrange
+            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<DefaultCommandWithParameter>()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<DefaultDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[!]", "named" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll(
+                "named", DefaultCommandWithParameter.ExpectedOutputText
+            );
+
+            _output.WriteLine(stdOut.GetString());
+        }
+
+        [Fact]
         public async Task Custom_interactive_directive_should_not_run_in_normal_mode()
         {
             // Arrange
@@ -152,8 +180,8 @@
 
             // Assert
             exitCode.Should().NotBe(0);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll(
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
             stdErr.GetString().Should().ContainAll(
@@ -223,6 +251,43 @@
             exitCode.Should().Be(CustomThrowableDirectiveWithMessage.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirectiveWithMessage.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessage.ExpectedExceptionMessage);
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Custom_throwable_directive_with_message_and_show_help_should_throw_exception()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseConsole(console)
+                .AddDirective<PreviewDirective>()
+                .AddDirective<CustomThrowableDirective>()
+                .AddDirective<CustomThrowableDirectiveWithMessage>()
+                .AddDirective<CustomThrowableDirectiveWithInnerException>()
+                .AddDirective<CustomThrowableDirectiveWithMessageAndShowHelp>()
+                .AddDirective<CustomDirective>()
+                .AddDirective<CustomStopDirective>()
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(
+                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" },
+                new Dictionary<string, string>());
+
+            // Assert
+            exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
+            stdOut.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedOutput);
+            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExceptionMessage);
+
+            stdOut.GetString().Should().ContainAll(
+                "  [custom-throwable-with-message-and-show-help]", "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
+            );
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());
@@ -406,7 +471,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Unknown directive '[preview]'.");
 
@@ -433,8 +498,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
-            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll("-h", "--help");
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
 

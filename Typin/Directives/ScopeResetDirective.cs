@@ -6,7 +6,7 @@
     using Typin.Console;
 
     /// <summary>
-    /// If application rans in interactive mode, this [..] directive can be used to reset current scope to default (global scope).
+    /// If application runs in interactive mode, this [..] directive can be used to reset current scope to default (global scope).
     /// <example>
     ///             > [>] cmd1 sub
     ///     cmd1 sub> list
@@ -15,7 +15,7 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive("..", Description = "Resets the scope to default value.", InteractiveModeOnly = true)]
+    [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", InteractiveModeOnly = true)]
     public sealed class ScopeResetDirective : IDirective
     {
         private readonly CliContext _cliContext;

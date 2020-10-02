@@ -1,10 +1,12 @@
 ﻿namespace Typin.Tests.AutoCompletionTests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using FluentAssertions;
     using Typin.AutoCompletion;
     using Typin.Console;
+    using Typin.Exceptions;
     using Typin.Extensions;
     using Xunit;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
@@ -222,6 +224,52 @@
 
             // Assert
             text.Should().Be("Hello");
+        }
+
+        [Fact]
+        public void Custom_shortcut_should_work()
+        {
+            bool test = false;
+
+            // Arrange
+            AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
+            {
+                new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { test = true; }),
+                new ShortcutDefinition(ConsoleKey.B, ConsoleModifiers.Control, () => { test = true; }),
+                new ShortcutDefinition(ConsoleKey.B, () => { test = true; }),
+            })
+            {
+                AutoCompletionHandler = new TestAutoCompleteHandler()
+            };
+
+            // History should be disabled by default.
+            test.Should().BeFalse();
+
+            // Act
+            string text = input.ReadLine(CtrlA);
+
+            // Assert
+            test.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Duplicated_custom_shortcut_should_throw_exception()
+        {
+            // Arrange
+            Action act = () =>
+            {
+                AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
+                {
+                    new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { }),
+                    new ShortcutDefinition(ConsoleKey.Delete, () => { }),
+                })
+                {
+                    AutoCompletionHandler = new TestAutoCompleteHandler()
+                };
+            };
+
+            // Assert
+            act.Should().Throw<TypinException>();
         }
 
         public void Dispose()

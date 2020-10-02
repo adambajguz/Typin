@@ -7,7 +7,7 @@
     using Typin.Console;
 
     /// <summary>
-    /// If application rans in interactive mode, this [.] directive can be used to remove one command from the scope.
+    /// If application runs in interactive mode, this [.] directive can be used to remove one command from the scope.
     /// <example>
     ///             > [>] cmd1 sub
     ///     cmd1 sub> list
@@ -16,7 +16,7 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(".", Description = "Removed one command from the scope.", InteractiveModeOnly = true)]
+    [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", InteractiveModeOnly = true)]
     public sealed class ScopeUpDirective : IDirective
     {
         private readonly CliContext _cliContext;

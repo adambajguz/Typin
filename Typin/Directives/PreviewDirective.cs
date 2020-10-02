@@ -11,7 +11,7 @@
     /// When preview mode is specified (using the [preview] directive), the app will short-circuit by printing consumed command line arguments as they were parsed.
     /// This is useful when troubleshooting issues related to command routing and argument binding.
     /// </summary>
-    [Directive("preview", Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
+    [Directive(BuiltInDirectives.Preview, Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
     public sealed class PreviewDirective : IDirective
     {
         private readonly ICliContext _cliContext;

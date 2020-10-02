@@ -40,8 +40,8 @@
 It is build based on the code of [CliFx](https://github.com/Tyrrrz/CliFx). Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
 This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
 
-An important property of Typin, when compared to some other libraries, is that it's not just a parser -- it's a complete application framework.
-The main goal of the library is to provide a consistent and enjoyable development experience when building command line applications.
+Typin is not just a parser but a complete application framework. 
+Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
 
 ## Features
 
@@ -84,26 +84,34 @@ See [wiki](https://github.com/adambajguz/Typin/wiki) for detailed instructions a
 
 ## Benchmarks
 
-Here's how Typin's execution overhead compares to that of other libraries.
+Here's how Typin's execution overhead compares to that of other libraries (single command comparison) and with increasing number of commands.
 
 ```ini
-BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18363
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.19041
 Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=3.1.302
-  [Host]     : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
-  DefaultJob : .NET Core 3.1.6 (CoreCLR 4.700.20.26901, CoreFX 4.700.20.31603), X64 RyuJIT
+.NET Core SDK=3.1.402
+  [Host]     : .NET Core 3.1.8 (CoreCLR 4.700.20.41105, CoreFX 4.700.20.41903), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.8 (CoreCLR 4.700.20.41105, CoreFX 4.700.20.41903), X64 RyuJIT
 ```
 
-|                               Method |         Mean |     Error |    StdDev | Ratio | RatioSD | Rank |
-|-------------------------------------:|-------------:|----------:|----------:|------:|--------:|-----:|
-|                    CommandLineParser |     2.278 us | 0.0065 us | 0.0054 us |  0.02 |    0.00 |    1 |
-|                                CliFx |    46.173 us | 0.2461 us | 0.2302 us |  0.46 |    0.01 |    2 |
-|                                Typin |   101.267 us | 1.0089 us | 0.8943 us |  1.00 |    0.00 |    3 |
-|                                Clipr |   126.073 us | 0.6684 us | 0.5581 us |  1.25 |    0.01 |    4 |
-| McMaster.Extensions.CommandLineUtils |   126.572 us | 0.2780 us | 0.2600 us |  1.25 |    0.01 |    4 |
-|                   System.CommandLine |   192.502 us | 0.5573 us | 0.4940 us |  1.90 |    0.02 |    5 |
-|                            PowerArgs |   243.405 us | 0.8565 us | 0.7152 us |  2.40 |    0.02 |    6 |
-|                               Cocona | 1,132.327 us | 8.5110 us | 7.5448 us | 11.18 |    0.10 |    7 |
+|                               Method |         Mean |     Error |    StdDev |       Median | Ratio | RatioSD | Rank |
+|------------------------------------- |-------------:|----------:|----------:|-------------:|------:|--------:|-----:|
+|                    CommandLineParser |     2.489 us | 0.0481 us | 0.0573 us |     2.500 us |  0.03 |    0.00 |    1 |
+|                                CliFx |    51.513 us | 0.3411 us | 0.3024 us |    51.551 us |  0.57 |    0.00 |    2 |
+|                                Typin |    90.748 us | 0.4652 us | 0.4351 us |    90.759 us |  1.00 |    0.00 |    3 |
+| McMaster.Extensions.CommandLineUtils |   129.112 us | 1.5520 us | 1.3758 us |   128.436 us |  1.42 |    0.02 |    4 |
+|                                Clipr |   131.652 us | 2.8059 us | 4.1129 us |   129.439 us |  1.47 |    0.05 |    4 |
+|                   System.CommandLine |   198.114 us | 3.7021 us | 3.4630 us |   195.986 us |  2.18 |    0.04 |    5 |
+|                            PowerArgs |   257.859 us | 1.4766 us | 1.3812 us |   258.043 us |  2.84 |    0.02 |    6 |
+|                               Cocona |      1166 us | 7.3347 us | 6.1248 us |      1167 us | 12.86 |    0.10 |    7 |
+
+|                Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Rank |
+|---------------------- |----------:|---------:|---------:|------:|--------:|-----:|
+|   'Typin - 1 command' |  93.14 us | 1.690 us | 1.581 us |  1.00 |    0.00 |    1 |
+|  'Typin - 2 commands' | 112.83 us | 1.226 us | 1.147 us |  1.21 |    0.03 |    2 |
+|  'Typin - 5 commands' | 172.43 us | 1.958 us | 1.831 us |  1.85 |    0.04 |    3 |
+| 'Typin - 10 commands' | 282.39 us | 2.706 us | 2.531 us |  3.03 |    0.06 |    4 |
+| 'Typin - 20 commands' | 499.48 us | 3.784 us | 3.354 us |  5.36 |    0.09 |    5 |
 
 Legends:
   * Mean    : Arithmetic mean of all measurements

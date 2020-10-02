@@ -6,7 +6,7 @@
     using Typin.Tests.Data.Valid;
 
     [Command("cmd")]
-    public partial class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
+    public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [CommandOption("str-non-initializable")]
         public NonInitializableClassType? StringNonInitializable { get; set; }

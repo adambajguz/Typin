@@ -1,3 +1,19 @@
+### v2.0 (02-Oct-2020)
+
+- Added preview of custom DI containter support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).
+- Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
+- Improvements in shortcuts handling.
+- Renamed `[default]` directive to `[!]`.
+- `[!]` directive is now required to execute user-defined default command. However, `-h`, `--help`, `--version` will still work without `[!]` directive.
+- Improvements in `Ctrl+[Delete/Backspace/ArrowLeft/ArrowRight]` handling.
+- Renamed `EnvironmentVariableName` to `FallbackVariableName`.
+- Added `IOptionFallbackProvider`, as well as `EnvironmentVariableFallbackProvider` as default implementation of `IOptionFallbackProvider` and `EmptyFallbackProvider` that can be used to disable fallback.
+- Command execution now heavily uses middleware pipeline (`ResolveCommandSchema` -> `HandleVersionOption` -> `ResolveCommandInstance` -> `HandleInteractiveDirective` -> `HandleHelpOption` -> `HandleInteractiveCommands` -> `ExecuteCommand`).
+- Added `CliExecutionScope` and ensured that `Context.Input`, `Context.Command`, `Context.CommandDefaultValues`, `Context.CommandSchema`, and `Context.ExitCode` are reset to default values after middleware pipeline execution.
+- Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter', and made `DefaultHelpWriter` a public class.
+- Fixed `AddDirectivesFrom(Assembly directiveAssembly)` and `AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)`.
+- Removed partial classes.
+
 ### v1.0.1 (23-Aug-2020)
 
 - Removed middleware delegate parameters.
@@ -21,6 +37,6 @@
 - Added `TableUtils` and `TextUtils`.
 - Added history and auto-completion in interactive mode.
 
-### v0.1 (Aug-2020)
+### v0.1 (08-Aug-2020)
 
 - Indirect fork from CliFx.

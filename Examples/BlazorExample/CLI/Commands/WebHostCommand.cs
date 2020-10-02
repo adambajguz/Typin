@@ -14,7 +14,7 @@
         private readonly IWebHostRunnerService _webHostRunnerService;
 
         [CommandParameter(0, Name = "message", Description = "Exception message.")]
-        public string Message { get; set; } = "";
+        public string Message { get; set; } = string.Empty;
 
         public WebHostCommand(ICliContext cliContext, IWebHostRunnerService webHostRunnerService)
         {

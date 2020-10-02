@@ -10,12 +10,14 @@
     using Typin.Attributes;
     using Typin.Exceptions;
     using Typin.Input;
+    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
+    using Typin.OptionFallback;
 
     /// <summary>
     /// Stores command schema.
     /// </summary>
-    public partial class CommandSchema
+    public class CommandSchema
     {
         /// <summary>
         /// Command type.
@@ -70,7 +72,11 @@
         /// </summary>
         public bool IsVersionOptionAvailable => Options.Contains(CommandOptionSchema.VersionOption);
 
-        internal CommandSchema(Type type,
+        #region ctor
+        /// <summary>
+        /// Initializes an instance of <see cref="CommandSchema"/>.
+        /// </summary>
+        private CommandSchema(Type type,
                               string? name,
                               string? description,
                               string? manual,
@@ -88,304 +94,8 @@
         }
 
         /// <summary>
-        /// Enumerates through parameters and options.
+        /// Resolves <see cref="CommandSchema"/>.
         /// </summary>
-        public IEnumerable<ArgumentSchema> GetArguments()
-        {
-            foreach (CommandParameterSchema parameter in Parameters)
-                yield return parameter;
-
-            foreach (CommandOptionSchema option in Options)
-                yield return option;
-        }
-
-        /// <summary>
-        /// Returns dictionary of arguments and its values.
-        /// </summary>
-        public IReadOnlyDictionary<ArgumentSchema, object?> GetArgumentValues(ICommand instance)
-        {
-            var result = new Dictionary<ArgumentSchema, object?>();
-
-            foreach (ArgumentSchema argument in GetArguments())
-            {
-                // Skip built-in arguments
-                if (argument.Property is null)
-                    continue;
-
-                object? value = argument.Property.GetValue(instance);
-                result[argument] = value;
-            }
-
-            return result;
-        }
-
-        private void BindParameters(ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
-        {
-            // All inputs must be bound
-            List<CommandParameterInput> remainingParameterInputs = parameterInputs.ToList();
-
-            // Scalar parameters
-            CommandParameterSchema[] scalarParameters = Parameters.OrderBy(p => p.Order)
-                                                                  .TakeWhile(p => p.IsScalar)
-                                                                  .ToArray();
-
-            for (int i = 0; i < scalarParameters.Length; i++)
-            {
-                CommandParameterSchema parameter = scalarParameters[i];
-
-                CommandParameterInput scalarInput = i < parameterInputs.Count
-                                                        ? parameterInputs[i]
-                                                        : throw TypinException.ParameterNotSet(parameter);
-
-                parameter.BindOn(instance, scalarInput.Value);
-                remainingParameterInputs.Remove(scalarInput);
-            }
-
-            // Non-scalar parameter (only one is allowed)
-            CommandParameterSchema nonScalarParameter = Parameters.OrderBy(p => p.Order)
-                                                                  .FirstOrDefault(p => !p.IsScalar);
-
-            if (nonScalarParameter != null)
-            {
-                string[] nonScalarValues = parameterInputs.Skip(scalarParameters.Length)
-                                                          .Select(p => p.Value)
-                                                          .ToArray();
-
-                // Parameters are required by default and so a non-scalar parameter must
-                // be bound to at least one value
-                if (!nonScalarValues.Any())
-                    throw TypinException.ParameterNotSet(nonScalarParameter);
-
-                nonScalarParameter.BindOn(instance, nonScalarValues);
-                remainingParameterInputs.Clear();
-            }
-
-            // Ensure all inputs were bound
-            if (remainingParameterInputs.Any())
-                throw TypinException.UnrecognizedParametersProvided(remainingParameterInputs);
-        }
-
-        private void BindOptions(ICommand instance,
-                                 IReadOnlyList<CommandOptionInput> optionInputs,
-                                 IReadOnlyDictionary<string, string> environmentVariables)
-        {
-            // All inputs must be bound
-            List<CommandOptionInput> remainingOptionInputs = optionInputs.ToList();
-
-            // All required options must be set
-            List<CommandOptionSchema> unsetRequiredOptions = Options.Where(o => o.IsRequired)
-                                                                    .ToList();
-
-            // Environment variables
-            foreach ((string name, string value) in environmentVariables)
-            {
-                CommandOptionSchema? option = Options.FirstOrDefault(o => o.MatchesEnvironmentVariableName(name));
-                if (option is null)
-                    continue;
-
-                string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
-
-                option.BindOn(instance, values);
-                unsetRequiredOptions.Remove(option);
-            }
-
-            // Direct input
-            foreach (CommandOptionSchema option in Options)
-            {
-                CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
-                                                          .ToArray();
-
-                // Skip if the inputs weren't provided for this option
-                if (!inputs.Any())
-                    continue;
-
-                string[] inputValues = inputs.SelectMany(i => i.Values)
-                                             .ToArray();
-
-                option.BindOn(instance, inputValues);
-
-                remainingOptionInputs.RemoveRange(inputs);
-
-                // Required option implies that the value has to be set and also be non-empty
-                if (inputValues.Any())
-                    unsetRequiredOptions.Remove(option);
-            }
-
-            // Ensure all inputs were bound
-            if (remainingOptionInputs.Any())
-                throw TypinException.UnrecognizedOptionsProvided(remainingOptionInputs);
-
-            // Ensure all required options were set
-            if (unsetRequiredOptions.Any())
-                throw TypinException.RequiredOptionsNotSet(unsetRequiredOptions);
-        }
-
-        internal void Bind(ICommand instance,
-                           CommandInput input,
-                           IReadOnlyDictionary<string, string> environmentVariables)
-        {
-            BindParameters(instance, input.Parameters);
-            BindOptions(instance, input.Options, environmentVariables);
-        }
-
-        internal string GetInternalDisplayString()
-        {
-            var buffer = new StringBuilder();
-
-            // Type
-            buffer.Append(Type.FullName);
-
-            // Name
-            buffer.Append(' ')
-                  .Append('(')
-                  .Append(IsDefault ? "<default command>" : $"'{Name}'")
-                  .Append(')');
-
-            return buffer.ToString();
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            return GetInternalDisplayString();
-        }
-    }
-
-    public partial class CommandSchema
-    {
-        private static void ValidateParameters(CommandSchema command)
-        {
-            IGrouping<int, CommandParameterSchema>? duplicateOrderGroup = command.Parameters
-                                                                                 .GroupBy(a => a.Order)
-                                                                                 .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateOrderGroup != null)
-            {
-                throw TypinException.ParametersWithSameOrder(
-                    command,
-                    duplicateOrderGroup.Key,
-                    duplicateOrderGroup.ToArray()
-                );
-            }
-
-            IGrouping<string, CommandParameterSchema>? duplicateNameGroup = command.Parameters
-                                                                                   .Where(a => !string.IsNullOrWhiteSpace(a.Name))
-                                                                                   .GroupBy(a => a.Name!, StringComparer.OrdinalIgnoreCase)
-                                                                                   .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateNameGroup != null)
-            {
-                throw TypinException.ParametersWithSameName(
-                    command,
-                    duplicateNameGroup.Key,
-                    duplicateNameGroup.ToArray()
-                );
-            }
-
-            CommandParameterSchema[]? nonScalarParameters = command.Parameters
-                                                                   .Where(p => !p.IsScalar)
-                                                                   .ToArray();
-
-            if (nonScalarParameters.Length > 1)
-            {
-                throw TypinException.TooManyNonScalarParameters(
-                    command,
-                    nonScalarParameters
-                );
-            }
-
-            CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
-                                                                       .OrderByDescending(a => a.Order)
-                                                                       .Skip(1)
-                                                                       .LastOrDefault(p => !p.IsScalar);
-
-            if (nonLastNonScalarParameter != null)
-            {
-                throw TypinException.NonLastNonScalarParameter(
-                    command,
-                    nonLastNonScalarParameter
-                );
-            }
-        }
-
-        private static void ValidateOptions(CommandSchema command)
-        {
-            IEnumerable<CommandOptionSchema> noNameGroup = command.Options
-                .Where(o => o.ShortName == null && string.IsNullOrWhiteSpace(o.Name));
-
-            if (noNameGroup.Any())
-            {
-                throw TypinException.OptionsWithNoName(
-                    command,
-                    noNameGroup.ToArray()
-                );
-            }
-
-            CommandOptionSchema[] invalidLengthNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .Where(o => o.Name!.Length <= 1)
-                .ToArray();
-
-            if (invalidLengthNameGroup.Any())
-            {
-                throw TypinException.OptionsWithInvalidLengthName(
-                    command,
-                    invalidLengthNameGroup
-                );
-            }
-
-            IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .GroupBy(o => o.Name!, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateNameGroup != null)
-            {
-                throw TypinException.OptionsWithSameName(
-                    command,
-                    duplicateNameGroup.Key,
-                    duplicateNameGroup.ToArray()
-                );
-            }
-
-            IGrouping<char, CommandOptionSchema>? duplicateShortNameGroup = command.Options
-                .Where(o => o.ShortName != null)
-                .GroupBy(o => o.ShortName!.Value)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateShortNameGroup != null)
-            {
-                throw TypinException.OptionsWithSameShortName(
-                    command,
-                    duplicateShortNameGroup.Key,
-                    duplicateShortNameGroup.ToArray()
-                );
-            }
-
-            IGrouping<string, CommandOptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.EnvironmentVariableName))
-                .GroupBy(o => o.EnvironmentVariableName!, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateEnvironmentVariableNameGroup != null)
-            {
-                throw TypinException.OptionsWithSameEnvironmentVariableName(
-                    command,
-                    duplicateEnvironmentVariableNameGroup.Key,
-                    duplicateEnvironmentVariableNameGroup.ToArray()
-                );
-            }
-        }
-
-        internal static bool IsCommandType(Type type)
-        {
-            return type.Implements(typeof(ICommand)) &&
-                   type.IsDefined(typeof(CommandAttribute)) &&
-                   !type.IsAbstract &&
-                   !type.IsInterface;
-        }
-
         internal static CommandSchema? TryResolve(Type type)
         {
             if (!IsCommandType(type))
@@ -425,5 +135,306 @@
 
             return command;
         }
+        #endregion
+
+        /// <summary>
+        /// Enumerates through parameters and options.
+        /// </summary>
+        public IEnumerable<ArgumentSchema> GetArguments()
+        {
+            foreach (CommandParameterSchema parameter in Parameters)
+                yield return parameter;
+
+            foreach (CommandOptionSchema option in Options)
+                yield return option;
+        }
+
+        /// <summary>
+        /// Returns dictionary of arguments and its values.
+        /// </summary>
+        public IReadOnlyDictionary<ArgumentSchema, object?> GetArgumentValues(ICommand instance)
+        {
+            var result = new Dictionary<ArgumentSchema, object?>();
+
+            foreach (ArgumentSchema argument in GetArguments())
+            {
+                // Skip built-in arguments
+                if (argument.Property is null)
+                    continue;
+
+                object? value = argument.Property.GetValue(instance);
+                result[argument] = value;
+            }
+
+            return result;
+        }
+
+        #region Bind
+        private void BindParameters(ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
+        {
+            // All inputs must be bound
+            List<CommandParameterInput> remainingParameterInputs = parameterInputs.ToList();
+
+            // Scalar parameters
+            CommandParameterSchema[] scalarParameters = Parameters.OrderBy(p => p.Order)
+                                                                  .TakeWhile(p => p.IsScalar)
+                                                                  .ToArray();
+
+            for (int i = 0; i < scalarParameters.Length; i++)
+            {
+                CommandParameterSchema parameter = scalarParameters[i];
+
+                CommandParameterInput scalarInput = i < parameterInputs.Count
+                                                        ? parameterInputs[i]
+                                                        : throw EndUserTypinExceptions.ParameterNotSet(parameter);
+
+                parameter.BindOn(instance, scalarInput.Value);
+                remainingParameterInputs.Remove(scalarInput);
+            }
+
+            // Non-scalar parameter (only one is allowed)
+            CommandParameterSchema nonScalarParameter = Parameters.OrderBy(p => p.Order)
+                                                                  .FirstOrDefault(p => !p.IsScalar);
+
+            if (nonScalarParameter != null)
+            {
+                string[] nonScalarValues = parameterInputs.Skip(scalarParameters.Length)
+                                                          .Select(p => p.Value)
+                                                          .ToArray();
+
+                // Parameters are required by default and so a non-scalar parameter must
+                // be bound to at least one value
+                if (!nonScalarValues.Any())
+                    throw EndUserTypinExceptions.ParameterNotSet(nonScalarParameter);
+
+                nonScalarParameter.BindOn(instance, nonScalarValues);
+                remainingParameterInputs.Clear();
+            }
+
+            // Ensure all inputs were bound
+            if (remainingParameterInputs.Any())
+                throw EndUserTypinExceptions.UnrecognizedParametersProvided(remainingParameterInputs);
+        }
+
+        private void BindOptions(ICommand instance,
+                                 IReadOnlyList<CommandOptionInput> optionInputs,
+                                 IOptionFallbackProvider optionFallbackProvider)
+        {
+            // All inputs must be bound
+            List<CommandOptionInput> remainingOptionInputs = optionInputs.ToList();
+
+            // All required options must be set
+            List<CommandOptionSchema> unsetRequiredOptions = Options.Where(o => o.IsRequired)
+                                                                    .ToList();
+
+            // Direct or fallback input
+            foreach (CommandOptionSchema option in Options)
+            {
+                CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
+                                                          .ToArray();
+
+                bool inputsProvided = inputs.Any();
+
+                // Check fallback value
+                if (!inputsProvided &&
+                    option.FallbackVariableName is string v &&
+                    optionFallbackProvider.TryGetValue(v, option.Property!.PropertyType, out string value))
+                {
+                    string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
+
+                    option.BindOn(instance, values);
+                    unsetRequiredOptions.Remove(option);
+
+                    continue;
+                }
+                else if (!inputsProvided) // Skip if the inputs weren't provided for this option
+                    continue;
+
+                string[] inputValues = inputs.SelectMany(i => i.Values)
+                                             .ToArray();
+
+                option.BindOn(instance, inputValues);
+
+                remainingOptionInputs.RemoveRange(inputs);
+
+                // Required option implies that the value has to be set and also be non-empty
+                if (inputValues.Any())
+                    unsetRequiredOptions.Remove(option);
+            }
+
+            // Ensure all inputs were bound
+            if (remainingOptionInputs.Any())
+                throw EndUserTypinExceptions.UnrecognizedOptionsProvided(remainingOptionInputs);
+
+            // Ensure all required options were set
+            if (unsetRequiredOptions.Any())
+                throw EndUserTypinExceptions.RequiredOptionsNotSet(unsetRequiredOptions);
+        }
+
+        internal void Bind(ICommand instance,
+                           CommandInput input,
+                           IOptionFallbackProvider optionFallbackProvider)
+        {
+            BindParameters(instance, input.Parameters);
+            BindOptions(instance, input.Options, optionFallbackProvider);
+        }
+        #endregion
+
+        internal string GetInternalDisplayString()
+        {
+            var buffer = new StringBuilder();
+
+            // Type
+            buffer.Append(Type.FullName);
+
+            // Name
+            buffer.Append(' ')
+                  .Append('(')
+                  .Append(IsDefault ? "<default command>" : $"'{Name}'")
+                  .Append(')');
+
+            return buffer.ToString();
+        }
+
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        public override string ToString()
+        {
+            return GetInternalDisplayString();
+        }
+
+        #region Helpers
+        private static void ValidateParameters(CommandSchema command)
+        {
+            IGrouping<int, CommandParameterSchema>? duplicateOrderGroup = command.Parameters
+                                                                                 .GroupBy(a => a.Order)
+                                                                                 .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicateOrderGroup != null)
+            {
+                throw InternalTypinExceptions.ParametersWithSameOrder(
+                    command,
+                    duplicateOrderGroup.Key,
+                    duplicateOrderGroup.ToArray()
+                );
+            }
+
+            IGrouping<string, CommandParameterSchema>? duplicateNameGroup = command.Parameters
+                                                                                   .Where(a => !string.IsNullOrWhiteSpace(a.Name))
+                                                                                   .GroupBy(a => a.Name!, StringComparer.OrdinalIgnoreCase)
+                                                                                   .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicateNameGroup != null)
+            {
+                throw InternalTypinExceptions.ParametersWithSameName(
+                    command,
+                    duplicateNameGroup.Key,
+                    duplicateNameGroup.ToArray()
+                );
+            }
+
+            CommandParameterSchema[]? nonScalarParameters = command.Parameters
+                                                                   .Where(p => !p.IsScalar)
+                                                                   .ToArray();
+
+            if (nonScalarParameters.Length > 1)
+            {
+                throw InternalTypinExceptions.TooManyNonScalarParameters(
+                    command,
+                    nonScalarParameters
+                );
+            }
+
+            CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
+                                                                       .OrderByDescending(a => a.Order)
+                                                                       .Skip(1)
+                                                                       .LastOrDefault(p => !p.IsScalar);
+
+            if (nonLastNonScalarParameter != null)
+            {
+                throw InternalTypinExceptions.NonLastNonScalarParameter(
+                    command,
+                    nonLastNonScalarParameter
+                );
+            }
+        }
+
+        private static void ValidateOptions(CommandSchema command)
+        {
+            IEnumerable<CommandOptionSchema> noNameGroup = command.Options
+                .Where(o => o.ShortName == null && string.IsNullOrWhiteSpace(o.Name));
+
+            if (noNameGroup.Any())
+            {
+                throw InternalTypinExceptions.OptionsWithNoName(
+                    command,
+                    noNameGroup.ToArray()
+                );
+            }
+
+            CommandOptionSchema[] invalidLengthNameGroup = command.Options
+                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
+                .Where(o => o.Name!.Length <= 1)
+                .ToArray();
+
+            if (invalidLengthNameGroup.Any())
+            {
+                throw InternalTypinExceptions.OptionsWithInvalidLengthName(
+                    command,
+                    invalidLengthNameGroup
+                );
+            }
+
+            IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
+                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
+                .GroupBy(o => o.Name!, StringComparer.OrdinalIgnoreCase)
+                .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicateNameGroup != null)
+            {
+                throw InternalTypinExceptions.OptionsWithSameName(
+                    command,
+                    duplicateNameGroup.Key,
+                    duplicateNameGroup.ToArray()
+                );
+            }
+
+            IGrouping<char, CommandOptionSchema>? duplicateShortNameGroup = command.Options
+                .Where(o => o.ShortName != null)
+                .GroupBy(o => o.ShortName!.Value)
+                .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicateShortNameGroup != null)
+            {
+                throw InternalTypinExceptions.OptionsWithSameShortName(
+                    command,
+                    duplicateShortNameGroup.Key,
+                    duplicateShortNameGroup.ToArray()
+                );
+            }
+
+            IGrouping<string, CommandOptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
+                .Where(o => !string.IsNullOrWhiteSpace(o.FallbackVariableName))
+                .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
+                .FirstOrDefault(g => g.Count() > 1);
+
+            if (duplicateEnvironmentVariableNameGroup != null)
+            {
+                throw InternalTypinExceptions.OptionsWithSameEnvironmentVariableName(
+                    command,
+                    duplicateEnvironmentVariableNameGroup.Key,
+                    duplicateEnvironmentVariableNameGroup.ToArray()
+                );
+            }
+        }
+
+        internal static bool IsCommandType(Type type)
+        {
+            return type.Implements(typeof(ICommand)) &&
+                   type.IsDefined(typeof(CommandAttribute)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
+        #endregion
     }
 }
