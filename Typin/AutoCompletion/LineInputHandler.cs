@@ -190,10 +190,13 @@
 
         public void Write(char c)
         {
+            if (c == '\0')
+                return;
+
             if (IsEndOfLine)
             {
                 _text.Append(c);
-                _console.Output.Write(c.ToString());
+                _console.Output.Write(c);
                 CursorPosition++;
             }
             else

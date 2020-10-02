@@ -47,6 +47,7 @@
             if (keyInfo.Key == ConsoleKey.Enter && modifiers == 0)
             {
                 NewLineDetected?.Invoke();
+                return;
             }
 
             var input = new ShortcutDefinition(keyInfo.Key, keyInfo.Modifiers, () => { });
