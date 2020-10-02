@@ -34,7 +34,7 @@
                 (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
                 IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
-                helpTextWriter.Write(commandSchema, context.CommandDefaultValues); //TODO: add directives help?
+                helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
 
                 return ExitCodes.Success;
             }
