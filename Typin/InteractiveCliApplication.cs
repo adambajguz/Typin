@@ -13,7 +13,7 @@
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public partial class InteractiveCliApplication : CliApplication
+    public sealed class InteractiveCliApplication : CliApplication
     {
         private readonly ConsoleColor _promptForeground;
         private readonly ConsoleColor _commandForeground;

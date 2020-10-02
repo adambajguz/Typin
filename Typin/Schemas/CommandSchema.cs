@@ -10,13 +10,14 @@
     using Typin.Attributes;
     using Typin.Exceptions;
     using Typin.Input;
+    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.OptionFallback;
 
     /// <summary>
     /// Stores command schema.
     /// </summary>
-    public partial class CommandSchema
+    public class CommandSchema
     {
         /// <summary>
         /// Command type.
@@ -71,6 +72,7 @@
         /// </summary>
         public bool IsVersionOptionAvailable => Options.Contains(CommandOptionSchema.VersionOption);
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
@@ -90,6 +92,50 @@
             Parameters = parameters;
             Options = options;
         }
+
+        /// <summary>
+        /// Resolves <see cref="CommandSchema"/>.
+        /// </summary>
+        internal static CommandSchema? TryResolve(Type type)
+        {
+            if (!IsCommandType(type))
+                return null;
+
+            CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
+
+            string? name = attribute.Name;
+
+            CommandOptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
+                ? new[] { CommandOptionSchema.HelpOption, CommandOptionSchema.VersionOption }
+                : new[] { CommandOptionSchema.HelpOption };
+
+            CommandParameterSchema?[] parameters = type.GetProperties()
+                                                       .Select(CommandParameterSchema.TryResolve)
+                                                       .Where(p => p != null)
+                                                       .ToArray();
+
+            CommandOptionSchema?[] options = type.GetProperties()
+                                                 .Select(CommandOptionSchema.TryResolve)
+                                                 .Where(o => o != null)
+                                                 .Concat(builtInOptions)
+                                                 .ToArray();
+
+            CommandSchema command = new CommandSchema(
+                type,
+                name,
+                attribute.Description,
+                attribute.Manual,
+                attribute.InteractiveModeOnly,
+                parameters!,
+                options!
+            );
+
+            ValidateParameters(command);
+            ValidateOptions(command);
+
+            return command;
+        }
+        #endregion
 
         /// <summary>
         /// Enumerates through parameters and options.
@@ -123,6 +169,7 @@
             return result;
         }
 
+        #region Bind
         private void BindParameters(ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
         {
             // All inputs must be bound
@@ -139,7 +186,7 @@
 
                 CommandParameterInput scalarInput = i < parameterInputs.Count
                                                         ? parameterInputs[i]
-                                                        : throw TypinException.ParameterNotSet(parameter);
+                                                        : throw EndUserTypinExceptions.ParameterNotSet(parameter);
 
                 parameter.BindOn(instance, scalarInput.Value);
                 remainingParameterInputs.Remove(scalarInput);
@@ -158,7 +205,7 @@
                 // Parameters are required by default and so a non-scalar parameter must
                 // be bound to at least one value
                 if (!nonScalarValues.Any())
-                    throw TypinException.ParameterNotSet(nonScalarParameter);
+                    throw EndUserTypinExceptions.ParameterNotSet(nonScalarParameter);
 
                 nonScalarParameter.BindOn(instance, nonScalarValues);
                 remainingParameterInputs.Clear();
@@ -166,7 +213,7 @@
 
             // Ensure all inputs were bound
             if (remainingParameterInputs.Any())
-                throw TypinException.UnrecognizedParametersProvided(remainingParameterInputs);
+                throw EndUserTypinExceptions.UnrecognizedParametersProvided(remainingParameterInputs);
         }
 
         private void BindOptions(ICommand instance,
@@ -217,11 +264,11 @@
 
             // Ensure all inputs were bound
             if (remainingOptionInputs.Any())
-                throw TypinException.UnrecognizedOptionsProvided(remainingOptionInputs);
+                throw EndUserTypinExceptions.UnrecognizedOptionsProvided(remainingOptionInputs);
 
             // Ensure all required options were set
             if (unsetRequiredOptions.Any())
-                throw TypinException.RequiredOptionsNotSet(unsetRequiredOptions);
+                throw EndUserTypinExceptions.RequiredOptionsNotSet(unsetRequiredOptions);
         }
 
         internal void Bind(ICommand instance,
@@ -231,6 +278,7 @@
             BindParameters(instance, input.Parameters);
             BindOptions(instance, input.Options, optionFallbackProvider);
         }
+        #endregion
 
         internal string GetInternalDisplayString()
         {
@@ -254,10 +302,8 @@
         {
             return GetInternalDisplayString();
         }
-    }
 
-    public partial class CommandSchema
-    {
+        #region Helpers
         private static void ValidateParameters(CommandSchema command)
         {
             IGrouping<int, CommandParameterSchema>? duplicateOrderGroup = command.Parameters
@@ -266,7 +312,7 @@
 
             if (duplicateOrderGroup != null)
             {
-                throw TypinException.ParametersWithSameOrder(
+                throw InternalTypinExceptions.ParametersWithSameOrder(
                     command,
                     duplicateOrderGroup.Key,
                     duplicateOrderGroup.ToArray()
@@ -280,7 +326,7 @@
 
             if (duplicateNameGroup != null)
             {
-                throw TypinException.ParametersWithSameName(
+                throw InternalTypinExceptions.ParametersWithSameName(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -293,7 +339,7 @@
 
             if (nonScalarParameters.Length > 1)
             {
-                throw TypinException.TooManyNonScalarParameters(
+                throw InternalTypinExceptions.TooManyNonScalarParameters(
                     command,
                     nonScalarParameters
                 );
@@ -306,7 +352,7 @@
 
             if (nonLastNonScalarParameter != null)
             {
-                throw TypinException.NonLastNonScalarParameter(
+                throw InternalTypinExceptions.NonLastNonScalarParameter(
                     command,
                     nonLastNonScalarParameter
                 );
@@ -320,7 +366,7 @@
 
             if (noNameGroup.Any())
             {
-                throw TypinException.OptionsWithNoName(
+                throw InternalTypinExceptions.OptionsWithNoName(
                     command,
                     noNameGroup.ToArray()
                 );
@@ -333,7 +379,7 @@
 
             if (invalidLengthNameGroup.Any())
             {
-                throw TypinException.OptionsWithInvalidLengthName(
+                throw InternalTypinExceptions.OptionsWithInvalidLengthName(
                     command,
                     invalidLengthNameGroup
                 );
@@ -346,7 +392,7 @@
 
             if (duplicateNameGroup != null)
             {
-                throw TypinException.OptionsWithSameName(
+                throw InternalTypinExceptions.OptionsWithSameName(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -360,7 +406,7 @@
 
             if (duplicateShortNameGroup != null)
             {
-                throw TypinException.OptionsWithSameShortName(
+                throw InternalTypinExceptions.OptionsWithSameShortName(
                     command,
                     duplicateShortNameGroup.Key,
                     duplicateShortNameGroup.ToArray()
@@ -374,7 +420,7 @@
 
             if (duplicateEnvironmentVariableNameGroup != null)
             {
-                throw TypinException.OptionsWithSameEnvironmentVariableName(
+                throw InternalTypinExceptions.OptionsWithSameEnvironmentVariableName(
                     command,
                     duplicateEnvironmentVariableNameGroup.Key,
                     duplicateEnvironmentVariableNameGroup.ToArray()
@@ -389,45 +435,6 @@
                    !type.IsAbstract &&
                    !type.IsInterface;
         }
-
-        internal static CommandSchema? TryResolve(Type type)
-        {
-            if (!IsCommandType(type))
-                return null;
-
-            CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
-
-            string? name = attribute.Name;
-
-            CommandOptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
-                ? new[] { CommandOptionSchema.HelpOption, CommandOptionSchema.VersionOption }
-                : new[] { CommandOptionSchema.HelpOption };
-
-            CommandParameterSchema?[] parameters = type.GetProperties()
-                                                       .Select(CommandParameterSchema.TryResolve)
-                                                       .Where(p => p != null)
-                                                       .ToArray();
-
-            CommandOptionSchema?[] options = type.GetProperties()
-                                                 .Select(CommandOptionSchema.TryResolve)
-                                                 .Where(o => o != null)
-                                                 .Concat(builtInOptions)
-                                                 .ToArray();
-
-            CommandSchema command = new CommandSchema(
-                type,
-                name,
-                attribute.Description,
-                attribute.Manual,
-                attribute.InteractiveModeOnly,
-                parameters!,
-                options!
-            );
-
-            ValidateParameters(command);
-            ValidateOptions(command);
-
-            return command;
-        }
+        #endregion
     }
 }

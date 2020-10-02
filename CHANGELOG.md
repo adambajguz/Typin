@@ -1,6 +1,5 @@
-### v2.0 (xx-xxx-2020)
+### v2.0 (02-Oct-2020)
 
-- Added custom DI containter support.
 - Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
 - Improvements in shortcuts handling.
 - Renamed `[default]` directive to `[!]`.
@@ -11,6 +10,8 @@
 - Command execution now heavily uses middleware pipeline (`ResolveCommandSchema` -> `HandleVersionOption` -> `ResolveCommandInstance` -> `HandleInteractiveDirective` -> `HandleHelpOption` -> `HandleInteractiveCommands` -> `ExecuteCommand`).
 - Added `CliExecutionScope` and ensured that `Context.Input`, `Context.Command`, `Context.CommandDefaultValues`, `Context.CommandSchema`, and `Context.ExitCode` are reset to default values after middleware pipeline execution.
 - Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter', and made `DefaultHelpWriter` a public class.
+- Fixed `AddDirectivesFrom(Assembly directiveAssembly)` and `AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)`.
+- Removed partial classes.
 
 ### v1.0.1 (23-Aug-2020)
 

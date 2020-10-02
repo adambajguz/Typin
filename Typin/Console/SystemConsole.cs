@@ -8,7 +8,7 @@
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
     /// </summary>
-    public partial class SystemConsole : IConsole
+    public class SystemConsole : IConsole
     {
         private CancellationTokenSource? _cancellationTokenSource;
         private bool disposedValue;
@@ -45,6 +45,7 @@
             set => Console.BackgroundColor = value;
         }
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="SystemConsole"/>.
         /// </summary>
@@ -54,6 +55,7 @@
             Output = WrapOutput(Console.OpenStandardOutput());
             Error = WrapOutput(Console.OpenStandardError());
         }
+        #endregion
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
@@ -208,10 +210,8 @@
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-    }
 
-    public partial class SystemConsole
-    {
+        #region Helpers
         private static StreamReader WrapInput(Stream? stream)
         {
             if (stream is null)
@@ -230,5 +230,6 @@
                 AutoFlush = true
             };
         }
+        #endregion
     }
 }

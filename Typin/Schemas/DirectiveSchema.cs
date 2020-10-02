@@ -7,12 +7,13 @@
     using System.Text;
     using Typin.Attributes;
     using Typin.Exceptions;
+    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
 
     /// <summary>
     /// Stores directive schema.
     /// </summary>
-    public partial class DirectiveSchema
+    public class DirectiveSchema
     {
         /// <summary>
         /// Directive type.
@@ -35,6 +36,7 @@
         /// </summary>
         public bool InteractiveModeOnly { get; }
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
         /// </summary>
@@ -48,6 +50,34 @@
             Description = description;
             InteractiveModeOnly = interactiveModeOnly;
         }
+
+        /// <summary>
+        /// Resolves <see cref="DirectiveSchema"/>.
+        /// </summary>
+        internal static DirectiveSchema? TryResolve(Type type)
+        {
+            if (!IsDirectiveType(type))
+                return null;
+
+            DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
+
+            var parameters = type.GetProperties()
+                .Select(CommandParameterSchema.TryResolve)
+                .Where(p => p != null)
+                .ToArray();
+
+            string name = attribute.Name.TrimStart('[').TrimEnd(']');
+            if (string.IsNullOrWhiteSpace(name))
+                throw InternalTypinExceptions.DirectiveNameIsInvalid(name, type);
+
+            return new DirectiveSchema(
+                type,
+                name,
+                attribute.Description,
+                attribute.InteractiveModeOnly
+            );
+        }
+        #endregion
 
         internal string GetInternalDisplayString()
         {
@@ -71,40 +101,13 @@
         {
             return GetInternalDisplayString();
         }
-    }
 
-    public partial class DirectiveSchema
-    {
         internal static bool IsDirectiveType(Type type)
         {
             return type.Implements(typeof(IDirective)) &&
                    type.IsDefined(typeof(DirectiveAttribute)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
-        }
-
-        internal static DirectiveSchema? TryResolve(Type type)
-        {
-            if (!IsDirectiveType(type))
-                return null;
-
-            DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
-
-            var parameters = type.GetProperties()
-                .Select(CommandParameterSchema.TryResolve)
-                .Where(p => p != null)
-                .ToArray();
-
-            string name = attribute.Name.TrimStart('[').TrimEnd(']');
-            if (string.IsNullOrWhiteSpace(name))
-                throw TypinException.DirectiveNameIsInvalid(name, type);
-
-            return new DirectiveSchema(
-                type,
-                name,
-                attribute.Description,
-                attribute.InteractiveModeOnly
-            );
         }
     }
 }

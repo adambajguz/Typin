@@ -8,7 +8,7 @@
     /// <summary>
     /// Stores command parameter schema.
     /// </summary>
-    public partial class CommandParameterSchema : ArgumentSchema
+    public class CommandParameterSchema : ArgumentSchema
     {
         /// <summary>
         /// Parameter order.
@@ -20,6 +20,7 @@
         /// </summary>
         public string Name { get; }
 
+        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="CommandParameterSchema"/>.
         /// </summary>
@@ -29,6 +30,26 @@
             Order = order;
             Name = name;
         }
+
+        /// <summary>
+        /// Resolves <see cref="CommandParameterSchema"/>.
+        /// </summary>
+        internal static CommandParameterSchema? TryResolve(PropertyInfo property)
+        {
+            CommandParameterAttribute? attribute = property.GetCustomAttribute<CommandParameterAttribute>();
+            if (attribute is null)
+                return null;
+
+            string name = attribute.Name ?? property.Name.ToLowerInvariant();
+
+            return new CommandParameterSchema(
+                property,
+                attribute.Order,
+                name,
+                attribute.Description
+            );
+        }
+        #endregion
 
         internal string GetUserFacingDisplayString()
         {
@@ -46,25 +67,6 @@
         public override string ToString()
         {
             return $"{Property?.Name ?? "<implicit>"} ([{Order}] {GetUserFacingDisplayString()})";
-        }
-    }
-
-    public partial class CommandParameterSchema
-    {
-        internal static CommandParameterSchema? TryResolve(PropertyInfo property)
-        {
-            CommandParameterAttribute? attribute = property.GetCustomAttribute<CommandParameterAttribute>();
-            if (attribute is null)
-                return null;
-
-            string name = attribute.Name ?? property.Name.ToLowerInvariant();
-
-            return new CommandParameterSchema(
-                property,
-                attribute.Order,
-                name,
-                attribute.Description
-            );
         }
     }
 }

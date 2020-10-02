@@ -5,6 +5,7 @@
     using System.Text;
     using Typin.Console;
     using Typin.Exceptions;
+    using Typin.Internal.Exceptions;
 
     internal sealed class LineInputHandler
     {
@@ -118,7 +119,7 @@
                     if (!_shortcuts.Add(shortcut))
                     {
                         //Throw an error when already exists
-                        throw TypinException.DuplicatedShortcut(shortcut);
+                        throw InternalTypinExceptions.DuplicatedShortcut(shortcut);
                     }
                 }
             }
@@ -347,7 +348,7 @@
                     return;
             }
 
-            int v = treatSpacesAsWord ? 0 : 1;
+            //int v = treatSpacesAsWord ? 0 : 1;
             do
             {
                 action();

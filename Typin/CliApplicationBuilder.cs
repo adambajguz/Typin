@@ -21,7 +21,7 @@ namespace Typin
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
     /// </summary>
-    public sealed partial class CliApplicationBuilder
+    public sealed class CliApplicationBuilder
     {
         private bool _cliApplicationBuilt;
 
@@ -57,8 +57,6 @@ namespace Typin
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
 
-        // Value fallback
-
         #region Directives
         /// <summary>
         /// Add a custom directive to the application.
@@ -90,7 +88,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectives(IEnumerable<Type> directiveTypes)
         {
-            foreach (var directiveType in directiveTypes)
+            foreach (Type directiveType in directiveTypes)
                 AddDirective(directiveType);
 
             return this;
@@ -102,8 +100,8 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (var directiveType in directiveAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
-                AddCommand(directiveType);
+            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(DirectiveSchema.IsDirectiveType))
+                AddDirective(directiveType);
 
             return this;
         }
@@ -114,8 +112,8 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)
         {
-            foreach (var directiveType in directiveAssemblies)
-                AddCommandsFrom(directiveType);
+            foreach (Assembly directiveType in directiveAssemblies)
+                AddDirectivesFrom(directiveType);
 
             return this;
         }
@@ -161,7 +159,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommands(IEnumerable<Type> commandTypes)
         {
-            foreach (var commandType in commandTypes)
+            foreach (Type commandType in commandTypes)
                 AddCommand(commandType);
 
             return this;
@@ -173,7 +171,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (var commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
                 AddCommand(commandType);
 
             return this;
@@ -185,7 +183,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(IEnumerable<Assembly> commandAssemblies)
         {
-            foreach (var commandAssembly in commandAssemblies)
+            foreach (Assembly commandAssembly in commandAssemblies)
                 AddCommandsFrom(commandAssembly);
 
             return this;
@@ -448,7 +446,7 @@ namespace Typin
 
         #region Value fallback
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
@@ -461,7 +459,7 @@ namespace Typin
         }
 
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
             where T : IOptionFallbackProvider
@@ -482,9 +480,9 @@ namespace Typin
             _cliApplicationBuilt = true;
 
             // Set default values
-            _title ??= TryGetDefaultTitle() ?? "App";
-            _executableName ??= TryGetDefaultExecutableName() ?? "app";
-            _versionText ??= TryGetDefaultVersionText() ?? "v1.0";
+            _title ??= AssemblyExtensions.TryGetDefaultTitle() ?? "App";
+            _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
+            _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
             _exceptionHandler ??= new DefaultExceptionHandler();
             _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
@@ -565,36 +563,6 @@ namespace Typin
             IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
 
             return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");
-        }
-    }
-
-    public partial class CliApplicationBuilder
-    {
-        private static readonly Lazy<Assembly?> LazyEntryAssembly = new Lazy<Assembly?>(Assembly.GetEntryAssembly);
-
-        // Entry assembly is null in tests
-        private static Assembly? EntryAssembly => LazyEntryAssembly.Value;
-
-        private static string? TryGetDefaultTitle()
-        {
-            return EntryAssembly?.GetName().Name;
-        }
-
-        private static string? TryGetDefaultExecutableName()
-        {
-            string? entryAssemblyLocation = EntryAssembly?.Location;
-
-            // The assembly can be an executable or a dll, depending on how it was packaged
-            bool isDll = string.Equals(Path.GetExtension(entryAssemblyLocation), ".dll", StringComparison.OrdinalIgnoreCase);
-
-            return isDll
-                ? "dotnet " + Path.GetFileName(entryAssemblyLocation)
-                : Path.GetFileNameWithoutExtension(entryAssemblyLocation);
-        }
-
-        private static string? TryGetDefaultVersionText()
-        {
-            return EntryAssembly != null ? $"v{EntryAssembly.GetName().Version.ToSemanticString()}" : null;
         }
     }
 }
