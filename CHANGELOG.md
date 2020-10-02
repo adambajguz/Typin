@@ -1,5 +1,6 @@
 ### v2.0 (02-Oct-2020)
 
+- Added preview of custom DI containter support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).
 - Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
 - Improvements in shortcuts handling.
 - Renamed `[default]` directive to `[!]`.
