@@ -247,7 +247,7 @@
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))
                             result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
 
-                        currentOptionAlias = alias.AsString();
+                        currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
                 }

@@ -8,7 +8,6 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
-    using Typin.Internal;
     using Typin.Schemas;
 
     /// <summary>

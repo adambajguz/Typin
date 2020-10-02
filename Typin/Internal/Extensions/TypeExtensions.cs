@@ -29,12 +29,11 @@
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 return type.GetGenericArguments().FirstOrDefault();
 
-            return type
-                .GetInterfaces()
-                .Select(GetEnumerableUnderlyingType)
-                .Where(t => t != null)
-                .OrderByDescending(t => t != typeof(object)) // prioritize more specific types
-                .FirstOrDefault();
+            return type.GetInterfaces()
+                       .Select(GetEnumerableUnderlyingType)
+                       .Where(t => t != null)
+                       .OrderByDescending(t => t != typeof(object)) // prioritize more specific types
+                       .FirstOrDefault();
         }
 
         public static MethodInfo GetToStringMethod(this Type type)
