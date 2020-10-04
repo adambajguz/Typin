@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
-    using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.OptionFallback;

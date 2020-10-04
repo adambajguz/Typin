@@ -3,7 +3,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
-    using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Schemas;

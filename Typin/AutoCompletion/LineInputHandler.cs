@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Text;
     using Typin.Console;
-    using Typin.Exceptions;
     using Typin.Internal.Exceptions;
 
     internal sealed class LineInputHandler

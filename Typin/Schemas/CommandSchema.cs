@@ -8,7 +8,6 @@
     using System.Reflection;
     using System.Text;
     using Typin.Attributes;
-    using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
