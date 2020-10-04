@@ -105,13 +105,19 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 |                            PowerArgs |   257.859 us | 1.4766 us | 1.3812 us |   258.043 us |  2.84 |    0.02 |    6 |
 |                               Cocona |      1166 us | 7.3347 us | 6.1248 us |      1167 us | 12.86 |    0.10 |    7 |
 
+
 |                Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Rank |
 |---------------------- |----------:|---------:|---------:|------:|--------:|-----:|
-|   'Typin - 1 command' |  93.14 us | 1.690 us | 1.581 us |  1.00 |    0.00 |    1 |
-|  'Typin - 2 commands' | 112.83 us | 1.226 us | 1.147 us |  1.21 |    0.03 |    2 |
-|  'Typin - 5 commands' | 172.43 us | 1.958 us | 1.831 us |  1.85 |    0.04 |    3 |
-| 'Typin - 10 commands' | 282.39 us | 2.706 us | 2.531 us |  3.03 |    0.06 |    4 |
-| 'Typin - 20 commands' | 499.48 us | 3.784 us | 3.354 us |  5.36 |    0.09 |    5 |
+|   'CliFx - 1 command' |  51.15 us | 0.843 us | 0.788 us |  0.54 |    0.01 |    1 |
+|  'CliFx - 2 commands' |  71.39 us | 1.375 us | 1.972 us |  0.76 |    0.03 |    2 |
+|   'Typin - 1 command' |  94.46 us | 1.974 us | 2.027 us |  1.00 |    0.00 |    3 |
+|  'Typin - 2 commands' | 118.90 us | 2.668 us | 4.811 us |  1.29 |    0.05 |    4 |
+|  'CliFx - 5 commands' | 126.71 us | 1.908 us | 1.692 us |  1.34 |    0.03 |    5 |
+|  'Typin - 5 commands' | 180.16 us | 3.459 us | 3.701 us |  1.91 |    0.06 |    6 |
+| 'CliFx - 10 commands' | 222.28 us | 3.079 us | 2.880 us |  2.35 |    0.07 |    7 |
+| 'Typin - 10 commands' | 281.79 us | 4.679 us | 4.148 us |  2.99 |    0.06 |    8 |
+| 'CliFx - 20 commands' | 454.07 us | 8.708 us | 8.942 us |  4.81 |    0.13 |    9 |
+| 'Typin - 20 commands' | 519.70 us | 6.735 us | 6.300 us |  5.50 |    0.15 |   10 |
 
 Legends:
   * Mean    : Arithmetic mean of all measurements

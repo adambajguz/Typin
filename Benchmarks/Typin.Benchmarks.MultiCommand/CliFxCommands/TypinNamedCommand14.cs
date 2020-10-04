@@ -1,11 +1,10 @@
-﻿namespace Typin.Benchmarks.MultiCommand.Commands
+﻿namespace CliFx.Benchmarks.MultiCommand.CliFxComands
 {
     using System.Threading.Tasks;
-    using Typin.Attributes;
-    using Typin.Console;
+    using CliFx.Attributes;
 
-    [Command("named-command03")]
-    public class TypinNamedCommand03 : ICommand
+    [Command("named-command14")]
+    public class CliFxNamedCommand14 : ICommand
     {
         [CommandOption("str", 's')]
         public string? StrOption { get; set; }

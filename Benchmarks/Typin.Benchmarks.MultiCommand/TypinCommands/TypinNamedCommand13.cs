@@ -1,11 +1,11 @@
-﻿namespace Typin.Benchmarks.MultiCommand.Commands
+﻿namespace Typin.Benchmarks.MultiCommand.TypinCommands
 {
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command("named-command00")]
-    public class TypinNamedCommand00 : ICommand
+    [Command("named-command13")]
+    public class TypinNamedCommand13 : ICommand
     {
         [CommandOption("str", 's')]
         public string? StrOption { get; set; }
