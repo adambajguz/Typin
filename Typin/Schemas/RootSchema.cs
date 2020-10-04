@@ -48,10 +48,17 @@
         /// </summary>
         internal static RootSchema Resolve(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes)
         {
-            //Resolve commands
+            var (commands, defaultCommand) = ResolveCommands(commandTypes);
+            Dictionary<string, DirectiveSchema> directives = ResolveDirectives(directiveTypes);
+
+            return new RootSchema(directives, commands, defaultCommand);
+        }
+
+        private static (Dictionary<string, CommandSchema> commands, CommandSchema? defaultCommand) ResolveCommands(IReadOnlyList<Type> commandTypes)
+        {
+            CommandSchema? defaultCommand = null;
             var commands = new Dictionary<string, CommandSchema>();
             var invalidCommands = new List<CommandSchema>();
-            CommandSchema? defaultCommand = null;
 
             foreach (Type commandType in commandTypes)
             {
@@ -60,12 +67,11 @@
                 if (string.IsNullOrWhiteSpace(command.Name))
                 {
                     defaultCommand = defaultCommand is null ? command : throw InternalTypinExceptions.TooManyDefaultCommands();
-
-                    continue;
                 }
-
-                if (!commands.TryAdd(command.Name, command))
+                else if (!commands.TryAdd(command.Name, command))
+                {
                     invalidCommands.Add(command);
+                }
             }
 
             if (commands.Count == 0 && defaultCommand is null)
@@ -80,11 +86,15 @@
                 throw InternalTypinExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
-            //Resolve directives
+            return (commands, defaultCommand);
+        }
+
+        private static Dictionary<string, DirectiveSchema> ResolveDirectives(IReadOnlyList<Type> directiveTypes)
+        {
             var directives = new Dictionary<string, DirectiveSchema>();
             var invalidDirectives = new List<DirectiveSchema>();
 
-            foreach (var directiveType in directiveTypes)
+            foreach (Type? directiveType in directiveTypes)
             {
                 DirectiveSchema directive = DirectiveSchema.TryResolve(directiveType) ?? throw InternalTypinExceptions.InvalidDirectiveType(directiveType);
 
@@ -101,7 +111,7 @@
                 throw InternalTypinExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
-            return new RootSchema(directives, commands, defaultCommand);
+            return directives;
         }
         #endregion
 
@@ -110,9 +120,7 @@
         /// </summary>
         public ISet<string> GetCommandNames()
         {
-            _commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            return _commandNamesHashSet;
+            return (_commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -120,9 +128,7 @@
         /// </summary>
         public ISet<string> GetDirectivesNames()
         {
-            _directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            return _directiveNamesHashSet;
+            return (_directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
