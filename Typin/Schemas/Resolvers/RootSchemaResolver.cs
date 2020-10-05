@@ -8,7 +8,7 @@
     /// <summary>
     /// Resolves an instance of <see cref="RootSchema"/>.
     /// </summary>
-    internal class RootSchemaResolver
+    internal class RootSchemaResolver : IResolver<RootSchema>
     {
         private ApplicationConfiguration Configuration { get; }
         private IReadOnlyList<Type> CommandTypes { get; }

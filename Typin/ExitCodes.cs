@@ -1,7 +1,6 @@
 ﻿namespace Typin
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using Typin.Exceptions;
 
     /// <summary>
