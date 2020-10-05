@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Internal.Exceptions;
 
     /// <summary>
     /// Stores all schemas of commands and directives in the application.
@@ -29,90 +28,17 @@
         /// </summary>
         public CommandSchema? DefaultCommand { get; }
 
-        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
-        private RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                           IReadOnlyDictionary<string, CommandSchema> commands,
-                           CommandSchema? defaultCommand)
+        internal RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
+                            IReadOnlyDictionary<string, CommandSchema> commands,
+                            CommandSchema? defaultCommand)
         {
             Directives = directives;
             Commands = commands;
             DefaultCommand = defaultCommand;
         }
-
-        /// <summary>
-        /// Resolves the root schema.
-        /// </summary>
-        internal static RootSchema Resolve(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes)
-        {
-            var (commands, defaultCommand) = ResolveCommands(commandTypes);
-            Dictionary<string, DirectiveSchema> directives = ResolveDirectives(directiveTypes);
-
-            return new RootSchema(directives, commands, defaultCommand);
-        }
-
-        private static (Dictionary<string, CommandSchema> commands, CommandSchema? defaultCommand) ResolveCommands(IReadOnlyList<Type> commandTypes)
-        {
-            CommandSchema? defaultCommand = null;
-            var commands = new Dictionary<string, CommandSchema>();
-            var invalidCommands = new List<CommandSchema>();
-
-            foreach (Type commandType in commandTypes)
-            {
-                CommandSchema command = CommandSchema.TryResolve(commandType) ?? throw InternalTypinExceptions.InvalidCommandType(commandType);
-
-                if (string.IsNullOrWhiteSpace(command.Name))
-                {
-                    defaultCommand = defaultCommand is null ? command : throw InternalTypinExceptions.TooManyDefaultCommands();
-                }
-                else if (!commands.TryAdd(command.Name, command))
-                {
-                    invalidCommands.Add(command);
-                }
-            }
-
-            if (commands.Count == 0 && defaultCommand is null)
-                throw InternalTypinExceptions.NoCommandsDefined();
-
-            if (invalidCommands.Count > 0)
-            {
-                var duplicateNameGroup = invalidCommands.Union(commands.Values)
-                                                        .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
-                                                        .FirstOrDefault();
-
-                throw InternalTypinExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
-            }
-
-            return (commands, defaultCommand);
-        }
-
-        private static Dictionary<string, DirectiveSchema> ResolveDirectives(IReadOnlyList<Type> directiveTypes)
-        {
-            var directives = new Dictionary<string, DirectiveSchema>();
-            var invalidDirectives = new List<DirectiveSchema>();
-
-            foreach (Type? directiveType in directiveTypes)
-            {
-                DirectiveSchema directive = DirectiveSchema.TryResolve(directiveType) ?? throw InternalTypinExceptions.InvalidDirectiveType(directiveType);
-
-                if (!directives.TryAdd(directive.Name, directive))
-                    invalidDirectives.Add(directive);
-            }
-
-            if (invalidDirectives.Count > 0)
-            {
-                var duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
-                                                          .FirstOrDefault();
-
-                throw InternalTypinExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
-            }
-
-            return directives;
-        }
-        #endregion
 
         /// <summary>
         /// Returns collection of commands names.

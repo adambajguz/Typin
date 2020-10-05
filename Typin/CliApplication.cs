@@ -12,6 +12,7 @@
     using Typin.Input;
     using Typin.Internal;
     using Typin.Schemas;
+    using Typin.Schemas.Resolvers;
 
     /// <summary>
     /// Command line application facade.
@@ -121,7 +122,7 @@
 
                 PrintStartupMessage();
 
-                RootSchema root = RootSchema.Resolve(_configuration.CommandTypes, _configuration.DirectiveTypes);
+                RootSchema root = new RootSchemaResolver(_configuration).Resolve();
                 CliContext.RootSchema = root;
 
                 //TODO: when in commandLineArguments is a string.Empty application crashes
