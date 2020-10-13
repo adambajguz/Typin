@@ -1,4 +1,4 @@
-﻿namespace Typin.Schemas
+﻿namespace Typin.Schemas.Resolvers
 {
     using System.Reflection;
     using Typin.Attributes;

@@ -47,11 +47,11 @@
             {
                 CommandSchema command = CommandSchemaResolver.Resolve(commandType);
 
-                if (string.IsNullOrWhiteSpace(command.Name))
+                if (command.IsDefault)
                 {
                     defaultCommand = defaultCommand is null ? command : throw InternalTypinExceptions.TooManyDefaultCommands();
                 }
-                else if (!commands.TryAdd(command.Name, command))
+                else if (!commands.TryAdd(command.Name!, command))
                 {
                     invalidCommands.Add(command);
                 }
@@ -62,9 +62,9 @@
 
             if (invalidCommands.Count > 0)
             {
-                var duplicateNameGroup = invalidCommands.Union(commands.Values)
-                                                        .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
-                                                        .FirstOrDefault();
+                IGrouping<string, CommandSchema> duplicateNameGroup = invalidCommands.Union(commands.Values)
+                                                                                     .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
+                                                                                     .FirstOrDefault();
 
                 throw InternalTypinExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
@@ -88,9 +88,9 @@
 
             if (invalidDirectives.Count > 0)
             {
-                var duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
-                                                          .FirstOrDefault();
+                IGrouping<string, DirectiveSchema>? duplicateNameGroup = invalidDirectives.Union(directives.Values)
+                                                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
+                                                                                          .FirstOrDefault();
 
                 throw InternalTypinExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
