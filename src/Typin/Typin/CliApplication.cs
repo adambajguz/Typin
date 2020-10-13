@@ -74,6 +74,7 @@
         /// </remarks>
         public async ValueTask<int> RunAsync()
         {
+            //Environment.CommandLine
             string[] commandLineArguments = Environment.GetCommandLineArgs()
                                                        .Skip(1)
                                                        .ToArray();
