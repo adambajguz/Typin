@@ -4,8 +4,7 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command("named-command14")]
-    public class TypinNamedCommand14 : ICommand
+    public abstract class TypinBaseCommand : ICommand
     {
         [CommandOption("str", 's')]
         public string? StrOption { get; set; }

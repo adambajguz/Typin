@@ -7,7 +7,7 @@ namespace Typin.Benchmarks.MultiCommand
     using BenchmarkDotNet.Jobs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
-    using CliFx.Benchmarks.MultiCommand.CliFxComands;
+    using Typin.Benchmarks.MultiCommand.CliFxComands;
     using Typin.Benchmarks.MultiCommand.TypinCommands;
 
     //[SimpleJob(RuntimeMoniker.Net48)]
@@ -27,7 +27,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "Typin - 1 command", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -35,7 +35,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "Typin - 2 commands")]
         public async ValueTask<int> ExecuteWithTypin2Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
                                                     .AddCommand<TypinNamedCommand>()
                                                     .Build()
                                                     .RunAsync(Arguments, new Dictionary<string, string>());
@@ -44,7 +44,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "Typin - 5 commands")]
         public async ValueTask<int> ExecuteWithTypin5Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
                                                     .AddCommand<TypinNamedCommand>()
                                                     .AddCommand<TypinNamedCommand00>()
                                                     .AddCommand<TypinNamedCommand01>()
@@ -56,7 +56,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "Typin - 10 commands")]
         public async ValueTask<int> ExecuteWithTypin10Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
+            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
                                                     .AddCommand<TypinNamedCommand>()
                                                     .AddCommand<TypinNamedCommand00>()
                                                     .AddCommand<TypinNamedCommand01>()
@@ -83,7 +83,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 1 command")]
         public async ValueTask<int> ExecuteWithCliFxDefaultCommandOnly()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxCommand>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
                                                           .Build()
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -91,7 +91,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 2 commands")]
         public async ValueTask<int> ExecuteWithCliFx2Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxCommand>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .Build()
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
@@ -100,7 +100,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 5 commands")]
         public async ValueTask<int> ExecuteWithCliFx5Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxCommand>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .AddCommand<CliFxNamedCommand00>()
                                                           .AddCommand<CliFxNamedCommand01>()
@@ -112,7 +112,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 10 commands")]
         public async ValueTask<int> ExecuteWithCliFx10Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxCommand>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .AddCommand<CliFxNamedCommand00>()
                                                           .AddCommand<CliFxNamedCommand01>()
