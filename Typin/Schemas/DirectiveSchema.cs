@@ -2,12 +2,9 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using System.Reflection;
     using System.Text;
     using Typin.Attributes;
-    using Typin.Exceptions;
-    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
 
     /// <summary>
@@ -36,48 +33,19 @@
         /// </summary>
         public bool InteractiveModeOnly { get; }
 
-        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
         /// </summary>
-        private DirectiveSchema(Type type,
-                                string name,
-                                string? description,
-                                bool interactiveModeOnly)
+        internal DirectiveSchema(Type type,
+                                 string name,
+                                 string? description,
+                                 bool interactiveModeOnly)
         {
             Type = type;
             Name = name;
             Description = description;
             InteractiveModeOnly = interactiveModeOnly;
         }
-
-        /// <summary>
-        /// Resolves <see cref="DirectiveSchema"/>.
-        /// </summary>
-        internal static DirectiveSchema? TryResolve(Type type)
-        {
-            if (!IsDirectiveType(type))
-                return null;
-
-            DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
-
-            var parameters = type.GetProperties()
-                .Select(CommandParameterSchema.TryResolve)
-                .Where(p => p != null)
-                .ToArray();
-
-            string name = attribute.Name.TrimStart('[').TrimEnd(']');
-            if (string.IsNullOrWhiteSpace(name))
-                throw InternalTypinExceptions.DirectiveNameIsInvalid(name, type);
-
-            return new DirectiveSchema(
-                type,
-                name,
-                attribute.Description,
-                attribute.InteractiveModeOnly
-            );
-        }
-        #endregion
 
         internal string GetInternalDisplayString()
         {

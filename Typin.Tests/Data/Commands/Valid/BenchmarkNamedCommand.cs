@@ -4,7 +4,7 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command("named-command")]
+    [Command]
     public class BenchmarkNamedCommand : ICommand
     {
         [CommandOption("str", 's')]

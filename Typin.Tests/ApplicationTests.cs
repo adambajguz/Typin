@@ -130,8 +130,7 @@
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .AddCommand<BenchmarkNamedCommand>()
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkNamedCommand>()
                                                  .UseConsole(console)
                                                  .Build();
 

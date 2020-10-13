@@ -5,11 +5,12 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Schemas;
+    using Typin.Schemas.Resolvers;
 
     [Command]
     internal class StubDefaultCommand : ICommand
     {
-        public static CommandSchema Schema { get; } = CommandSchema.TryResolve(typeof(StubDefaultCommand))!;
+        public static CommandSchema Schema { get; } = CommandSchemaResolver.Resolve(typeof(StubDefaultCommand))!;
 
         public ValueTask ExecuteAsync(IConsole console)
         {

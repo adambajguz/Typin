@@ -5,7 +5,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
-    using Typin.Exceptions;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
 

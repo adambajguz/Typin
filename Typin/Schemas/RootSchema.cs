@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Exceptions;
-    using Typin.Internal.Exceptions;
 
     /// <summary>
     /// Stores all schemas of commands and directives in the application.
@@ -30,13 +28,12 @@
         /// </summary>
         public CommandSchema? DefaultCommand { get; }
 
-        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
-        private RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                           IReadOnlyDictionary<string, CommandSchema> commands,
-                           CommandSchema? defaultCommand)
+        internal RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
+                            IReadOnlyDictionary<string, CommandSchema> commands,
+                            CommandSchema? defaultCommand)
         {
             Directives = directives;
             Commands = commands;
@@ -44,75 +41,11 @@
         }
 
         /// <summary>
-        /// Resolves the root schema.
-        /// </summary>
-        internal static RootSchema Resolve(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes)
-        {
-            //Resolve commands
-            var commands = new Dictionary<string, CommandSchema>();
-            var invalidCommands = new List<CommandSchema>();
-            CommandSchema? defaultCommand = null;
-
-            foreach (Type commandType in commandTypes)
-            {
-                CommandSchema command = CommandSchema.TryResolve(commandType) ?? throw InternalTypinExceptions.InvalidCommandType(commandType);
-
-                if (string.IsNullOrWhiteSpace(command.Name))
-                {
-                    defaultCommand = defaultCommand is null ? command : throw InternalTypinExceptions.TooManyDefaultCommands();
-
-                    continue;
-                }
-
-                if (!commands.TryAdd(command.Name, command))
-                    invalidCommands.Add(command);
-            }
-
-            if (commands.Count == 0 && defaultCommand is null)
-                throw InternalTypinExceptions.NoCommandsDefined();
-
-            if (invalidCommands.Count > 0)
-            {
-                var duplicateNameGroup = invalidCommands.Union(commands.Values)
-                                                        .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
-                                                        .FirstOrDefault();
-
-                throw InternalTypinExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
-            }
-
-            //Resolve directives
-            var directives = new Dictionary<string, DirectiveSchema>();
-            var invalidDirectives = new List<DirectiveSchema>();
-
-            foreach (var directiveType in directiveTypes)
-            {
-                DirectiveSchema directive = DirectiveSchema.TryResolve(directiveType) ?? throw InternalTypinExceptions.InvalidDirectiveType(directiveType);
-
-                if (!directives.TryAdd(directive.Name, directive))
-                    invalidDirectives.Add(directive);
-            }
-
-            if (invalidDirectives.Count > 0)
-            {
-                var duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
-                                                          .FirstOrDefault();
-
-                throw InternalTypinExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
-            }
-
-            return new RootSchema(directives, commands, defaultCommand);
-        }
-        #endregion
-
-        /// <summary>
         /// Returns collection of commands names.
         /// </summary>
         public ISet<string> GetCommandNames()
         {
-            _commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            return _commandNamesHashSet;
+            return (_commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -120,9 +53,7 @@
         /// </summary>
         public ISet<string> GetDirectivesNames()
         {
-            _directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            return _directiveNamesHashSet;
+            return (_directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
