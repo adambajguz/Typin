@@ -8,13 +8,10 @@
     /// <summary>
     /// Resolves an instance of <see cref="RootSchema"/>.
     /// </summary>
-    internal class RootSchemaResolver : IResolver<RootSchema>
+    internal class RootSchemaResolver
     {
-        private ApplicationConfiguration Configuration { get; }
         private IReadOnlyList<Type> CommandTypes { get; }
         private IReadOnlyList<Type> DirectiveTypes { get; }
-
-        public bool IsResolved { get; private set; }
 
         public CommandSchema? DefaultCommand { get; private set; }
         public Dictionary<string, CommandSchema>? Commands { get; private set; }
@@ -25,7 +22,6 @@
         /// </summary>
         public RootSchemaResolver(ApplicationConfiguration configuration)
         {
-            Configuration = configuration;
             CommandTypes = configuration.CommandTypes;
             DirectiveTypes = configuration.DirectiveTypes;
         }
@@ -38,8 +34,6 @@
             ResolveCommands(CommandTypes);
             ResolveDirectives(DirectiveTypes);
 
-            IsResolved = true;
-
             return new RootSchema(Directives!, Commands!, DefaultCommand);
         }
 
@@ -51,7 +45,7 @@
 
             foreach (Type commandType in commandTypes)
             {
-                CommandSchema command = CommandSchema.TryResolve(commandType) ?? throw InternalTypinExceptions.InvalidCommandType(commandType);
+                CommandSchema command = CommandSchemaResolver.Resolve(commandType);
 
                 if (string.IsNullOrWhiteSpace(command.Name))
                 {
@@ -86,7 +80,7 @@
 
             foreach (Type? directiveType in directiveTypes)
             {
-                DirectiveSchema directive = DirectiveSchema.TryResolve(directiveType) ?? throw InternalTypinExceptions.InvalidDirectiveType(directiveType);
+                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType);
 
                 if (!directives.TryAdd(directive.Name, directive))
                     invalidDirectives.Add(directive);

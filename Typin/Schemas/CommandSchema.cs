@@ -71,17 +71,16 @@
         /// </summary>
         public bool IsVersionOptionAvailable => Options.Contains(CommandOptionSchema.VersionOption);
 
-        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
-        private CommandSchema(Type type,
-                              string? name,
-                              string? description,
-                              string? manual,
-                              bool interactiveModeOnly,
-                              IReadOnlyList<CommandParameterSchema> parameters,
-                              IReadOnlyList<CommandOptionSchema> options)
+        internal CommandSchema(Type type,
+                               string? name,
+                               string? description,
+                               string? manual,
+                               bool interactiveModeOnly,
+                               IReadOnlyList<CommandParameterSchema> parameters,
+                               IReadOnlyList<CommandOptionSchema> options)
         {
             Type = type;
             Name = name;
@@ -91,50 +90,6 @@
             Parameters = parameters;
             Options = options;
         }
-
-        /// <summary>
-        /// Resolves <see cref="CommandSchema"/>.
-        /// </summary>
-        internal static CommandSchema? TryResolve(Type type)
-        {
-            if (!IsCommandType(type))
-                return null;
-
-            CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
-
-            string? name = attribute.Name;
-
-            CommandOptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
-                ? new[] { CommandOptionSchema.HelpOption, CommandOptionSchema.VersionOption }
-                : new[] { CommandOptionSchema.HelpOption };
-
-            CommandParameterSchema?[] parameters = type.GetProperties()
-                                                       .Select(CommandParameterSchema.TryResolve)
-                                                       .Where(p => p != null)
-                                                       .ToArray();
-
-            CommandOptionSchema?[] options = type.GetProperties()
-                                                 .Select(CommandOptionSchema.TryResolve)
-                                                 .Where(o => o != null)
-                                                 .Concat(builtInOptions)
-                                                 .ToArray();
-
-            CommandSchema command = new CommandSchema(
-                type,
-                name,
-                attribute.Description,
-                attribute.Manual,
-                attribute.InteractiveModeOnly,
-                parameters!,
-                options!
-            );
-
-            ValidateParameters(command);
-            ValidateOptions(command);
-
-            return command;
-        }
-        #endregion
 
         /// <summary>
         /// Enumerates through parameters and options.
@@ -302,131 +257,6 @@
             return GetInternalDisplayString();
         }
 
-        #region Helpers
-        private static void ValidateParameters(CommandSchema command)
-        {
-            IGrouping<int, CommandParameterSchema>? duplicateOrderGroup = command.Parameters
-                                                                                 .GroupBy(a => a.Order)
-                                                                                 .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateOrderGroup != null)
-            {
-                throw InternalTypinExceptions.ParametersWithSameOrder(
-                    command,
-                    duplicateOrderGroup.Key,
-                    duplicateOrderGroup.ToArray()
-                );
-            }
-
-            IGrouping<string, CommandParameterSchema>? duplicateNameGroup = command.Parameters
-                                                                                   .Where(a => !string.IsNullOrWhiteSpace(a.Name))
-                                                                                   .GroupBy(a => a.Name!, StringComparer.OrdinalIgnoreCase)
-                                                                                   .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateNameGroup != null)
-            {
-                throw InternalTypinExceptions.ParametersWithSameName(
-                    command,
-                    duplicateNameGroup.Key,
-                    duplicateNameGroup.ToArray()
-                );
-            }
-
-            CommandParameterSchema[]? nonScalarParameters = command.Parameters
-                                                                   .Where(p => !p.IsScalar)
-                                                                   .ToArray();
-
-            if (nonScalarParameters.Length > 1)
-            {
-                throw InternalTypinExceptions.TooManyNonScalarParameters(
-                    command,
-                    nonScalarParameters
-                );
-            }
-
-            CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
-                                                                       .OrderByDescending(a => a.Order)
-                                                                       .Skip(1)
-                                                                       .LastOrDefault(p => !p.IsScalar);
-
-            if (nonLastNonScalarParameter != null)
-            {
-                throw InternalTypinExceptions.NonLastNonScalarParameter(
-                    command,
-                    nonLastNonScalarParameter
-                );
-            }
-        }
-
-        private static void ValidateOptions(CommandSchema command)
-        {
-            IEnumerable<CommandOptionSchema> noNameGroup = command.Options
-                .Where(o => o.ShortName == null && string.IsNullOrWhiteSpace(o.Name));
-
-            if (noNameGroup.Any())
-            {
-                throw InternalTypinExceptions.OptionsWithNoName(
-                    command,
-                    noNameGroup.ToArray()
-                );
-            }
-
-            CommandOptionSchema[] invalidLengthNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .Where(o => o.Name!.Length <= 1)
-                .ToArray();
-
-            if (invalidLengthNameGroup.Any())
-            {
-                throw InternalTypinExceptions.OptionsWithInvalidLengthName(
-                    command,
-                    invalidLengthNameGroup
-                );
-            }
-
-            IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .GroupBy(o => o.Name!, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateNameGroup != null)
-            {
-                throw InternalTypinExceptions.OptionsWithSameName(
-                    command,
-                    duplicateNameGroup.Key,
-                    duplicateNameGroup.ToArray()
-                );
-            }
-
-            IGrouping<char, CommandOptionSchema>? duplicateShortNameGroup = command.Options
-                .Where(o => o.ShortName != null)
-                .GroupBy(o => o.ShortName!.Value)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateShortNameGroup != null)
-            {
-                throw InternalTypinExceptions.OptionsWithSameShortName(
-                    command,
-                    duplicateShortNameGroup.Key,
-                    duplicateShortNameGroup.ToArray()
-                );
-            }
-
-            IGrouping<string, CommandOptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.FallbackVariableName))
-                .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateEnvironmentVariableNameGroup != null)
-            {
-                throw InternalTypinExceptions.OptionsWithSameEnvironmentVariableName(
-                    command,
-                    duplicateEnvironmentVariableNameGroup.Key,
-                    duplicateEnvironmentVariableNameGroup.ToArray()
-                );
-            }
-        }
-
         internal static bool IsCommandType(Type type)
         {
             return type.Implements(typeof(ICommand)) &&
@@ -434,6 +264,5 @@
                    !type.IsAbstract &&
                    !type.IsInterface;
         }
-        #endregion
     }
 }

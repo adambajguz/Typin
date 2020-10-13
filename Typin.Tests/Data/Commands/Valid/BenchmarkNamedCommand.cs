@@ -1,7 +1,5 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;

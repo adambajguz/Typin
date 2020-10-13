@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Reflection;
     using System.Text;
-    using Typin.Attributes;
 
     /// <summary>
     /// Stores command option schema.
@@ -38,16 +37,15 @@
         /// </summary>
         public bool IsRequired { get; }
 
-        #region ctor
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionSchema"/>.
         /// </summary>
-        private CommandOptionSchema(PropertyInfo? property,
-                                    string? name,
-                                    char? shortName,
-                                    string? fallbackVariableName,
-                                    bool isRequired,
-                                    string? description)
+        internal CommandOptionSchema(PropertyInfo? property,
+                                     string? name,
+                                     char? shortName,
+                                     string? fallbackVariableName,
+                                     bool isRequired,
+                                     string? description)
             : base(property, description)
         {
             Name = name;
@@ -55,29 +53,6 @@
             FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
         }
-
-        /// <summary>
-        /// Resolves <see cref="CommandOptionSchema"/>.
-        /// </summary>
-        internal static CommandOptionSchema? TryResolve(PropertyInfo property)
-        {
-            CommandOptionAttribute? attribute = property.GetCustomAttribute<CommandOptionAttribute>();
-            if (attribute is null)
-                return null;
-
-            // The user may mistakenly specify dashes, thinking it's required, so trim them
-            string? name = attribute.Name?.TrimStart('-');
-
-            return new CommandOptionSchema(
-                property,
-                name,
-                attribute.ShortName,
-                attribute.FallbackVariableName,
-                attribute.IsRequired,
-                attribute.Description
-            );
-        }
-        #endregion
 
         /// <summary>
         /// Whether command's name matches the passed name.
