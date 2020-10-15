@@ -16,10 +16,10 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.402
+        dotnet-version: 3.1.403
 
     - name: Pack
-      run: dotnet pack Typin --configuration Release
+      run: dotnet pack src/Typin/Typin.sln --configuration Release
 
     - name: Deploy
-      run: dotnet nuget push Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+      run: dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}

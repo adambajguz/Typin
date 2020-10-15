@@ -9,10 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests", "Typin.Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3AAE8166-BB8E-49DA-844C-3A0EE6BD40A0}"
 	ProjectSection(SolutionItems) = preProject
-		CHANGELOG.md = CHANGELOG.md
-		.github\FUNDING.yml = .github\FUNDING.yml
-		LICENSE = LICENSE
-		README.md = README.md
+		..\..\CHANGELOG.md = ..\..\CHANGELOG.md
+		..\..\.github\FUNDING.yml = ..\..\.github\FUNDING.yml
+		..\..\LICENSE = ..\..\LICENSE
+		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Dummy", "Typin.Tests.Dummy\Typin.Tests.Dummy.csproj", "{F717347D-8656-44DA-A4A2-BE515E8C4655}"
@@ -23,11 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Analyzers.Tests", "Ty
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{055B9CC5-6327-4215-8717-4F384F4C492E}"
 	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		.github\workflows\CD.yml = .github\workflows\CD.yml
-		.github\workflows\CI.yml = .github\workflows\CI.yml
-		codecov.yml = codecov.yml
+		..\..\.gitattributes = ..\..\.gitattributes
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\codecov.yml = ..\..\codecov.yml
 		Typin.props = Typin.props
 	EndProjectSection
 EndProject
@@ -50,6 +48,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Benchmarks.MultiCommand", "Benchmarks\Typin.Benchmarks.MultiCommand\Typin.Benchmarks.MultiCommand.csproj", "{86F58E1A-180E-48A4-9DC3-AC6529E9FB85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Benchmarks.FrameworksComparison", "Benchmarks\Typin.Benchmarks.FrameworksComparison\Typin.Benchmarks.FrameworksComparison.csproj", "{CFC02150-CD3E-4208-A028-75BDE3FFB5FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{BCD6C3DD-672D-40DF-8612-09A0F1377291}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\workflows\CD.yml = ..\..\.github\workflows\CD.yml
+		..\..\.github\workflows\CI.yml = ..\..\.github\workflows\CI.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,6 +213,7 @@ Global
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C} = {4EC8BB3C-EAA3-469B-B3A5-1FE80BEA748A}
 		{86F58E1A-180E-48A4-9DC3-AC6529E9FB85} = {8BFDDBB6-0FC3-447B-85D1-DA885C78F9DD}
 		{CFC02150-CD3E-4208-A028-75BDE3FFB5FA} = {8BFDDBB6-0FC3-447B-85D1-DA885C78F9DD}
+		{BCD6C3DD-672D-40DF-8612-09A0F1377291} = {055B9CC5-6327-4215-8717-4F384F4C492E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6ACC950B-5F93-429C-A204-6315A92AD3A1}
