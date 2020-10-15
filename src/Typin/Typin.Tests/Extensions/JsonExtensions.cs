@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Internal
+﻿namespace Typin.Tests.Extensions
 {
     using Newtonsoft.Json;
 

@@ -8,7 +8,7 @@
     using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomTypes.Initializable;
-    using Typin.Tests.Internal;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 

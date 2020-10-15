@@ -6,7 +6,7 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Internal;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
