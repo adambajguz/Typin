@@ -9,10 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests", "Typin.Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3AAE8166-BB8E-49DA-844C-3A0EE6BD40A0}"
 	ProjectSection(SolutionItems) = preProject
-		CHANGELOG.md = CHANGELOG.md
-		.github\FUNDING.yml = .github\FUNDING.yml
-		LICENSE = LICENSE
-		README.md = README.md
+		..\..\CHANGELOG.md = ..\..\CHANGELOG.md
+		..\..\.github\FUNDING.yml = ..\..\.github\FUNDING.yml
+		..\..\LICENSE = ..\..\LICENSE
+		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Dummy", "Typin.Tests.Dummy\Typin.Tests.Dummy.csproj", "{F717347D-8656-44DA-A4A2-BE515E8C4655}"
@@ -23,11 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Analyzers.Tests", "Ty
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{055B9CC5-6327-4215-8717-4F384F4C492E}"
 	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		.github\workflows\CD.yml = .github\workflows\CD.yml
-		.github\workflows\CI.yml = .github\workflows\CI.yml
-		codecov.yml = codecov.yml
+		..\..\.gitattributes = ..\..\.gitattributes
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\.github\workflows\CD.yml = ..\..\.github\workflows\CD.yml
+		..\..\.github\workflows\CI.yml = ..\..\.github\workflows\CI.yml
+		..\..\codecov.yml = ..\..\codecov.yml
 		Typin.props = Typin.props
 	EndProjectSection
 EndProject
