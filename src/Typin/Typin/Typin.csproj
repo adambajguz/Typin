@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+    <None Include="..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
