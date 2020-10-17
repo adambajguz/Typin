@@ -6,6 +6,8 @@ on:
       - develop-examples-app
     tags-ignore:
       - '*'
+    paths:
+      - 'src/Typin.Examples/*'
     paths-ignore:
       - 'src/Typin/*'
       - LICENSE
@@ -16,6 +18,8 @@ on:
       - '*'
     tags-ignore:
       - '*'
+    paths:
+      - 'src/Typin.Examples/*'
     paths-ignore:
       - 'src/Typing/*'
       - LICENSE
