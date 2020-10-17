@@ -18,7 +18,7 @@
         public delegate void NewLineDetectedEventHandler();
         public event NewLineDetectedEventHandler? NewLineDetected;
 
-        public delegate void InputModifiedEventHandler(ref ConsoleKeyInfo keyInfo);
+        public delegate void InputModifiedEventHandler();
         public event InputModifiedEventHandler? InputModified;
 
         /// <summary>
@@ -50,7 +50,7 @@
             if (keyInfo.Key == ConsoleKey.Enter && modifiers == 0)
             {
                 NewLineDetected?.Invoke();
-                InputModified?.Invoke(ref keyInfo);
+                InputModified?.Invoke();
 
                 return;
             }
@@ -74,7 +74,7 @@
             }
 
             if (inputModified)
-                InputModified?.Invoke(ref keyInfo);
+                InputModified?.Invoke();
         }
     }
 }

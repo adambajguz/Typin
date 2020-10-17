@@ -152,6 +152,19 @@
         }
 
         [Fact]
+        public void Nothing_should_happen_when_no_completions_available()
+        {
+            // Arrange
+            AutoCompleteInput input = GetAutoCompleteInstance();
+
+            // Act
+            string text = input.ReadLine('X'.ToConsoleKeyInfo(), Tab);
+
+            // Assert
+            text.Should().Be("X");
+        }
+
+        [Fact]
         public void Should_return_valid_completion_for_W_Tab()
         {
             // Arrange

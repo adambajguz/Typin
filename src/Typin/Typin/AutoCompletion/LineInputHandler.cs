@@ -14,7 +14,7 @@
         private readonly HashSet<ShortcutDefinition> _shortcuts;
         private readonly StringBuilder _text = new StringBuilder();
 
-        public event InputModifiedEventHandler? KeyPressed
+        public event InputModifiedEventHandler? InputModified
         {
             add
             {

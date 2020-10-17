@@ -62,10 +62,10 @@
             };
 
             _lineInputHandler = new LineInputHandler(console, keyActions, userDefinedShortcut);
-            _lineInputHandler.KeyPressed += KeyPressedCallback;
+            _lineInputHandler.InputModified += InputModifiedCallback;
         }
 
-        private void KeyPressedCallback(ref ConsoleKeyInfo keyInfo)
+        private void InputModifiedCallback()
         {
             ResetAutoComplete();
             History.ResetSelection();
