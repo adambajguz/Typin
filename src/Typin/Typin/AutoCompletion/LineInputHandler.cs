@@ -5,6 +5,7 @@
     using System.Text;
     using Typin.Console;
     using Typin.Internal.Exceptions;
+    using static Typin.AutoCompletion.KeyHandler;
 
     internal sealed class LineInputHandler
     {
@@ -12,6 +13,18 @@
         private readonly KeyHandler _keyHandler;
         private readonly HashSet<ShortcutDefinition> _shortcuts;
         private readonly StringBuilder _text = new StringBuilder();
+
+        public event InputModifiedEventHandler? InputModified
+        {
+            add
+            {
+                _keyHandler.InputModified += value;
+            }
+            remove
+            {
+                _keyHandler.InputModified -= value;
+            }
+        }
 
         /// <summary>
         /// Cursor position relative to input.
@@ -70,15 +83,15 @@
                     while (!IsEndOfLine)
                         MoveCursorRight();
                 }),
-                new ShortcutDefinition(ConsoleKey.Backspace, () => Backspace()),
-                new ShortcutDefinition(ConsoleKey.Delete, Delete),
+                new ShortcutDefinition(ConsoleKey.Backspace, true, () => Backspace()),
+                new ShortcutDefinition(ConsoleKey.Delete, true, Delete),
                 new ShortcutDefinition(ConsoleKey.Insert, () => { }),
-                new ShortcutDefinition(ConsoleKey.Escape, ClearLine),
+                new ShortcutDefinition(ConsoleKey.Escape, true, ClearLine),
 
-                new ShortcutDefinition(ConsoleKey.LeftArrow, ConsoleModifiers.Control, () => DoUntilPrevWordOrWhitespace(() => MoveCursorLeft())),
-                new ShortcutDefinition(ConsoleKey.RightArrow, ConsoleModifiers.Control, () => DoUntilNextWordOrWhitespace(MoveCursorRight)),
-                new ShortcutDefinition(ConsoleKey.Backspace, ConsoleModifiers.Control, BackspacePrevWord),
-                new ShortcutDefinition(ConsoleKey.Delete, ConsoleModifiers.Control, DeleteNextWord)
+                new ShortcutDefinition(ConsoleKey.LeftArrow, ConsoleModifiers.Control, true, () => DoUntilPrevWordOrWhitespace(() => MoveCursorLeft())),
+                new ShortcutDefinition(ConsoleKey.RightArrow, ConsoleModifiers.Control, true, () => DoUntilNextWordOrWhitespace(MoveCursorRight)),
+                new ShortcutDefinition(ConsoleKey.Backspace, ConsoleModifiers.Control, true, BackspacePrevWord),
+                new ShortcutDefinition(ConsoleKey.Delete, ConsoleModifiers.Control, true, DeleteNextWord)
             };
 
             _keyHandler = new KeyHandler(console, _shortcuts);
@@ -117,7 +130,6 @@
                 {
                     if (!_shortcuts.Add(shortcut))
                     {
-                        //Throw an error when already exists
                         throw InternalTypinExceptions.DuplicatedShortcut(shortcut);
                     }
                 }

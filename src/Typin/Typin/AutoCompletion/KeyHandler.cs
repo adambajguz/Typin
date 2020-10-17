@@ -18,6 +18,9 @@
         public delegate void NewLineDetectedEventHandler();
         public event NewLineDetectedEventHandler? NewLineDetected;
 
+        public delegate void InputModifiedEventHandler();
+        public event InputModifiedEventHandler? InputModified;
+
         /// <summary>
         /// Initializes an instance of <see cref="KeyHandler"/>.
         /// </summary>
@@ -47,23 +50,31 @@
             if (keyInfo.Key == ConsoleKey.Enter && modifiers == 0)
             {
                 NewLineDetected?.Invoke();
+                InputModified?.Invoke();
+
                 return;
             }
 
+            bool inputModified = false;
             var input = new ShortcutDefinition(keyInfo.Key, keyInfo.Modifiers, () => { });
-
             if (_shortcuts.TryGetValue(input, out ShortcutDefinition shortcutDefinition))
             {
                 shortcutDefinition.Action.Invoke();
+                inputModified = shortcutDefinition.ModifiesInput;
             }
             else if (modifiers.HasFlag(ConsoleModifiers.Control) && !modifiers.HasFlag(ConsoleModifiers.Alt))
             {
                 UnhandledControlSequenceDetected?.Invoke(ref keyInfo);
+                inputModified = true; //TODO refactor - this should not be there - having a KeyHandler instaed of only line handler is problematic
             }
             else
             {
                 UnhandledKeyDetected?.Invoke(ref keyInfo);
+                inputModified = true; //TODO refactor - this should not be there
             }
+
+            if (inputModified)
+                InputModified?.Invoke();
         }
     }
 }

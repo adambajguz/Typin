@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Attributes;
-    using Typin.Input;
     using Typin.Internal.Exceptions;
 
     /// <summary>

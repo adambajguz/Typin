@@ -8,26 +8,6 @@
     public readonly struct ShortcutDefinition
     {
         /// <summary>
-        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
-        /// </summary>
-        public ShortcutDefinition(ConsoleKey key, Action action)
-        {
-            Key = key;
-            Modifiers = 0;
-            Action = action;
-        }
-
-        /// <summary>
-        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
-        /// </summary>
-        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers, Action action)
-        {
-            Key = key;
-            Modifiers = modifiers;
-            Action = action;
-        }
-
-        /// <summary>
         /// A value that identifies the console key that was pressed.
         /// </summary>
         public ConsoleKey Key { get; }
@@ -41,6 +21,55 @@
         /// An action associated with the shortcut.
         /// </summary>
         public Action Action { get; }
+
+        /// <summary>
+        /// Whether modifies input.
+        /// </summary>
+        internal bool ModifiesInput { get; }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
+        /// </summary>
+        public ShortcutDefinition(ConsoleKey key, Action action)
+        {
+            Key = key;
+            Modifiers = 0;
+            Action = action;
+            ModifiesInput = false;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
+        /// </summary>
+        internal ShortcutDefinition(ConsoleKey key, bool modifiesInput, Action action)
+        {
+            Key = key;
+            Modifiers = 0;
+            Action = action;
+            ModifiesInput = modifiesInput;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
+        /// </summary>
+        public ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers, Action action)
+        {
+            Key = key;
+            Modifiers = modifiers;
+            Action = action;
+            ModifiesInput = false;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ShortcutDefinition"/>.
+        /// </summary>
+        internal ShortcutDefinition(ConsoleKey key, ConsoleModifiers modifiers, bool modifiesInput, Action action)
+        {
+            Key = key;
+            Modifiers = modifiers;
+            Action = action;
+            ModifiesInput = modifiesInput;
+        }
 
         /// <inheritdoc/>
         public static bool operator ==(ShortcutDefinition left, ShortcutDefinition right)

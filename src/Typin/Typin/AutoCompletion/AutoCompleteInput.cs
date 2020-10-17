@@ -58,18 +58,18 @@
                         PreviousAutoComplete();
                     else
                         InitAutoComplete(true);
-                }),
-                new ShortcutDefinition(ConsoleKey.Escape, () =>
-                {
-                    _lineInputHandler.ClearLine();
-                    History.ResetSelection();
-                    ResetAutoComplete();
                 })
             };
 
             _lineInputHandler = new LineInputHandler(console, keyActions, userDefinedShortcut);
+            _lineInputHandler.InputModified += InputModifiedCallback;
         }
 
+        private void InputModifiedCallback()
+        {
+            ResetAutoComplete();
+            History.ResetSelection();
+        }
 
         /// <summary>
         /// Reads a line from input.
@@ -122,11 +122,8 @@
             if (_completions.Length == 0)
                 return;
 
-            //StartAutoComplete;
-            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
-
+            _lineInputHandler.ClearLine();
             _completionsIndex = fromEnd ? _completions.Length - 1 : 0;
-
             _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 

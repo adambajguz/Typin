@@ -26,7 +26,6 @@
             return _cliContext.RootSchema.GetCommandNames().AsParallel()
                                                            .Where(x => x.StartsWith(text))
                                                            .OrderBy(x => x)
-                                                           //.Select(x => x.Substring(text.Length))
                                                            .ToArray();
         }
     }
