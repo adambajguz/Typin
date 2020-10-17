@@ -8,6 +8,7 @@ on:
     tags-ignore:
       - '*'
     paths-ignore:
+      - 'src/Typin.Examples/*'
       - LICENSE
       - 'CHANGELOG.md'
       - 'README.md'
@@ -17,6 +18,7 @@ on:
     tags-ignore:
       - '*'
     paths-ignore:
+      - 'src/Typin.Examples/*'
       - LICENSE
       - 'CHANGELOG.md'
       - 'README.md'
@@ -36,19 +38,19 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.402
+        dotnet-version: 3.1.403
 
     - name: Build & test
-      run: dotnet test --configuration Release --logger GitHubActions
+      run: dotnet test src/Typin/Typin.sln --configuration Release --logger GitHubActions
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1.0.5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: Typin.Tests/bin/Release/Coverage.xml
+        file: src/Typin/Typin.Tests/bin/Release/Coverage.xml
 
     - name: Upload coverage (analyzers)
       uses: codecov/codecov-action@v1.0.5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: Typin.Analyzers.Tests/bin/Release/Coverage.xml
+        file: src/Typin/Typin.Analyzers.Tests/bin/Release/Coverage.xml

@@ -1,3 +1,10 @@
+### v2.1 (17-Oct-2020)
+
+- Schemas resolving improvements
+- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and normal modes.
+- Fixed negative numbers handling by forbidding options starting from digit. Options must have a name starting from char other than digit, while short name must not be a digit.
+- Auto-completion bug fixes.
+
 ### v2.0 (02-Oct-2020)
 
 - Added preview of custom DI containter support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).
@@ -10,7 +17,7 @@
 - Added `IOptionFallbackProvider`, as well as `EnvironmentVariableFallbackProvider` as default implementation of `IOptionFallbackProvider` and `EmptyFallbackProvider` that can be used to disable fallback.
 - Command execution now heavily uses middleware pipeline (`ResolveCommandSchema` -> `HandleVersionOption` -> `ResolveCommandInstance` -> `HandleInteractiveDirective` -> `HandleHelpOption` -> `HandleInteractiveCommands` -> `ExecuteCommand`).
 - Added `CliExecutionScope` and ensured that `Context.Input`, `Context.Command`, `Context.CommandDefaultValues`, `Context.CommandSchema`, and `Context.ExitCode` are reset to default values after middleware pipeline execution.
-- Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter', and made `DefaultHelpWriter` a public class.
+- Added `IHelpWriter`, renamed `HelpTextWriter` to `DefaultHelpWriter`, and made `DefaultHelpWriter` a public class.
 - Fixed `AddDirectivesFrom(Assembly directiveAssembly)` and `AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)`.
 - Removed partial classes.
 

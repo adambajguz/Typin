@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>2.1.0</Version>
+    <Author>Adam Bajguz</Author>
+    <Company>Adam Bajguz</Company>
+    <Copyright>Copyright (C) Adam Bajguz</Copyright>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+  </PropertyGroup>
+
+</Project>
