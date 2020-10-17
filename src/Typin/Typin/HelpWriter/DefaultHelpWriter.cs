@@ -494,7 +494,7 @@
                 return defaultValues.Cast<object?>()
                                     .Where(o => o != null)
                                     .Select(o => o!.ToFormattableString(CultureInfo.InvariantCulture).Quote())
-                                    .JoinToString(" ");
+                                    .JoinToString(' ');
             }
             // Non-enumerable
             else

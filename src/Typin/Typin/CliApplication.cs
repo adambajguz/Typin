@@ -10,6 +10,7 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Input;
+    using Typin.Input.Resolvers;
     using Typin.Internal;
     using Typin.Schemas;
     using Typin.Schemas.Resolvers;
@@ -132,6 +133,13 @@
 
                 return exitCode;
             }
+            // This may throw pre-execution resolving exceptions which are useful only to the end-user
+            catch (TypinException ex)
+            {
+                _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
+
+                return ExitCodes.FromException(ex);
+            }
             // To prevent the app from showing the annoying Windows troubleshooting dialog,
             // we handle all exceptions and route them to the console nicely.
             // However, we don't want to swallow unhandled exceptions when the debugger is attached,
@@ -153,7 +161,7 @@
                                                      RootSchema root)
         {
             //TODO: CommandInput.Parse as middleware step
-            CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
+            CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;
 
             return await ExecuteCommand();

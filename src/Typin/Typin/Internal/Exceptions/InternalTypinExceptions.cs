@@ -174,6 +174,19 @@ If it's not feasible to fit into these constraints, consider using options inste
             return new TypinException(message.Trim());
         }
 
+        internal static TypinException OptionsWithDigitStartingName(
+            CommandSchema command,
+            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        {
+            var message = $@"
+Command '{command.Type.FullName}' is invalid because it contains one or more options with a name starting from digit or short names with a digit:
+{invalidOptions.JoinToString(Environment.NewLine)}
+
+Options must have a name starting from char other than digit, while short name must not be a digit.";
+
+            return new TypinException(message.Trim());
+        }
+
         internal static TypinException OptionsWithNoName(
             CommandSchema command,
             IReadOnlyList<CommandOptionSchema> invalidOptions)
