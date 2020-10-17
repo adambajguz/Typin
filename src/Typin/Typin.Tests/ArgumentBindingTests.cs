@@ -140,14 +140,11 @@
                 "cmd", "foo", number?.ToString() ?? "null", "bar", "baz"
             });
 
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
-
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
             {

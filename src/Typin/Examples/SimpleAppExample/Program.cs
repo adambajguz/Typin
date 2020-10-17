@@ -8,7 +8,7 @@
 
     public static class Program
     {
-        private static readonly string[] Arguments = { "-1", "--str", "hello world", "-i", "-13", "-b", "-vx" };
+        private static readonly string[] Arguments = { "-125", "--str", "hello world", "-i", "-13", "-b", "-vx" };
 
         public static async Task<int> Main()
         {
