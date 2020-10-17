@@ -122,8 +122,7 @@
             if (_completions.Length == 0)
                 return;
 
-            //StartAutoComplete;
-            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
+            _lineInputHandler.ClearLine();// .Backspace(_lineInputHandler.CursorPosition - _completionStart);
 
             _completionsIndex = fromEnd ? _completions.Length - 1 : 0;
 

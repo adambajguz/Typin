@@ -23,11 +23,12 @@
         /// <inheritdoc/>
         public string[] GetSuggestions(string text, int index)
         {
-            return _cliContext.RootSchema.GetCommandNames().AsParallel()
-                                                           .Where(x => x.StartsWith(text))
-                                                           .OrderBy(x => x)
-                                                           //.Select(x => x.Substring(text.Length))
-                                                           .ToArray();
+            string[] vs = _cliContext.RootSchema.GetCommandNames().AsParallel()
+                                                                  .Where(x => x.StartsWith(text))
+                                                                  .OrderBy(x => x)
+                                                                  //.Select(x => x.Substring(text.Length))
+                                                                  .ToArray();
+            return vs;
         }
     }
 }
