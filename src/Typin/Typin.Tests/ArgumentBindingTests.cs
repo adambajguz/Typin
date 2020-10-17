@@ -119,11 +119,15 @@
             _output.WriteLine(stdErr.GetString());
         }
 
-        [Fact]
-        public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(13)]
+        [InlineData(-13)]
+        public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order(int? number)
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             var app = new CliApplicationBuilder()
                 .AddCommand<WithParametersCommand>()
@@ -133,18 +137,19 @@
             // Act
             int exitCode = await app.RunAsync(new[]
             {
-                "cmd", "foo", "13", "bar", "baz"
+                "cmd", "foo", number?.ToString() ?? "null", "bar", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
             {
                 ParamA = "foo",
-                ParamB = 13,
+                ParamB = number ?? null,
                 ParamC = new[] { "bar", "baz" }
             });
         }

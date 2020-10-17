@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Attributes;
+    using Typin.Input;
     using Typin.Internal.Exceptions;
 
     /// <summary>
@@ -121,6 +122,17 @@
                 throw InternalTypinExceptions.OptionsWithNoName(
                     command,
                     noNameGroup.ToArray()
+                );
+            }
+
+            IEnumerable<CommandOptionSchema> digitStartingGroup = command.Options
+                .Where(o => char.IsDigit(o.ShortName ?? 'a') || char.IsDigit(o.Name?.FirstOrDefault() ?? 'a'));
+
+            if (digitStartingGroup.Any())
+            {
+                throw InternalTypinExceptions.OptionsWithDigitStartingName(
+                    command,
+                    digitStartingGroup.ToArray()
                 );
             }
 

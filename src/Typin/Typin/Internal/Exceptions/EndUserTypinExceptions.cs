@@ -19,7 +19,7 @@
         {
             var message = $@"
 Parameter {parameter.GetUserFacingDisplayString()} expects a single value, but provided with multiple:
-{values.Select(v => v.Quote()).JoinToString(" ")}";
+{values.Select(v => v.Quote()).JoinToString(' ')}";
 
             return new TypinException(message.Trim());
         }
@@ -30,7 +30,7 @@ Parameter {parameter.GetUserFacingDisplayString()} expects a single value, but p
         {
             var message = $@"
 Option {option.GetUserFacingDisplayString()} expects a single value, but provided with multiple:
-{values.Select(v => v.Quote()).JoinToString(" ")}";
+{values.Select(v => v.Quote()).JoinToString(' ')}";
 
             return new TypinException(message.Trim());
         }
@@ -94,7 +94,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
         {
             var message = $@"
 Can't convert provided values to type '{type.Name}' for parameter {parameter.GetUserFacingDisplayString()}:
-{values.Select(v => v.Quote()).JoinToString(" ")}
+{values.Select(v => v.Quote()).JoinToString(' ')}
 
 Target type is not assignable from array and doesn't have a public constructor that takes an array.";
 
@@ -108,7 +108,7 @@ Target type is not assignable from array and doesn't have a public constructor t
         {
             var message = $@"
 Can't convert provided values to type '{type.Name}' for option {option.GetUserFacingDisplayString()}:
-{values.Select(v => v.Quote()).JoinToString(" ")}
+{values.Select(v => v.Quote()).JoinToString(' ')}
 
 Target type is not assignable from array and doesn't have a public constructor that takes an array.";
 

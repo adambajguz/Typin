@@ -8,8 +8,8 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
+    using Typin.Input.Resolvers;
     using Typin.Internal;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
 
     /// <summary>
@@ -51,7 +51,7 @@
         protected override async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
                                                       RootSchema root)
         {
-            CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
+            CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
             CliContext.Input = input;
 
             if (input.IsInteractiveDirectiveSpecified)
@@ -86,7 +86,7 @@
                     return;
                 }
 
-                CommandInput input = CommandInput.Parse(commandLineArguments, root.GetCommandNames());
+                CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
                 CliContext.Input = input; //TODO maybe refactor with some clever IDisposable class
 
                 await ExecuteCommand();
