@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "chota@latest",
+      "destination": "wwwroot/assets/chota/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "xterm@3.14.5",
+      "destination": "wwwroot/assets/xterm/"
+    }
+  ]
+}

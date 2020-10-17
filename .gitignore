@@ -339,3 +339,9 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Custom
+src/Typin.Examples/Typin.Examples/wwwroot/assets/chota/*
+src/Typin.Examples/Typin.Examples/wwwroot/assets/xterm/*
+!src/Typin.Examples/Typin.Examples/wwwroot/assets/chota/whoami.txt
+!src/Typin.Examples/Typin.Examples/wwwroot/assets/xterm/whoami.txt
