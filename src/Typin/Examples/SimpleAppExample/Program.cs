@@ -8,11 +8,11 @@
 
     public static class Program
     {
-        private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
+        private static readonly string[] Arguments = { "-125", "--str", "hello world", "-i", "-13", "-b", "-vx" };
 
         public static async Task<int> Main()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinBenchmarkCommand>()
+            return await new CliApplicationBuilder().AddCommand<SampleCommand>()
                                                     .AddDirective<DebugDirective>()
                                                     .AddDirective<PreviewDirective>()
                                                     .Build()

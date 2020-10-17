@@ -17,67 +17,67 @@
         /// </remarks>
         public static IEnumerable<string> Split(string commandLine)
         {
-			var result = new StringBuilder();
+            var result = new StringBuilder();
 
             bool quoted = false;
             bool escaped = false;
             bool started = false;
             bool allowcaret = false;
-			for (int i = 0; i < commandLine.Length; ++i)
-			{
+            for (int i = 0; i < commandLine.Length; ++i)
+            {
                 char chr = commandLine[i];
-				int iNext = i + 1;
+                int iNext = i + 1;
 
-				if (chr == '^' && !quoted)
-				{
-					if (allowcaret)
-					{
-						result.Append(chr);
-						started = true;
-						escaped = false;
-						allowcaret = false;
-					}
-					else if (iNext < commandLine.Length && commandLine[iNext] == '^')
-					{
-						allowcaret = true;
-					}
-					else if (iNext == commandLine.Length)
-					{
-						result.Append(chr);
-						started = true;
-						escaped = false;
-					}
-				}
-				else if (escaped)
-				{
-					result.Append(chr);
-					started = true;
-					escaped = false;
-				}
-				else if (chr == '"')
-				{
-					quoted = !quoted;
-					started = true;
-				}
-				else if (chr == '\\' && iNext < commandLine.Length && commandLine[iNext] == '"')
-				{
-					escaped = true;
-				}
-				else if (chr == ' ' && !quoted)
-				{
-					if (started) yield return result.ToString();
-					result.Clear();
-					started = false;
-				}
-				else
-				{
-					result.Append(chr);
-					started = true;
-				}
-			}
+                if (chr == '^' && !quoted)
+                {
+                    if (allowcaret)
+                    {
+                        result.Append(chr);
+                        started = true;
+                        escaped = false;
+                        allowcaret = false;
+                    }
+                    else if (iNext < commandLine.Length && commandLine[iNext] == '^')
+                    {
+                        allowcaret = true;
+                    }
+                    else if (iNext == commandLine.Length)
+                    {
+                        result.Append(chr);
+                        started = true;
+                        escaped = false;
+                    }
+                }
+                else if (escaped)
+                {
+                    result.Append(chr);
+                    started = true;
+                    escaped = false;
+                }
+                else if (chr == '"')
+                {
+                    quoted = !quoted;
+                    started = true;
+                }
+                else if (chr == '\\' && iNext < commandLine.Length && commandLine[iNext] == '"')
+                {
+                    escaped = true;
+                }
+                else if (chr == ' ' && !quoted)
+                {
+                    if (started) yield return result.ToString();
+                    result.Clear();
+                    started = false;
+                }
+                else
+                {
+                    result.Append(chr);
+                    started = true;
+                }
+            }
 
-			if (started)
-				yield return result.ToString();
-		}
+            if (started)
+                yield return result.ToString();
+        }
     }
 }

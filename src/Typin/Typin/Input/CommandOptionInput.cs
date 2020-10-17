@@ -1,5 +1,6 @@
 ﻿namespace Typin.Input
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
@@ -58,7 +59,7 @@
         /// </summary>
         public string GetRawValues()
         {
-            return Values.Select(v => v.Quote()).JoinToString(" ");
+            return Values.Select(v => v.Quote()).JoinToString(' ');
         }
 
         /// <inheritdoc/>
@@ -66,6 +67,17 @@
         public override string ToString()
         {
             return $"{GetRawAlias()} {GetRawValues()}";
+        }
+
+
+        internal static bool IsOption(string argument)
+        {
+            return argument.StartsWith("--", StringComparison.Ordinal) && argument.Length >= 3;
+        }
+
+        internal static bool IsOptionAlias(string argument)
+        {
+            return argument.StartsWith('-') && argument.Length >= 1 && !char.IsDigit(argument[1]);
         }
     }
 }

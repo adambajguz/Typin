@@ -38,8 +38,10 @@
 
             // Asert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
+
+            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -58,12 +60,14 @@
             app.Should().NotBeNull();
 
             // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
+            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "-13", "-b" }, new Dictionary<string, string>());
 
             // Asert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
+
+            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -130,7 +134,7 @@
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkNamedCommand>()
+            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
                                                  .UseConsole(console)
                                                  .Build();
 
@@ -138,11 +142,11 @@
             app.Should().NotBeNull();
 
             // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
+            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "-13", "-b" }, new Dictionary<string, string>());
 
             // Assert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
@@ -241,6 +245,48 @@
             var app = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<OtherDefaultCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_option_must_have_valid_names()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<InvalidOptionNameCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await app.RunAsync(Array.Empty<string>());
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Fact]
+        public async Task Command_option_must_have_valid_shortnames()
+        {
+            // Arrange
+            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
+
+            var app = new CliApplicationBuilder()
+                .AddCommand<InvalidOptionShortNameCommand>()
                 .UseConsole(console)
                 .Build();
 
