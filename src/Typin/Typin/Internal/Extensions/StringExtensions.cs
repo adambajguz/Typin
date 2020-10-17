@@ -2,9 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
-    using System.Text.RegularExpressions;
 
     internal static class StringExtensions
     {
@@ -37,24 +35,6 @@
 
             return source.PadLeft(padLeft, paddingChar)
                          .PadRight(length, paddingChar);
-        }
-
-        private static readonly Regex _splitRegex = new Regex(string.Format("{0}(?=(?:[^{1}]*{1}[^{1}]*{1})*(?![^{1}]*{1}))", Regex.Escape(" "), Regex.Escape("\"")),
-                                                              RegexOptions.Compiled | RegexOptions.Multiline);
-
-        //https://stackoverflow.com/questions/298830/split-string-containing-command-line-parameters-into-string-in-c-sharp
-        //https://gist.github.com/Mikescher/a1450d13980f4363b47cdab5430b411a
-        public static string[] SplitBySpacesWithEscape(this string expression)
-        {
-            var re = @"\G(""((""""|[^""])+)""|(\S+)) *";
-            var ms = Regex.Matches(expression, re);
-            var list = ms.Cast<Match>()
-                         .Select(m => Regex.Replace(
-                             m.Groups[2].Success
-                                 ? m.Groups[2].Value
-                                 : m.Groups[4].Value, @"""""", @"""")).ToArray();
-
-            return list;
         }
     }
 }
