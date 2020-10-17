@@ -55,7 +55,8 @@
                           IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
         {
             RootSchema root = _context.RootSchema;
-            IReadOnlyList<CommandSchema> childCommands = root.GetChildCommands(command.Name);
+            IEnumerable<CommandSchema> childCommands = root.GetChildCommands(command.Name)
+                                                           .OrderBy(x => x.Name);
 
             _console.ResetColor();
             _console.ForegroundColor = ConsoleColor.Gray;
@@ -223,7 +224,7 @@
 
         private void WriteCommandUsage(IReadOnlyDictionary<string, DirectiveSchema> directives,
                                        CommandSchema command,
-                                       IReadOnlyList<CommandSchema> childCommands)
+                                       IEnumerable<CommandSchema> childCommands)
         {
             if (!IsEmpty)
                 WriteVerticalMargin();
@@ -404,7 +405,7 @@
 
         #region Command Children
         private void WriteCommandChildren(CommandSchema command,
-                                          IReadOnlyList<CommandSchema> childCommands)
+                                          IEnumerable<CommandSchema> childCommands)
         {
             if (!childCommands.Any())
                 return;
