@@ -118,7 +118,7 @@
             {
                 string argument = commandLineArguments[index];
 
-                if (argument.StartsWith('-'))
+                if (CommandOptionInput.IsOptionAlias(argument))
                     break;
 
                 result.Add(new CommandParameterInput(argument));

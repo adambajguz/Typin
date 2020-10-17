@@ -9,6 +9,9 @@
     [Command]
     public class SampleCommand : ICommand
     {
+        [CommandParameter(0)]
+        public int? ParamB { get; set; }
+
         [CommandOption("str", 's')]
         public string? StrOption { get; set; }
 
