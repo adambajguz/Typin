@@ -8,11 +8,6 @@ on:
       - '*'
     paths:
       - 'src/Typin.Examples/*'
-    paths-ignore:
-      - 'src/Typin/*'
-      - LICENSE
-      - 'CHANGELOG.md'
-      - 'README.md'
   pull_request:
     branches:
       - '*'
@@ -20,11 +15,6 @@ on:
       - '*'
     paths:
       - 'src/Typin.Examples/*'
-    paths-ignore:
-      - 'src/Typing/*'
-      - LICENSE
-      - 'CHANGELOG.md'
-      - 'README.md'
 
 jobs:
   build:
