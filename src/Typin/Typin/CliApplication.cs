@@ -74,9 +74,11 @@
         /// </remarks>
         public async ValueTask<int> RunAsync()
         {
-            string[] commandLineArguments = Environment.GetCommandLineArgs()
-                                                       .Skip(1)
-                                                       .ToArray();
+            string line = Environment.CommandLine;
+
+            string[] commandLineArguments = CommandLineSplitter.Split(line)
+                                                               .Skip(1)
+                                                               .ToArray();
 
             return await RunAsync(commandLineArguments);
         }

@@ -1,3 +1,8 @@
+### v2.1 (XX-Oct-2020)
+
+- Schemas resolving improvements
+- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`).
+
 ### v2.0 (02-Oct-2020)
 
 - Added preview of custom DI containter support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).

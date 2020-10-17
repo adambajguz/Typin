@@ -8,6 +8,8 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
+    using Typin.Internal;
+    using Typin.Internal.Extensions;
     using Typin.Schemas;
 
     /// <summary>
@@ -137,13 +139,15 @@
 
                 if (string.IsNullOrWhiteSpace(CliContext.Scope)) // handle unscoped command input
                 {
-                    arguments = line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                    .ToArray();
+                    arguments = CommandLineSplitter.Split(line)
+                                                   .Where(x => !string.IsNullOrWhiteSpace(x))
+                                                   .ToArray();
                 }
                 else // handle scoped command input
                 {
-                    List<string> tmp = line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                           .ToList();
+                    List<string> tmp = CommandLineSplitter.Split(line)
+                                                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                                                          .ToList();
 
                     int lastDirective = tmp.FindLastIndex(x => x.StartsWith('[') && x.EndsWith(']'));
                     tmp.Insert(lastDirective + 1, CliContext.Scope);

@@ -8,7 +8,7 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Internal;
+    using Typin.Tests.Extensions;
     using Xunit;
 
     public class EnvironmentVariablesOptionFallbackTests
