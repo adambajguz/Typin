@@ -124,7 +124,7 @@
         [InlineData(1)]
         [InlineData(13)]
         [InlineData(-13)]
-        public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order(int number)
+        public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order(int? number)
         {
             // Arrange
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
@@ -137,7 +137,7 @@
             // Act
             int exitCode = await app.RunAsync(new[]
             {
-                "cmd", "foo", number.ToString(), "bar", "baz"
+                "cmd", "foo", number?.ToString() ?? "null", "bar", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
@@ -149,40 +149,8 @@
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
             {
                 ParamA = "foo",
-                ParamB = number,
+                ParamB = number ?? null,
                 ParamC = new[] { "bar", "baz" }
-            });
-        }
-
-        [Fact]
-        public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order_even_if_there_is_a_hyphen()
-        {
-            // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .UseConsole(console)
-                .Build();
-
-            // Act
-            int exitCode = await app.RunAsync(new[]
-            {
-                "cmd", "-", "0", "bar", "-", "baz"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
-            _output.WriteLine(stdErr.GetString());
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-            stdErr.GetString().Should().BeNullOrWhiteSpace();
-
-            commandInstance.Should().BeEquivalentTo(new WithParametersCommand
-            {
-                ParamA = "-",
-                ParamB = 0,
-                ParamC = new[] { "bar", "-", "baz" }
             });
         }
 

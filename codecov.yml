@@ -3,7 +3,7 @@ codecov:
 
 coverage:
   precision: 2
-  round: nearest
+  round: down
   status:
     project:
       default:

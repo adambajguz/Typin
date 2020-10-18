@@ -57,25 +57,9 @@
         }
 
         /// <summary>
-        /// Checks if a name is a command or subcommand name part. This returns true even if there is no "cmd" command but "cmd sub" exists.
-        /// </summary>
-        public bool IsCommandOrSubcommandPart(string? commandName, bool hasDefaultDirective = false)
-        {
-            if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
-                return true;
-
-            if (Commands.ContainsKey(commandName))
-                return true;
-
-            commandName = string.Concat(commandName.Trim(), " ");
-
-            return Commands.Keys.Where(x => x.StartsWith(commandName)).Any();
-        }
-
-        /// <summary>
         /// Finds command schema by name.
         /// </summary>
-        public CommandSchema? TryFindCommand(string? commandName, bool hasDefaultDirective = false)
+        public CommandSchema? TryFindCommand(string? commandName, bool hasDefaultDirective)
         {
             if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
                 return DefaultCommand;

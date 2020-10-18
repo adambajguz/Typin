@@ -77,7 +77,7 @@
 
         internal static bool IsOptionAlias(string argument)
         {
-            return argument.StartsWith('-') && argument.Length >= 2 && !char.IsDigit(argument[1]);
+            return argument.StartsWith('-') && argument.Length >= 1 && !char.IsDigit(argument[1]);
         }
     }
 }
