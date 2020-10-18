@@ -1,5 +1,9 @@
 ### v2.1.1 (18-Oct-2020)
 - Fixed `CommandOptionInput.IsOptionAlias` bug.
+- It is no possible to scope to `cmd` command even if there is only `cmd sub` in application.
+- Added `CommandInput.Arguments`.
+- Added `RootSchema.IsCommandOrSubcommandPart()`.
+- `[>]` is now not resseting the scope when no name after `[>]`.
 
 ### v2.1 (17-Oct-2020)
 
