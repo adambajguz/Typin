@@ -20,12 +20,17 @@
         public bool IsInteractiveDirectiveSpecified { get; }
 
         /// <summary>
+        /// Raw command line input arguments.
+        /// </summary>
+        public IReadOnlyList<string> Arguments { get; }
+
+        /// <summary>
         /// Command direcitves list without special [interactive] directive.
         /// </summary>
         public IReadOnlyList<DirectiveInput> Directives { get; }
 
         /// <summary>
-        /// Command name. Null or empty/whitespace if default command.
+        /// Command name. Null or empty/whitespace if default or invalid command.
         /// </summary>
         public string? CommandName { get; }
 
@@ -57,12 +62,14 @@
         /// <summary>
         /// Initializes an instance of <see cref="CommandInput"/>.
         /// </summary>
-        internal CommandInput(bool isInteractiveDirectiveSpecified,
+        internal CommandInput(IReadOnlyList<string> commandLineArguments,
+                              bool isInteractiveDirectiveSpecified,
                               IReadOnlyList<DirectiveInput> directives,
                               string? commandName,
                               IReadOnlyList<CommandParameterInput> parameters,
                               IReadOnlyList<CommandOptionInput> options)
         {
+            Arguments = commandLineArguments;
             IsInteractiveDirectiveSpecified = isInteractiveDirectiveSpecified;
             Directives = directives;
             CommandName = commandName;
