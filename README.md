@@ -42,7 +42,7 @@ Typin is not just a parser but a complete application framework. Its main goal i
 
 ## Typin roots in CliFx
 
-Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it wants to be a ASP.NET Core for CLI like [Cocona](https://github.com/mayuki/Cocona) but faster. Typin has many additional functions compared to CliFx:
+Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it wants to be a ASP.NET Core for CLI like [Cocona](https://github.com/mayuki/Cocona) but faster. It has many additional features compared to CliFx:
 
 - [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defined shortcuts,
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
