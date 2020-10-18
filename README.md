@@ -21,6 +21,7 @@
 <b>Table of contents</b>
 
 - [Typin](#typin)
+  - [Features](#typin-roots-in-clifx)
   - [Features](#features)
   - [Installing Typin](#installing-typin)
   - [Getting started and documentation](#getting-started-and-documentation)
@@ -37,8 +38,19 @@
 
 > **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Type in".
 
-Typin is not just a parser but a complete application framework.  Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
-Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
+Typin is not just a parser but a complete application framework.  Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications. Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
+
+## Typin roots in CliFx
+
+Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it has lost of additional features: 
+- [interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion and support for user-defiend shortcuts,
+- [middleware piplenie](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
+- [custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
+- [build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
+- [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom instead of only environment variable fallback,
+- ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
+- DI injectable `ICliContext` with lots of useful data,
+- (more coming soon).
 
 ## Features
 
