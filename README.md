@@ -23,7 +23,7 @@
 - [Typin](#typin)
   - [Features](#features)
   - [Installing Typin](#installing-typin)
-  - [Documentation](#documentation)
+  - [Getting started and documentation](#getting-started-and-documentation)
   - [Screenshots](#screenshots)
   - [Benchmarks](#benchmarks)
   
@@ -37,11 +37,8 @@
 
 > **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Type in".
 
-It is build based on the code of [CliFx](https://github.com/Tyrrrz/CliFx). Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
-This framework uses a declarative class-first approach for defining commands, avoiding excessive boilerplate code and complex configurations.
-
-Typin is not just a parser but a complete application framework. 
-Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
+Typin is not just a parser but a complete application framework.  Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
+Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
 
 ## Features
 
@@ -74,7 +71,27 @@ Or via the .NET Core command line interface:
 
 Either commands, from Package Manager Console or .NET Core CLI, will download and install Typin and all required dependencies.
 
-## Documentation
+## Getting started and Documentation
+
+```c#
+public static class Program
+{
+    public static async Task<int> Main() =>
+        await new CliApplicationBuilder()
+            .AddCommandsFromThisAssembly()
+            .Build()
+            .RunAsync();
+}
+
+[Command]
+public class HelloWorldCommand : ICommand
+{
+    public async ValueTask ExecuteAsync(IConsole console)
+    {
+        await console.Output.WriteLineAsync("Hello world!");
+    }
+}
+```
 
 See [wiki](https://github.com/adambajguz/Typin/wiki) for detailed instructions and documentation.
 
