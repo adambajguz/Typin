@@ -21,6 +21,7 @@
 <b>Table of contents</b>
 
 - [Typin](#typin)
+  - [Typin roots in CliFx](#typin-roots-in-clifx)
   - [Features](#features)
   - [Installing Typin](#installing-typin)
   - [Getting started and documentation](#getting-started-and-documentation)
@@ -33,12 +34,28 @@
 
 
 
-**Typin** is a simple to use, yet powerful framework for building both interactive command line applications and command line tools. 
+**Typin** is a simple to use, ASP.NET Core inspired framework for building both interactive command line applications and command line tools.
 
 > **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Type in".
 
-Typin is not just a parser but a complete application framework.  Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications.
-Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
+Typin is not just a parser but a complete application framework. Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications. Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
+
+## Typin roots in CliFx
+
+Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it wants to be a ASP.NET Core for CLI like [Cocona](https://github.com/mayuki/Cocona) but faster. It has many additional features compared to CliFx:
+
+- [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defined shortcuts,
+- [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
+- [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
+- [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
+- [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
+- Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
+- DI injectable `ICliContext` with lots of useful data,
+- Negative numbers handling,
+- Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand
+- (more coming soon).
+
+> See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.
 
 ## Features
 
