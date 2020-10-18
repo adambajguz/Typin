@@ -1,3 +1,6 @@
+### v2.1.1 (18-Oct-2020)
+- Fixed `CommandOptionInput.IsOptionAlias` bug.
+
 ### v2.1 (17-Oct-2020)
 
 - Schemas resolving improvements
