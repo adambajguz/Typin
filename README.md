@@ -44,12 +44,13 @@ Typin is not just a parser but a complete application framework.  Its main goal 
 
 Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it has lost of additional features: 
 - [interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion and support for user-defiend shortcuts,
-- [middleware piplenie](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
+- [middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
 - [custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
 - [build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
-- [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom instead of only environment variable fallback,
+- [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
 - ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
 - DI injectable `ICliContext` with lots of useful data,
+- negative numbers handling,
 - (more coming soon).
 
 ## Features
