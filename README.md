@@ -42,7 +42,7 @@ Typin is not just a parser but a complete application framework.  Its main goal 
 
 ## Typin roots in CliFx
 
-Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it has lost of additional features: 
+Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it has lots of additional features: 
 - [interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion and support for user-defiend shortcuts,
 - [middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
 - [custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
