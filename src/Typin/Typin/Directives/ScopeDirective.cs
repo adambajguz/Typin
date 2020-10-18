@@ -1,9 +1,11 @@
 ﻿namespace Typin.Directives
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Internal.Extensions;
 
     /// <summary>
     /// If application runs in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to ommit specified command name(s).
@@ -43,9 +45,23 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            _cliContext.Scope = _cliContext.Input.CommandName ?? string.Empty;
+            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
+
+            if (name != null)
+                _cliContext.Scope = name;
 
             return default;
+        }
+
+        private string? GetFallbackCommandName()
+        {
+            string potentialName = _cliContext.Input.Arguments.Skip(_cliContext.Input.Directives.Count)
+                                                              .JoinToString(' ');
+
+            if (_cliContext.RootSchema.IsCommandOrSubcommandPart(potentialName))
+                return potentialName;
+
+            return null;
         }
     }
 }

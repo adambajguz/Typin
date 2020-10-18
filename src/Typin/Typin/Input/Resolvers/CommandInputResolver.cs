@@ -13,7 +13,7 @@
         /// Resolves <see cref="CommandInput"/>.
         /// </summary>
         public static CommandInput Parse(IReadOnlyList<string> commandLineArguments,
-                                           ISet<string> availableCommandNamesSet)
+                                         ISet<string> availableCommandNamesSet)
         {
             int index = 0;
 
@@ -41,7 +41,7 @@
                 ref index
             );
 
-            return new CommandInput(isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
+            return new CommandInput(commandLineArguments, isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
