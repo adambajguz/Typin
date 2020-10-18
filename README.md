@@ -21,7 +21,7 @@
 <b>Table of contents</b>
 
 - [Typin](#typin)
-  - [Features](#typin-roots-in-clifx)
+  - [Typin roots in CliFx](#typin-roots-in-clifx)
   - [Features](#features)
   - [Installing Typin](#installing-typin)
   - [Getting started and documentation](#getting-started-and-documentation)
