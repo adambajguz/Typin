@@ -43,7 +43,7 @@ Typin is not just a parser but a complete application framework. Its main goal i
 ## Typin roots in CliFx
 
 Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/CliFx), but it has a lot of additional features: 
-- [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, `"` parameter escaping, and support for user-defiend shortcuts,
+- [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defiend shortcuts,
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
 - [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
 - [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
