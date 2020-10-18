@@ -55,6 +55,8 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand
 - (more coming soon).
 
+> See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.
+
 ## Features
 
 - Complete application framework, not just an argument parser
