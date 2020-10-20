@@ -1,6 +1,6 @@
 {
-  "name": "Typin.Examples",
-  "short_name": "Typin.Examples",
+  "name": "TypinExamples",
+  "short_name": "TypinExamples",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
