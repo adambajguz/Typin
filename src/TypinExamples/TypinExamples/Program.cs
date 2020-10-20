@@ -2,6 +2,7 @@ namespace TypinExamples
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+    using TypinExamples.Compiler.Services;
 
     public static class Program
     {
@@ -10,7 +11,8 @@ namespace TypinExamples
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.ConfigureServices();
+            builder.ConfigureServices()
+                   .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();
         }
