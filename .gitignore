@@ -339,3 +339,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Custom
+src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/*/*
+
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/chota/about.txt
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/xterm/about.txt
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/monaco-editor/about.txt
