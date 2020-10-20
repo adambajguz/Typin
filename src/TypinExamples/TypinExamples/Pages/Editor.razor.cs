@@ -1,16 +1,16 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Typin.Examples.Services;
-using TypinExamples.Compiler;
-using TypinExamples.Compiler.Services;
-
-namespace Typin.Examples.Pages
+﻿namespace TypinExamples.Pages
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net.Http;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Components;
+    using TypinExamples.Services;
+    using TypinExamples.Compiler;
+    using TypinExamples.Compiler.Services;
+
     public partial class Editor
     {
         public string Output = "";

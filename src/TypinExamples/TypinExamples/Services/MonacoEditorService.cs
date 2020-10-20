@@ -1,4 +1,4 @@
-﻿namespace Typin.Examples.Services
+﻿namespace TypinExamples.Services
 {
     using Microsoft.JSInterop;
 

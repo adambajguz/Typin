@@ -1,4 +1,4 @@
-namespace Typin.Examples
+namespace TypinExamples
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

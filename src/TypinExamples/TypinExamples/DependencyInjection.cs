@@ -1,10 +1,10 @@
-﻿namespace Typin.Examples
+﻿namespace TypinExamples
 {
     using System;
     using System.Net.Http;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin.Examples.Services;
+    using TypinExamples.Services;
 
     public static class DependencyInjection
     {

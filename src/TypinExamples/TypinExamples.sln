@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Examples", "Typin.Examples\Typin.Examples.csproj", "{B8D4EFF7-91B6-4E28-95B4-4B6A0A55E7C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples", "TypinExamples\TypinExamples.csproj", "{B8D4EFF7-91B6-4E28-95B4-4B6A0A55E7C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{BFD52A01-5ACA-4DAC-B6F8-8179044216AC} = {BFD52A01-5ACA-4DAC-B6F8-8179044216AC}
 		{C002883D-3934-4928-8A05-1033D07CCDC6} = {C002883D-3934-4928-8A05-1033D07CCDC6}
