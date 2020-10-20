@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TypinExamples.Common
+﻿namespace TypinExamples.Common
 {
     public class Class1
     {

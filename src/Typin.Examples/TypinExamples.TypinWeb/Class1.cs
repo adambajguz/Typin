@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TypinExamples.TypinWeb
+﻿namespace TypinExamples.TypinWeb
 {
     public class Class1
     {

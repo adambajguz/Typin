@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Examples\TypinExamples.SimpleExample\TypinExamples.SimpleExample.csproj" />
+    <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
+    <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -22,4 +22,12 @@
     <Folder Include="wwwroot\assets\images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Examples\TypinExamples.SimpleExample\TypinExamples.SimpleExample.csproj" />
+    <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
+    <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
+    <ProjectReference Include="..\TypinExamples.Core\TypinExamples.Core.csproj" />
+    <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
+  </ItemGroup>
+
 </Project>
