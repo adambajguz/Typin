@@ -11,6 +11,8 @@ body.dark {
     --font-color: #f5f5f5;
     --color-grey: #bbb;
     --color-darkGrey: #888;
+    --color-primary: #17c16f;
+    --color-error: #ea4f4f;
 }
 
     body.dark #grid .card {
