@@ -341,11 +341,8 @@ ASALocalRun/
 healthchecksdb
 
 # Custom
-src/TypinExamples/TypinExamples/wwwroot/assets/chota/*
-!src/TypinExamples/TypinExamples/wwwroot/assets/chota/about.txt
+src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/*/*
 
-src/TypinExamples/TypinExamples/wwwroot/assets/xterm/*
-!src/TypinExamples/TypinExamples/wwwroot/assets/xterm/about.txt
-
-src/TypinExamples/TypinExamples/wwwroot/assets/monaco-editor/*
-!src/TypinExamples/TypinExamples/wwwroot/assets/monaco-editor/about.txt
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/chota/about.txt
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/xterm/about.txt
+!src/TypinExamples/TypinExamples/wwwroot/assets/frameworks/monaco-editor/about.txt
