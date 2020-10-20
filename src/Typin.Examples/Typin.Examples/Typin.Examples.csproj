@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\assets\images\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 

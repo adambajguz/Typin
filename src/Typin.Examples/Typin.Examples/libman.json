@@ -10,6 +10,11 @@
       "provider": "cdnjs",
       "library": "xterm@3.14.5",
       "destination": "wwwroot/assets/xterm/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "monaco-editor@0.21.2",
+      "destination": "wwwroot/assets/monaco-editor/"
     }
   ]
 }
