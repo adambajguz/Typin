@@ -7,7 +7,7 @@
   "theme_color": "#0d2832",
   "icons": [
     {
-      "src": "assets/typin-icon/typin-favicon-512px.png",
+      "src": "assets/images/typin-icon/typin-favicon-512px.png",
       "type": "image/png",
       "sizes": "512x512"
     }
