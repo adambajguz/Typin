@@ -8,7 +8,7 @@ on:
     tags-ignore:
       - '*'
     paths-ignore:
-      - 'src/Typin.Examples/*'
+      - 'src/TypinExamples/*'
       - LICENSE
       - 'CHANGELOG.md'
       - 'README.md'
@@ -18,7 +18,7 @@ on:
     tags-ignore:
       - '*'
     paths-ignore:
-      - 'src/Typin.Examples/*'
+      - 'src/TypinExamples/*'
       - LICENSE
       - 'CHANGELOG.md'
       - 'README.md'
