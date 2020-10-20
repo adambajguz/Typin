@@ -2,19 +2,19 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
-    using TypinExamples.Services;
     using TypinExamples.Compiler;
-    using TypinExamples.Compiler.Services;
+    using TypinExamples.Services;
 
     public partial class Editor
     {
         public string Output = "";
-        const string DefaultCode = @"using System;
+        private const string DefaultCode = @"using System;
 
 class Program
 {
@@ -39,7 +39,7 @@ class Program
             base.OnAfterRender(firstRender);
             if (firstRender)
             {
-                MonacoEditor.Initialize("container", DefaultCode, "csharp");
+                MonacoEditor.Initialize("container", DefaultCode, "csharp", "vs-dark", false);
                 Run();
             }
         }
@@ -49,30 +49,32 @@ class Program
             return Compiler.WhenReady(RunInternal);
         }
 
-        async Task RunInternal()
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        private async Task RunInternal()
         {
             Output = "";
 
             Console.WriteLine("Compiling and Running code");
-            var sw = Stopwatch.StartNew();
+            Stopwatch sw = Stopwatch.StartNew();
 
-            var currentOut = Console.Out;
-            var writer = new StringWriter();
+            TextWriter currentOut = Console.Out;
+            StringWriter writer = new StringWriter();
             Console.SetOut(writer);
 
             Exception exception = null;
             try
             {
-                var (success, asm) = Compiler.LoadSource(MonacoEditor.GetCode("container"));
+                (bool success, Assembly asm) = Compiler.LoadSource(MonacoEditor.GetCode("container"));
                 if (success)
                 {
-                    var entry = asm.EntryPoint;
+                    MethodInfo entry = asm.EntryPoint;
                     if (entry.Name == "<Main>") // sync wrapper over async Task Main
                     {
                         entry = entry.DeclaringType.GetMethod("Main", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static); // reflect for the async Task Main
                     }
-                    var hasArgs = entry.GetParameters().Length > 0;
-                    var result = entry.Invoke(null, hasArgs ? new object[] { new string[0] } : null);
+
+                    bool hasArgs = entry.GetParameters().Length > 0;
+                    object result = entry.Invoke(null, hasArgs ? new object[] { Array.Empty<string>() } : null);
                     if (result is Task t)
                     {
                         await t;
@@ -83,6 +85,7 @@ class Program
             {
                 exception = ex;
             }
+
             Output = writer.ToString();
             if (exception != null)
             {

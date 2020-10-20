@@ -38,13 +38,13 @@
         {
             async Task InitializeInternal()
             {
-                var response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
-                var assemblies = await Task.WhenAll(response.resources.assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
+                BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+                HttpResponseMessage[] assemblies = await Task.WhenAll(response.resources.assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
 
-                var references = new List<MetadataReference>(assemblies.Length);
-                foreach (var asm in assemblies)
+                List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
+                foreach (HttpResponseMessage asm in assemblies)
                 {
-                    using (var task = await asm.Content.ReadAsStreamAsync())
+                    using (Stream task = await asm.Content.ReadAsStreamAsync())
                     {
                         references.Add(MetadataReference.CreateFromStream(task));
                     }
@@ -69,10 +69,10 @@
 
         public (bool success, Assembly asm) LoadSource(string source)
         {
-            var compilation = CSharpCompilation.Create("DynamicCode")
-                .WithOptions(new CSharpCompilationOptions(OutputKind.ConsoleApplication))
-                .AddReferences(References)
-                .AddSyntaxTrees(CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Preview)));
+            CSharpCompilation compilation = CSharpCompilation.Create("DynamicCode")
+                                                             .WithOptions(new CSharpCompilationOptions(OutputKind.ConsoleApplication))
+                                                             .AddReferences(References)
+                                                             .AddSyntaxTrees(CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Preview)));
 
             ImmutableArray<Diagnostic> diagnostics = compilation.GetDiagnostics();
 
@@ -109,9 +109,10 @@
 
         public static string Format(string source)
         {
-            var tree = CSharpSyntaxTree.ParseText(source);
-            var root = tree.GetRoot();
-            var normalized = root.NormalizeWhitespace();
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(source);
+            SyntaxNode root = tree.GetRoot();
+            SyntaxNode normalized = root.NormalizeWhitespace();
+
             return normalized.ToString();
         }
     }

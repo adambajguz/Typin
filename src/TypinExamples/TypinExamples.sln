@@ -45,8 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.SimpleExample
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0617CE81-5BBD-4261-B9AF-3A6AE9CEE97D}"
 	ProjectSection(SolutionItems) = preProject
+		README-TE.md = README-TE.md
 		..\..\README.md = ..\..\README.md
-		REDME-TE.md = REDME-TE.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{54F89B43-429A-4DD2-BF77-6BDAB3471FA4}"

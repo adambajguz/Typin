@@ -11,9 +11,9 @@
             Runtime = runtime as IJSInProcessRuntime;
         }
 
-        public void Initialize(string elementId, string initialCode, string language)
+        public void Initialize(string elementId, string initialCode, string language, string theme, bool readOnly)
         {
-            Runtime.Invoke<object>("monacoInterop.initialize", elementId, initialCode, language);
+            Runtime.Invoke<object>("monacoInterop.initialize", elementId, initialCode, language, theme, readOnly);
         }
 
         public string GetCode(string elementId)

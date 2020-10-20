@@ -1,12 +1,14 @@
 ﻿
 var monacoInterop = {};
 monacoInterop.editors = {};
-monacoInterop.initialize = function initialize(elementId, initialCode, language) {
+monacoInterop.initialize = function initialize(elementId, initialCode, language, theme, readOnly) {
     require.config({ paths: { 'vs': 'monaco-editor/min/vs' } });
     require(['vs/editor/editor.main'], function initializeEditor() {
         var editor = monaco.editor.create(document.getElementById(elementId), {
             value: initialCode,
-            language: language
+            language: language,
+            theme: theme,
+            readOnly: readOnly
         });
         monacoInterop.editors[elementId] = editor;
     });
