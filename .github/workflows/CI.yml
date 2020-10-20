@@ -15,8 +15,6 @@ on:
   pull_request:
     branches:
       - '*'
-    branches-ignore:
-      - 'develop-examples-app'
     tags-ignore:
       - '*'
     paths-ignore:
