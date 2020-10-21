@@ -1,0 +1,67 @@
+﻿@import "../frameworks/chota/dist/chota.min.css";
+@import "../frameworks/xterm/xterm.min.css";
+
+@import "c-code-highlight.css";
+@import "m-header.css";
+@import "m-footer.css";
+
+body.dark {
+    --bg-color: #0e3842;
+    --bg-secondary-color: #262626;
+    --font-color: #f5f5f5;
+    --color-grey: #bbb;
+    --color-darkGrey: #888;
+    --color-primary: #17c16f;
+    --color-error: #ea4f4f;
+}
+
+    body.dark #grid .card {
+        background-color: rgba(26, 159, 96, 0.4);
+    }
+
+    body.dark .card {
+        box-shadow: 0 1px 3px var(--color-darkGrey);
+    }
+
+.container.container-bg {
+    background-color: #0d2832;
+}
+
+section {
+    margin: 5rem auto;
+}
+
+#features ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 1.2em;
+    font-weight: 200;
+}
+
+hr {
+    margin: 3rem 0;
+}
+
+#grid .card {
+    padding: 1rem 0rem;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: rgba(26, 159, 96, 0.2);
+    font-size: 1.2rem;
+}
+
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    .buttons > * {
+        margin: 0.5rem;
+    }
+
+    .buttons > .button + .button {
+        margin-left: 0.5rem;
+    }
