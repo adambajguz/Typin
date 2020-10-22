@@ -1,7 +1,9 @@
 ﻿@import "../frameworks/chota/dist/chota.min.css";
 @import "../frameworks/xterm/xterm.min.css";
 
-@import "c-code-highlight.css";
+@import "code-highlight.css";
+
+@import "c-top-scroller.css";
 @import "m-header.css";
 @import "m-footer.css";
 
