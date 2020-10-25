@@ -3,7 +3,8 @@
 <p align="center">
 
 [![Build](https://github.com/adambajguz/Typin/workflows/CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
-[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=10)](https://codecov.io/gh/adambajguz/Typin)
+[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=12)](https://codecov.io/gh/adambajguz/Typin)
+![CodeQL](https://github.com/adambajguz/Typin/workflows/CodeQL/badge.svg?branch=master)
 [![Version](https://img.shields.io/nuget/v/Typin.svg)](https://nuget.org/packages/Typin)
 [![Downloads](https://img.shields.io/nuget/dt/Typin.svg)](https://nuget.org/packages/Typin)
 
