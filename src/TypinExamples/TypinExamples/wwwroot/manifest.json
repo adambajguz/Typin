@@ -3,11 +3,11 @@
   "short_name": "TypinExamples",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "background_color": "#0e3842",
+  "theme_color": "#0d2832",
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "assets/images/typin-icon/typin-favicon-512px.png",
       "type": "image/png",
       "sizes": "512x512"
     }
