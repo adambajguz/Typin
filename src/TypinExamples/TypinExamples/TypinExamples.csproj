@@ -6,6 +6,10 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.1" PrivateAssets="all" />
@@ -24,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Examples\TypinExamples.SimpleExample\TypinExamples.SimpleExample.csproj" />
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
     <ProjectReference Include="..\TypinExamples.Core\TypinExamples.Core.csproj" />
