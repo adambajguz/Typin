@@ -1,1 +1,0 @@
-﻿https://microsoft.github.io/monaco-editor/
