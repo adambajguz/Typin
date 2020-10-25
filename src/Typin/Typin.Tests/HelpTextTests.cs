@@ -2,8 +2,8 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -20,15 +20,11 @@
         public async Task Help_text_shows_usage_format_which_lists_all_parameters()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -44,15 +40,11 @@
         public async Task Help_text_shows_usage_format_which_lists_all_required_options()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithRequiredOptionsCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithRequiredOptionsCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -72,15 +64,11 @@
         public async Task Help_text_shows_all_valid_values_for_enum_arguments()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithEnumArgumentsCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnumArgumentsCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -99,15 +87,11 @@
         public async Task Help_text_shows_environment_variable_names_for_options_that_have_them_defined()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithEnvironmentVariablesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -124,15 +108,11 @@
         public async Task Help_text_shows_default_values_for_non_required_options()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithDefaultValuesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithDefaultValuesCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "--help" });
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);

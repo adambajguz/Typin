@@ -1,9 +1,7 @@
 ﻿namespace Typin.Tests
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Directives;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;

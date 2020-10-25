@@ -2,8 +2,8 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -20,15 +20,11 @@
         public async Task Command_may_throw_a_generic_exception_which_exits_and_prints_error_message_and_stack_trace()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<GenericExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<GenericExceptionCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -48,15 +44,11 @@
         public async Task Command_may_throw_a_generic_exception_with_inner_exception_which_exits_and_prints_error_message_and_stack_trace()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<GenericInnerExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<GenericInnerExceptionCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "-i", "FooBar" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "-i", "FooBar" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -88,15 +80,11 @@
         public async Task Command_may_throw_a_specialized_exception_which_exits_with_custom_code_and_prints_minimal_error_details(int errorCode)
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<CommandExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<CommandExceptionCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "-c", errorCode.ToString() });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "-c", errorCode.ToString() });
 
             // Assert
             exitCode.Should().Be(errorCode);
@@ -111,15 +99,11 @@
         public async Task Command_may_throw_a_specialized_exception_without_error_message_which_exits_and_prints_full_error_details()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<CommandExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<CommandExceptionCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -138,15 +122,11 @@
         public async Task Command_may_throw_a_specialized_exception_which_exits_and_prints_help_text()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<CommandExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<CommandExceptionCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "--show-help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "--show-help" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -165,15 +145,11 @@
         public async Task Command_do_not_show_help_text_on_invalid_user_input_with_default_exception_handler()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<DefaultCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "not-a-valid-command", "-r", "foo" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "not-a-valid-command", "-r", "foo" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);

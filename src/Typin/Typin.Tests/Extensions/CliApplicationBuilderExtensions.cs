@@ -7,6 +7,7 @@
     using Typin.Utilities.CliFx.Utilities;
     using Xunit.Abstractions;
 
+    //TODO: maybe this should be a separate lib like Typin.Testing
     internal static class CliApplicationBuilderExtensions
     {
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,

@@ -6,7 +6,6 @@
     using CliWrap;
     using CliWrap.Buffered;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -62,15 +61,11 @@
         [Fact]
         public async Task Option_only_uses_an_environment_variable_as_fallback_if_the_name_matches_case_sensitively()
         {
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithEnvironmentVariablesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
                 new[] { "cmd" },
                 new Dictionary<string, string>
                 {
@@ -92,15 +87,11 @@
         [Fact]
         public async Task Option_of_non_scalar_type_can_use_an_environment_variable_as_fallback_and_extract_multiple_values()
         {
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithEnvironmentVariablesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
                 new[] { "cmd" },
                 new Dictionary<string, string>
                 {
@@ -121,15 +112,11 @@
         [Fact]
         public async Task Option_of_scalar_type_can_use_an_environment_variable_as_fallback_regardless_of_separators()
         {
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<WithEnvironmentVariablesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnvironmentVariablesCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
                 new[] { "cmd" },
                 new Dictionary<string, string>
                 {
