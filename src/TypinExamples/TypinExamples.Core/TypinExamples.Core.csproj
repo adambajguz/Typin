@@ -13,9 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Examples\TypinExamples.SimpleExample\TypinExamples.HelloWorld.csproj" />
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
   </ItemGroup>
 
 </Project>
