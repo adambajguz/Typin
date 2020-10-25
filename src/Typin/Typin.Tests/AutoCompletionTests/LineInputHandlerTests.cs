@@ -9,6 +9,7 @@
     using Typin.Console;
     using Typin.Extensions;
     using Xunit;
+    using Xunit.Abstractions;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class LineInputHandlerTests : IDisposable
@@ -18,8 +19,12 @@
         private readonly MemoryStream stdOut;
         private readonly MemoryStream stdErr;
 
-        public LineInputHandlerTests()
+        private readonly ITestOutputHelper _output;
+
+        public LineInputHandlerTests(ITestOutputHelper output)
         {
+            _output = output;
+
             stdIn = new MemoryStream(Console.InputEncoding.GetBytes("input"));
             stdOut = new MemoryStream();
             stdErr = new MemoryStream();

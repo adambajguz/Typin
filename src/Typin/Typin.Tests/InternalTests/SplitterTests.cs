@@ -5,9 +5,17 @@
     using FluentAssertions;
     using Typin.Internal;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class SplitterTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public SplitterTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Theory]
         [InlineData("One", new[] { "One" })]
         [InlineData("One ", new[] { "One" })]

@@ -10,9 +10,17 @@
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class EnvironmentVariablesOptionFallbackTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public EnvironmentVariablesOptionFallbackTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         // This test uses a real application to make sure environment variables are actually read correctly
         [Fact]
         public async Task Option_can_use_an_environment_variable_as_fallback()

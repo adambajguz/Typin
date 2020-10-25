@@ -65,7 +65,7 @@
         private Type? TryGetEnumerableArgumentUnderlyingType()
         {
             return Property != null && Property.PropertyType != typeof(string)
-                   ? Property.PropertyType.GetEnumerableUnderlyingType()
+                   ? Property.PropertyType.TryGetEnumerableUnderlyingType()
                    : null;
         }
 
@@ -84,7 +84,7 @@
                     return Enum.Parse(targetType, value, true);
 
                 // Nullable
-                Type? nullableUnderlyingType = targetType.GetNullableUnderlyingType();
+                Type? nullableUnderlyingType = targetType.TryGetNullableUnderlyingType();
                 if (nullableUnderlyingType != null)
                 {
                     return !string.IsNullOrWhiteSpace(value)
@@ -179,7 +179,7 @@
             if (Property is null)
                 return Array.Empty<string>();
 
-            Type underlyingType = Property.PropertyType.GetNullableUnderlyingType() ?? Property.PropertyType;
+            Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ?? Property.PropertyType;
 
             // Enum
             if (underlyingType.IsEnum)

@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.AutoCompletionTests
+﻿namespace Typin.Tests.Data
 {
     using System;
     using Typin.AutoCompletion;

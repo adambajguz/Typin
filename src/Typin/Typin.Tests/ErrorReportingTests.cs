@@ -28,14 +28,14 @@
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "Kaput" });
+            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().BeEmpty();
             stdErr.GetString().Should().ContainAll(
                 "System.Exception:",
-                "Kaput", "at",
+                "ErrorTest", "at",
                 "Typin.Tests"
             );
 
@@ -43,8 +43,49 @@
             _output.WriteLine(stdErr.GetString());
         }
 
+
         [Fact]
-        public async Task Command_may_throw_a_specialized_exception_which_exits_with_custom_code_and_prints_minimal_error_details()
+        public async Task Command_may_throw_a_generic_exception_with_inner_exception_which_exits_and_prints_error_message_and_stack_trace()
+        {
+            // Arrange
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            var application = new CliApplicationBuilder()
+                .AddCommand<GenericInnerExceptionCommand>()
+                .UseConsole(console)
+                .Build();
+
+            // Act
+            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "-i", "FooBar" });
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeEmpty();
+            stdErr.GetString().Should().ContainAll(
+                "System.Exception:",
+                "FooBar",
+                "ErrorTest", "at",
+                "Typin.Tests"
+            );
+
+            _output.WriteLine(stdOut.GetString());
+            _output.WriteLine(stdErr.GetString());
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(100)]
+        [InlineData(126)]
+        [InlineData(128)]
+        [InlineData(255)]
+        [InlineData(-255)]
+        [InlineData(short.MinValue)]
+        [InlineData(short.MaxValue)]
+        [InlineData(int.MinValue)]
+        [InlineData(int.MaxValue)]
+        public async Task Command_may_throw_a_specialized_exception_which_exits_with_custom_code_and_prints_minimal_error_details(int errorCode)
         {
             // Arrange
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
@@ -55,12 +96,12 @@
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "Kaput", "-c", "69" });
+            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "-c", errorCode.ToString() });
 
             // Assert
-            exitCode.Should().Be(69);
+            exitCode.Should().Be(errorCode);
             stdOut.GetString().Should().BeEmpty();
-            stdErr.GetString().Trim().Should().Be("Kaput");
+            stdErr.GetString().Trim().Should().Be("ErrorTest");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());
@@ -105,7 +146,7 @@
                 .Build();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "Kaput", "--show-help" });
+            int exitCode = await application.RunAsync(new[] { "cmd", "-m", "ErrorTest", "--show-help" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -114,7 +155,7 @@
                 "Options",
                 "-h|--help"
             );
-            stdErr.GetString().Trim().Should().Be("Kaput");
+            stdErr.GetString().Trim().Should().Be("ErrorTest");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

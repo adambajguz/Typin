@@ -8,7 +8,9 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Extensions;
+    using Typin.Tests.Data;
     using Xunit;
+    using Xunit.Abstractions;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class AutoCompleteInputTests : IDisposable
@@ -20,8 +22,12 @@
         private readonly MemoryStream stdOut;
         private readonly MemoryStream stdErr;
 
-        public AutoCompleteInputTests()
+        private readonly ITestOutputHelper _output;
+
+        public AutoCompleteInputTests(ITestOutputHelper output)
         {
+            _output = output;
+
             stdIn = new MemoryStream(Console.InputEncoding.GetBytes("input"));
             stdOut = new MemoryStream();
             stdErr = new MemoryStream();

@@ -486,7 +486,7 @@
             // Enumerable
             if (!(defaultValue is string) && defaultValue is IEnumerable defaultValues)
             {
-                Type elementType = defaultValues.GetType().GetEnumerableUnderlyingType() ?? typeof(object);
+                Type elementType = defaultValues.GetType().TryGetEnumerableUnderlyingType() ?? typeof(object);
 
                 // If the ToString() method is not overriden, the default value can't be formatted nicely
                 if (!elementType.IsToStringOverriden())

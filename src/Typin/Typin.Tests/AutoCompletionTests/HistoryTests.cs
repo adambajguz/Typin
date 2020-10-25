@@ -5,10 +5,18 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Xunit;
+    using Xunit.Abstractions;
 
     public sealed class HistoryTests
     {
         private readonly string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
+
+        private readonly ITestOutputHelper _output;
+
+        public HistoryTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         [Fact]
         public void Should_add_collection_to_history()

@@ -10,9 +10,17 @@
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.Services;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class DependencyInjectionTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public DependencyInjectionTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public async Task Should_scoped_services_be_resolved()
         {
