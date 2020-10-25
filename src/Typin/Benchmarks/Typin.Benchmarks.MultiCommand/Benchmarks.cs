@@ -17,7 +17,8 @@ namespace Typin.Benchmarks.MultiCommand
     [SimpleJob]
     [RankColumn]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [RPlotExporter]
+    //[RPlotExporter]
+    [MemoryDiagnoser]
     public class Benchmarks
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
