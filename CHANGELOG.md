@@ -1,4 +1,9 @@
+### v2.2.0 (18-Oct-2020)
+
+- Added `CliApplication.RunAsync` with string command line.
+
 ### v2.1.1 (18-Oct-2020)
+
 - Fixed `CommandOptionInput.IsOptionAlias` bug.
 - It is no possible to scope to `cmd` command even if there is only `cmd sub` in application.
 - Added `CommandInput.Arguments`.

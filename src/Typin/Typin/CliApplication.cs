@@ -69,19 +69,50 @@
         /// Command line arguments and environment variables are retrieved automatically.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
         public async ValueTask<int> RunAsync()
         {
             string line = Environment.CommandLine;
 
-            string[] commandLineArguments = CommandLineSplitter.Split(line)
-                                                               .Skip(1)
+            return await RunAsync(line, true);
+        }
+
+        /// <summary>
+        /// Runs the application with specified command line and returns the exit code.
+        /// Environment variables are retrieved automatically.
+        /// </summary>
+        /// <remarks>
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
+        /// </remarks>
+        public async ValueTask<int> RunAsync(string commandLine, bool containsExecutable = false)
+        {
+            string[] commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                               .Skip(containsExecutable ? 1 : 0)
                                                                .ToArray();
 
             return await RunAsync(commandLineArguments);
+        }
+
+        /// <summary>
+        /// Runs the application with specified command line and environment variables, and returns the exit code.
+        /// </summary>
+        /// <remarks>
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
+        /// </remarks>
+        public async ValueTask<int> RunAsync(string commandLine, IReadOnlyDictionary<string, string> environmentVariables, bool containsExecutable = false)
+        {
+            string[] commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                               .Skip(containsExecutable ? 1 : 0)
+                                                               .ToArray();
+
+            return await RunAsync(commandLineArguments, environmentVariables);
         }
 
         /// <summary>
@@ -89,9 +120,9 @@
         /// Environment variables are retrieved automatically.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
         public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments)
         {
@@ -109,9 +140,9 @@
         /// Runs the application with specified command line arguments and environment variables, and returns the exit code.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> or <see cref="TypinException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
         public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)

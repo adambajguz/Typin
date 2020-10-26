@@ -40,5 +40,30 @@
 
             return (exitCode, stdOut, stdErr);
         }
+
+        public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
+                                                                                                                                 ITestOutputHelper testOutput,
+                                                                                                                                 string commandLine)
+        {
+            return await BuildAndRunTestAsync(applicationBuilder, testOutput, commandLine, new Dictionary<string, string>());
+        }
+
+        public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
+                                                                                                                                 ITestOutputHelper testOutput,
+                                                                                                                                 string commandLine,
+                                                                                                                                 IReadOnlyDictionary<string, string> environmentVariables)
+        {
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+
+            CliApplication application = applicationBuilder.UseConsole(console)
+                                                           .Build();
+
+            int exitCode = await application.RunAsync(commandLine, environmentVariables);
+
+            testOutput.WriteLine("Exit Code: {0}", exitCode);
+            testOutput.Print(stdOut, stdErr);
+
+            return (exitCode, stdOut, stdErr);
+        }
     }
 }
