@@ -10,7 +10,6 @@
     using Typin.Input;
     using Typin.Input.Resolvers;
     using Typin.Internal;
-    using Typin.Schemas;
 
     /// <summary>
     /// Command line application facade.

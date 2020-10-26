@@ -182,11 +182,19 @@
         [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
+            //TODO: fix enter and maybe other
             if (IsInputRedirected)
-                return ((char)Input.Read()).ToConsoleKeyInfo();
+            {
+                int v = -1;
+                while (v == -1)
+                {
+                    v = Input.Read();
+                }
+
+                return ((char)v).ToConsoleKeyInfo();
+            }
 
             return Console.ReadKey(intercept);
-            //return Task.Run(() => Console.ReadKey(intercept)).Result;
         }
 
         /// <summary>
