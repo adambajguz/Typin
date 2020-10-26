@@ -3,6 +3,8 @@
 - Added `CliApplication.RunAsync` with string command line.
 - Advanced interactive input is disabled when input is redirected.
 - Renamed `normal mode` to `direct mode`.
+- Added `CliModeSwitcher` class and `CliContext.ModeSwitcher`.
+- Annotated `CliContext.IsInteractiveMode` as obsolete. Use `CliContext.ModeSwitcher.Current` instead.` IsInteractiveMode` will be removed in Typin 3.0.
 
 ### v2.1.1 (18-Oct-2020)
 
