@@ -1,6 +1,43 @@
 ﻿@page "/editor"
 
-<div id="container" style="width:1024px;height:600px;border:1px solid grey"></div>
-<button class="btn" @onclick="Run">Run</button>
-<br />
-<textarea @bind="Output" rows="10" cols="120"></textarea>
+
+<section>
+    <div class="row">
+
+        <div class="col">
+            <nav class="tabs is-left">
+                <a href="#File">File</a>
+            </nav>
+            <section id="features">
+                <div class="card">
+                    <ul>
+                        <li>📁&nbsp; File</li>
+                        <li>📁&nbsp; File</li>
+                        <li>📁&nbsp; File</li>
+                        <li>📁&nbsp; File</li>
+
+                    </ul>
+                </div>
+            </section>
+            <a href="/" class="button primary">Go to Start page</a>
+        </div>
+
+        <div class="col-8 ">
+            <nav class="tabs is-left">
+                <a href="#code">Code</a>
+                <a href="#terminal">Terminal</a>
+                <a href="#log">Log</a>
+            </nav>
+
+            <div class="">
+                <div id="container">
+
+                    <br />
+                    <textarea @bind="Output" rows="10" cols="120"></textarea>
+                    <button class="btn" style="margin-top:10px" @onclick="Run">Run</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
