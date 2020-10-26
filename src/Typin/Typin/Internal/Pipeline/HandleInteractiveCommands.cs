@@ -30,15 +30,15 @@
             // Get command schema from context
             CommandSchema commandSchema = context.CommandSchema;
 
-            // Handle commands not supported in normal mode
+            // Handle commands not supported in direct mode
             if (!_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly)
             {
-                throw EndUserTypinExceptions.InteractiveOnlyCommandButThisIsNormalApplication(commandSchema);
+                throw EndUserTypinExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
             }
 
             // Handle commands supported only in interactive mode when interactive mode was not started
             if (_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly &&
-                !(context.IsInteractiveMode || input.HasDirective(BuiltInDirectives.Interactive)))
+                !(context.ModeSwitcher.Current == CliModes.Interactive || input.HasDirective(BuiltInDirectives.Interactive)))
             {
                 throw EndUserTypinExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
             }

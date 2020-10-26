@@ -1,18 +1,21 @@
 ﻿namespace Typin
 {
+    using System;
+
     /// <summary>
     /// CLI modes.
     /// </summary>
+    [Flags]
     public enum CliModes
     {
         /// <summary>
-        /// Normal CLI Tool mode.
+        /// Direct CLI tool mode.
         /// </summary>
-        Normal,
+        Direct = 1,
 
         /// <summary>
         /// Interactive CLI mode.
         /// </summary>
-        Interactive
+        Interactive = 2
     }
 }

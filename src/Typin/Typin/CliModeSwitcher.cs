@@ -34,7 +34,7 @@
         /// <summary>
         /// Queues mode switch when mode differs from current.
         /// </summary>
-        public void Queue(CliModes mode)
+        public void QueueSwitching(CliModes mode)
         {
             lock (_lock)
             {
@@ -51,7 +51,10 @@
             {
                 if (Pending is CliModes cm)
                 {
-                    Current = cm;
+                    if (!_cliContext.Configuration.IsInteractiveModeAllowed && cm.HasFlag(CliModes.Interactive))
+                        Current = cm & ~CliModes.Interactive;
+                    else
+                        Current = cm;
                 }
             }
         }

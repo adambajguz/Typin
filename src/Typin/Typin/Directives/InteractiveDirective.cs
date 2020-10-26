@@ -31,7 +31,7 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            // _cliContext.ModeSwitcher;
+            _cliContext.ModeSwitcher.QueueSwitching(CliModes.Interactive);
 
             return default;
         }

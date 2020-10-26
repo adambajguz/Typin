@@ -23,7 +23,7 @@
         }
 
         [Fact]
-        public async Task Normal_mode_application_cannot_process_interactive_directive()
+        public async Task Direct_mode_application_cannot_process_interactive_directive()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -132,7 +132,7 @@
         }
 
         [Fact]
-        public async Task Custom_interactive_directive_should_not_run_in_normal_mode()
+        public async Task Custom_interactive_directive_should_not_run_in_direct_mode()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -404,7 +404,7 @@
         }
 
         [Fact]
-        public async Task Interactive_only_directive_cannot_be_executed_in_normal_mode()
+        public async Task Interactive_only_directive_cannot_be_executed_in_direct_mode()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -420,7 +420,7 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
+            stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in direct mode.");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

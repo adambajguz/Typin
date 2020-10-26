@@ -2,6 +2,7 @@
 
 - Added `CliApplication.RunAsync` with string command line.
 - Advanced interactive input is disabled when input is redirected.
+- Renamed `normal mode` to `direct mode`.
 
 ### v2.1.1 (18-Oct-2020)
 
@@ -14,7 +15,7 @@
 ### v2.1 (17-Oct-2020)
 
 - Schemas resolving improvements
-- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and normal modes.
+- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and direct modes.
 - Fixed negative numbers handling by forbidding options starting from digit. Options must have a name starting from char other than digit, while short name must not be a digit.
 - Auto-completion bug fixes.
 

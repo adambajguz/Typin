@@ -47,7 +47,7 @@
         }
 
         [Fact]
-        public void Application_in_normal_mode_can_be_created_with_a_custom_configuration()
+        public void Application_in_direct_mode_can_be_created_with_a_custom_configuration()
         {
             // Act
             var app = new CliApplicationBuilder()
@@ -73,7 +73,7 @@
         }
 
         [Fact]
-        public void Application_in_normal_mode_can_be_created_with_a_custom_configuration_and_middlewares()
+        public void Application_in_direct_mode_can_be_created_with_a_custom_configuration_and_middlewares()
         {
             // Act
             var app = new CliApplicationBuilder()

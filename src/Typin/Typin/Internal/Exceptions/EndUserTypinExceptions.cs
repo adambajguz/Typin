@@ -163,7 +163,7 @@ Unrecognized options provided:
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException InteractiveOnlyCommandButThisIsNormalApplication(CommandSchema command)
+        internal static TypinException InteractiveOnlyCommandButThisIsDirectApplication(CommandSchema command)
         {
             var message = $@"
 Command '{command.Type.FullName}' can be executed only in interactive mode, but this application is using {nameof(CliApplication)}.
@@ -202,7 +202,7 @@ This application does not support interactive mode.";
         internal static TypinException InteractiveModeDirectiveNotAvailable(string directiveName)
         {
             var message = $@"
-Directive '[{directiveName}]' is for interactive mode only. Thus, cannot be used in normal mode.
+Directive '[{directiveName}]' is for interactive mode only. Thus, cannot be used in direct mode.
 
 You can start the interactive mode with [{BuiltInDirectives.Interactive}].";
 

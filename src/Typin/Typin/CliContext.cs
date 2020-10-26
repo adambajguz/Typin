@@ -74,7 +74,7 @@
         /// <inheritdoc/>
         public InputHistoryProvider InputHistory
         {
-            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to normal mode.");
+            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
             internal set => inputHistoryProvider = value;
         }
 

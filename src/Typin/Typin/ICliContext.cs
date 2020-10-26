@@ -74,7 +74,7 @@
         /// <summary>
         /// Command input history in interactive mode.
         /// </summary>
-        /// <exception cref="NullReferenceException"> Throws when uninitialized or in normal mode.</exception>
+        /// <exception cref="NullReferenceException"> Throws when uninitialized or in direct mode.</exception>
         InputHistoryProvider InputHistory { get; }
 
         /// <summary>
