@@ -34,7 +34,7 @@
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
 
-            if (cliContext.Configuration.IsAdvancedInputAllowed)
+            if (cliContext.Configuration.IsAdvancedInputAllowed && !cliContext.Console.IsInputRedirected)
             {
                 _autoCompleteInput = new AutoCompleteInput(cliContext.Console, userDefinedShortcut)
                 {
@@ -48,10 +48,9 @@
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
-        protected override async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
-                                                      RootSchema root)
+        protected override async Task<int> InitializeAppAsync(IReadOnlyList<string> commandLineArguments)
         {
-            CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
+            CommandInput input = CommandInputResolver.Parse(commandLineArguments, CliContext.RootSchema.GetCommandNames());
             CliContext.Input = input;
 
             if (input.IsInteractiveDirectiveSpecified)
@@ -60,18 +59,18 @@
 
                 // we don't want to run default command for e.g. `[interactive]` but we want to run if there is sth else
                 if (!input.IsDefaultCommandOrEmpty)
-                    await ExecuteCommand();
+                    await ExecuteCommand(commandLineArguments);
 
-                await RunInteractivelyAsync(root);
+                await RunInteractivelyAsync();
 
                 return ExitCodes.Success; // called after Ctrl+C
             }
 
-            return await ExecuteCommand();
+            return await ExecuteCommand(commandLineArguments);
         }
 
         [ExcludeFromCodeCoverage]
-        private async Task RunInteractivelyAsync(RootSchema root)
+        private async Task RunInteractivelyAsync()
         {
             IConsole console = CliContext.Console;
             string executableName = CliContext.Metadata.ExecutableName;
@@ -86,10 +85,7 @@
                     return;
                 }
 
-                CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
-                CliContext.Input = input; //TODO maybe refactor with some clever IDisposable class
-
-                await ExecuteCommand();
+                await ExecuteCommand(commandLineArguments);
                 console.ResetColor();
             }
             while (!console.GetCancellationToken().IsCancellationRequested);

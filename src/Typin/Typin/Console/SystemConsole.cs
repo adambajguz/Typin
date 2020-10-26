@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using Typin.Extensions;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
@@ -126,7 +127,7 @@
 
             /* ====================================================================================================================
              *
-             *  This methods must  use local variable, because removing cts and using _cancellationTokenSource
+             *  This methods must use local variable, because removing cts and using _cancellationTokenSource
              *  would lead to very high RAM usage when many CliApplication were created in single process e.g. in benchmarks.
              *
              *  (Memory leak? - this needs further investigation)
@@ -181,6 +182,9 @@
         [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
+            if (IsInputRedirected)
+                return ((char)Input.Read()).ToConsoleKeyInfo();
+
             return Console.ReadKey(intercept);
             //return Task.Run(() => Console.ReadKey(intercept)).Result;
         }

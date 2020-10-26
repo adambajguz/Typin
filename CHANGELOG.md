@@ -1,6 +1,7 @@
 ### v2.2.0 (xx-Oct-2020)
 
 - Added `CliApplication.RunAsync` with string command line.
+- Advanced interactive input is disabled when input is redirected.
 
 ### v2.1.1 (18-Oct-2020)
 

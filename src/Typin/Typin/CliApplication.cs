@@ -160,7 +160,7 @@
                 CliContext.RootSchema = root;
 
                 //TODO: when in commandLineArguments is a string.Empty application crashes
-                int exitCode = await ParseInput(commandLineArguments, root);
+                int exitCode = await InitializeAppAsync(commandLineArguments);
 
                 return exitCode;
             }
@@ -186,25 +186,23 @@
 
         #region Execute command
         /// <summary>
-        /// Parses input before pipeline execution.
+        /// Initializes app.
         /// </summary>
-        protected virtual async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
-                                                     RootSchema root)
+        protected virtual async Task<int> InitializeAppAsync(IReadOnlyList<string> commandLineArguments)
         {
-            //TODO: CommandInput.Parse as middleware step
-            CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
-            CliContext.Input = input;
-
-            return await ExecuteCommand();
+            return await ExecuteCommand(commandLineArguments);
         }
 
         /// <summary>
         /// Executes command.
         /// </summary>
-        protected async Task<int> ExecuteCommand()
+        protected async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
         {
             using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
             {
+                CommandInput input = CommandInputResolver.Parse(commandLineArguments, CliContext.RootSchema.GetCommandNames());
+                CliContext.Input = input;
+
                 try
                 {
                     // Execute middleware pipeline
