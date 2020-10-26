@@ -19,18 +19,19 @@
                     </ul>
                 </div>
             </section>
-            <a href="http://localhost:5000/" class="button outline">Go to Start page</a>
+            <a href="/" class="button primary">Go to Start page</a>
         </div>
 
         <div class="col-8 ">
             <nav class="tabs is-left">
-                <a href="#Code">Code</a>
-                <a href="#Log">Log</a>
+                <a href="#code">Code</a>
+                <a href="#terminal">Terminal</a>
+                <a href="#log">Log</a>
             </nav>
 
             <div class="">
                 <div id="container">
-                    
+
                     <br />
                     <textarea @bind="Output" rows="10" cols="120"></textarea>
                     <button class="btn" style="margin-top:10px" @onclick="Run">Run</button>
