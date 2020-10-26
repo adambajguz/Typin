@@ -1,4 +1,4 @@
-### v2.2.0 (18-Oct-2020)
+### v2.2.0 (xx-Oct-2020)
 
 - Added `CliApplication.RunAsync` with string command line.
 

@@ -18,65 +18,57 @@
             _output = output;
         }
 
-        [Fact]
-        public async Task Application_can_be_created_and_executed_with_list_default_command()
+        [Theory]
+        [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello \" world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello \" world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        public async Task Application_can_be_created_and_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
 
+            if (interactive)
+                builder.UseInteractiveMode();
+
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "13", "-b" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments);
 
             // Assert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}");
+            stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
-        [Fact]
-        public async Task Application_can_be_created_and_executed_with_string_command()
+        [Theory]
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData("--str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData("--str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData("--str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData("--str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive)
         {
             // Arrange
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
 
+            if (interactive)
+                builder.UseInteractiveMode();
+
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--str \"hello world\" -i 13 -b");
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine);
 
             // Assert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}");
-            stdErr.GetString().Should().BeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public async Task Application_with_interactive_mode_can_be_created_and_executed_in_normal_mode_with_list_default_command()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                     .UseInteractiveMode();
-
-            // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "-13", "-b" });
-
-            // Assert
-            exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
-            stdErr.GetString().Should().BeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public async Task Application_with_interactive_mode_can_be_created_and_executed_in_normal_mode_with_string_command()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                     .UseInteractiveMode();
-
-            // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--str \"hello world\" -i -13 -b");
-
-            // Assert
-            exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
+            stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
