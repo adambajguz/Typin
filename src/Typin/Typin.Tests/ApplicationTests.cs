@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Tests.Data.Commands.Invalid;
