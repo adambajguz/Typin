@@ -38,7 +38,7 @@
 
             // Handle commands supported only in interactive mode when interactive mode was not started
             if (_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly &&
-                !(context.IsInteractiveMode || input.IsInteractiveDirectiveSpecified))
+                !(context.IsInteractiveMode || input.HasDirective(BuiltInDirectives.Interactive)))
             {
                 throw EndUserTypinExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
             }

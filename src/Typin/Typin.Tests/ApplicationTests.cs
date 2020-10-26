@@ -63,7 +63,7 @@
                 builder.UseInteractiveMode();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, isInputRedirected: interactive);
 
             // Assert
             exitCode.Should().Be(0);
@@ -79,7 +79,7 @@
                                                      .AddCommand<NamedInteractiveOnlyCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
@@ -97,7 +97,7 @@
                                                      .UseInteractiveMode();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);

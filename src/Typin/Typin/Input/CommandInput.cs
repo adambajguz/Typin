@@ -15,11 +15,6 @@
     public class CommandInput
     {
         /// <summary>
-        /// Whether interactive directive [interactive] is specified.
-        /// </summary>
-        public bool IsInteractiveDirectiveSpecified { get; }
-
-        /// <summary>
         /// Raw command line input arguments.
         /// </summary>
         public IReadOnlyList<string> Arguments { get; }
@@ -63,14 +58,12 @@
         /// Initializes an instance of <see cref="CommandInput"/>.
         /// </summary>
         internal CommandInput(IReadOnlyList<string> commandLineArguments,
-                              bool isInteractiveDirectiveSpecified,
                               IReadOnlyList<DirectiveInput> directives,
                               string? commandName,
                               IReadOnlyList<CommandParameterInput> parameters,
                               IReadOnlyList<CommandOptionInput> options)
         {
             Arguments = commandLineArguments;
-            IsInteractiveDirectiveSpecified = isInteractiveDirectiveSpecified;
             Directives = directives;
             CommandName = commandName;
             Parameters = parameters;

@@ -11,11 +11,9 @@
     {
         private readonly string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
 
-        private readonly ITestOutputHelper _output;
-
-        public HistoryTests(ITestOutputHelper output)
+        public HistoryTests()
         {
-            _output = output;
+
         }
 
         [Fact]

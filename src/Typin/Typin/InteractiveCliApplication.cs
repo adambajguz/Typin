@@ -52,10 +52,8 @@
             CommandInput input = CommandInputResolver.Parse(commandLineArguments, CliContext.RootSchema.GetCommandNames());
             CliContext.Input = input;
 
-            if (input.IsInteractiveDirectiveSpecified)
+            if (input.HasDirective(BuiltInDirectives.Interactive))
             {
-                CliContext.IsInteractiveMode = true;
-
                 // we don't want to run default command for e.g. `[interactive]` but we want to run if there is sth else
                 if (!input.IsDefaultCommandOrEmpty)
                     await ExecuteCommand(commandLineArguments);

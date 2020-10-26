@@ -16,7 +16,13 @@
         /// <summary>
         /// Whether the application is running in interactive mode.
         /// </summary>
+        [Obsolete("Use ModeSwitcher.Current instead of IsInteractiveMode. IsInteractiveMode will be removed in Typin 3.0.")]
         bool IsInteractiveMode { get; }
+
+        /// <summary>
+        /// CLI mode switcher.
+        /// </summary>
+        CliModeSwitcher ModeSwitcher { get; }
 
         /// <summary>
         /// Current command scope in interactive mode.

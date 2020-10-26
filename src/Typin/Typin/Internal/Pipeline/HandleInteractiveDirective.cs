@@ -27,7 +27,7 @@
             CommandInput input = context.Input;
 
             // Handle interactive directive not supported in application
-            if (!_configuration.IsInteractiveModeAllowed && input.IsInteractiveDirectiveSpecified)
+            if (!_configuration.IsInteractiveModeAllowed && input.HasDirective(BuiltInDirectives.Interactive))
                 throw EndUserTypinExceptions.InteractiveModeNotSupported();
 
             return null;

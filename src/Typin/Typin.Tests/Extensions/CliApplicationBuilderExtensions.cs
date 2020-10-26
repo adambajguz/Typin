@@ -11,24 +11,35 @@
     internal static class CliApplicationBuilderExtensions
     {
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
-                                                                                                                                 ITestOutputHelper testOutput)
-        {
-            return await BuildAndRunTestAsync(applicationBuilder, testOutput, Array.Empty<string>(), new Dictionary<string, string>());
-        }
-
-        public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
-                                                                                                                                 IReadOnlyList<string> commandLineArguments)
+                                                                                                                                 bool isInputRedirected = true)
         {
-            return await BuildAndRunTestAsync(applicationBuilder, testOutput, commandLineArguments, new Dictionary<string, string>());
+            return await BuildAndRunTestAsync(applicationBuilder,
+                                              testOutput,
+                                              Array.Empty<string>(),
+                                              new Dictionary<string, string>(),
+                                              isInputRedirected);
         }
 
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
                                                                                                                                  IReadOnlyList<string> commandLineArguments,
-                                                                                                                                 IReadOnlyDictionary<string, string> environmentVariables)
+                                                                                                                                 bool isInputRedirected = true)
         {
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            return await BuildAndRunTestAsync(applicationBuilder,
+                                              testOutput,
+                                              commandLineArguments,
+                                              new Dictionary<string, string>(),
+                                              isInputRedirected);
+        }
+
+        public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
+                                                                                                                                 ITestOutputHelper testOutput,
+                                                                                                                                 IReadOnlyList<string> commandLineArguments,
+                                                                                                                                 IReadOnlyDictionary<string, string> environmentVariables,
+                                                                                                                                 bool isInputRedirected = true)
+        {
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered(isInputRedirected: isInputRedirected);
 
             CliApplication application = applicationBuilder.UseConsole(console)
                                                            .Build();
@@ -43,17 +54,23 @@
 
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
-                                                                                                                                 string commandLine)
+                                                                                                                                 string commandLine,
+                                                                                                                                 bool isInputRedirected = true)
         {
-            return await BuildAndRunTestAsync(applicationBuilder, testOutput, commandLine, new Dictionary<string, string>());
+            return await BuildAndRunTestAsync(applicationBuilder,
+                                              testOutput,
+                                              commandLine,
+                                              new Dictionary<string, string>(),
+                                              isInputRedirected);
         }
 
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
                                                                                                                                  string commandLine,
-                                                                                                                                 IReadOnlyDictionary<string, string> environmentVariables)
+                                                                                                                                 IReadOnlyDictionary<string, string> environmentVariables,
+                                                                                                                                 bool isInputRedirected = true)
         {
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered(isInputRedirected: isInputRedirected);
 
             CliApplication application = applicationBuilder.UseConsole(console)
                                                            .Build();

@@ -20,7 +20,6 @@
             IReadOnlyList<DirectiveInput> directives = ParseDirectives(
                 commandLineArguments,
                 ref index,
-                out bool isInteractiveDirectiveSpecified,
                 out bool isDefaultDirectiveSpecified
             );
 
@@ -41,15 +40,13 @@
                 ref index
             );
 
-            return new CommandInput(commandLineArguments, isInteractiveDirectiveSpecified, directives, commandName, parameters, options);
+            return new CommandInput(commandLineArguments, directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
                                                                      ref int index,
-                                                                     out bool isInteractiveDirectiveSpecified,
                                                                      out bool isDefaultDirectiveSpecified)
         {
-            isInteractiveDirectiveSpecified = false;
             isDefaultDirectiveSpecified = false;
 
             var result = new List<DirectiveInput>();
@@ -61,14 +58,11 @@
                 if (!argument.StartsWith('[') || !argument.EndsWith(']'))
                     break;
 
-                string name = argument.Substring(1, argument.Length - 2);
+                string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
 
                 isDefaultDirectiveSpecified = name == BuiltInDirectives.Default;
 
-                if (name == BuiltInDirectives.Interactive)
-                    isInteractiveDirectiveSpecified = true;
-                else
-                    result.Add(new DirectiveInput(name));
+                result.Add(new DirectiveInput(name));
             }
 
             return result;

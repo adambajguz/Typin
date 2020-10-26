@@ -21,7 +21,11 @@
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
 
         /// <inheritdoc/>
-        public bool IsInteractiveMode { get; internal set; }
+        [Obsolete("Use ModeSwitcher.Current instead of IsInteractiveMode. IsInteractiveMode will be removed in Typin 3.0.")]
+        public bool IsInteractiveMode => ModeSwitcher.Current == CliModes.Interactive;
+
+        /// <inheritdoc/>
+        public CliModeSwitcher ModeSwitcher { get; }
 
         /// <inheritdoc/>
         public string Scope { get; set; } = string.Empty;
@@ -107,7 +111,7 @@
                           IConsole console,
                           LinkedList<Type> middlewareTypes)
         {
-            IsInteractiveMode = false;
+            ModeSwitcher = new CliModeSwitcher(this);
             Metadata = metadata;
             Configuration = applicationConfiguration;
             Services = serviceCollection;

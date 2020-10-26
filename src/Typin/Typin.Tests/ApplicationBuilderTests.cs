@@ -156,7 +156,7 @@
         public void Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
         {
             // Arrange
-            IConsole console = new VirtualConsole(output: new MemoryStreamWriter(), isOutputRedirected: false,
+            IConsole console = new VirtualConsole(isInputRedirected: false, output: new MemoryStreamWriter(), isOutputRedirected: false,
                                                   error: new MemoryStreamWriter(Encoding.UTF8), isErrorRedirected: true);
 
             // Act
@@ -182,7 +182,7 @@
         public void Application_can_be_created_with_VirtualConsole_CreateBuffered()
         {
             // Arrange
-            var (console, _, _) = VirtualConsole.CreateBuffered();
+            var (console, _, _) = VirtualConsole.CreateBuffered(isInputRedirected: false);
 
             // Act
             var app = new CliApplicationBuilder()

@@ -83,7 +83,8 @@
         /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
         /// Use the exposed streams to easily get the current output.
         /// </summary>
-        public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isOutputRedirected = true,
+        public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isInputRedirected = true,
+                                                                                                                   bool isOutputRedirected = true,
                                                                                                                    bool isErrorRedirected = true,
                                                                                                                    CancellationToken cancellationToken = default)
         {
@@ -91,7 +92,8 @@
             var output = new MemoryStreamWriter(Console.OutputEncoding);
             var error = new MemoryStreamWriter(Console.OutputEncoding);
 
-            var console = new VirtualConsole(output: output, isOutputRedirected: isOutputRedirected,
+            var console = new VirtualConsole(isInputRedirected: isInputRedirected,
+                                             output: output, isOutputRedirected: isOutputRedirected,
                                              error: error, isErrorRedirected: isErrorRedirected,
                                              cancellationToken: cancellationToken);
 

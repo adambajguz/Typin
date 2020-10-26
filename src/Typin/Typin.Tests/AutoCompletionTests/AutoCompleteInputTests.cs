@@ -22,12 +22,8 @@
         private readonly MemoryStream stdOut;
         private readonly MemoryStream stdErr;
 
-        private readonly ITestOutputHelper _output;
-
-        public AutoCompleteInputTests(ITestOutputHelper output)
+        public AutoCompleteInputTests()
         {
-            _output = output;
-
             stdIn = new MemoryStream(Console.InputEncoding.GetBytes("input"));
             stdOut = new MemoryStream();
             stdErr = new MemoryStream();
