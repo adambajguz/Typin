@@ -1,8 +1,9 @@
-﻿namespace Typin.Tests.InternalTests
+﻿namespace Typin.Tests.UtilitiesTests
 {
     using System.Collections.Generic;
     using System.Linq;
     using FluentAssertions;
+    using Newtonsoft.Json;
     using Typin.Internal;
     using Xunit;
     using Xunit.Abstractions;
@@ -52,7 +53,8 @@
         [InlineData("\\^^", new[] { "\\^" })]
         [InlineData("^\\\\", new[] { "\\\\" })]
         [InlineData("^\"A B\"", new[] { "A B" })]
-        [InlineData(@"/src:""C:\tmp\Some Folder\Sub Folder"" /users:""abcdefg@hijkl.com"" tasks:""SomeTask,Some Other Task"" -someParam foo", new[] { @"/src:C:\tmp\Some Folder\Sub Folder", @"/users:abcdefg@hijkl.com", @"tasks:SomeTask,Some Other Task", @"-someParam", @"foo" })]
+        [InlineData(@"/src:""C:\tmp\Some Folder\Sub Folder"" /users:""abcdefg@hijkl.com"" tasks:""SomeTask,Some Other Task"" -someParam foo",
+                    new[] { @"/src:C:\tmp\Some Folder\Sub Folder", @"/users:abcdefg@hijkl.com", @"tasks:SomeTask,Some Other Task", @"-someParam", @"foo" })]
         [InlineData("", new string[] { })]
         [InlineData("a", new[] { "a" })]
         [InlineData(" abc ", new[] { "abc" })]
@@ -66,6 +68,9 @@
         {
             //Act
             IEnumerable<string> splitted = CommandLineSplitter.Split(commandLine);
+
+            _output.WriteLine(commandLine);
+            _output.WriteLine(JsonConvert.SerializeObject(splitted));
 
             //Assert
             splitted.Count().Should().Be(results.Length);

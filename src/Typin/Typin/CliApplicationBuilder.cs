@@ -301,7 +301,6 @@ namespace Typin
         {
             return UseExceptionHandler(typeof(T));
         }
-
         #endregion
 
         #region Interactive Mode
@@ -319,6 +318,7 @@ namespace Typin
             _useInteractiveMode = true;
             _useAdvancedInput = useAdvancedInput;
 
+            AddDirective<InteractiveDirective>();
             AddDirective<DefaultDirective>();
 
             if (addScopeDirectives)

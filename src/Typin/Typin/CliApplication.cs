@@ -227,21 +227,14 @@
                 }
                 catch (Exception ex)
                 {
-                    bool handled = false;
-
                     IEnumerable<ICliExceptionHandler> exceptionHandlers = ServiceProvider.GetServices<ICliExceptionHandler>();
                     foreach (ICliExceptionHandler handler in exceptionHandlers)
                     {
-                        handled |= handler.HandleException(ex);
-
-                        if (handled)
-                            break;
+                        if (handler.HandleException(ex))
+                            return ExitCodes.FromException(ex);
                     }
 
-                    if (!handled)
-                        throw;
-
-                    return ExitCodes.FromException(ex);
+                    throw;
                 }
 
                 return CliContext.ExitCode ??= ExitCodes.Error;

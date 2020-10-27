@@ -14,7 +14,7 @@
         {
             await next();
 
-            bool isInteractive = context.IsInteractiveMode;
+            bool isInteractive = context.ModeSwitcher.Current == CliModes.Interactive;
             int? exitCode = context.ExitCode;
 
             if (context.ExitCode == 0)
