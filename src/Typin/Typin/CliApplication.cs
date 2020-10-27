@@ -28,10 +28,10 @@
 
         /// <summary>
         /// Service scope factory.
+        /// </summary>
         /// <remarks>
         /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </remarks>
-        /// </summary>
         protected IServiceScopeFactory ServiceScopeFactory { get; }
 
         /// <summary>

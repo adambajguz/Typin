@@ -45,6 +45,7 @@ namespace Typin
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
         //Interactive mode settings
+        private CliInteractiveModeConfiguration? _interactiveModeConfiguration;
         private bool _useInteractiveMode = false;
         private bool _useAdvancedInput = false;
         private ConsoleColor _promptForeground = ConsoleColor.Blue;
@@ -53,6 +54,14 @@ namespace Typin
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
+
+        /// <summary>
+        /// Initializes an instance of <see cref="CliApplicationBuilder"/>.
+        /// </summary>
+        public CliApplicationBuilder()
+        {
+
+        }
 
         #region Directives
         /// <summary>
@@ -305,12 +314,34 @@ namespace Typin
 
         #region Interactive Mode
         /// <summary>
+        /// Configures the interactive mode.
+        /// </summary>
+        public CliApplicationBuilder ConfigureInteractiveMode(Action<CliInteractiveModeConfiguration> action)
+        {
+            _interactiveModeConfiguration = new CliInteractiveModeConfiguration();
+            action(_interactiveModeConfiguration);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the interactive mode.
+        /// </summary>
+        public CliApplicationBuilder ConfigureInteractiveMode(CliInteractiveModeConfiguration configuration)
+        {
+            _interactiveModeConfiguration = configuration;
+
+            return this;
+        }
+
+        /// <summary>
         /// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
         /// By default this adds [default], [>], [.], and [..] and advanced command input.
         ///
         /// If you wish to add only [default] directive, set addScopeDirectives to false.
         /// If you wish to disable history and auto completion set useAdvancedInput to false.
         /// </summary>
+        [Obsolete("Use ConfigureInteractiveMode instead of UseInteractiveMode. UseInteractiveMode will be removed in Typin 3.0.")]
         public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
                                                         bool useAdvancedInput = true,
                                                         HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
@@ -336,6 +367,7 @@ namespace Typin
         /// <summary>
         /// Configures the command prompt foreground color in interactive mode.
         /// </summary>
+        [Obsolete("Use ConfigureInteractiveMode instead of UsePromptForeground. UsePromptForeground will be removed in Typin 3.0.")]
         public CliApplicationBuilder UsePromptForeground(ConsoleColor color)
         {
             _promptForeground = color;
@@ -346,6 +378,7 @@ namespace Typin
         /// <summary>
         /// Configures the command input foreground color in interactive mode.
         /// </summary>
+        [Obsolete("Use ConfigureInteractiveMode instead of UseCommandInputForeground. UseCommandInputForeground will be removed in Typin 3.0.")]
         public CliApplicationBuilder UseCommandInputForeground(ConsoleColor color)
         {
             _commandForeground = color;
@@ -508,6 +541,7 @@ namespace Typin
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
             _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
+            _interactiveModeConfiguration ??= new CliInteractiveModeConfiguration();
 
             // Format startup message
             if (_startupMessage != null)
@@ -544,7 +578,8 @@ namespace Typin
                                                              _middlewareTypes,
                                                              _serviceCollection,
                                                              _useInteractiveMode,
-                                                             _useAdvancedInput);
+                                                             _useAdvancedInput,
+                                                             _interactiveModeConfiguration);
 
             var cliContext = new CliContext(metadata, configuration, _console);
 

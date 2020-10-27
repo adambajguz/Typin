@@ -16,11 +16,11 @@
         /// <summary>
         /// Interactive CLI mode.
         /// </summary>
-        Interactive = 2
+        Interactive = 2,
 
-        ///// <summary>
-        ///// Interactive CLI mode.
-        ///// </summary>
-        //Batch = 4
+        /// <summary>
+        /// Batch CLI mode.
+        /// </summary>
+        Batch = 4
     }
 }
