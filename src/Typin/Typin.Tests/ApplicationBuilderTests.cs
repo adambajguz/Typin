@@ -191,7 +191,7 @@
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddCommandsFromThisAssembly()
-                .UseExceptionHandler(new DefaultExceptionHandler())
+                .UseExceptionHandler(typeof(DefaultExceptionHandler))
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()

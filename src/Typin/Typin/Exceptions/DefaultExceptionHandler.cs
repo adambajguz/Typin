@@ -9,44 +9,55 @@
     /// </summary>
     public class DefaultExceptionHandler : ICliExceptionHandler
     {
-        /// <inheritdoc/>
-        public void HandleTypinException(ICliContext context, TypinException ex)
-        {
-            WriteError(context.Console, ex.ToString());
+        private readonly ICliContext _cliContext;
+        private readonly IHelpWriter _helpWriter;
 
-            //PrintHelp(context);
+        /// <summary>
+        /// Initializes an instance of <see cref="DefaultExceptionHandler"/>.
+        /// </summary>
+        public DefaultExceptionHandler(ICliContext context, IHelpWriter helpWriter)
+        {
+            _cliContext = context;
+            _helpWriter = helpWriter;
         }
 
         /// <inheritdoc/>
-        public void HandleDirectiveException(ICliContext context, DirectiveException ex)
+        public bool HandleException(Exception ex)
         {
-            WriteError(context.Console, ex.ToString());
-            context.Console.Error.WriteLine();
+            IConsole console = _cliContext.Console;
 
-            if (ex.ShowHelp)
-                PrintHelp(context);
-        }
+            switch (ex)
+            {
+                // Swallow directive exceptions and route them to the console
+                case CommandException cx:
+                    {
+                        WriteError(console, cx.ToString());
+                        console.Error.WriteLine();
 
-        /// <inheritdoc/>
-        public void HandleCommandException(ICliContext context, CommandException ex)
-        {
-            WriteError(context.Console, ex.ToString());
-            context.Console.Error.WriteLine();
+                        if (cx.ShowHelp)
+                            _helpWriter.Write();
+                    }
+                    return true;
 
-            if (ex.ShowHelp)
-                PrintHelp(context);
-        }
+                // Swallow command exceptions and route them to the console
+                case DirectiveException dx:
+                    {
+                        WriteError(console, dx.ToString());
+                        console.Error.WriteLine();
 
-        /// <inheritdoc/>
-        public void HandleException(ICliContext context, Exception ex)
-        {
-            IConsole console = context.Console;
+                        if (dx.ShowHelp)
+                            _helpWriter.Write();
+                    }
+                    return true;
 
-            WriteFatalError(console, $"Fatal error occured in {context.Metadata.ExecutableName}.");
+                // This may throw exceptions which are useful only to the end-user
+                case TypinException tx:
+                    WriteError(console, tx.ToString());
+                    return true;
 
-            console.Error.WriteLine();
-            WriteFatalError(console, ex.ToString());
-            console.Error.WriteLine();
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -55,20 +66,6 @@
         private static void WriteError(IConsole console, string message)
         {
             console.WithForegroundColor(ConsoleColor.Red, () => console.Error.WriteLine(message));
-        }
-
-        /// <summary>
-        /// Write a fataal error message to the console.
-        /// </summary>
-        private static void WriteFatalError(IConsole console, string message)
-        {
-            console.WithForegroundColor(ConsoleColor.DarkRed, () => console.Error.WriteLine(message));
-        }
-
-        private static void PrintHelp(ICliContext context)
-        {
-            IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
-            helpTextWriter.Write();
         }
     }
 }

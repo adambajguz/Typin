@@ -47,11 +47,13 @@
         /// <summary>
         /// Service collection.
         /// </summary>
+        [Obsolete("Use Configuration.Services instead of Services. Services will be removed in Typin 3.0.")]
         IEnumerable<ServiceDescriptor> Services { get; }
 
         /// <summary>
         /// Collection of middlewares in application.
         /// </summary>
+        [Obsolete("Use Configuration.Middlewares instead of Middlewares. Middlewares will be removed in Typin 3.0.")]
         IReadOnlyCollection<Type> Middlewares { get; }
 
         /// <summary>

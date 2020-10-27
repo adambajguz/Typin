@@ -8,23 +8,8 @@
     public interface ICliExceptionHandler
     {
         /// <summary>
-        /// Handles exception of <see cref="TypinException"/>.
+        /// Handles exception and returns true when exception was handled or false when not.
         /// </summary>
-        void HandleTypinException(ICliContext context, TypinException ex);
-
-        /// <summary>
-        /// Handles exception of <see cref="DirectiveException"/>.
-        /// </summary>
-        void HandleDirectiveException(ICliContext context, DirectiveException ex);
-
-        /// <summary>
-        /// Handles exception of <see cref="CommandException"/>.
-        /// </summary>
-        void HandleCommandException(ICliContext context, CommandException ex);
-
-        /// <summary>
-        /// Handles exception of <see cref="Exception"/>.
-        /// </summary>
-        void HandleException(ICliContext context, Exception ex);
+        bool HandleException(Exception ex);
     }
 }

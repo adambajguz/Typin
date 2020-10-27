@@ -11,9 +11,11 @@
 
     internal sealed class HandleHelpOption : IMiddleware
     {
-        public HandleHelpOption()
-        {
+        private readonly IHelpWriter _helpTextWriter;
 
+        public HandleHelpOption(IHelpWriter helpTextWriter)
+        {
+            _helpTextWriter = helpTextWriter;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
@@ -33,8 +35,7 @@
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
                 (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
             {
-                IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
-                helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
+                _helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
 
                 return ExitCodes.Success;
             }

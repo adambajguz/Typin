@@ -21,7 +21,7 @@
         public async Task RunPipelineAsync()
         {
             IServiceProvider serviceProvider = ServiceScope.ServiceProvider;
-            LinkedList<Type> middlewareTypes = Context.MiddlewareTypes;
+            LinkedList<Type> middlewareTypes = Context.Configuration.MiddlewareTypes;
 
             CancellationToken cancellationToken = Context.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;

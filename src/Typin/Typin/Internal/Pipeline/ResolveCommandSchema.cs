@@ -32,7 +32,7 @@
 
             // Forbid to execute real default command in interactive mode without [!] directive.
             if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
-                context.IsInteractiveMode && command.IsDefault && !hasDefaultDirective)
+                context.ModeSwitcher.Current == CliModes.Interactive && command.IsDefault && !hasDefaultDirective)
             {
                 command = StubDefaultCommand.Schema;
             }

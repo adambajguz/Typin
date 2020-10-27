@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,11 @@
     /// </summary>
     public class CliApplication
     {
+        /// <summary>
+        /// Service provider.
+        /// </summary>
+        protected IServiceProvider ServiceProvider { get; }
+
         /// <summary>
         /// Service scope factory.
         /// <remarks>
@@ -43,6 +49,7 @@
         public CliApplication(IServiceProvider serviceProvider,
                               CliContext cliContext)
         {
+            ServiceProvider = serviceProvider;
             ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
             CliContext = cliContext;
@@ -167,7 +174,12 @@
             // This may throw pre-execution resolving exceptions which are useful only to the end-user
             catch (TypinException ex)
             {
-                _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
+                IEnumerable<ICliExceptionHandler> exceptionHandlers = ServiceProvider.GetServices<ICliExceptionHandler>();
+                foreach (ICliExceptionHandler handler in exceptionHandlers)
+                {
+                    if (handler.HandleException(ex))
+                        break;
+                }
 
                 return ExitCodes.FromException(ex);
             }
@@ -177,7 +189,11 @@
             // because we still want the IDE to show them to the developer.
             catch (Exception ex) when (!Debugger.IsAttached)
             {
-                _configuration.ExceptionHandler.HandleException(CliContext, ex);
+                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine($"Fatal error occured in {CliContext.Metadata.ExecutableName}."));
+
+                _console.Error.WriteLine();
+                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine(ex.ToString()));
+                _console.Error.WriteLine();
 
                 return ExitCodes.FromException(ex);
             }
@@ -196,6 +212,7 @@
         /// <summary>
         /// Executes command.
         /// </summary>
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         protected async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
         {
             using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
@@ -208,24 +225,21 @@
                     // Execute middleware pipeline
                     await executionScope.RunPipelineAsync();
                 }
-                // Swallow directive exceptions and route them to the console
-                catch (DirectiveException ex)
+                catch (Exception ex)
                 {
-                    _configuration.ExceptionHandler.HandleDirectiveException(CliContext, ex);
+                    bool handled = false;
 
-                    return ExitCodes.FromException(ex);
-                }
-                // Swallow command exceptions and route them to the console
-                catch (CommandException ex)
-                {
-                    _configuration.ExceptionHandler.HandleCommandException(CliContext, ex);
+                    IEnumerable<ICliExceptionHandler> exceptionHandlers = ServiceProvider.GetServices<ICliExceptionHandler>();
+                    foreach (ICliExceptionHandler handler in exceptionHandlers)
+                    {
+                        handled |= handler.HandleException(ex);
 
-                    return ExitCodes.FromException(ex);
-                }
-                // This may throw exceptions which are useful only to the end-user
-                catch (TypinException ex)
-                {
-                    _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
+                        if (handled)
+                            break;
+                    }
+
+                    if (!handled)
+                        throw;
 
                     return ExitCodes.FromException(ex);
                 }

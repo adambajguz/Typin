@@ -51,7 +51,7 @@
 
         private async Task<bool> ProcessDefinedDirectives(ICliContext context)
         {
-            bool isInteractiveMode = context.IsInteractiveMode;
+            bool isInteractiveMode = context.ModeSwitcher.Current == CliModes.Interactive;
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             foreach (DirectiveInput directiveInput in directives)

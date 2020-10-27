@@ -11,6 +11,7 @@ namespace Typin
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
+    using Typin.HelpWriter;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.Internal.Pipeline;
@@ -34,9 +35,6 @@ namespace Typin
         private string? _versionText;
         private string? _description;
         private string? _startupMessage;
-
-        //Exceptions
-        private ICliExceptionHandler? _exceptionHandler;
 
         //Console
         private IConsole? _console;
@@ -285,10 +283,12 @@ namespace Typin
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
         /// </summary>
-        public CliApplicationBuilder UseExceptionHandler<T>()
-            where T : class, ICliExceptionHandler, new()
+        public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
         {
-            _exceptionHandler = new T();
+            _configureServicesActions.Add(services =>
+            {
+                services.AddSingleton(new ServiceDescriptor(typeof(IOptionFallbackProvider), exceptionHandlerType));
+            });
 
             return this;
         }
@@ -296,12 +296,12 @@ namespace Typin
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
         /// </summary>
-        public CliApplicationBuilder UseExceptionHandler(ICliExceptionHandler handler)
+        public CliApplicationBuilder UseExceptionHandler<T>()
+            where T : class, ICliExceptionHandler
         {
-            _exceptionHandler = handler;
-
-            return this;
+            return UseExceptionHandler(typeof(T));
         }
+
         #endregion
 
         #region Interactive Mode
@@ -445,7 +445,7 @@ namespace Typin
 
         #region Value fallback
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
@@ -458,9 +458,33 @@ namespace Typin
         }
 
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where T : IOptionFallbackProvider
+        {
+            return UseOptionFallbackProvider(typeof(T), lifetime);
+        }
+        #endregion
+
+        #region Help Writer
+        /// <summary>
+        /// Configures to use a specific help writer with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseHelpWriter(Type helpWriterType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), helpWriterType, lifetime));
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures to use a specific help writer with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// </summary>
+        public CliApplicationBuilder UseHelpWriter<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
             where T : IOptionFallbackProvider
         {
             return UseOptionFallbackProvider(typeof(T), lifetime);
@@ -483,7 +507,6 @@ namespace Typin
             _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
-            _exceptionHandler ??= new DefaultExceptionHandler();
             _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
 
             // Format startup message
@@ -514,19 +537,20 @@ namespace Typin
             UseMiddleware<ExecuteCommand>();
 
             // Create context
+            var _serviceCollection = new ServiceCollection();
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
             var configuration = new ApplicationConfiguration(_commandTypes,
                                                              _customDirectives,
-                                                             _exceptionHandler,
+                                                             _middlewareTypes,
+                                                             _serviceCollection,
                                                              _useInteractiveMode,
                                                              _useAdvancedInput);
 
-            var _serviceCollection = new ServiceCollection();
-            var cliContext = new CliContext(metadata, configuration, _serviceCollection, _console, _middlewareTypes);
+            var cliContext = new CliContext(metadata, configuration, _console);
 
             // Add core services
-            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
-            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
+            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
+            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
             _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
             _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
 
@@ -551,7 +575,10 @@ namespace Typin
             {
                 configureServicesAction(services);
             }
+
             services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
+            services.TryAddSingleton<IHelpWriter, DefaultHelpWriter>();
+            services.TryAddSingleton<ICliExceptionHandler, DefaultExceptionHandler>();
 
             object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)

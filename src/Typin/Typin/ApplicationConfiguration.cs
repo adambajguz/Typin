@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.DependencyInjection;
     using Typin.Exceptions;
 
     /// <summary>
@@ -12,17 +13,27 @@
         /// <summary>
         /// Command types defined in this application.
         /// </summary>
-        internal IReadOnlyList<Type> CommandTypes { get; }
+        public IReadOnlyList<Type> CommandTypes { get; }
 
         /// <summary>
         /// Custom directives defined in this application.
         /// </summary>
-        internal IReadOnlyList<Type> DirectiveTypes { get; }
+        public IReadOnlyList<Type> DirectiveTypes { get; }
 
         /// <summary>
-        /// Exception Handler instance.
+        /// Collection of middlewares in application.
         /// </summary>
-        internal ICliExceptionHandler ExceptionHandler { get; }
+        public IReadOnlyCollection<Type> Middlewares => MiddlewareTypes;
+
+        /// <summary>
+        /// Collection of middlewares in application.
+        /// </summary>
+        internal LinkedList<Type> MiddlewareTypes { get; }
+
+        /// <summary>
+        /// Service collection.
+        /// </summary>
+        public IEnumerable<ServiceDescriptor> Services { get; }
 
         /// <summary>
         /// Whether interactive mode is allowed in this application.
@@ -39,13 +50,15 @@
         /// </summary>
         public ApplicationConfiguration(IReadOnlyList<Type> commandTypes,
                                         IReadOnlyList<Type> customDirectives,
-                                        ICliExceptionHandler exceptionHandler,
+                                        LinkedList<Type> middlewareTypes,
+                                        IEnumerable<ServiceDescriptor> services,
                                         bool isInteractiveModeAllowed,
                                         bool isAdvancedInputAllowed)
         {
             CommandTypes = commandTypes;
             DirectiveTypes = customDirectives;
-            ExceptionHandler = exceptionHandler;
+            MiddlewareTypes = middlewareTypes;
+            Services = services;
 
             IsInteractiveModeAllowed = isInteractiveModeAllowed;
             IsAdvancedInputAllowed = isAdvancedInputAllowed;

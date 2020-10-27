@@ -44,15 +44,12 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<ServiceDescriptor> Services { get; }
+        [Obsolete("Use Configuration.Services instead of Services. Services will be removed in Typin 3.0.")]
+        public IEnumerable<ServiceDescriptor> Services => Configuration.Services;
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Type> Middlewares => MiddlewareTypes;
-
-        /// <summary>
-        /// Collection of middlewares in application.
-        /// </summary>
-        internal LinkedList<Type> MiddlewareTypes { get; }
+        [Obsolete("Use Configuration.Middlewares instead of Middlewares. Middlewares will be removed in Typin 3.0.")]
+        public IReadOnlyCollection<Type> Middlewares => Configuration.Middlewares;
 
         /// <inheritdoc/>
         public IConsole Console { get; }
@@ -107,16 +104,12 @@
         /// </summary>
         public CliContext(ApplicationMetadata metadata,
                           ApplicationConfiguration applicationConfiguration,
-                          ServiceCollection serviceCollection,
-                          IConsole console,
-                          LinkedList<Type> middlewareTypes)
+                          IConsole console)
         {
             ModeSwitcher = new CliModeSwitcher(this);
             Metadata = metadata;
             Configuration = applicationConfiguration;
-            Services = serviceCollection;
             Console = console;
-            MiddlewareTypes = middlewareTypes;
         }
 
         internal CliExecutionScope BeginExecutionScope(IServiceScopeFactory serviceScopeFactory)
