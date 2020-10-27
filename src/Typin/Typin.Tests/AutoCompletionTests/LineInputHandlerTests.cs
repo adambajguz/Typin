@@ -9,7 +9,6 @@
     using Typin.Console;
     using Typin.Extensions;
     using Xunit;
-    using Xunit.Abstractions;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class LineInputHandlerTests : IDisposable

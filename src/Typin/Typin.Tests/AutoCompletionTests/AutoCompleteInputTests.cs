@@ -10,7 +10,6 @@
     using Typin.Extensions;
     using Typin.Tests.Data;
     using Xunit;
-    using Xunit.Abstractions;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class AutoCompleteInputTests : IDisposable

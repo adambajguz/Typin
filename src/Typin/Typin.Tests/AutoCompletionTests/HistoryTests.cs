@@ -5,7 +5,6 @@
     using Typin.AutoCompletion;
     using Typin.Console;
     using Xunit;
-    using Xunit.Abstractions;
 
     public sealed class HistoryTests
     {
