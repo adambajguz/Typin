@@ -14,6 +14,7 @@
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             services.AddScoped<MonacoEditorService>();
+            services.AddScoped<XTermService>();
 
             return services;
         }

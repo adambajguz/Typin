@@ -29,6 +29,11 @@ body.dark {
     background-color: #0d2832;
 }
 
+    .container.container-bg main {
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
 section {
     margin: 5rem auto;
 }
