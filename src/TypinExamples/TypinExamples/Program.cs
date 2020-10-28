@@ -3,6 +3,7 @@ namespace TypinExamples
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using TypinExamples.Compiler.Services;
+    using TypinExamples.Core;
 
     public static class Program
     {
@@ -12,6 +13,7 @@ namespace TypinExamples
             builder.RootComponents.Add<App>("app");
 
             builder.ConfigureServices()
+                   .ConfigureCoreServices()
                    .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();

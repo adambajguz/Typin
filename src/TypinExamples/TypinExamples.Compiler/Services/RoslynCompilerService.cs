@@ -12,34 +12,34 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
 
+    public class BlazorBoot
+    {
+        public bool CacheBootResources { get; set; }
+        public object[] Config { get; set; }
+        public bool DebugBuild { get; set; }
+        public string EntryAssembly { get; set; }
+        public bool LinkerEnabled { get; set; }
+        public Resources Resources { get; set; }
+    }
+
+    public class Resources
+    {
+        public Dictionary<string, string> Assembly { get; set; }
+        public Dictionary<string, string> Pdb { get; set; }
+        public Dictionary<string, string> Runtime { get; set; }
+    }
+
     public class RoslynCompilerService
     {
-        private class BlazorBoot
-        {
-            public bool cacheBootResources { get; set; }
-            public object[] config { get; set; }
-            public bool debugBuild { get; set; }
-            public string entryAssembly { get; set; }
-            public bool linkerEnabled { get; set; }
-            public Resources resources { get; set; }
-        }
-
-        private class Resources
-        {
-            public Dictionary<string, string> assembly { get; set; }
-            public Dictionary<string, string> pdb { get; set; }
-            public Dictionary<string, string> runtime { get; set; }
-        }
-
-        private Task InitializationTask;
-        private List<MetadataReference> References;
+        private Task? InitializationTask;
+        private List<MetadataReference>? References;
 
         public void InitializeMetadataReferences(HttpClient client)
         {
             async Task InitializeInternal()
             {
                 BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
-                HttpResponseMessage[] assemblies = await Task.WhenAll(response.resources.assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
+                HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
 
                 List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
                 foreach (HttpResponseMessage asm in assemblies)
