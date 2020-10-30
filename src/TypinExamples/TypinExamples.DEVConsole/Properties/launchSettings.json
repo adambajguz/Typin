@@ -1,0 +1,34 @@
+{
+  "profiles": {
+    "Run: HelloWorld": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TARGET_TYPIN_PROJECT": "TypinExamples.HelloWorld.Program"
+      }
+    },
+    "Run: CalculatOR": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TARGET_TYPIN_PROJECT": "TypinExamples.CalculatOR.Program"
+      }
+    },
+    "Run: Timer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TARGET_TYPIN_PROJECT": "TypinExamples.Timer.Program"
+      }
+    },
+    "Run: InteractiveQuery": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TARGET_TYPIN_PROJECT": "TypinExamples.InteractiveQuery.Program"
+      }
+    },
+    "Run: MarioBuilder": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TARGET_TYPIN_PROJECT": "TypinExamples.MarioBuilder.Program"
+      }
+    }
+  }
+}

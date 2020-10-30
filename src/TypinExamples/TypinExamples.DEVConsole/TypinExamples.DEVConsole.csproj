@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
+  </ItemGroup>
+
+</Project>
