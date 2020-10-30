@@ -12,31 +12,44 @@
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "May be needed for examples.")]
         public static async Task<int> Main(string[] args)
         {
-            switch (Environment.GetEnvironmentVariable(ENV_VAR) ?? string.Empty)
+            string target = Environment.GetEnvironmentVariable(ENV_VAR) ?? string.Empty;
+            Trace.WriteLine($"TypinExamples.DEVConsole: Starting '{target}' example...");
+
+            switch (target)
             {
                 case "TypinExamples.HelloWorld.Program":
-                    Debug.WriteLine("Starting 'TypinExamples.HelloWorld.Program' example...");
                     return await HelloWorld.Program.Main();
 
                 case "TypinExamples.CalculatOR.Program":
-                    Debug.WriteLine("Starting 'TypinExamples.CalculatOR.Program' example...");
                     return await CalculatOR.Program.Main();
 
                 case "TypinExamples.Timer.Program":
-                    Debug.WriteLine("Starting 'TypinExamples.Timer.Program' example...");
                     return await Timer.Program.Main();
 
                 case "TypinExamples.InteractiveQuery.Program":
-                    Debug.WriteLine("Starting 'TypinExamples.InteractiveQuery.Program' example...");
                     return await InteractiveQuery.Program.Main();
 
                 case "TypinExamples.MarioBuilder.Program":
-                    Debug.WriteLine("Starting 'TypinExamples.MarioBuilder.Program' example...");
                     return await MarioBuilder.Program.Main();
 
                 default:
-                    Debug.WriteLine("TypinExamples.DEVConsole: Invalid example.");
-                    Console.Error.WriteLine("TypinExamples.DEVConsole: Invalid example.");
+                    Trace.WriteLine("TypinExamples.DEVConsole: '{target}' is an invalid example.");
+                    var prevColor = Console.ForegroundColor;
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Error.Write("TypinExamples.DEVConsole: ");
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Error.Write("'");
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Error.Write(target);
+
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Error.Write("' is an invalid example.");
+
+                    Console.ForegroundColor = prevColor;
+                    Console.Error.WriteLine();
                     return 1;
             }
         }
