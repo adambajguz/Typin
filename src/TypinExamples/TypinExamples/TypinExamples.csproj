@@ -32,6 +32,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".\wwwroot\appsettings.json" Link="appsettings.json" />
+    <None Include=".\wwwroot\appsettings.Development.json" Link="appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
     <ProjectReference Include="..\TypinExamples.Core\TypinExamples.Core.csproj" />
