@@ -12,9 +12,9 @@ namespace TypinExamples
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.ConfigureServices()
-                   .ConfigureCoreServices()
-                   .ConfigureCompilerServices();
+            builder.Services.ConfigureServices(builder.Configuration, builder.HostEnvironment)
+                            .ConfigureCoreServices()
+                            .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();
         }

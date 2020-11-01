@@ -1,6 +1,5 @@
 ﻿namespace TypinExamples.HelloWorld
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Directives;

@@ -6,7 +6,7 @@
 
     public partial class Index
     {
-        [Inject] private XTermService Terminal { get; set; }
+        [Inject] private XTermService Terminal { get; set; } = default!;
 
         protected override Task OnInitializedAsync()
         {
@@ -16,6 +16,7 @@
         protected override void OnAfterRender(bool firstRender)
         {
             base.OnAfterRender(firstRender);
+
             if (firstRender)
             {
                 Terminal.Initialize("terminal");

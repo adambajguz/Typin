@@ -30,11 +30,11 @@
         </div>
 
         <div class="col-8">
-            <TabControl>
-                <TabPage Text="Terminal">
+            <TabContainer>
+                <Tab Text="Terminal">
                     <div id="terminal"></div>
-	            </TabPage>
-	            <TabPage Text="Code">
+	            </Tab>
+	            <Tab Text="Code">
  <figure class="highlight">
                         <pre>
                         <code class="language-html" data-lang="html">
@@ -53,8 +53,8 @@
                         </code>
                     </pre>
                     </figure>
-                </TabPage>
-	            <TabPage Text="Log">
+                </Tab>
+	            <Tab Text="Log">
                     <textarea rows="10" cols="120">
                         dotnet.exe' (CoreCLR: clrhost): Loaded 'C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.1.9\System.Linq.Expressions.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
 'dotnet.exe' (CoreCLR: clrhost): Loaded 'C:\Users\Admin\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\3.2.1\tools\Microsoft.AspNetCore.Diagnostics.Abstractions.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
@@ -62,8 +62,8 @@
 'dotnet.exe' (CoreCLR: clrhost): Loaded 'C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.1.9\System.Security.Cryptography.Primitives.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
 'dotnet.exe' (CoreCLR: clrhost): Loaded 'C:\Users\Admin\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\3.2.1\tools\Microsoft.Net.Http.Headers.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
                     </textarea>
-                </TabPage>
-            </TabControl>
+                </Tab>
+            </TabContainer>
         </div>
 
     </div>
