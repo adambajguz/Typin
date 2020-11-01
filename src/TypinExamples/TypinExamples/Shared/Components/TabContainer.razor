@@ -1,0 +1,14 @@
+﻿<CascadingValue Value="this">
+
+    <nav class="tabs is-full">
+        @foreach (Tab tab in Tabs)
+		{
+			<a class="@(tab == Active ? "active" : string.Empty)"
+		       @onclick="( () => Active = tab )">
+				@tab.Text
+			</a>
+		}
+    </nav>
+
+	@ChildContent
+</CascadingValue>

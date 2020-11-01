@@ -7,6 +7,7 @@
 
     public static class Program
     {
+
         public static async Task<int> Main()
         {
             return await new CliApplicationBuilder().AddCommand<SimpleCommand>()

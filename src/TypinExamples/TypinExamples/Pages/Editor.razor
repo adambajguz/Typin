@@ -1,6 +1,5 @@
 ﻿@page "/editor"
 
-
 <section>
     <div class="row">
 
@@ -23,11 +22,11 @@
         </div>
 
         <div class="col-8 ">
-               <TabControl>
-                <TabPage Text="Terminal">
+               <TabContainer>
+                <Tab Text="Terminal">
                     <div id="terminal"></div>
-	            </TabPage>
-	            <TabPage Text="Code">
+	            </Tab>
+	            <Tab Text="Code">
  <figure class="highlight">
                         <pre>
                         <code class="language-html" data-lang="html">
@@ -46,15 +45,15 @@
                         </code>
                     </pre>
                     </figure>
-                </TabPage>
-	            <TabPage Text="Log">
+                </Tab>
+	            <Tab Text="Log">
                     <div id="container">
                         <br>
                         <textarea @bind="Output" rows="10" cols="120"></textarea>
                         <button class="btn" style="margin-top:10px" @onclick="Run">Run</button>
                     </div>
-                </TabPage>
-            </TabControl>
+                </Tab>
+            </TabContainer>
         </div>
 
     </div>

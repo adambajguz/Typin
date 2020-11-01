@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.MarioBuilder"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Timer", "Examples\TypinExamples.Timer\TypinExamples.Timer.csproj", "{ACB16CE3-F234-45B5-9568-E6041912DE8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.DEVConsole", "TypinExamples.DEVConsole\TypinExamples.DEVConsole.csproj", "{2ED12AD9-AA65-454B-808E-38A11BB545DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.DEVConsole", "TypinExamples.DEVConsole\TypinExamples.DEVConsole.csproj", "{2ED12AD9-AA65-454B-808E-38A11BB545DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

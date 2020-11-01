@@ -3,21 +3,25 @@
         <div class="logo is-center is-vertical-align">
             <div class="row is-center">
                 <div class="col-9-lg col-10-md col-11">
-                    <img src="./assets/images/typin-examples-logo/typinexamples-logo-512px.png" alt="Logo">
+                    <img src="@AppSettings.LogoPath" alt="Logo">
                 </div>
             </div>
 
-            <h3>A <strong>Typin</strong> interactive examples page.</h3>
-            <small><em>Typin is pronounced as "Typin" == "Type interactively"</em></small>
+            <h3>@Markdown.ToHtml(HeaderSettings.Heading ?? string.Empty)</h3>
+            <div>@Markdown.ToHtml(HeaderSettings.Subheading ?? string.Empty)</div>
         </div>
         <nav class="tabs is-center">
-            <a class="active text-primary" href="#dosc1">Examples</a>
-            <a href="#dosc2">Example2</a>
-            <a href="#docs3">Example3</a>
-            <a href="#docs4">Example4</a>
-            <a href="#docs5">Example5</a>
-            <a href="#docs6">Example6</a>
-            <a href="https://github.com/adambajguz/Typin">GitHub</a>
+            @foreach(var link in HeaderSettings.Links)
+            {
+                if (link.IsExternal)
+                {
+                    <a href="@(link.Href ?? string.Empty)" target="_blank">@(link.Title ?? string.Empty)</a>
+                }
+                else
+                {
+                    <NavLink href="@(link.Href ?? string.Empty)" ActiveClass="active text-primary" Match="NavLinkMatch.All">@(link.Title ?? string.Empty)</NavLink>
+                }
+            }
         </nav>
     </div>
 </header>

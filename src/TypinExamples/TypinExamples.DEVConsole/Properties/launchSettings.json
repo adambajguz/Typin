@@ -2,6 +2,7 @@
   "profiles": {
     "Run: HelloWorld": {
       "commandName": "Project",
+      "commandLineArgs": "--n Michal --s Kierzkowski",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.HelloWorld.Program"
       }

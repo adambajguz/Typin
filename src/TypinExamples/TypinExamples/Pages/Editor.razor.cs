@@ -24,9 +24,9 @@ class Program
     }
 }";
 
-        [Inject] private HttpClient Client { get; set; }
-        [Inject] private MonacoEditorService MonacoEditor { get; set; }
-        [Inject] private RoslynCompilerService Compiler { get; set; }
+        [Inject] private HttpClient Client { get; set; } = default!;
+        [Inject] private MonacoEditorService MonacoEditor { get; set; } = default!;
+        [Inject] private RoslynCompilerService Compiler { get; set; } = default!;
 
         protected override Task OnInitializedAsync()
         {
@@ -61,7 +61,7 @@ class Program
             StringWriter writer = new StringWriter();
             Console.SetOut(writer);
 
-            Exception exception = null;
+            Exception? exception = null;
             try
             {
                 (bool success, Assembly asm) = Compiler.LoadSource(MonacoEditor.GetCode("container"));

@@ -8,36 +8,62 @@
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Reflection;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.Extensions.Logging;
 
     public class BlazorBoot
     {
+        [JsonPropertyName("cacheBootResources")]
         public bool CacheBootResources { get; set; }
-        public object[] Config { get; set; }
+
+        [JsonPropertyName("config")]
+        public string[] Config { get; set; } = Array.Empty<string>();
+
+        [JsonPropertyName("debugBuild")]
         public bool DebugBuild { get; set; }
-        public string EntryAssembly { get; set; }
+
+        [JsonPropertyName("entryAssembly")]
+        public string EntryAssembly { get; set; } = string.Empty;
+
+        [JsonPropertyName("linkerEnabled")]
         public bool LinkerEnabled { get; set; }
-        public Resources Resources { get; set; }
+
+        [JsonPropertyName("resources")]
+        public Resources Resources { get; set; } = new Resources();
     }
 
     public class Resources
     {
-        public Dictionary<string, string> Assembly { get; set; }
-        public Dictionary<string, string> Pdb { get; set; }
-        public Dictionary<string, string> Runtime { get; set; }
+        [JsonPropertyName("assembly")]
+        public Dictionary<string, string> Assembly { get; set; } = new Dictionary<string, string>();
+
+        [JsonPropertyName("pdb")]
+        public Dictionary<string, string> Pdb { get; set; } = new Dictionary<string, string>();
+
+        [JsonPropertyName("runtime")]
+        public Dictionary<string, string> Runtime { get; set; } = new Dictionary<string, string>();
     }
 
     public class RoslynCompilerService
     {
-        private Task? InitializationTask;
-        private List<MetadataReference>? References;
+        private Task? InitializationTask { get; set; }
+        private List<MetadataReference>? References { get; set; }
+
+        private ILogger<RoslynCompilerService> Logger { get; }
+
+        public RoslynCompilerService(ILogger<RoslynCompilerService> logger)
+        {
+            Logger = logger;
+        }
 
         public void InitializeMetadataReferences(HttpClient client)
         {
             async Task InitializeInternal()
             {
+                Logger.LogInformation("Initializing compiler");
                 BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
                 HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
 
@@ -51,6 +77,7 @@
                 }
 
                 References = references;
+                Logger.LogInformation("Finished compiler initilization");
             }
             InitializationTask = InitializeInternal();
         }
@@ -67,7 +94,7 @@
             }
         }
 
-        public (bool success, Assembly asm) LoadSource(string source)
+        public (bool success, Assembly? asm) LoadSource(string source)
         {
             CSharpCompilation compilation = CSharpCompilation.Create("DynamicCode")
                                                              .WithOptions(new CSharpCompilationOptions(OutputKind.ConsoleApplication))
