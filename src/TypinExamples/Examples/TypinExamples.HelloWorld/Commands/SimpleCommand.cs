@@ -5,7 +5,7 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command]
+    [Command(Description = "Simple command that prints text.")]
     public class SimpleCommand : ICommand
     {
         [CommandOption("name", 'n')]
@@ -14,15 +14,29 @@
         [CommandOption("surname", 's')]
         public string? Surname { get; set; }
 
-        [CommandOption("mail", 'm')]
+        [CommandOption("mail", 'm', Description = "Email address")]
         public string? Mail { get; set; }
+
+        [CommandOption("age", 'a', Description = "Age.")]
+        public int Age { get; set; }
+
+        [CommandOption("height", Description = "Height.")]
+        public double? Height { get; set; } = null;
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            if (Name == null & Surname == null)
+            if (Name is null && Surname is null)
                 await console.Output.WriteLineAsync("Hello World!");
+            else if (Mail is null)
+            {
+                await console.Output.WriteLineAsync($"Welcome {Name} {Surname}!");
+                await console.Output.WriteLineAsync($"Age {Age}; Height: {(Height is null ? "unknown" : Height.ToString())}");
+            }
             else
-                await console.Output.WriteLineAsync("Welcome " + Name + " " + Surname + " " + Mail);
+            {
+                await console.Output.WriteLineAsync($"Welcome {Name} {Surname}!");
+                await console.Output.WriteLineAsync($"e-mail: {Mail}; Age {Age}; Height: {(Height is null ? "unknown" : Height.ToString())}");
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "Run: HelloWorld": {
       "commandName": "Project",
-      "commandLineArgs": "--n Michal --s Kierzkowski",
+      "commandLineArgs": "world end \"08/18/2018 07:22:16\" --CONFIRM false -f",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.HelloWorld.Program"
       }
