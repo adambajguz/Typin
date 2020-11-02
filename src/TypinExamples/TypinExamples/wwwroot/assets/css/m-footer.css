@@ -2,3 +2,9 @@
     background-color: #0d2832;
     padding: 4rem;
 }
+
+footer > div.footer-authors {
+    font-weight: 500;
+    margin: 0.35em 0 0.7em 0;
+    font-size: 1em;
+}

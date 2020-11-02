@@ -10,6 +10,28 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' ">
+    <PreBuildEvent>
+      for /f "tokens=5" %%a in ('netstat -aon ^| find ":5001" ^| find "LISTENING"') do taskkill /f /pid %%a
+    </PreBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)'=='Debug' And '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+    <PreBuildEvent>
+      sudo kill -9 $(netstat -vanp tcp | grep 5001 | grep -v grep | awk '{print $9}')
+    </PreBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)'=='Debug' And '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
+    <PreBuildEvent>
+      sudo kill -9 $(netstat -vanp tcp | grep 5001 | grep -v grep | awk '{print $9}')
+    </PreBuildEvent>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Logging" Version="1.1.1" />
     <PackageReference Include="Blazor.Extensions.Storage" Version="1.0.0" />

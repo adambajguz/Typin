@@ -1,14 +1,28 @@
-﻿<footer class="footer-bg is-text-center">
-    <p>
-        <a href="#top">🔝 Back to top</a> •
-        <a href="https://github.com/adambajguz/Typin/issues">🐛 Report an issue</a>
-    </p>
+﻿<footer class="footer-bg">
+    <div class="footer-links">
+        <p>
+            @foreach (var link in FooterSettings.Links)
+            {
+                bool isLast = link == FooterSettings.Links.Last();
 
-    <h5>
-        Made by
-        <a href="https://github.com/adambajguz/" target="_blank">Adam Bajguz</a>,
-        <a href="https://github.com/Hamis132" target="_blank">Paweł Halicki</a>,
-        <a href="https://github.com/michal0929" target="_blank">Michał Kierzkowski</a> &amp;
-        <a href="https://github.com/speednow" target="_blank">Alan Bednarczyk</a>
-    </h5>
+                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" />
+
+                @if (!isLast)
+                {
+                    <span>•</span>
+                }
+            }
+        </p>
+    </div>
+    <div class="footer-authors">
+        @Markdown.ToHtml(FooterSettings.Authors ?? string.Empty)
+    </div>
 </footer>
+
+@code
+{
+    [Inject] protected IMarkdownService Markdown { get; set; } = default!;
+
+    [Inject] private IOptions<FooterSettings> _FooterSettings { get; set; } = default!;
+    protected FooterSettings FooterSettings => _FooterSettings.Value;
+}

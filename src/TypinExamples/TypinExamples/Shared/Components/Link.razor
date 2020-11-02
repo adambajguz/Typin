@@ -1,0 +1,23 @@
+﻿@using System.Diagnostics.CodeAnalysis
+
+@if (IsExternal)
+{
+    <a href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" target="_blank">@(Title ?? string.Empty)</a>
+}
+else
+{
+    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.All">@(Title ?? string.Empty)</NavLinkExtended>
+}
+
+@code
+{
+    [Parameter]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "This is link href parameter.")]
+    public string? href { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool IsExternal { get; set; }
+}
