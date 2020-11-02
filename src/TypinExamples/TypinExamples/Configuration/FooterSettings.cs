@@ -2,17 +2,12 @@
 {
     using System;
 
-    public sealed class HeaderSettings
+    public sealed class FooterSettings
     {
         /// <summary>
-        /// Heading with Markdown formatting.
+        /// Authors with Markdown formatting.
         /// </summary>
-        public string? Heading { get; set; }
-
-        /// <summary>
-        /// Subheading with markdown formatting.
-        /// </summary>
-        public string? Subheading { get; set; }
+        public string? Authors { get; set; }
 
         /// <summary>
         /// Links colleciton.

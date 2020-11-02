@@ -7,21 +7,25 @@
                 </div>
             </div>
 
-            <h3>@Markdown.ToHtml(HeaderSettings.Heading ?? string.Empty)</h3>
-            <div>@Markdown.ToHtml(HeaderSettings.Subheading ?? string.Empty)</div>
+            <div class="header-heading">@Markdown.ToHtml(HeaderSettings.Heading ?? string.Empty)</div>
+            <div class="header-subheading">@Markdown.ToHtml(HeaderSettings.Subheading ?? string.Empty)</div>
         </div>
         <nav class="tabs is-center">
-            @foreach(var link in HeaderSettings.Links)
+            @foreach (var link in HeaderSettings.Links)
             {
-                if (link.IsExternal)
-                {
-                    <a href="@(link.Href ?? string.Empty)" target="_blank">@(link.Title ?? string.Empty)</a>
-                }
-                else
-                {
-                    <NavLink href="@(link.Href ?? string.Empty)" ActiveClass="active text-primary" Match="NavLinkMatch.All">@(link.Title ?? string.Empty)</NavLink>
-                }
+                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" />
             }
         </nav>
     </div>
 </header>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; set; } = default!;
+
+    [Inject] private IOptions<ApplicationSettings> _AppSettings { get; set; } = default!;
+    private ApplicationSettings AppSettings => _AppSettings.Value;
+
+    [Inject] private IOptions<HeaderSettings> _HeaderSettings { get; set; } = default!;
+    private HeaderSettings HeaderSettings => _HeaderSettings.Value;
+}
