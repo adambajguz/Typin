@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.Services.Terminal
 {
+    using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
 
     public class TerminalOptions
@@ -8,17 +9,17 @@
         public bool? AllowTransparency { get; set; }
 
         [JsonPropertyName("bellSound")]
-        public string BellSound { get; set; }
+        public string? BellSound { get; set; }
 
         [JsonPropertyName("bellStyle")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public BellStyle? BellStyle { get; set; }
 
-        [JsonPropertyName("convertEol")]
-        public bool? ConvertEOL { get; set; }
-
         [JsonPropertyName("cols")]
         public int? Columns { get; set; }
+
+        [JsonPropertyName("convertEol")]
+        public bool? ConvertEOL { get; set; }
 
         [JsonPropertyName("cursorBlink")]
         public bool? CursorBlink { get; set; }
@@ -33,29 +34,41 @@
         [JsonPropertyName("drawBoldTextInBrightColors")]
         public bool? DrawBoldTextInBrightColors { get; set; }
 
-        [JsonPropertyName("fontSize")]
-        public int? FontSize { get; set; }
+        [JsonPropertyName("fastScrollModifier")]
+        public FastScrollModifiers? FastScrollModifier { get; set; }
+
+        [JsonPropertyName("fastScrollSensitivity")]
+        public double? FastScrollSensitivity { get; set; }
 
         [JsonPropertyName("fontFamily")]
-        public string FontFamily { get; set; }
+        public string? FontFamily { get; set; }
+
+        [JsonPropertyName("fontSize")]
+        public double? FontSize { get; set; }
 
         [JsonPropertyName("fontWeight")]
-        public string FontWeight { get; set; }
+        public FontWeights? FontWeight { get; set; }
 
         [JsonPropertyName("fontWeightBold")]
-        public string FontWeightBold { get; set; }
+        public FontWeights? FontWeightBold { get; set; }
 
         [JsonPropertyName("letterSpacing")]
-        public int? LetterSpacing { get; set; }
+        public double? LetterSpacing { get; set; }
 
         [JsonPropertyName("lineHeight")]
-        public int? LineHeight { get; set; }
+        public double? LineHeight { get; set; }
+
+        [JsonPropertyName("logLevel")]
+        public XTermLogLevels? LogLevel { get; set; }
+
+        [JsonPropertyName("macOptionClickForcesSelection")]
+        public bool? MacOptionClickForcesSelection { get; set; }
 
         [JsonPropertyName("macOptionIsMeta")]
         public bool? MacOptionIsMeta { get; set; }
 
-        [JsonPropertyName("macOptionClickForcesSelection")]
-        public bool? MacOptionClickForcesSelection { get; set; }
+        [JsonPropertyName("minimumContrastRatio")]
+        public double? MinimumContrastRatio { get; set; }
 
         [JsonPropertyName("rendererType")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -70,32 +83,116 @@
         [JsonPropertyName("screenReaderMode")]
         public bool? ScreenReaderMode { get; set; }
 
+        [JsonPropertyName("scrollSensitivity")]
+        public double? ScrollSensitivity { get; set; }
+
         [JsonPropertyName("scrollback")]
-        public int? Scrollback { get; set; }
+        public double? Scrollback { get; set; }
 
         [JsonPropertyName("tabStopWidth")]
-        public int? TabStopWidth { get; set; }
+        public double? TabStopWidth { get; set; }
+
+        //TODO:
+        //[JsonPropertyName("theme")]
+        //public object? Theme { get; set; }
+
+        //[JsonPropertyName("windowOptions")]
+        //public object? WindowOptions { get; set; }
 
         [JsonPropertyName("windowsMode")]
         public bool? WindowsMode { get; set; }
+
+        [JsonPropertyName("wordSeparator")]
+        public string? WordSeparator { get; set; }
+    }
+
+    public enum FontWeights
+    {
+        [EnumMember(Value = "bold")]
+        Bold,
+
+        [EnumMember(Value = "100")]
+        W100,
+
+        [EnumMember(Value = "200")]
+        W200,
+
+        [EnumMember(Value = "300")]
+        W300,
+
+        [EnumMember(Value = "400")]
+        W400,
+
+        [EnumMember(Value = "500")]
+        W500,
+
+        [EnumMember(Value = "600")]
+        W600,
+
+        [EnumMember(Value = "700")]
+        W700,
+
+        [EnumMember(Value = "normal")]
+        Normal
+    }
+
+    public enum FastScrollModifiers
+    {
+        [EnumMember(Value = "alt")]
+        Alt,
+
+        [EnumMember(Value = "ctrl")]
+        Ctrl,
+
+        [EnumMember(Value = "shift")]
+        Shift
     }
 
     public enum RendererType
     {
-        canvas,
-        dom
+        [EnumMember(Value = "dom")]
+        Dom,
+
+        [EnumMember(Value = "canvas")]
+        Canvas
     }
 
     public enum BellStyle
     {
-        none,
-        sound
+        [EnumMember(Value = "none")]
+        None,
+
+        [EnumMember(Value = "sound")]
+        Sound
     }
 
     public enum CursorStyle
     {
-        block,
-        underline,
-        bar
+        [EnumMember(Value = "block")]
+        Block,
+
+        [EnumMember(Value = "underline")]
+        Underline,
+
+        [EnumMember(Value = "bar")]
+        Bar
+    }
+
+    public enum XTermLogLevels
+    {
+        [EnumMember(Value = "debug")]
+        Debug,
+
+        [EnumMember(Value = "info")]
+        Info,
+
+        [EnumMember(Value = "warn")]
+        Warn,
+
+        [EnumMember(Value = "error")]
+        Error,
+
+        [EnumMember(Value = "off")]
+        Off
     }
 }

@@ -29,7 +29,7 @@ namespace TypinExamples.Shared.Components
         public EventCallback OnLineFeed { get; set; }
 
         [Parameter]
-        public TerminalOptions Options { get; set; }
+        public TerminalOptions Options { get; set; } = new TerminalOptions();
 
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; set; } = default!;
@@ -38,20 +38,13 @@ namespace TypinExamples.Shared.Components
         {
             if (firstRender)
             {
-                if (Options == null)
-                {
-                    Options = new TerminalOptions();
-                }
-
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
                 //TerminalManager.RegisterTerminal(TerminalId, this);
             }
 
-            await WriteLineAsync("Test");
-
             WebConsole webConsole = new WebConsole(this);
-            await HelloWorld.Program.WebMain(webConsole, new List<string>(), new Dictionary<string, string>());
+            await HelloWorld.Program.WebMain(webConsole, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
         }
 
         public async Task ResetAsync()
