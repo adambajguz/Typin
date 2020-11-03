@@ -44,7 +44,7 @@ namespace TypinExamples.Shared.Components
                 }
 
                 await JSRuntime.InvokeAsync<object>($"{MODULE_NAME}.initialize", Id);
-                Logger.LogDebug("Initialized a new XTerm terminal ({JsReference})", Id);
+                Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
                 //TerminalManager.RegisterTerminal(TerminalId, this);
             }
         }
@@ -118,7 +118,7 @@ namespace TypinExamples.Shared.Components
         {
             IsDisposed = true;
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
-            Logger.LogDebug("Disposed XTerm terminal ({JsReference})", Id);
+            Logger.LogDebug("Disposed XTerm terminal ({Id})", Id);
             //TerminalManager.UnregisterTerminal(TerminalId);
         }
     }
