@@ -8,7 +8,7 @@ xtermInterop.initialize = function (id) {
         this._terminals.set(id, terminal);
 
         terminal.open(document.getElementById(id));
-        terminal.focus();
+        terminal.blur();
     }
 }
 
