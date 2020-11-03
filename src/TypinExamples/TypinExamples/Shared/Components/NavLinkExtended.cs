@@ -33,12 +33,13 @@
     /// A component that renders an anchor tag, automatically toggling its 'active'
     /// class based on whether its 'href' matches the current URI.
     /// </summary>
-    public class NavLinkExtended : ComponentBase, IDisposable
+    public sealed class NavLinkExtended : ComponentBase, IDisposable
     {
         private const string DefaultActiveClass = "active";
 
         private bool _isActive;
         private string? _hrefAbsolute;
+        private Uri? _uri;
         private string? _class;
 
         /// <summary>
@@ -85,22 +86,36 @@
         protected override void OnParametersSet()
         {
             // Update computed state
-            var href = (string?)null;
+            string? href = null;
             if (AdditionalAttributes != null && AdditionalAttributes.TryGetValue("href", out var obj))
             {
                 href = Convert.ToString(obj, CultureInfo.InvariantCulture);
             }
 
-            _hrefAbsolute = href == null ? null : NavigationManger.ToAbsoluteUri(href).AbsoluteUri;
+            _uri = href == null ? null : NavigationManger.ToAbsoluteUri(href);
+            _hrefAbsolute = _uri == null ? null : _uri.AbsoluteUri;
+
             _isActive = ShouldMatch(NavigationManger.Uri);
 
-            _class = (string?)null;
+            _class = null;
             if (AdditionalAttributes != null && AdditionalAttributes.TryGetValue("class", out obj))
             {
                 _class = Convert.ToString(obj, CultureInfo.InvariantCulture);
             }
 
             UpdateCssClass();
+        }
+
+        /// <inheritdoc/>
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(0, "a");
+
+            builder.AddMultipleAttributes(1, AdditionalAttributes);
+            builder.AddAttribute(2, "class", CssClass);
+            builder.AddContent(3, ChildContent);
+
+            builder.CloseElement();
         }
 
         /// <inheritdoc />
@@ -130,7 +145,7 @@
 
         private bool ShouldMatch(string currentUriAbsolute)
         {
-            if (_hrefAbsolute == null)
+            if (_hrefAbsolute == null || _uri == null)
             {
                 return false;
             }
@@ -140,10 +155,11 @@
                 return true;
             }
 
-            //TODO add matches all without query or id
-
-            if (Match == NavLinkExtendedMatch.Prefix
-                && IsStrictlyPrefixWithSeparator(currentUriAbsolute, _hrefAbsolute))
+            if (Match == NavLinkExtendedMatch.Path && IsPathMatch(currentUriAbsolute, _uri))
+            {
+                return true;
+            }
+            else if (Match == NavLinkExtendedMatch.Prefix && IsStrictlyPrefixWithSeparator(currentUriAbsolute, _hrefAbsolute))
             {
                 return true;
             }
@@ -180,18 +196,6 @@
             return false;
         }
 
-        /// <inheritdoc/>
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenElement(0, "a");
-
-            builder.AddMultipleAttributes(1, AdditionalAttributes);
-            builder.AddAttribute(2, "class", CssClass);
-            builder.AddContent(3, ChildContent);
-
-            builder.CloseElement();
-        }
-
         private string? CombineWithSpace(string? str1, string str2)
         {
             return str1 == null ? str2 : $"{str1} {str2}";
@@ -217,6 +221,13 @@
             {
                 return false;
             }
+        }
+
+        private static bool IsPathMatch(string currentUriAbsolute, Uri uri)
+        {
+            var current = new Uri(currentUriAbsolute, UriKind.Absolute);
+
+            return current.AbsolutePath == uri.AbsolutePath;
         }
     }
 }

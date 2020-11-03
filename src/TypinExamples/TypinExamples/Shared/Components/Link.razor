@@ -6,7 +6,7 @@
 }
 else
 {
-    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.All">@(Title ?? string.Empty)</NavLinkExtended>
+    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.Path">@(Title ?? string.Empty)</NavLinkExtended>
 }
 
 @code
