@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Diagnostics;
-    using Microsoft.AspNetCore.Components.Rendering;
+    using System.Globalization;
     using Microsoft.AspNetCore.Components;
+    using Microsoft.AspNetCore.Components.Rendering;
     using Microsoft.AspNetCore.Components.Routing;
 
     /// <summary>

@@ -8,11 +8,8 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.Web;
     using TypinExamples.Compiler;
     using TypinExamples.Services;
-    using TypinExamples.Services.Terminal;
-    using TypinExamples.Shared.Components;
 
     public partial class Editor
     {

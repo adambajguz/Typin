@@ -8,7 +8,7 @@ namespace TypinExamples.Services.Terminal
 
     public class TerminalManager
     {
-        private static Dictionary<string, XTerm> _terminals = new Dictionary<string, XTerm>();
+        private static readonly Dictionary<string, XTerm> _terminals = new Dictionary<string, XTerm>();
 
         public static void RegisterTerminal(string id, XTerm terminal)
         {

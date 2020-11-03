@@ -8,7 +8,7 @@
     //https://medium.com/codingtown/xterm-js-terminal-2b19ccd2a52
     public sealed class XTermService : IDisposable
     {
-        private static Dictionary<string, XTerm> _terminals = new Dictionary<string, XTerm>();
+        private static readonly Dictionary<string, XTerm> _terminals = new Dictionary<string, XTerm>();
 
         private const string MODULE_NAME = "xtermInterop";
 
