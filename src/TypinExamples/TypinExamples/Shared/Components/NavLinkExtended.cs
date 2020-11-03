@@ -59,7 +59,7 @@
         /// <summary>
         /// Gets or sets the computed CSS class based on whether or not the link is active.
         /// </summary>
-        protected string? CssClass { get; set; }
+        private string? CssClass { get; set; }
 
         /// <summary>
         /// Gets or sets the child content of the component.
