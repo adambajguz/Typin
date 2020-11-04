@@ -8,7 +8,11 @@ xtermInterop.initialize = function (id) {
         xtermInterop.terminals.set(id, terminal);
 
         terminal.open(document.getElementById(id));
-        terminal.blur();
+        terminal.write("~$ ");
+
+        terminal.on("data", (data) => {
+            terminal.write(data);
+        });
     }
 }
 
