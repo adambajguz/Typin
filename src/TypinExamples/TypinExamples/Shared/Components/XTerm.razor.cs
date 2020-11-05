@@ -43,6 +43,8 @@ namespace TypinExamples.Shared.Components
                 //TerminalManager.RegisterTerminal(TerminalId, this);
             }
 
+            await Task.Delay(1000);
+
             WebConsole webConsole = new WebConsole(this);
             await HelloWorld.Program.WebMain(webConsole, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
         }
