@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.HelloWorld.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -20,11 +21,8 @@
                 .UseConsole(console)
                 .Build();
 
-            var args = new string[] { };
-            var envVars = new Dictionary<string, string>();
-
             // Act
-            int exitCode = await app.RunAsync(args, envVars);
+            int exitCode = await app.RunAsync(Array.Empty<string>(), new Dictionary<string, string>());
 
             // Assert
             exitCode.Should().Be(0);

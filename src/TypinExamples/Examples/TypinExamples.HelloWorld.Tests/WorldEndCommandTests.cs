@@ -10,17 +10,19 @@
 
     public class WorldEndCommandTests
     {
+        private const string COMMAND_NAME = "world end";
+
         [Theory]
-        [InlineData("world end", "05/11/2020 07:22:16", "--CONFIRM", "false", "-f")]
-        [InlineData("world end", "05/11/2020 07:22:16", "--CONFIRM", "true", "-f")]
-        [InlineData("world end", "05/11/2020 07:22:16", "--CONFIRM", "false")]
-        [InlineData("world end", "05/11/2020 07:22:16", "--CONFIRM", "true")]
-        [InlineData("world end", "05/11/2020", "--CONFIRM", "true")]
-        [InlineData("world end", "05/11/2020", "--CONFIRM", "false")]
-        [InlineData("world end", "05 /11/2020 07:22:16", "--CONFIRM", "true", "-f", "false")]
-        [InlineData("world end", "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "true")]
-        [InlineData("world end", "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "false")]
-        [InlineData("world end", "05 /11/2020 07:22:16", "--CONFIRM", "true", "-f", "true")]
+        [InlineData(COMMAND_NAME, "05/11/2020 07:22:16", "--CONFIRM", "false", "-f")]
+        [InlineData(COMMAND_NAME, "05/11/2020 07:22:16", "--CONFIRM", "true", "-f")]
+        [InlineData(COMMAND_NAME, "05/11/2020 07:22:16", "--CONFIRM", "false")]
+        [InlineData(COMMAND_NAME, "05/11/2020 07:22:16", "--CONFIRM", "true")]
+        [InlineData(COMMAND_NAME, "05/11/2020", "--CONFIRM", "true")]
+        [InlineData(COMMAND_NAME, "05/11/2020", "--CONFIRM", "false")]
+        [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "true", "-f", "false")]
+        [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "true")]
+        [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "false")]
+        [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "true", "-f", "true")]
         public async Task Should_run(params string[] args)
         {
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
