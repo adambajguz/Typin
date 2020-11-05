@@ -44,13 +44,7 @@ jobs:
       run: dotnet test src/Typin/Typin.sln --configuration Release --logger GitHubActions
 
     - name: Upload coverage
-      uses: codecov/codecov-action@v1.0.5
+      uses: codecov/codecov-action@v1.0.14
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: src/Typin/Typin.Tests/bin/Release/Coverage.xml
-
-    - name: Upload coverage (analyzers)
-      uses: codecov/codecov-action@v1.0.5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: src/Typin/Typin.Analyzers.Tests/bin/Release/Coverage.xml
+        directory: src/Typin/
