@@ -40,7 +40,6 @@ namespace TypinExamples.HelloWorld.Tests
     public class UnitTest_WorldCommand
     {
         [Fact]
-        [InlineData]
         public async Task ConcatCommand_Test()
         {
 
