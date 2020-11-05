@@ -47,4 +47,4 @@ jobs:
       uses: codecov/codecov-action@v1.0.14
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        directory: src/Typin/
+        files: ./src/Typin/Typin.Tests/bin/Release/Coverage.xml,./src/Typin/Typin.Analyzers.Tests/bin/Release/Coverage.xml,
