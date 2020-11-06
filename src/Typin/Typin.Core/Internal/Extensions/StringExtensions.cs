@@ -1,6 +1,5 @@
 ﻿namespace Typin.Internal.Extensions
 {
-    using System;
     using System.Collections.Generic;
     using System.Text;
 
@@ -20,30 +19,9 @@
 #endif
         }
 
-        public static string JoinToString<T>(this IEnumerable<T> source, string separator)
-        {
-            return string.Join(separator, source);
-        }
-
         public static StringBuilder AppendIfNotEmpty(this StringBuilder builder, char value)
         {
             return builder.Length > 0 ? builder.Append(value) : builder;
-        }
-
-        public static string ToFormattableString(this object obj,
-                                                 IFormatProvider? formatProvider = null,
-                                                 string? format = null)
-        {
-            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString();
-        }
-
-        public static string PadBoth(this string source, int length, char paddingChar = ' ')
-        {
-            int spaces = length - source.Length;
-            int padLeft = spaces / 2 + source.Length;
-
-            return source.PadLeft(padLeft, paddingChar)
-                         .PadRight(length, paddingChar);
         }
     }
 }

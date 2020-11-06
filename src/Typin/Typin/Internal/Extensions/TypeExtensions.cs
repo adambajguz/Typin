@@ -13,6 +13,13 @@
             return type.GetInterfaces().Contains(interfaceType);
         }
 
+        public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
+        {
+            return property != null && property.PropertyType != typeof(string)
+                       ? property.PropertyType.TryGetEnumerableUnderlyingType()
+                       : null;
+        }
+
         public static Type? TryGetNullableUnderlyingType(this Type type)
         {
             return Nullable.GetUnderlyingType(type);

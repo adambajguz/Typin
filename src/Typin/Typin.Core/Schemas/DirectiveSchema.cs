@@ -44,7 +44,9 @@
             InteractiveModeOnly = interactiveModeOnly;
         }
 
-        internal string GetInternalDisplayString()
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        public override string ToString()
         {
             var buffer = new StringBuilder();
 
@@ -58,13 +60,6 @@
                   .Append(']');
 
             return buffer.ToString();
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            return GetInternalDisplayString();
         }
     }
 }

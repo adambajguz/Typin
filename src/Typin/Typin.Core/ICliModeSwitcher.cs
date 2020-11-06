@@ -1,5 +1,7 @@
 ﻿namespace Typin
 {
+    using System;
+
     /// <summary>
     /// CLI mode switcher.
     /// </summary>
@@ -8,7 +10,7 @@
         /// <summary>
         /// Current CLI mode.
         /// </summary>
-        CliModes Current { get; }
+        ICliMode Current { get; }
 
         /// <summary>
         /// Whether mode change was queued.
@@ -18,11 +20,16 @@
         /// <summary>
         /// Pending CLI mode to apply.
         /// </summary>
-        CliModes? Pending { get; }
+        ICliMode? Pending { get; }
 
         /// <summary>
         /// Queues mode change.
         /// </summary>
-        void QueueSwitching(CliModes mode);
+        bool SwitchMode<ICliMode>();
+
+        /// <summary>
+        /// Queues mode change.
+        /// </summary>
+        bool SwitchMode(Type cliMode);
     }
 }

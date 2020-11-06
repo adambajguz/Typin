@@ -11,14 +11,14 @@
     /// <summary>
     /// End-user-facing exceptions. Avoid internal details and fix recommendations here
     /// </summary>
-    internal static class EndUserExceptions
+    internal static class ArgumentBindingExceptions
     {
         internal static TypinException CannotConvertMultipleValuesToNonScalar(
             CommandParameterSchema parameter,
             IReadOnlyList<string> values)
         {
             var message = $@"
-Parameter {parameter.GetUserFacingDisplayString()} expects a single value, but provided with multiple:
+Parameter {parameter} expects a single value, but provided with multiple:
 {values.Select(v => v.Quote()).JoinToString(' ')}";
 
             return new TypinException(message.Trim());
@@ -29,7 +29,7 @@ Parameter {parameter.GetUserFacingDisplayString()} expects a single value, but p
             IReadOnlyList<string> values)
         {
             var message = $@"
-Option {option.GetUserFacingDisplayString()} expects a single value, but provided with multiple:
+Option {option} expects a single value, but provided with multiple:
 {values.Select(v => v.Quote()).JoinToString(' ')}";
 
             return new TypinException(message.Trim());
@@ -54,7 +54,7 @@ Option {option.GetUserFacingDisplayString()} expects a single value, but provide
             Exception? innerException = null)
         {
             var message = $@"
-Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter.GetUserFacingDisplayString()}.
+Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter}.
 {innerException?.Message ?? "This type is not supported."}";
 
             return new TypinException(message.Trim(), innerException);
@@ -67,7 +67,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter 
             Exception? innerException = null)
         {
             var message = $@"
-Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option.GetUserFacingDisplayString()}.
+Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option}.
 {innerException?.Message ?? "This type is not supported."}";
 
             return new TypinException(message.Trim(), innerException);
@@ -93,7 +93,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
             Type type)
         {
             var message = $@"
-Can't convert provided values to type '{type.Name}' for parameter {parameter.GetUserFacingDisplayString()}:
+Can't convert provided values to type '{type.Name}' for parameter {parameter}:
 {values.Select(v => v.Quote()).JoinToString(' ')}
 
 Target type is not assignable from array and doesn't have a public constructor that takes an array.";
@@ -107,7 +107,7 @@ Target type is not assignable from array and doesn't have a public constructor t
             Type type)
         {
             var message = $@"
-Can't convert provided values to type '{type.Name}' for option {option.GetUserFacingDisplayString()}:
+Can't convert provided values to type '{type.Name}' for option {option}:
 {values.Select(v => v.Quote()).JoinToString(' ')}
 
 Target type is not assignable from array and doesn't have a public constructor that takes an array.";
@@ -131,7 +131,7 @@ Target type is not assignable from array and doesn't have a public constructor t
         internal static TypinException ParameterNotSet(CommandParameterSchema parameter)
         {
             var message = $@"
-Missing value for parameter {parameter.GetUserFacingDisplayString()}.";
+Missing value for parameter {parameter}.";
 
             return new TypinException(message.Trim());
         }
@@ -140,7 +140,7 @@ Missing value for parameter {parameter.GetUserFacingDisplayString()}.";
         {
             var message = $@"
 Missing values for one or more required options:
-{options.Select(o => o.GetUserFacingDisplayString()).JoinToString(Environment.NewLine)}";
+{options.Select(o => o).JoinToString(Environment.NewLine)}";
 
             return new TypinException(message.Trim());
         }

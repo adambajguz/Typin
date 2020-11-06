@@ -10,35 +10,39 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
+    using Typin.Schemas.Resolvers;
 
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public class CliApplication
+    public sealed class CliApplication
     {
-        /// <summary>
-        /// Service provider.
-        /// </summary>
-        protected IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly CliContextFactory _cliContextFactory;
 
+        private readonly ApplicationConfiguration _configuration;
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
+        private readonly ICliCommandExecutor _cliCommandExecutor;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        public CliApplication(IServiceProvider serviceProvider)
+        internal CliApplication(IServiceProvider serviceProvider, CliContextFactory cliContextFactory)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
+            _cliContextFactory = cliContextFactory;
 
+            _configuration = serviceProvider.GetService<ApplicationConfiguration>();
             _metadata = serviceProvider.GetService<ApplicationMetadata>();
             _console = serviceProvider.GetService<IConsole>();
+            _cliCommandExecutor = serviceProvider.GetService<ICliCommandExecutor>();
         }
 
         /// <summary>
         /// Prints the startup message if availble.
         /// </summary>
-        protected void PrintStartupMessage()
+        private void PrintStartupMessage()
         {
             if (_metadata.StartupMessage is null)
                 return;
@@ -135,19 +139,24 @@
                 _console.ResetColor();
                 _console.ForegroundColor = ConsoleColor.Gray;
 
-                CliContext.EnvironmentVariables = environmentVariables;
+                _cliContextFactory.EnvironmentVariables = environmentVariables;
+                _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes).Resolve();
+
+                //TODO: OnStart()
 
                 PrintStartupMessage();
 
                 //TODO: when in commandLineArguments is a string.Empty application crashes
-                int exitCode = await InitializeAppAsync(commandLineArguments);
+                int exitCode = await StartAppAsync(commandLineArguments);
+
+                //TODO: OnStop()
 
                 return exitCode;
             }
             // This may throw pre-execution resolving exceptions which are useful only to the end-user
             catch (TypinException ex)
             {
-                IEnumerable<ICliExceptionHandler> exceptionHandlers = ServiceProvider.GetServices<ICliExceptionHandler>();
+                IEnumerable<ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
                 foreach (ICliExceptionHandler handler in exceptionHandlers)
                 {
                     if (handler.HandleException(ex))
@@ -173,14 +182,9 @@
         }
         #endregion
 
-        #region Execute command
-        /// <summary>
-        /// Initializes app.
-        /// </summary>
-        protected virtual async Task<int> InitializeAppAsync(IReadOnlyList<string> commandLineArguments)
+        private async Task<int> StartAppAsync(IReadOnlyList<string> commandLineArguments)
         {
-            return await ExecuteCommand(commandLineArguments);
+            return await _cliCommandExecutor.ExecuteCommand(commandLineArguments);
         }
-        #endregion
     }
 }

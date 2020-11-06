@@ -18,8 +18,6 @@ namespace Typin
     using Typin.Internal.Pipeline;
     using Typin.Modes;
     using Typin.OptionFallback;
-    using Typin.Schemas;
-    using Typin.Schemas.Resolvers;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
@@ -43,7 +41,7 @@ namespace Typin
         private IConsole? _console;
 
         //Dependency injection
-        private IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
+        private IServiceFactoryAdapter _serviceProviderAdapter = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
         private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
@@ -412,7 +410,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
         {
-            _serviceProviderFactory = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
+            _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
 
             return this;
         }
@@ -556,25 +554,24 @@ namespace Typin
             // Create context
             var _serviceCollection = new ServiceCollection();
 
-            RootSchema root = new RootSchemaResolver(_commandTypes, directivesTypes).Resolve();
-
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
             var configuration = new ApplicationConfiguration(_commandTypes,
                                                              directivesTypes,
                                                              _middlewareTypes,
                                                              _serviceCollection);
 
-            var cliContextFactory = new CliContextFactory(metadata, configuration, root, _console);
+            var cliContextFactory = new CliContextFactory(metadata, configuration, _console);
 
             // Add core services
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
-            _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
+            _serviceCollection.AddSingleton(typeof(IConsole), _console);
             _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
+            _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            return new CliApplication(serviceProvider);
+            return new CliApplication(serviceProvider, cliContextFactory);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
@@ -587,17 +584,16 @@ namespace Typin
             services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
             services.TryAddSingleton<IHelpWriter, DefaultHelpWriter>();
             services.TryAddSingleton<ICliExceptionHandler, DefaultExceptionHandler>();
-            services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
 
-            object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
+            object? containerBuilder = _serviceProviderAdapter.CreateBuilder(services);
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
             {
                 containerAction.ConfigureContainer(containerBuilder);
             }
 
-            IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
+            IServiceProvider? appServices = _serviceProviderAdapter.CreateServiceProvider(containerBuilder);
 
-            return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");
+            return appServices ?? throw new InvalidOperationException($"{nameof(IServiceFactoryAdapter)} returned a null instance of object implementing {nameof(IServiceProvider)}.");
         }
     }
 }

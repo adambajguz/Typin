@@ -12,16 +12,14 @@
     public class CommandOptionSchema : ArgumentSchema
     {
         /// <summary>
-        /// Creates help option.
+        /// Gets a help option schema instance.
         /// </summary>
-        public static CommandOptionSchema HelpOption { get; } =
-            new CommandOptionSchema(null, "help", 'h', null, false, "Shows help text.");
+        public static CommandOptionSchema HelpOption { get; } = new CommandOptionSchema(null, "help", 'h', null, false, "Shows help text.");
 
         /// <summary>
-        /// Creates version option.
+        /// Gets a version option schema instance.
         /// </summary>
-        public static CommandOptionSchema VersionOption { get; } =
-            new CommandOptionSchema(null, "version", null, null, false, "Shows version information.");
+        public static CommandOptionSchema VersionOption { get; } = new CommandOptionSchema(null, "version", null, null, false, "Shows version information.");
 
         /// <summary>
         /// Option name.
@@ -65,8 +63,7 @@
         /// </summary>
         public bool MatchesName(string name)
         {
-            return !string.IsNullOrWhiteSpace(Name) &&
-                   string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
+            return !string.IsNullOrWhiteSpace(Name) && string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -82,11 +79,10 @@
         /// </summary>
         public bool MatchesNameOrShortName(string alias)
         {
-            return MatchesName(alias) ||
-                   alias.Length == 1 && MatchesShortName(alias.Single());
+            return MatchesName(alias) || alias.Length == 1 && MatchesShortName(alias.Single());
         }
 
-        internal string GetUserFacingDisplayString()
+        private string GetUserFacingDisplayString()
         {
             var buffer = new StringBuilder();
 

@@ -10,7 +10,6 @@
     /// <inheritdoc/>
     internal sealed class CliContext : ICliContext
     {
-        private IReadOnlyDictionary<string, string>? environmentVariables;
         private CommandInput? input;
         private InputHistoryProvider? inputHistoryProvider;
         private CommandSchema? commandSchema;
@@ -30,11 +29,7 @@
         public ApplicationConfiguration Configuration { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, string> EnvironmentVariables
-        {
-            get => environmentVariables ?? throw new NullReferenceException("Environment variables are uninitialized in this context.");
-            internal set => environmentVariables = value;
-        }
+        public IReadOnlyDictionary<string, string> EnvironmentVariables { get; }
 
         /// <inheritdoc/>
         public IConsole Console { get; }
@@ -89,12 +84,14 @@
         public CliContext(ApplicationMetadata metadata,
                           ApplicationConfiguration applicationConfiguration,
                           RootSchema rootSchema,
+                          IReadOnlyDictionary<string, string> environmentVariables,
                           IConsole console)
         {
             ModeSwitcher = new CliModeSwitcher(this);
             Metadata = metadata;
             Configuration = applicationConfiguration;
             RootSchema = rootSchema;
+            EnvironmentVariables = environmentVariables;
             Console = console;
         }
 

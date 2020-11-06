@@ -1,10 +1,10 @@
-### v2.2.0 (xx-Oct-2020)
+### v3.0.0 (xx-Oct-2020)
 
+- Added `Typin.Core` library.
 - Added `CliApplication.RunAsync` with string command line.
 - Advanced interactive input is disabled when input is redirected.
 - Renamed `normal mode` to `direct mode`.
-- Added `CliModeSwitcher` class and `CliContext.ModeSwitcher`.
-- Annotated `CliContext.IsInteractiveMode` as obsolete. Use `CliContext.ModeSwitcher.Current` instead.` IsInteractiveMode` will be removed in Typin 3.0.
+- Major API and command execution changes. Added `ICliModeSwitcher`, `ICliMode`, and more. Removed `InteractiveCliApplication`.
 
 ### v2.1.1 (18-Oct-2020)
 
