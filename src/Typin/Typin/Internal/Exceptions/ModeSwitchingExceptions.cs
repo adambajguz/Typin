@@ -8,9 +8,9 @@
     /// </summary>
     internal static class ModeSwitchingExceptions
     {
-        internal static TypinException InvalidModeType(Type type)
+        internal static TypinException InvalidStartupModeType(Type type)
         {
-            var message = $"'{type.FullName}' is not a valid CLI mode type.";
+            var message = $"Cannot start the app. '{type.FullName}' is not a valid CLI mode type.";
 
             return new TypinException(message.Trim());
         }

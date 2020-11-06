@@ -76,7 +76,7 @@
 
         private async Task RunPipelineAsync(IServiceProvider serviceProvider, CliContext cliContext)
         {
-            IReadOnlyCollection<Type> middlewareTypes = cliContext.Configuration.Middlewares;
+            IReadOnlyCollection<Type> middlewareTypes = cliContext.Configuration.MiddlewareTypes;
 
             CancellationToken cancellationToken = cliContext.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;

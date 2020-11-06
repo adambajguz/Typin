@@ -10,6 +10,11 @@
     public class ApplicationConfiguration
     {
         /// <summary>
+        /// Mode types defined in this application.
+        /// </summary>
+        public IReadOnlyList<Type> ModeTypes { get; }
+
+        /// <summary>
         /// Command types defined in this application.
         /// </summary>
         public IReadOnlyList<Type> CommandTypes { get; }
@@ -22,7 +27,7 @@
         /// <summary>
         /// Collection of middlewares in application.
         /// </summary>
-        public IReadOnlyCollection<Type> Middlewares { get; }
+        public IReadOnlyCollection<Type> MiddlewareTypes { get; }
 
         /// <summary>
         /// Startup mode type.
@@ -36,15 +41,17 @@
         /// <summary>
         /// Initializes an instance of <see cref="ApplicationConfiguration"/>.
         /// </summary>
-        public ApplicationConfiguration(IReadOnlyList<Type> commandTypes,
+        public ApplicationConfiguration(IReadOnlyList<Type> modeTypes,
+                                        IReadOnlyList<Type> commandTypes,
                                         IReadOnlyList<Type> customDirectives,
                                         LinkedList<Type> middlewareTypes,
                                         Type startupMode,
                                         IEnumerable<ServiceDescriptor> services)
         {
+            ModeTypes = modeTypes;
             CommandTypes = commandTypes;
             DirectiveTypes = customDirectives;
-            Middlewares = middlewareTypes;
+            MiddlewareTypes = middlewareTypes;
             StartupMode = startupMode;
             Services = services;
         }

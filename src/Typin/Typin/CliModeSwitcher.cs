@@ -15,7 +15,7 @@
         private Type? _pendingModeType = null;
 
         private readonly IServiceProvider _serviceProvider;
-        private readonly ApplicationConfiguration _applicationConfiguration;
+        private readonly ApplicationConfiguration _configuration;
 
         /// <inheritdoc/>
         public ICliMode? Current { get; private set; }
@@ -29,28 +29,32 @@
         /// <summary>
         /// Initializes an instance of <see cref="CliModeSwitcher"/>.
         /// </summary>
-        internal CliModeSwitcher(IServiceProvider serviceProvider, ApplicationConfiguration applicationConfiguration)
+        internal CliModeSwitcher(IServiceProvider serviceProvider, ApplicationConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
-            _applicationConfiguration = applicationConfiguration;
-            Reset();
+            _configuration = configuration;
+
+            if (!ResetMode())
+            {
+                throw ModeSwitchingExceptions.InvalidStartupModeType(_configuration.StartupMode);
+            }
         }
 
         /// <inheritdoc/>
-        public bool Reset()
+        public bool ResetMode()
         {
-            return Switch(_applicationConfiguration.StartupMode);
+            return RequestMode(_configuration.StartupMode);
         }
 
         /// <inheritdoc/>
-        public bool Switch<T>()
+        public bool RequestMode<T>()
             where T : ICliMode
         {
-            return Switch(typeof(T));
+            return RequestMode(typeof(T));
         }
 
         /// <inheritdoc/>
-        public bool Switch(Type cliMode)
+        public bool RequestMode(Type cliMode)
         {
             lock (_lock)
             {
@@ -69,7 +73,7 @@
             return false;
         }
 
-        internal bool PerformSwitching()
+        internal bool TrySwitchModes()
         {
             lock (_lock)
             {

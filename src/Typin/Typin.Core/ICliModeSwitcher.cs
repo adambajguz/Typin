@@ -28,7 +28,7 @@
         /// <returns>
         /// True if mode change was queued, otherwise false.
         /// </returns>
-        bool Reset();
+        bool ResetMode();
 
         /// <summary>
         /// Queues a mode change when mode differs from current and pending.
@@ -36,7 +36,7 @@
         /// <returns>
         /// True if mode change was queued, otherwise false.
         /// </returns>
-        bool Switch<T>() where T : ICliMode;
+        bool RequestMode<T>() where T : ICliMode;
 
         /// <summary>
         /// Queues a mode change when mode differs from current and pending.
@@ -44,6 +44,6 @@
         /// <returns>
         /// True if mode change was queued, otherwise false.
         /// </returns>
-        bool Switch(Type cliMode);
+        bool RequestMode(Type cliMode);
     }
 }

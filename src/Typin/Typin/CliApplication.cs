@@ -10,6 +10,7 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
+    using Typin.Internal.Exceptions;
     using Typin.Schemas.Resolvers;
 
     /// <summary>
@@ -24,6 +25,7 @@
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly CliModeSwitcher _cliModeSwitcher;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
@@ -37,6 +39,7 @@
             _metadata = serviceProvider.GetService<ApplicationMetadata>();
             _console = serviceProvider.GetService<IConsole>();
             _cliCommandExecutor = serviceProvider.GetService<ICliCommandExecutor>();
+            _cliModeSwitcher = (CliModeSwitcher)serviceProvider.GetService<ICliModeSwitcher>();
         }
 
         /// <summary>
@@ -184,7 +187,20 @@
 
         private async Task<int> StartAppAsync(IReadOnlyList<string> commandLineArguments)
         {
-            return await _cliCommandExecutor.ExecuteCommand(commandLineArguments);
+            //Perform startup mode switching.
+            _cliModeSwitcher.TrySwitchModes();
+
+            int exitCode = ExitCodes.Error;
+
+            bool isRunning = true;
+            while (isRunning && !_console.GetCancellationToken().IsCancellationRequested)
+            {
+                exitCode = await _cliModeSwitcher.Current!.Execute(commandLineArguments, _cliCommandExecutor);
+
+                _cliModeSwitcher.TrySwitchModes();
+            }
+
+            return exitCode;
         }
     }
 }

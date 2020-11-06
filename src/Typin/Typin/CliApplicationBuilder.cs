@@ -46,12 +46,8 @@ namespace Typin
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
         //Modes
-        private int _registeredModes;
+        private readonly List<Type> _modeTypes = new List<Type>();
         private Type? _startupMode;
-
-        //Interactive mode settings
-        //private readonly ConsoleColor _promptForeground = ConsoleColor.Blue;
-        //private readonly ConsoleColor _commandForeground = ConsoleColor.Yellow;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -321,13 +317,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder RegisterMode(Type cliMode, bool asStartup = false)
         {
+            _modeTypes.Add(cliMode);
+
             _configureServicesActions.Add(services =>
             {
                 services.TryAddTransient(cliMode);
                 services.AddScoped(typeof(ICliMode), cliMode);
             });
-
-            ++_registeredModes;
 
             if (asStartup)
                 _startupMode = _startupMode is null ? _startupMode : throw new ArgumentException($"", nameof(asStartup));
@@ -526,7 +522,7 @@ namespace Typin
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
 
-            if (_startupMode is null || _registeredModes == 0)
+            if (_startupMode is null || _modeTypes.Count == 0)
                 RegisterMode<DirectMode>(true);
 
             // Format startup message
@@ -554,7 +550,8 @@ namespace Typin
             var _serviceCollection = new ServiceCollection();
 
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
-            var configuration = new ApplicationConfiguration(_commandTypes,
+            var configuration = new ApplicationConfiguration(_modeTypes,
+                                                             _commandTypes,
                                                              _directivesTypes,
                                                              _middlewareTypes,
                                                              _startupMode!,

@@ -1,5 +1,6 @@
 ﻿namespace Typin
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Internal;
 
@@ -11,6 +12,6 @@
         /// <summary>
         /// Executes CLI mode.
         /// </summary>
-        ValueTask Execute(ICliCommandExecutor executor);
+        ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor);
     }
 }

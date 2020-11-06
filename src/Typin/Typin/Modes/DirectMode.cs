@@ -1,5 +1,6 @@
 ﻿namespace Typin.Modes
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Internal;
 
@@ -17,9 +18,9 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask Execute(ICliCommandExecutor executor)
+        public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            throw new System.NotImplementedException();
+            return await executor.ExecuteCommand(commandLineArguments);
         }
     }
 }

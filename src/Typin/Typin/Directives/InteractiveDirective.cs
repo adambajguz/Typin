@@ -32,7 +32,7 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            _modeSwitcher.Switch<InteractiveMode>();
+            _modeSwitcher.RequestMode<InteractiveMode>();
 
             return default;
         }
