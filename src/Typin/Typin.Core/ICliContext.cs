@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Extensions.DependencyInjection;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
@@ -11,14 +10,8 @@
     /// <summary>
     /// Command line application context.
     /// </summary>
-    public interface ICliContext
+    public interface ICliContext : IDisposable
     {
-        /// <summary>
-        /// Whether the application is running in interactive mode.
-        /// </summary>
-        [Obsolete("Use ModeSwitcher.Current instead of IsInteractiveMode. IsInteractiveMode will be removed in Typin 3.0.")]
-        bool IsInteractiveMode { get; }
-
         /// <summary>
         /// CLI mode switcher.
         /// </summary>
@@ -43,18 +36,6 @@
         /// Collection of environment variables.
         /// </summary>
         IReadOnlyDictionary<string, string> EnvironmentVariables { get; }
-
-        /// <summary>
-        /// Service collection.
-        /// </summary>
-        [Obsolete("Use Configuration.Services instead of Services. Services will be removed in Typin 3.0.")]
-        IEnumerable<ServiceDescriptor> Services { get; }
-
-        /// <summary>
-        /// Collection of middlewares in application.
-        /// </summary>
-        [Obsolete("Use Configuration.Middlewares instead of Middlewares. Middlewares will be removed in Typin 3.0.")]
-        IReadOnlyCollection<Type> Middlewares { get; }
 
         /// <summary>
         /// Console instance.

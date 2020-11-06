@@ -4,17 +4,12 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Console;
     using Typin.Exceptions;
-    using Typin.Input;
-    using Typin.Input.Resolvers;
     using Typin.Internal;
-    using Typin.Schemas;
-    using Typin.Schemas.Resolvers;
 
     /// <summary>
     /// Command line application facade.
@@ -26,37 +21,18 @@
         /// </summary>
         protected IServiceProvider ServiceProvider { get; }
 
-        /// <summary>
-        /// Service scope factory.
-        /// </summary>
-        /// <remarks>
-        /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
-        /// </remarks>
-        protected IServiceScopeFactory ServiceScopeFactory { get; }
-
-        /// <summary>
-        /// Cli Context instance.
-        /// </summary>
-        protected CliContext CliContext { get; }
-
         private readonly ApplicationMetadata _metadata;
-        private readonly ApplicationConfiguration _configuration;
         private readonly IConsole _console;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        public CliApplication(IServiceProvider serviceProvider,
-                              CliContext cliContext)
+        public CliApplication(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
-            CliContext = cliContext;
-
-            _metadata = cliContext.Metadata;
-            _configuration = cliContext.Configuration;
-            _console = cliContext.Console;
+            _metadata = serviceProvider.GetService<ApplicationMetadata>();
+            _console = serviceProvider.GetService<IConsole>();
         }
 
         /// <summary>
@@ -163,9 +139,6 @@
 
                 PrintStartupMessage();
 
-                RootSchema root = new RootSchemaResolver(_configuration).Resolve();
-                CliContext.RootSchema = root;
-
                 //TODO: when in commandLineArguments is a string.Empty application crashes
                 int exitCode = await InitializeAppAsync(commandLineArguments);
 
@@ -189,7 +162,7 @@
             // because we still want the IDE to show them to the developer.
             catch (Exception ex) when (!Debugger.IsAttached)
             {
-                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine($"Fatal error occured in {CliContext.Metadata.ExecutableName}."));
+                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
 
                 _console.Error.WriteLine();
                 _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine(ex.ToString()));
@@ -207,38 +180,6 @@
         protected virtual async Task<int> InitializeAppAsync(IReadOnlyList<string> commandLineArguments)
         {
             return await ExecuteCommand(commandLineArguments);
-        }
-
-        /// <summary>
-        /// Executes command.
-        /// </summary>
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-        protected async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
-        {
-            using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
-            {
-                CommandInput input = CommandInputResolver.Parse(commandLineArguments, CliContext.RootSchema.GetCommandNames());
-                CliContext.Input = input;
-
-                try
-                {
-                    // Execute middleware pipeline
-                    await executionScope.RunPipelineAsync();
-                }
-                catch (Exception ex)
-                {
-                    IEnumerable<ICliExceptionHandler> exceptionHandlers = ServiceProvider.GetServices<ICliExceptionHandler>();
-                    foreach (ICliExceptionHandler handler in exceptionHandlers)
-                    {
-                        if (handler.HandleException(ex))
-                            return ExitCodes.FromException(ex);
-                    }
-
-                    throw;
-                }
-
-                return CliContext.ExitCode ??= ExitCodes.Error;
-            }
         }
         #endregion
     }

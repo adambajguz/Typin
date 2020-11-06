@@ -2,27 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Extensions.DependencyInjection;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
-    using Typin.Internal;
     using Typin.Schemas;
 
     /// <inheritdoc/>
-    public class CliContext : ICliContext
+    internal sealed class CliContext : ICliContext
     {
         private IReadOnlyDictionary<string, string>? environmentVariables;
-        private RootSchema? rootSchema;
         private CommandInput? input;
         private InputHistoryProvider? inputHistoryProvider;
         private CommandSchema? commandSchema;
         private ICommand? command;
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
-
-        /// <inheritdoc/>
-        [Obsolete("Use ModeSwitcher.Current instead of IsInteractiveMode. IsInteractiveMode will be removed in Typin 3.0.")]
-        public bool IsInteractiveMode => ModeSwitcher.Current == CliModes.Interactive;
 
         /// <inheritdoc/>
         public ICliModeSwitcher ModeSwitcher { get; }
@@ -44,22 +37,10 @@
         }
 
         /// <inheritdoc/>
-        [Obsolete("Use Configuration.Services instead of Services. Services will be removed in Typin 3.0.")]
-        public IEnumerable<ServiceDescriptor> Services => Configuration.Services;
-
-        /// <inheritdoc/>
-        [Obsolete("Use Configuration.Middlewares instead of Middlewares. Middlewares will be removed in Typin 3.0.")]
-        public IReadOnlyCollection<Type> Middlewares => Configuration.Middlewares;
-
-        /// <inheritdoc/>
         public IConsole Console { get; }
 
         /// <inheritdoc/>
-        public RootSchema RootSchema
-        {
-            get => rootSchema ?? throw new NullReferenceException("Root schema is uninitialized in this context.");
-            internal set => rootSchema = value;
-        }
+        public RootSchema RootSchema { get; set; }
 
         /// <inheritdoc/>
         public CommandInput Input
@@ -76,10 +57,7 @@
         }
 
         /// <inheritdoc/>
-        public IInputHistoryProvider InputHistory
-        {
-            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
-        }
+        public IInputHistoryProvider InputHistory => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
 
         /// <inheritdoc/>
         public CommandSchema CommandSchema
@@ -110,17 +88,24 @@
         /// </summary>
         public CliContext(ApplicationMetadata metadata,
                           ApplicationConfiguration applicationConfiguration,
+                          RootSchema rootSchema,
                           IConsole console)
         {
             ModeSwitcher = new CliModeSwitcher(this);
             Metadata = metadata;
             Configuration = applicationConfiguration;
+            RootSchema = rootSchema;
             Console = console;
         }
 
-        internal CliExecutionScope BeginExecutionScope(IServiceScopeFactory serviceScopeFactory)
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            return new CliExecutionScope(this, serviceScopeFactory);
+            Input = default!;
+            Command = default!;
+            CommandDefaultValues = default!;
+            CommandSchema = default!;
+            ExitCode = null;
         }
     }
 }

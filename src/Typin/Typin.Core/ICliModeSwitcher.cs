@@ -1,5 +1,8 @@
 ﻿namespace Typin
 {
+    /// <summary>
+    /// CLI mode switcher.
+    /// </summary>
     public interface ICliModeSwitcher
     {
         /// <summary>

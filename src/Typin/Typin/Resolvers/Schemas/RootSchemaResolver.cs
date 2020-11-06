@@ -20,10 +20,10 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchemaResolver"/>.
         /// </summary>
-        public RootSchemaResolver(ApplicationConfiguration configuration)
+        public RootSchemaResolver(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes)
         {
-            CommandTypes = configuration.CommandTypes;
-            DirectiveTypes = configuration.DirectiveTypes;
+            CommandTypes = commandTypes;
+            DirectiveTypes = directiveTypes;
         }
 
         /// <summary>

@@ -5,9 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Text;
-    using Typin.Attributes;
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;

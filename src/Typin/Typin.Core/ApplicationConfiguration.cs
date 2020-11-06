@@ -22,12 +22,7 @@
         /// <summary>
         /// Collection of middlewares in application.
         /// </summary>
-        public IReadOnlyCollection<Type> Middlewares => MiddlewareTypes;
-
-        /// <summary>
-        /// Collection of middlewares in application.
-        /// </summary>
-        internal LinkedList<Type> MiddlewareTypes { get; }
+        public IReadOnlyCollection<Type> Middlewares { get; }
 
         /// <summary>
         /// Service collection.
@@ -44,7 +39,7 @@
         {
             CommandTypes = commandTypes;
             DirectiveTypes = customDirectives;
-            MiddlewareTypes = middlewareTypes;
+            Middlewares = middlewareTypes;
             Services = services;
         }
     }

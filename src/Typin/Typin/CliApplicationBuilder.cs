@@ -12,11 +12,14 @@ namespace Typin
     using Typin.Directives;
     using Typin.Exceptions;
     using Typin.HelpWriter;
+    using Typin.Internal;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.Internal.Pipeline;
+    using Typin.Modes;
     using Typin.OptionFallback;
     using Typin.Schemas;
+    using Typin.Schemas.Resolvers;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
@@ -27,7 +30,7 @@ namespace Typin
 
         //Directives and commands settings
         private readonly List<Type> _commandTypes = new List<Type>();
-        private readonly List<Type> _customDirectives = new List<Type>();
+        private readonly List<Type> directivesTypes = new List<Type>();
 
         //Metadata settings
         private string? _title;
@@ -44,13 +47,12 @@ namespace Typin
         private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
+        //Modes
+        private int _registeredModes;
+
         //Interactive mode settings
-        private CliInteractiveModeConfiguration? _interactiveModeConfiguration;
-        private bool _useInteractiveMode = false;
-        private bool _useAdvancedInput = false;
-        private ConsoleColor _promptForeground = ConsoleColor.Blue;
-        private ConsoleColor _commandForeground = ConsoleColor.Yellow;
-        private HashSet<ShortcutDefinition>? _userDefinedShortcuts;
+        private readonly ConsoleColor _promptForeground = ConsoleColor.Blue;
+        private readonly ConsoleColor _commandForeground = ConsoleColor.Yellow;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -69,7 +71,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            _customDirectives.Add(directiveType);
+            directivesTypes.Add(directiveType);
 
             _configureServicesActions.Add(services =>
             {
@@ -312,28 +314,34 @@ namespace Typin
         }
         #endregion
 
+        //TODO add mode configuration
+        #region Modes
+        /// <summary>
+        /// Registers a CLI mode.
+        /// </summary>
+        public CliApplicationBuilder RegisterMode(Type cliMode)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.AddScoped(typeof(ICliMode), cliMode);
+            });
+
+            ++_registeredModes;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Registers a CLI mode.
+        /// </summary>
+        public CliApplicationBuilder RegisterMode<T>()
+            where T : ICliMode
+        {
+            return AddDirective(typeof(T));
+        }
+        #endregion
+
         #region Interactive Mode
-        /// <summary>
-        /// Configures the interactive mode.
-        /// </summary>
-        public CliApplicationBuilder ConfigureInteractiveMode(Action<CliInteractiveModeConfiguration> action)
-        {
-            _interactiveModeConfiguration = new CliInteractiveModeConfiguration();
-            action(_interactiveModeConfiguration);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures the interactive mode.
-        /// </summary>
-        public CliApplicationBuilder ConfigureInteractiveMode(CliInteractiveModeConfiguration configuration)
-        {
-            _interactiveModeConfiguration = configuration;
-
-            return this;
-        }
-
         /// <summary>
         /// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
         /// By default this adds [default], [>], [.], and [..] and advanced command input.
@@ -346,9 +354,6 @@ namespace Typin
                                                         bool useAdvancedInput = true,
                                                         HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
         {
-            _useInteractiveMode = true;
-            _useAdvancedInput = useAdvancedInput;
-
             AddDirective<InteractiveDirective>();
             AddDirective<DefaultDirective>();
 
@@ -358,30 +363,6 @@ namespace Typin
                 AddDirective<ScopeResetDirective>();
                 AddDirective<ScopeUpDirective>();
             }
-
-            _userDefinedShortcuts = userDefinedShortcuts;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures the command prompt foreground color in interactive mode.
-        /// </summary>
-        [Obsolete("Use ConfigureInteractiveMode instead of UsePromptForeground. UsePromptForeground will be removed in Typin 3.0.")]
-        public CliApplicationBuilder UsePromptForeground(ConsoleColor color)
-        {
-            _promptForeground = color;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures the command input foreground color in interactive mode.
-        /// </summary>
-        [Obsolete("Use ConfigureInteractiveMode instead of UseCommandInputForeground. UseCommandInputForeground will be removed in Typin 3.0.")]
-        public CliApplicationBuilder UseCommandInputForeground(ConsoleColor color)
-        {
-            _commandForeground = color;
 
             return this;
         }
@@ -527,6 +508,7 @@ namespace Typin
         /// <summary>
         /// Creates an instance of <see cref="CliApplication"/> or <see cref="InteractiveCliApplication"/> using configured parameters.
         /// Default values are used in place of parameters that were not specified.
+        /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </summary>
         public CliApplication Build()
         {
@@ -540,8 +522,9 @@ namespace Typin
             _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
-            _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
-            _interactiveModeConfiguration ??= new CliInteractiveModeConfiguration();
+
+            if (_registeredModes == 0)
+                RegisterMode<DirectMode>();
 
             // Format startup message
             if (_startupMessage != null)
@@ -572,33 +555,26 @@ namespace Typin
 
             // Create context
             var _serviceCollection = new ServiceCollection();
+
+            RootSchema root = new RootSchemaResolver(_commandTypes, directivesTypes).Resolve();
+
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
             var configuration = new ApplicationConfiguration(_commandTypes,
-                                                             _customDirectives,
+                                                             directivesTypes,
                                                              _middlewareTypes,
                                                              _serviceCollection);
 
-            var cliContext = new CliContext(metadata, configuration, _console);
+            var cliContextFactory = new CliContextFactory(metadata, configuration, root, _console);
 
             // Add core services
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
             _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
-            _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
+            _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            // Create application instance
-            if (_useInteractiveMode)
-            {
-                return new InteractiveCliApplication(serviceProvider,
-                                                     cliContext,
-                                                     _promptForeground,
-                                                     _commandForeground,
-                                                     _userDefinedShortcuts);
-            }
-
-            return new CliApplication(serviceProvider, cliContext);
+            return new CliApplication(serviceProvider);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
@@ -611,6 +587,7 @@ namespace Typin
             services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
             services.TryAddSingleton<IHelpWriter, DefaultHelpWriter>();
             services.TryAddSingleton<ICliExceptionHandler, DefaultExceptionHandler>();
+            services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
 
             object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
