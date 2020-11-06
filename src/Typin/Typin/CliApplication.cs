@@ -198,6 +198,7 @@
                 exitCode = await _cliModeSwitcher.Current!.Execute(commandLineArguments, _cliCommandExecutor);
 
                 _cliModeSwitcher.TrySwitchModes();
+                isRunning = false;
             }
 
             return exitCode;
