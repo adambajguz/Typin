@@ -57,10 +57,10 @@
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw EndUserTypinExceptions.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw EndUserExceptions.UnknownDirectiveName(directiveInput);
 
                 if (!isInteractiveMode && directive.InteractiveModeOnly)
-                    throw EndUserTypinExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
+                    throw EndUserExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);

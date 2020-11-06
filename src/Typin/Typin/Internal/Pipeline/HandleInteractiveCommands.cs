@@ -31,16 +31,18 @@
             CommandSchema commandSchema = context.CommandSchema;
 
             // Handle commands not supported in direct mode
-            if (!_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly)
+            //if (!_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly)
+            if (commandSchema.InteractiveModeOnly)
             {
-                throw EndUserTypinExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
+                throw EndUserExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
             }
 
             // Handle commands supported only in interactive mode when interactive mode was not started
-            if (_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly &&
+            //if (_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly &&
+            if (commandSchema.InteractiveModeOnly &&
                 !(context.ModeSwitcher.Current == CliModes.Interactive || input.HasDirective(BuiltInDirectives.Interactive)))
             {
-                throw EndUserTypinExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
+                throw EndUserExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
             }
 
             return null;

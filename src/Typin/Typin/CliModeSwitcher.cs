@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides methods to switch and get current mode.
     /// </summary>
-    public sealed class CliModeSwitcher
+    public sealed class CliModeSwitcher : ICliModeSwitcher
     {
         private readonly object _lock = new object();
         private readonly CliContext _cliContext;
@@ -51,7 +51,8 @@
             {
                 if (Pending is CliModes cm)
                 {
-                    if (!_cliContext.Configuration.IsInteractiveModeAllowed && cm.HasFlag(CliModes.Interactive))
+                    //if (!_cliContext.Configuration.IsInteractiveModeAllowed && cm.HasFlag(CliModes.Interactive))
+                    if (cm.HasFlag(CliModes.Interactive))
                         Current = cm & ~CliModes.Interactive;
                     else
                         Current = cm;

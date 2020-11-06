@@ -28,7 +28,7 @@
 
             // Handle interactive directive not supported in application
             if (!_configuration.IsInteractiveModeAllowed && input.HasDirective(BuiltInDirectives.Interactive))
-                throw EndUserTypinExceptions.InteractiveModeNotSupported();
+                throw EndUserExceptions.InteractiveModeNotSupported();
 
             return null;
         }

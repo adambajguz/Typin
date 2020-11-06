@@ -106,7 +106,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(DirectiveSchema.IsDirectiveType))
+            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(SchemasHelpers.IsDirectiveType))
                 AddDirective(directiveType);
 
             return this;
@@ -177,7 +177,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (Type commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(SchemasHelpers.IsCommandType))
                 AddCommand(commandType);
 
             return this;
@@ -576,10 +576,7 @@ namespace Typin
             var configuration = new ApplicationConfiguration(_commandTypes,
                                                              _customDirectives,
                                                              _middlewareTypes,
-                                                             _serviceCollection,
-                                                             _useInteractiveMode,
-                                                             _useAdvancedInput,
-                                                             _interactiveModeConfiguration);
+                                                             _serviceCollection);
 
             var cliContext = new CliContext(metadata, configuration, _console);
 

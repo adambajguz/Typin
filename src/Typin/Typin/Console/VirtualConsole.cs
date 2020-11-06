@@ -5,7 +5,7 @@
     using System.IO;
     using System.Threading;
     using Typin.Extensions;
-    using Typin.Utilities.CliFx.Utilities;
+    using Typin.Utilities;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that routes all data to preconfigured streams.

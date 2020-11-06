@@ -25,7 +25,7 @@
         public bool IsInteractiveMode => ModeSwitcher.Current == CliModes.Interactive;
 
         /// <inheritdoc/>
-        public CliModeSwitcher ModeSwitcher { get; }
+        public ICliModeSwitcher ModeSwitcher { get; }
 
         /// <inheritdoc/>
         public string Scope { get; set; } = string.Empty;
@@ -69,10 +69,16 @@
         }
 
         /// <inheritdoc/>
-        public InputHistoryProvider InputHistory
+        internal InputHistoryProvider InternalInputHistory
         {
             get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
-            internal set => inputHistoryProvider = value;
+            set => inputHistoryProvider = value;
+        }
+
+        /// <inheritdoc/>
+        public IInputHistoryProvider InputHistory
+        {
+            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
         }
 
         /// <inheritdoc/>

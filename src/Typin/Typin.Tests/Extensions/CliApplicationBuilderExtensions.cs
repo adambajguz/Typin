@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Console;
-    using Typin.Utilities.CliFx.Utilities;
+    using Typin.Utilities;
     using Xunit.Abstractions;
 
     //TODO: maybe this should be a separate lib like Typin.Testing

@@ -12,7 +12,7 @@
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Startups;
-    using Typin.Utilities.CliFx.Utilities;
+    using Typin.Utilities;
     using Xunit;
 
     public class ApplicationBuilderTests

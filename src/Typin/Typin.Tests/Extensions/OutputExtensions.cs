@@ -1,7 +1,7 @@
 ﻿namespace Typin.Tests.Extensions
 {
     using Typin.Console;
-    using Typin.Utilities.CliFx.Utilities;
+    using Typin.Utilities;
     using Xunit.Abstractions;
 
     internal static class OutputExtensions

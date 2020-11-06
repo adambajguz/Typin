@@ -33,7 +33,8 @@
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
 
-            if (cliContext.Configuration.IsAdvancedInputAllowed && !cliContext.Console.IsInputRedirected)
+            //if (cliContext.Configuration.IsAdvancedInputAllowed && !cliContext.Console.IsInputRedirected)
+            if (!cliContext.Console.IsInputRedirected)
             {
                 _autoCompleteInput = new AutoCompleteInput(cliContext.Console, userDefinedShortcut)
                 {
@@ -41,7 +42,7 @@
                 };
 
                 _autoCompleteInput.History.IsEnabled = true;
-                cliContext.InputHistory = _autoCompleteInput.History;
+                cliContext.InternalInputHistory = _autoCompleteInput.History;
             }
         }
 

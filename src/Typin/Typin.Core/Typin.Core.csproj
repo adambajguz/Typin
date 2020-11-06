@@ -22,6 +22,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CopyAnalyzerToPackage</TargetsForTfmSpecificContentInPackage>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <RootNamespace>Typin</RootNamespace>
   </PropertyGroup>
 
   <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->
@@ -48,10 +49,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
   </ItemGroup>
 
 </Project>
