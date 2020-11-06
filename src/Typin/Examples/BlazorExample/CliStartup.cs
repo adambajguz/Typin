@@ -4,6 +4,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
+    using Typin.Modes;
 
     public class CliStartup : ICliStartup
     {
@@ -18,7 +19,8 @@
         {
             app.AddCommandsFromThisAssembly()
                .AddDirective<DebugDirective>()
-               .UseInteractiveMode(useAdvancedInput: false);
+               .RegisterMode<DirectMode>()
+               .RegisterMode<InteractiveMode>();
         }
     }
 }

@@ -3,14 +3,19 @@
     using System;
 
     /// <summary>
-    /// CLI mode switcher.
+    /// Provides methods to switch and get current CLI mode.
     /// </summary>
     public interface ICliModeSwitcher
     {
         /// <summary>
-        /// Current CLI mode.
+        /// Current mode or null if startup mode was not initialized.
         /// </summary>
-        ICliMode Current { get; }
+        ICliMode? Current { get; }
+
+        /// <summary>
+        /// Mode to switch to or null if nothing needs to be changes.
+        /// </summary>
+        ICliMode? Pending { get; }
 
         /// <summary>
         /// Whether mode change was queued.
@@ -18,18 +23,27 @@
         bool IsPending { get; }
 
         /// <summary>
-        /// Pending CLI mode to apply.
+        /// Queues a mode reset to startup mode when mode differs from current and pending.
         /// </summary>
-        ICliMode? Pending { get; }
+        /// <returns>
+        /// True if mode change was queued, otherwise false.
+        /// </returns>
+        bool Reset();
 
         /// <summary>
-        /// Queues mode change.
+        /// Queues a mode change when mode differs from current and pending.
         /// </summary>
-        bool SwitchMode<ICliMode>();
+        /// <returns>
+        /// True if mode change was queued, otherwise false.
+        /// </returns>
+        bool Switch<T>() where T : ICliMode;
 
         /// <summary>
-        /// Queues mode change.
+        /// Queues a mode change when mode differs from current and pending.
         /// </summary>
-        bool SwitchMode(Type cliMode);
+        /// <returns>
+        /// True if mode change was queued, otherwise false.
+        /// </returns>
+        bool Switch(Type cliMode);
     }
 }

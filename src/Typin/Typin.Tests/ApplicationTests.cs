@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Invalid;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
@@ -32,7 +33,10 @@
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
 
             if (interactive)
-                builder.UseInteractiveMode();
+            {
+                builder.RegisterMode<DirectMode>()
+                       .RegisterMode<InteractiveMode>();
+            }
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments);
@@ -60,7 +64,10 @@
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
 
             if (interactive)
-                builder.UseInteractiveMode();
+            {
+                builder.RegisterMode<DirectMode>()
+                       .RegisterMode<InteractiveMode>();
+            }
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, isInputRedirected: interactive);
@@ -94,7 +101,8 @@
             // Arrange
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
                                                      .AddCommand<NamedInteractiveOnlyCommand>()
-                                                     .UseInteractiveMode();
+                                                     .RegisterMode<DirectMode>()
+                                                     .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);

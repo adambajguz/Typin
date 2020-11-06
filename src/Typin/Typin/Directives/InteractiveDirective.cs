@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode (using the [interactive] directive), it is possible to execute multiple commands in one processes.
@@ -18,20 +19,20 @@
         /// <inheritdoc/>
         public bool ContinueExecution => true;
 
-        private readonly ICliContext _cliContext;
+        private readonly ICliModeSwitcher _modeSwitcher;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveDirective"/>.
         /// </summary>
-        public InteractiveDirective(ICliContext cliContext)
+        public InteractiveDirective(ICliModeSwitcher cliContext)
         {
-            _cliContext = cliContext;
+            _modeSwitcher = cliContext;
         }
 
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            _cliContext.ModeSwitcher.QueueSwitching(CliModes.Interactive);
+            _modeSwitcher.Switch<InteractiveMode>();
 
             return default;
         }

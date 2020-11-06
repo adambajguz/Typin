@@ -17,9 +17,6 @@
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
 
         /// <inheritdoc/>
-        public ICliModeSwitcher ModeSwitcher { get; }
-
-        /// <inheritdoc/>
         public string Scope { get; set; } = string.Empty;
 
         /// <inheritdoc/>
@@ -40,38 +37,38 @@
         /// <inheritdoc/>
         public CommandInput Input
         {
-            get => input ?? throw new NullReferenceException("Input is uninitialized in this context.");
+            get => input ?? throw new NullReferenceException($"{nameof(Input)} is uninitialized in this context.");
             internal set => input = value;
         }
 
         /// <inheritdoc/>
         internal InputHistoryProvider InternalInputHistory
         {
-            get => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
+            get => inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InternalInputHistory)} is either uninitialized in this context or not available due to direct mode.");
             set => inputHistoryProvider = value;
         }
 
         /// <inheritdoc/>
-        public IInputHistoryProvider InputHistory => inputHistoryProvider ?? throw new NullReferenceException("Input history is either uninitialized in this context or not available due to direct mode.");
+        public IInputHistoryProvider InputHistory => inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InputHistory)} is either uninitialized in this context or not available due to direct mode.");
 
         /// <inheritdoc/>
         public CommandSchema CommandSchema
         {
-            get => commandSchema ?? throw new NullReferenceException("Current command schema is uninitialized in this context.");
+            get => commandSchema ?? throw new NullReferenceException($"{nameof(CommandSchema)} is uninitialized in this context.");
             internal set => commandSchema = value;
         }
 
         /// <inheritdoc/>
         public ICommand Command
         {
-            get => command ?? throw new NullReferenceException("Current command is uninitialized in this context.");
+            get => command ?? throw new NullReferenceException($"{nameof(Command)} is uninitialized in this context.");
             internal set => command = value;
         }
 
         /// <inheritdoc/>
         public IReadOnlyDictionary<ArgumentSchema, object?> CommandDefaultValues
         {
-            get => commandDefaultValues ?? throw new NullReferenceException("Current command default values is uninitialized in this context.");
+            get => commandDefaultValues ?? throw new NullReferenceException($"{nameof(CommandDefaultValues)} is uninitialized in this context.");
             internal set => commandDefaultValues = value;
         }
 
@@ -87,7 +84,6 @@
                           IReadOnlyDictionary<string, string> environmentVariables,
                           IConsole console)
         {
-            ModeSwitcher = new CliModeSwitcher(this);
             Metadata = metadata;
             Configuration = applicationConfiguration;
             RootSchema = rootSchema;
@@ -98,10 +94,10 @@
         /// <inheritdoc/>
         public void Dispose()
         {
-            Input = default!;
-            Command = default!;
-            CommandDefaultValues = default!;
-            CommandSchema = default!;
+            input = default!;
+            command = default!;
+            commandSchema = default!;
+            commandDefaultValues = default!;
             ExitCode = null;
         }
     }

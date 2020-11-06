@@ -13,11 +13,6 @@
     public interface ICliContext : IDisposable
     {
         /// <summary>
-        /// CLI mode switcher.
-        /// </summary>
-        ICliModeSwitcher ModeSwitcher { get; }
-
-        /// <summary>
         /// Current command scope in interactive mode.
         /// </summary>
         string Scope { get; set; }

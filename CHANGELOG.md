@@ -4,6 +4,7 @@
 - Added `CliApplication.RunAsync` with string command line.
 - Advanced interactive input is disabled when input is redirected.
 - Renamed `normal mode` to `direct mode`.
+- It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes. Added `ICliModeSwitcher`, `ICliMode`, and more. Removed `InteractiveCliApplication`.
 
 ### v2.1.1 (18-Oct-2020)

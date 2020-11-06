@@ -51,16 +51,16 @@
 
         private async Task<bool> ProcessDefinedDirectives(ICliContext context)
         {
-            bool isInteractiveMode = context.ModeSwitcher.Current == CliModes.Interactive;
+            bool isInteractiveMode = false;//context.ModeSwitcher.Current == CliModes.Interactive;
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw EndUserExceptions.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw InteractiveModeEndUserExceptions.UnknownDirectiveName(directiveInput);
 
                 if (!isInteractiveMode && directive.InteractiveModeOnly)
-                    throw EndUserExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
+                    throw InteractiveModeEndUserExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);

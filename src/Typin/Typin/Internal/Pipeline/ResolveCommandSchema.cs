@@ -31,11 +31,12 @@
             CommandSchema command = root.TryFindCommand(input.CommandName, hasDefaultDirective) ?? StubDefaultCommand.Schema;
 
             // Forbid to execute real default command in interactive mode without [!] directive.
-            if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
-                context.ModeSwitcher.Current == CliModes.Interactive && command.IsDefault && !hasDefaultDirective)
-            {
-                command = StubDefaultCommand.Schema;
-            }
+            //if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
+            //    context.ModeSwitcher.Current == CliModes.Interactive &&
+            //    command.IsDefault && !hasDefaultDirective)
+            //{
+            //    command = StubDefaultCommand.Schema;
+            //}
 
             // Update CommandSchema
             context.CommandSchema = command;

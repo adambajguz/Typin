@@ -1,63 +1,91 @@
 ﻿namespace Typin
 {
+    using System;
+    using Microsoft.Extensions.DependencyInjection;
+    using Typin.Internal.Exceptions;
+
     /// <summary>
-    /// Provides methods to switch and get current mode.
+    /// Provides an implmentation of <see cref="ICliModeSwitcher"/> methods to switch and get current mode.
     /// </summary>
-    public sealed class CliModeSwitcher : ICliModeSwitcher
+    internal sealed class CliModeSwitcher : ICliModeSwitcher
     {
         private readonly object _lock = new object();
-        private readonly CliContext _cliContext;
 
-        /// <summary>
-        /// Current mode.
-        /// </summary>
-        public CliModes Current { get; private set; }
+        private Type? _currentModeType = null;
+        private Type? _pendingModeType = null;
 
-        /// <summary>
-        /// Mode to switch to or null if nothing needs to be changes.
-        /// </summary>
-        public CliModes? Pending { get; private set; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ApplicationConfiguration _applicationConfiguration;
 
-        /// <summary>
-        /// Whether mode switch was queued.
-        /// </summary>
+        /// <inheritdoc/>
+        public ICliMode? Current { get; private set; }
+
+        /// <inheritdoc/>
+        public ICliMode? Pending { get; private set; }
+
+        /// <inheritdoc/>
         public bool IsPending => Pending is null;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliModeSwitcher"/>.
         /// </summary>
-        internal CliModeSwitcher(CliContext cliContext)
+        internal CliModeSwitcher(IServiceProvider serviceProvider, ApplicationConfiguration applicationConfiguration)
         {
-            _cliContext = cliContext;
+            _serviceProvider = serviceProvider;
+            _applicationConfiguration = applicationConfiguration;
+            Reset();
         }
 
-        /// <summary>
-        /// Queues mode switch when mode differs from current.
-        /// </summary>
-        public void QueueSwitching(CliModes mode)
+        /// <inheritdoc/>
+        public bool Reset()
+        {
+            return Switch(_applicationConfiguration.StartupMode);
+        }
+
+        /// <inheritdoc/>
+        public bool Switch<T>()
+            where T : ICliMode
+        {
+            return Switch(typeof(T));
+        }
+
+        /// <inheritdoc/>
+        public bool Switch(Type cliMode)
         {
             lock (_lock)
             {
-                if (mode != Current)
+                if (_currentModeType != cliMode && (IsPending || _pendingModeType != cliMode))
                 {
-                    Pending = mode;
+                    if (_serviceProvider.GetRequiredService(cliMode) is ICliMode cm)
+                    {
+                        _pendingModeType = cliMode;
+                        Pending = cm;
+
+                        return true;
+                    }
                 }
             }
+
+            return false;
         }
 
-        internal void Switch()
+        internal bool PerformSwitching()
         {
             lock (_lock)
             {
-                if (Pending is CliModes cm)
+                if (IsPending)
                 {
-                    //if (!_cliContext.Configuration.IsInteractiveModeAllowed && cm.HasFlag(CliModes.Interactive))
-                    if (cm.HasFlag(CliModes.Interactive))
-                        Current = cm & ~CliModes.Interactive;
-                    else
-                        Current = cm;
+                    _currentModeType = _pendingModeType;
+                    _pendingModeType = null;
+
+                    Current = Pending;
+                    Pending = null;
+
+                    return true;
                 }
             }
+
+            return false;
         }
     }
 }

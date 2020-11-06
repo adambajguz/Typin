@@ -28,7 +28,7 @@ namespace Typin
 
         //Directives and commands settings
         private readonly List<Type> _commandTypes = new List<Type>();
-        private readonly List<Type> directivesTypes = new List<Type>();
+        private readonly List<Type> _directivesTypes = new List<Type>();
 
         //Metadata settings
         private string? _title;
@@ -47,10 +47,11 @@ namespace Typin
 
         //Modes
         private int _registeredModes;
+        private Type? _startupMode;
 
         //Interactive mode settings
-        private readonly ConsoleColor _promptForeground = ConsoleColor.Blue;
-        private readonly ConsoleColor _commandForeground = ConsoleColor.Yellow;
+        //private readonly ConsoleColor _promptForeground = ConsoleColor.Blue;
+        //private readonly ConsoleColor _commandForeground = ConsoleColor.Yellow;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
@@ -69,7 +70,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            directivesTypes.Add(directiveType);
+            _directivesTypes.Add(directiveType);
 
             _configureServicesActions.Add(services =>
             {
@@ -315,56 +316,60 @@ namespace Typin
         //TODO add mode configuration
         #region Modes
         /// <summary>
-        /// Registers a CLI mode.
+        /// Registers a CLI mode. Only one mode can be registered as startup mode.
+        /// If no mode was registered or non of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
         /// </summary>
-        public CliApplicationBuilder RegisterMode(Type cliMode)
+        public CliApplicationBuilder RegisterMode(Type cliMode, bool asStartup = false)
         {
             _configureServicesActions.Add(services =>
             {
+                services.TryAddTransient(cliMode);
                 services.AddScoped(typeof(ICliMode), cliMode);
             });
 
             ++_registeredModes;
 
+            if (asStartup)
+                _startupMode = _startupMode is null ? _startupMode : throw new ArgumentException($"", nameof(asStartup));
+
             return this;
         }
 
         /// <summary>
-        /// Registers a CLI mode.
+        /// Registers a CLI mode. Only one mode can be registered as startup mode.
+        /// If no mode was registered or non of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
         /// </summary>
-        public CliApplicationBuilder RegisterMode<T>()
+        public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
             where T : ICliMode
         {
-            return AddDirective(typeof(T));
+            return RegisterMode(typeof(T), asStartup);
         }
         #endregion
 
-        #region Interactive Mode
-        /// <summary>
-        /// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
-        /// By default this adds [default], [>], [.], and [..] and advanced command input.
-        ///
-        /// If you wish to add only [default] directive, set addScopeDirectives to false.
-        /// If you wish to disable history and auto completion set useAdvancedInput to false.
-        /// </summary>
-        [Obsolete("Use ConfigureInteractiveMode instead of UseInteractiveMode. UseInteractiveMode will be removed in Typin 3.0.")]
-        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
-                                                        bool useAdvancedInput = true,
-                                                        HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
-        {
-            AddDirective<InteractiveDirective>();
-            AddDirective<DefaultDirective>();
+        ///// <summary>
+        ///// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
+        ///// By default this adds [default], [>], [.], and [..] and advanced command input.
+        /////
+        ///// If you wish to add only [default] directive, set addScopeDirectives to false.
+        ///// If you wish to disable history and auto completion set useAdvancedInput to false.
+        ///// </summary>
+        //[Obsolete("Use ConfigureInteractiveMode instead of UseInteractiveMode. UseInteractiveMode will be removed in Typin 3.0.")]
+        //public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
+        //                                                bool useAdvancedInput = true,
+        //                                                HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
+        //{
+        //    AddDirective<InteractiveDirective>();
+        //    AddDirective<DefaultDirective>();
 
-            if (addScopeDirectives)
-            {
-                AddDirective<ScopeDirective>();
-                AddDirective<ScopeResetDirective>();
-                AddDirective<ScopeUpDirective>();
-            }
+        //    if (addScopeDirectives)
+        //    {
+        //        AddDirective<ScopeDirective>();
+        //        AddDirective<ScopeResetDirective>();
+        //        AddDirective<ScopeUpDirective>();
+        //    }
 
-            return this;
-        }
-        #endregion
+        //    return this;
+        //}
 
         #region Configuration
         //TODO add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
@@ -504,7 +509,7 @@ namespace Typin
         #endregion
 
         /// <summary>
-        /// Creates an instance of <see cref="CliApplication"/> or <see cref="InteractiveCliApplication"/> using configured parameters.
+        /// Creates an instance of <see cref="CliApplication"/> using configured parameters.
         /// Default values are used in place of parameters that were not specified.
         /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </summary>
@@ -521,8 +526,8 @@ namespace Typin
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
 
-            if (_registeredModes == 0)
-                RegisterMode<DirectMode>();
+            if (_startupMode is null || _registeredModes == 0)
+                RegisterMode<DirectMode>(true);
 
             // Format startup message
             if (_startupMessage != null)
@@ -542,22 +547,17 @@ namespace Typin
                 });
             }
 
-            // Add core middlewares
-            UseMiddleware<ResolveCommandSchema>();
-            UseMiddleware<HandleVersionOption>();
-            UseMiddleware<ResolveCommandInstance>();
-            UseMiddleware<HandleInteractiveDirective>();
-            UseMiddleware<HandleHelpOption>();
-            UseMiddleware<HandleInteractiveCommands>();
-            UseMiddleware<ExecuteCommand>();
+            // Add core middlewares to the end of the pipeline
+            AddCoreMiddlewares();
 
             // Create context
             var _serviceCollection = new ServiceCollection();
 
             var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
             var configuration = new ApplicationConfiguration(_commandTypes,
-                                                             directivesTypes,
+                                                             _directivesTypes,
                                                              _middlewareTypes,
+                                                             _startupMode!,
                                                              _serviceCollection);
 
             var cliContextFactory = new CliContextFactory(metadata, configuration, _console);
@@ -568,10 +568,22 @@ namespace Typin
             _serviceCollection.AddSingleton(typeof(IConsole), _console);
             _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
+            _serviceCollection.AddSingleton<ICliModeSwitcher, CliModeSwitcher>();
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
             return new CliApplication(serviceProvider, cliContextFactory);
+        }
+
+        private void AddCoreMiddlewares()
+        {
+            UseMiddleware<ResolveCommandSchema>();
+            UseMiddleware<HandleVersionOption>();
+            UseMiddleware<ResolveCommandInstance>();
+            UseMiddleware<HandleInteractiveDirective>();
+            UseMiddleware<HandleHelpOption>();
+            UseMiddleware<HandleInteractiveCommands>();
+            UseMiddleware<ExecuteCommand>();
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)

@@ -34,16 +34,15 @@
             //if (!_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly)
             if (commandSchema.InteractiveModeOnly)
             {
-                throw EndUserExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
+                throw InteractiveModeEndUserExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
             }
 
             // Handle commands supported only in interactive mode when interactive mode was not started
             //if (_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly &&
-            if (commandSchema.InteractiveModeOnly &&
-                !(context.ModeSwitcher.Current == CliModes.Interactive || input.HasDirective(BuiltInDirectives.Interactive)))
-            {
-                throw EndUserExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
-            }
+            //    !(context.ModeSwitcher.Current == CliModes.Interactive || input.HasDirective(BuiltInDirectives.Interactive)))
+            //{
+            //    throw InteractiveModeEndUserExceptions.InteractiveOnlyCommandButInteractiveModeNotStarted(commandSchema);
+            //}
 
             return null;
         }

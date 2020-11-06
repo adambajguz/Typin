@@ -9,7 +9,7 @@
     using Typin.Schemas;
 
     /// <summary>
-    /// End-user-facing exceptions. Avoid internal details and fix recommendations here
+    /// Argument binding end-user-facing exceptions. Avoid internal details and fix recommendations here
     /// </summary>
     internal static class ArgumentBindingExceptions
     {

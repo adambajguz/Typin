@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿/*namespace Typin
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public sealed class InteractiveCliApplication : CliApplication
+    public sealed class InteractiveCliApplication
     {
         private readonly ConsoleColor _promptForeground;
         private readonly ConsoleColor _commandForeground;
@@ -27,8 +27,7 @@
                                          CliContext cliContext,
                                          ConsoleColor promptForeground,
                                          ConsoleColor commandForeground,
-                                         HashSet<ShortcutDefinition> userDefinedShortcut) :
-            base(serviceProvider, cliContext)
+                                         HashSet<ShortcutDefinition> userDefinedShortcut)
         {
             _promptForeground = promptForeground;
             _commandForeground = commandForeground;
@@ -157,3 +156,4 @@
         }
     }
 }
+*/

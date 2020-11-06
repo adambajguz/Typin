@@ -240,7 +240,7 @@
             else
                 WriteHorizontalMargin();
 
-            if (!command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct)
+            //if (!command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct)
                 Write(_context.Metadata.ExecutableName);
 
             // Child command placeholder
@@ -446,19 +446,19 @@
             WriteVerticalMargin();
             Write("You can run `");
 
-            bool isDirectMode = !command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct;
-            if (isDirectMode)
+            //bool isDirectMode = !command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct;
+            //if (isDirectMode)
                 Write(_context.Metadata.ExecutableName);
 
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
-                if (isDirectMode)
+                //if (isDirectMode)
                     Write(' ');
 
                 Write(ConsoleColor.Cyan, command.Name);
             }
 
-            if (isDirectMode)
+            //if (isDirectMode)
                 Write(' ');
 
             Write(ConsoleColor.Cyan, "[command]");

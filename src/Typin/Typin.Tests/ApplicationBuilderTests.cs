@@ -7,6 +7,7 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
+    using Typin.Modes;
     using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
@@ -115,8 +116,8 @@
                 .UseExecutableName("test")
                 .UseVersionText("test")
                 .UseDescription("test")
-                .UseInteractiveMode()
-                .UsePromptForeground(ConsoleColor.Magenta)
+                .RegisterMode<DirectMode>()
+                .RegisterMode<InteractiveMode>()
                 .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .UseConsole(new VirtualConsole(Stream.Null))
                 .Build();
@@ -142,8 +143,8 @@
                .UseExecutableName("test")
                .UseVersionText("test")
                .UseDescription("test")
-               .UseInteractiveMode(false, false)
-               .UsePromptForeground(ConsoleColor.Magenta)
+               .RegisterMode<DirectMode>()
+               .RegisterMode<InteractiveMode>()
                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                .UseConsole<SystemConsole>()
                .Build();
@@ -201,7 +202,6 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(console)
-                .UseCommandInputForeground(ConsoleColor.Yellow)
                 .Build();
 
             // Assert

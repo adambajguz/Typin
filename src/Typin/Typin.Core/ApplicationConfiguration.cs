@@ -25,6 +25,10 @@
         public IReadOnlyCollection<Type> Middlewares { get; }
 
         /// <summary>
+        /// Startup mode type.
+        public Type StartupMode { get; }
+
+        /// <summary>
         /// Service collection.
         /// </summary>
         public IEnumerable<ServiceDescriptor> Services { get; }
@@ -35,11 +39,13 @@
         public ApplicationConfiguration(IReadOnlyList<Type> commandTypes,
                                         IReadOnlyList<Type> customDirectives,
                                         LinkedList<Type> middlewareTypes,
+                                        Type startupMode,
                                         IEnumerable<ServiceDescriptor> services)
         {
             CommandTypes = commandTypes;
             DirectiveTypes = customDirectives;
             Middlewares = middlewareTypes;
+            StartupMode = startupMode;
             Services = services;
         }
     }
