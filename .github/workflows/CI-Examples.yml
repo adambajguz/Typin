@@ -1,20 +1,26 @@
-name: CI-Examples
+name: CI-Example
 
 on:
   push:
     branches:
-      - develop-examples-app
+      - devlop-examples-app
     tags-ignore:
       - '*'
-    paths:
+    paths-ignore:
       - 'src/TypinExamples/*'
+      - LICENSE
+      - 'CHANGELOG.md'
+      - 'README.md'
   pull_request:
-    branches:
-      - '*'
+    branches-ignore:
+      - 'develop'
     tags-ignore:
       - '*'
-    paths:
-      - 'src/TypinExamples/*'
+    paths-ignore:
+      - 'src/Typin/*'
+      - LICENSE
+      - 'CHANGELOG.md'
+      - 'README.md'
 
 jobs:
   build:
@@ -26,24 +32,18 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.3.3
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1.4.0
+      uses: actions/setup-dotnet@v1.7.2
       with:
         dotnet-version: 3.1.403
 
     - name: Build & test
       run: dotnet test src/TypinExamples/TypinExamples.sln --configuration Release --logger GitHubActions
 
-#    - name: Upload coverage
-#      uses: codecov/codecov-action@v1.0.5
-#      with:
-#        token: ${{ secrets.CODECOV_TOKEN }}
-#        file: src/Typin/Typin.Tests/bin/Release/Coverage.xml
-#
-#    - name: Upload coverage (analyzers)
-#      uses: codecov/codecov-action@v1.0.5
-#      with:
-#        token: ${{ secrets.CODECOV_TOKEN }}
-#        file: src/Typin/Typin.Analyzers.Tests/bin/Release/Coverage.xml
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1.0.14
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./src/TypinExamples/Examples/TypinExamples.HelloWorld.Tests/bin/Release/Coverage.xml
