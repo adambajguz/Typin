@@ -24,12 +24,12 @@
         public ICliMode? Pending { get; private set; }
 
         /// <inheritdoc/>
-        public bool IsPending => Pending is null;
+        public bool IsPending => !(Pending is null);
 
         /// <summary>
         /// Initializes an instance of <see cref="CliModeSwitcher"/>.
         /// </summary>
-        internal CliModeSwitcher(IServiceProvider serviceProvider, ApplicationConfiguration configuration)
+        public CliModeSwitcher(IServiceProvider serviceProvider, ApplicationConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;

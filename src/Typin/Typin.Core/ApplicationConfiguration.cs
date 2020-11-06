@@ -31,6 +31,7 @@
 
         /// <summary>
         /// Startup mode type.
+        /// </summary>
         public Type StartupMode { get; }
 
         /// <summary>

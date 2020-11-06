@@ -326,7 +326,7 @@ namespace Typin
             });
 
             if (asStartup)
-                _startupMode = _startupMode is null ? _startupMode : throw new ArgumentException($"", nameof(asStartup));
+                _startupMode = _startupMode is null ? cliMode : throw new ArgumentException($"Only one mode can be registered as startup mode.", nameof(asStartup));
 
             return this;
         }
