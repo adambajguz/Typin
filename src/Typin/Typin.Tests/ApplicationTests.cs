@@ -26,6 +26,12 @@
         [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true)]
         public async Task Application_can_be_created_and_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
@@ -52,11 +58,14 @@
         [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
         [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true, false)]
         [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false, false)]
         [InlineData("test.dll --str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true, true)]
         [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
         [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
         [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
         [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false, true)]
+        [InlineData("test.dll", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true, true)]
         public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive, bool containsExecutable)
         {
             // Arrange

@@ -52,7 +52,6 @@
             _console.WithForegroundColor(ConsoleColor.Blue, () => _console.Output.WriteLine(_metadata.StartupMessage));
         }
 
-        #region Run
         /// <summary>
         /// Runs the application and returns the exit code.
         /// Command line arguments and environment variables are retrieved automatically.
@@ -148,8 +147,8 @@
 
                 PrintStartupMessage();
 
-                //TODO: when in commandLineArguments is a string.Empty application crashes
-                int exitCode = await StartAppAsync(commandLineArguments);
+                List<string> filteredArgs = commandLineArguments.Where(x => !string.IsNullOrEmpty(x)).ToList();
+                int exitCode = await StartAppAsync(filteredArgs);
 
                 //TODO: OnStop()
 
@@ -182,7 +181,6 @@
                 return ExitCodes.FromException(ex);
             }
         }
-        #endregion
 
         private async Task<int> StartAppAsync(IReadOnlyList<string> commandLineArguments)
         {
