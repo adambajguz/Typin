@@ -304,18 +304,27 @@
         }
 
         [Fact]
-        public async Task Command_options_must_have_names_that_are_not_empty()
+        public async Task Command_options_can_have_names_that_are_empty()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<EmptyOptionNameCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd --help");
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
-            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+
+            stdOut.GetString().Should().ContainAll(
+                "Options",
+                "--apple",
+                "--blackberries",
+                "--west-indian-cherry",
+                "--coconut-meat--or--pitaya-dragonfruit",
+                "--coconut-meat-or--pitaya");
         }
 
         [Fact]

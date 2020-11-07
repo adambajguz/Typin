@@ -8,5 +8,17 @@
     {
         [CommandOption("")]
         public string? Apples { get; set; }
+
+        [CommandOption]
+        public string? Blackberries { get; set; }
+
+        [CommandOption('-')]
+        public string? WestIndianCherry { get; set; }
+
+        [CommandOption]
+        public string? CoconutMeat_Or_PitayaDragonfruit { get; set; }
+
+        [CommandOption]
+        public string? CoconutMeat_or_Pitaya { get; set; }
     }
 }

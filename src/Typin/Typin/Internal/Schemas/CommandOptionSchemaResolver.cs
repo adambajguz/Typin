@@ -2,6 +2,7 @@
 {
     using System.Reflection;
     using Typin.Attributes;
+    using Typin.Internal.Extensions;
     using Typin.Schemas;
 
     /// <summary>
@@ -20,11 +21,18 @@
 
             // The user may mistakenly specify dashes, thinking it's required, so trim them
             string? name = attribute.Name?.TrimStart('-');
+            char? shortName = attribute.ShortName == '-' ? null : attribute.ShortName;
+
+            if (shortName is null && string.IsNullOrWhiteSpace(name))
+            {
+                string propertyName = property.Name;
+                name = propertyName.ToHyphenCase();
+            }
 
             return new CommandOptionSchema(
                 property,
                 name,
-                attribute.ShortName,
+                shortName,
                 attribute.FallbackVariableName,
                 attribute.IsRequired,
                 attribute.Description

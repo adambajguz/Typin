@@ -67,6 +67,15 @@
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionAttribute"/>.
         /// </summary>
+        public CommandOptionAttribute()
+            : this(null, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="CommandOptionAttribute"/>.
+        /// </summary>
         public CommandOptionAttribute(char shortName)
             : this(null, (char?)shortName)
         {

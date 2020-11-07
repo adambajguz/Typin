@@ -133,5 +133,35 @@
 
             _output.WriteLine(stdOut.GetString());
         }
+
+        [Fact]
+        public async Task Help_text_shows_default_values_and_names_for_non_required_options()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithDefaultValuesAndNamesCommand>();
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "Options",
+                "--object", "Default: \"42\"",
+                "--string", "Default: \"foo\"",
+                "--string-empty", "Default: \"\"",
+                "--string-array", "Default: \"foo\" \"bar\" \"baz\"",
+                "--bool", "Default: \"True\"",
+                "--char", "Default: \"t\"",
+                "--int", "Default: \"1337\"",
+                "--int-nullable", "Default: \"1337\"",
+                "--int-array", "Default: \"1\" \"2\" \"3\"",
+                "--time-span", "Default: \"02:03:00\"",
+                "--enum", "Default: \"Value2\""
+            );
+
+            _output.WriteLine(stdOut.GetString());
+        }
     }
 }

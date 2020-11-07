@@ -2,9 +2,34 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
 
     internal static class StringExtensions
     {
+        private static readonly Regex _toLowerCaseRegex = new Regex("[A-Z]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _toCamelCaseRegex = new Regex("_[a-z]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        public static string ToHyphenCase(this string s)
+        {
+            return _toLowerCaseRegex.Replace(s, "-$0")
+                                    .TrimStart('-')
+                                    .Replace('_', '-')
+                                    .ToLower();
+        }
+
+        public static string ToSnakeCase(this string s)
+        {
+            return _toLowerCaseRegex.Replace(s, "_$0")
+                                    .ToLower();
+        }
+
+        public static string ToCamelCase(this string s1)
+        {
+            return _toCamelCaseRegex.Replace(s1, delegate (Match m) {
+                return m.ToString().TrimStart('_').ToUpper();
+            });
+        }
+
         public static string Quote(this string str)
         {
             return string.Concat("\"", str, "\"");
