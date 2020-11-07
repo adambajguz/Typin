@@ -80,7 +80,7 @@
             Name = name;
             Description = description;
             Manual = manual;
-            SupportedModes = supportedModes.ToHashSet();
+            SupportedModes = supportedModes?.ToHashSet();
             Parameters = parameters;
             Options = options;
         }

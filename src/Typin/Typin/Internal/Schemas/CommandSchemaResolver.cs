@@ -23,7 +23,7 @@
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
-            if (modeTypes != null && attribute.SupportedModes.Except(modeTypes).Any())
+            if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
                 throw ResolversExceptions.InvalidSupportedModesInCommand(type);
 
             string? name = attribute.Name;

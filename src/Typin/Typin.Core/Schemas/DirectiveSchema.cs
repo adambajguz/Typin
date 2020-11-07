@@ -44,7 +44,7 @@
             Type = type;
             Name = name;
             Description = description;
-            SupportedModes = supportedModes.ToHashSet();
+            SupportedModes = supportedModes?.ToHashSet();
         }
 
         /// <summary>

@@ -23,7 +23,7 @@
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
 
-            if (attribute.SupportedModes.Except(modeTypes).Any())
+            if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
                 throw ResolversExceptions.InvalidSupportedModesInDirective(type);
 
             string name = attribute.Name.TrimStart('[').TrimEnd(']');
