@@ -13,7 +13,7 @@
     /// </summary>
     internal static class ResolversExceptions
     {
-        internal static TypinException InvalidSupportedModesInDirective(Type type)
+        public static TypinException InvalidSupportedModesInDirective(Type type)
         {
             var message = $@"
 Directive '{type.FullName}' contains an invalid mode in SupportedModes parameter.
@@ -24,7 +24,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException InvalidSupportedModesInCommand(Type type)
+        public static TypinException InvalidSupportedModesInCommand(Type type)
         {
             var message = $@"
 Command '{type.FullName}' contains an invalid mode in SupportedModes parameter.
@@ -35,7 +35,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException DuplicatedShortcut(ShortcutDefinition definition)
+        public static TypinException DuplicatedShortcut(ShortcutDefinition definition)
         {
             var message = $@"
 Shortcut '{definition.Modifiers}+{definition.Key}' is already used by Typin.";
@@ -43,7 +43,7 @@ Shortcut '{definition.Modifiers}+{definition.Key}' is already used by Typin.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException InvalidCommandType(Type type)
+        public static TypinException InvalidCommandType(Type type)
         {
             var message = $@"
 Command '{type.FullName}' is not a valid command type.
@@ -58,7 +58,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException InvalidDirectiveType(Type type)
+        public static TypinException InvalidDirectiveType(Type type)
         {
             var message = $@"
 Directive '{type.FullName}' is not a valid directive type.
@@ -73,7 +73,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException NoCommandsDefined()
+        public static TypinException NoCommandsDefined()
         {
             var message = $@"
 There are no commands configured in the application.
@@ -84,7 +84,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException TooManyDefaultCommands()
+        public static TypinException TooManyDefaultCommands()
         {
             var message = $@"
 Application configuration is invalid because there are too many default commands.
@@ -95,9 +95,7 @@ Other commands must have unique non-empty names that identify them.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException CommandsWithSameName(
-            string name,
-            IReadOnlyList<CommandSchema> invalidCommands)
+        public static TypinException CommandsWithSameName(string name, IReadOnlyList<CommandSchema> invalidCommands)
         {
             var message = $@"
 Application configuration is invalid because there are {invalidCommands.Count} commands with the same name ('{name}'):
@@ -109,9 +107,7 @@ Names are not case-sensitive.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException DirectiveWithSameName(
-            string name,
-            IReadOnlyList<DirectiveSchema> invalidDirectives)
+        public static TypinException DirectiveWithSameName(string name, IReadOnlyList<DirectiveSchema> invalidDirectives)
         {
             var message = $@"
 Application configuration is invalid because there are {invalidDirectives.Count} directives with the same name ('[{name}]'):
@@ -123,8 +119,7 @@ Names are not case-sensitive.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException DirectiveNameIsInvalid(
-            string name, Type type)
+        public static TypinException DirectiveNameIsInvalid(string name, Type type)
         {
             var message = $@"
 Directive '{type.FullName}' is invalid because its name is empty or whitespace ('[{name}]').
@@ -135,7 +130,7 @@ Names are not case-sensitive.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException ParametersWithSameOrder(
+        public static TypinException ParametersWithSameOrder(
             CommandSchema command,
             int order,
             IReadOnlyList<CommandParameterSchema> invalidParameters)
@@ -149,7 +144,7 @@ Parameters must have unique order.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException ParametersWithSameName(
+        public static TypinException ParametersWithSameName(
             CommandSchema command,
             string name,
             IReadOnlyList<CommandParameterSchema> invalidParameters)
@@ -164,9 +159,7 @@ Names are not case-sensitive.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException TooManyNonScalarParameters(
-            CommandSchema command,
-            IReadOnlyList<CommandParameterSchema> invalidParameters)
+        public static TypinException TooManyNonScalarParameters(CommandSchema command, IReadOnlyList<CommandParameterSchema> invalidParameters)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:
@@ -180,9 +173,7 @@ If it's not feasible to fit into these constraints, consider using options inste
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException NonLastNonScalarParameter(
-            CommandSchema command,
-            CommandParameterSchema invalidParameter)
+        public static TypinException NonLastNonScalarParameter(CommandSchema command, CommandParameterSchema invalidParameter)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains a non-scalar parameter which is not the last in order:
@@ -196,9 +187,7 @@ If it's not feasible to fit into these constraints, consider using options inste
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithDigitStartingName(
-            CommandSchema command,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithDigitStartingName(CommandSchema command, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains one or more options with a name starting from digit or short names with a digit:
@@ -209,9 +198,7 @@ Options must have a name starting from char other than digit, while short name m
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithNoName(
-            CommandSchema command,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithNoName(CommandSchema command, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains one or more options without a name:
@@ -222,9 +209,7 @@ Options must have either a name or a short name or both.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithInvalidLengthName(
-            CommandSchema command,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithInvalidLengthName(CommandSchema command, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains one or more options whose names are too short:
@@ -236,10 +221,7 @@ If you intended to set the short name instead, use the attribute overload that a
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithSameName(
-            CommandSchema command,
-            string name,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameName(CommandSchema command, string name, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same name ('{name}'):
@@ -251,10 +233,7 @@ Names are not case-sensitive.";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithSameShortName(
-            CommandSchema command,
-            char shortName,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameShortName(CommandSchema command, char shortName, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same short name ('{shortName}'):
@@ -266,10 +245,7 @@ Short names are case-sensitive (i.e. 'a' and 'A' are different short names).";
             return new TypinException(message.Trim());
         }
 
-        internal static TypinException OptionsWithSameEnvironmentVariableName(
-            CommandSchema command,
-            string environmentVariableName,
-            IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameEnvironmentVariableName(CommandSchema command, string environmentVariableName, IReadOnlyList<CommandOptionSchema> invalidOptions)
         {
             var message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same fallback environment variable name ('{environmentVariableName}'):

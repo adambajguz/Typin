@@ -11,9 +11,6 @@
     {
         private readonly object _lock = new object();
 
-        private Type? _currentModeType = null;
-        private Type? _pendingModeType = null;
-
         private readonly IServiceProvider _serviceProvider;
         private readonly ApplicationConfiguration _configuration;
 
@@ -21,7 +18,13 @@
         public ICliMode? Current { get; private set; }
 
         /// <inheritdoc/>
+        public Type? CurrentType { get; private set; } = null;
+
+        /// <inheritdoc/>
         public ICliMode? Pending { get; private set; }
+
+        /// <inheritdoc/>
+        public Type? PendingType { get; private set; } = null;
 
         /// <inheritdoc/>
         public bool IsPending => !(Pending is null);
@@ -36,7 +39,7 @@
 
             if (!ResetMode())
             {
-                throw ModeSwitchingExceptions.InvalidStartupModeType(_configuration.StartupMode);
+                throw ModeEndUserExceptions.InvalidStartupModeType(_configuration.StartupMode);
             }
         }
 
@@ -58,11 +61,11 @@
         {
             lock (_lock)
             {
-                if (_currentModeType != cliMode && (IsPending || _pendingModeType != cliMode))
+                if (CurrentType != cliMode && (IsPending || PendingType != cliMode))
                 {
                     if (_serviceProvider.GetRequiredService(cliMode) is ICliMode cm)
                     {
-                        _pendingModeType = cliMode;
+                        PendingType = cliMode;
                         Pending = cm;
 
                         return true;
@@ -79,8 +82,8 @@
             {
                 if (IsPending)
                 {
-                    _currentModeType = _pendingModeType;
-                    _pendingModeType = null;
+                    CurrentType = PendingType;
+                    PendingType = null;
 
                     Current = Pending;
                     Pending = null;

@@ -13,9 +13,19 @@
         ICliMode? Current { get; }
 
         /// <summary>
+        /// Current mode type or null if startup mode was not initialized.
+        /// </summary>
+        Type? CurrentType { get; }
+
+        /// <summary>
         /// Mode to switch to or null if nothing needs to be changes.
         /// </summary>
         ICliMode? Pending { get; }
+
+        /// <summary>
+        /// Pending mode type or null if startup mode was not initialized.
+        /// </summary>
+        Type? PendingType { get; }
 
         /// <summary>
         /// Whether mode change was queued.

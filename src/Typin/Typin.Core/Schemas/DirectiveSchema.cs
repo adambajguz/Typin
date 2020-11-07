@@ -62,7 +62,7 @@
         public bool CanBeExecutedInMode(Type type)
         {
             if ((SupportedModes?.Count ?? 0) == 0)
-                return false;
+                return true;
 
             return SupportedModes.Contains(type);
         }

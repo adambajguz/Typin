@@ -269,6 +269,11 @@ namespace Typin
         {
             _console = console;
 
+            _configureServicesActions.Add(services =>
+            {
+                services.AddSingleton<IConsole>(_console);
+            });
+
             return this;
         }
 
@@ -278,15 +283,14 @@ namespace Typin
         public CliApplicationBuilder UseConsole<T>()
             where T : class, IConsole, new()
         {
-            _console = new T();
-
-            return this;
+            return UseConsole(new T());
         }
         #endregion
 
         #region Exceptions
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
+        /// Exception handler is configured as singleton.
         /// </summary>
         public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
         {
@@ -300,6 +304,7 @@ namespace Typin
 
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
+        /// Exception handler is configured as singleton.
         /// </summary>
         public CliApplicationBuilder UseExceptionHandler<T>()
             where T : class, ICliExceptionHandler
@@ -570,9 +575,7 @@ namespace Typin
             UseMiddleware<ResolveCommandSchema>();
             UseMiddleware<HandleVersionOption>();
             UseMiddleware<ResolveCommandInstance>();
-            UseMiddleware<HandleInteractiveDirective>();
             UseMiddleware<HandleHelpOption>();
-            UseMiddleware<HandleInteractiveCommands>();
             UseMiddleware<ExecuteCommand>();
         }
 
