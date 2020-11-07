@@ -2,6 +2,9 @@
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Input command history provider for interactive mode.
+    /// </summary>
     public interface IInputHistoryProvider
     {
         /// <summary>

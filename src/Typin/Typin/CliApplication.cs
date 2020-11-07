@@ -189,7 +189,7 @@
 
             int exitCode = ExitCodes.Error;
 
-            bool isRunning = true;
+            bool isRunning = true; //TODO: add app lifetime with start and stop events
             while (isRunning && !_console.GetCancellationToken().IsCancellationRequested)
             {
                 ICliMode currentMode = _cliModeSwitcher.Current!;
