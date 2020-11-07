@@ -7,6 +7,7 @@
     using System.Linq;
     using Typin.Console;
     using Typin.Internal.Extensions;
+    using Typin.Modes;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -29,6 +30,7 @@
 
         private readonly ICliContext _context;
         private readonly IConsole _console;
+        private readonly ICliModeSwitcher _modeSwitcher;
 
         private int _column;
         private int _row;
@@ -38,10 +40,11 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext)
+        public DefaultHelpWriter(ICliContext cliContext, ICliModeSwitcher modeSwitcher)
         {
             _context = cliContext;
             _console = cliContext.Console;
+            _modeSwitcher = modeSwitcher;
         }
 
         /// <inheritdoc/>
@@ -161,7 +164,7 @@
                 DirectiveSchema schema = directive.Value;
 
                 // Name
-                if (schema.InteractiveModeOnly)
+                if (schema.CanBeExecutedInMode<InteractiveMode>())
                 {
                     Write(InteractiveOnlyColor, "@");
                     WriteHorizontalMargin(1);
@@ -232,7 +235,7 @@
             WriteHeader("Usage");
 
             // Exe name
-            if (command.InteractiveModeOnly)
+            if (command.CanBeExecutedInMode<InteractiveMode>())
             {
                 Write(InteractiveOnlyColor, "@");
                 WriteHorizontalMargin(1);
@@ -240,7 +243,7 @@
             else
                 WriteHorizontalMargin();
 
-            //if (!command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct)
+            if (_modeSwitcher.Current is DirectMode)
                 Write(_context.Metadata.ExecutableName);
 
             // Child command placeholder
@@ -422,7 +425,7 @@
                     : childCommand.Name!;
 
                 // Name
-                if (childCommand.InteractiveModeOnly)
+                if (childCommand.CanBeExecutedInMode<InteractiveMode>())
                 {
                     Write(InteractiveOnlyColor, "@");
                     WriteHorizontalMargin(1);
@@ -446,19 +449,19 @@
             WriteVerticalMargin();
             Write("You can run `");
 
-            //bool isDirectMode = !command.InteractiveModeOnly && _context.ModeSwitcher.Current == CliModes.Direct;
-            //if (isDirectMode)
+            bool isDirectMode = _modeSwitcher.Current is DirectMode;
+            if (isDirectMode)
                 Write(_context.Metadata.ExecutableName);
 
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
-                //if (isDirectMode)
+                if (isDirectMode)
                     Write(' ');
 
                 Write(ConsoleColor.Cyan, command.Name);
             }
 
-            //if (isDirectMode)
+            if (isDirectMode)
                 Write(' ');
 
             Write(ConsoleColor.Cyan, "[command]");

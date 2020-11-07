@@ -1,10 +1,10 @@
-﻿namespace Typin.Schemas.Resolvers
+﻿namespace Typin.Internal.Schemas
 {
     using System;
     using System.Reflection;
     using Typin.Attributes;
     using Typin.Internal.Exceptions;
-    using Typin.Internal.Extensions;
+    using Typin.Schemas;
 
     /// <summary>
     /// Resolves an instance of <see cref="DirectiveSchema"/>.
@@ -29,7 +29,7 @@
                 type,
                 name,
                 attribute.Description,
-                attribute.InteractiveModeOnly
+                attribute.SupportedModes
             );
         }
     }

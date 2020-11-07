@@ -1,7 +1,9 @@
 ﻿namespace Typin.Schemas
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Text;
 
     /// <summary>
@@ -26,9 +28,10 @@
         public string? Description { get; }
 
         /// <summary>
-        /// Whether directive can run only in interactive mode.
+        /// List of CLI mode types, in which the command can be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
         /// </summary>
-        public bool InteractiveModeOnly { get; }
+        public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
@@ -36,12 +39,32 @@
         public DirectiveSchema(Type type,
                                string name,
                                string? description,
-                               bool interactiveModeOnly)
+                               Type[]? supportedModes)
         {
             Type = type;
             Name = name;
             Description = description;
-            InteractiveModeOnly = interactiveModeOnly;
+            SupportedModes = supportedModes.ToHashSet();
+        }
+
+        /// <summary>
+        /// Whether command can be executed in mode T.
+        /// </summary>
+        public bool CanBeExecutedInMode<T>()
+            where T : ICliMode
+        {
+            return CanBeExecutedInMode(typeof(T));
+        }
+
+        /// <summary>
+        /// Whether command can be executed in mode provided in parameter.
+        /// </summary>
+        public bool CanBeExecutedInMode(Type type)
+        {
+            if ((SupportedModes?.Count ?? 0) == 0)
+                return false;
+
+            return SupportedModes.Contains(type);
         }
 
         /// <inheritdoc/>

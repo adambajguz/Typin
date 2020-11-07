@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode, this [..] directive can be used to reset current scope to default (global scope).
@@ -15,7 +16,7 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", InteractiveModeOnly = true)]
+    [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeResetDirective : IDirective
     {
         private readonly CliContext _cliContext;

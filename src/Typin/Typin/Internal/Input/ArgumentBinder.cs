@@ -1,4 +1,4 @@
-﻿namespace Typin.Input
+﻿namespace Typin.Internal.Input
 {
     using System;
     using System.Collections.Generic;

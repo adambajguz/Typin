@@ -5,7 +5,6 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Exceptions;
 
     [Command("webhost", Description = "Management of the background webhost in the interactive mode.")]
     public class WebHostCommand : ICommand

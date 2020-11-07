@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
+    using Typin.Directives;
     using Typin.Input;
     using Typin.Internal;
     using Typin.Schemas;

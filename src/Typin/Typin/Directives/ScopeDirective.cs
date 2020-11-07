@@ -6,6 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Internal.Extensions;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to ommit specified command name(s).
@@ -26,7 +27,7 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", InteractiveModeOnly = true)]
+    [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeDirective : IDirective
     {
         private readonly CliContext _cliContext;

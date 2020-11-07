@@ -1,7 +1,9 @@
-﻿namespace Typin.Input.Resolvers
+﻿namespace Typin.Internal.Input
 {
     using System;
     using System.Collections.Generic;
+    using Typin.Directives;
+    using Typin.Input;
     using Typin.Internal.Extensions;
 
     /// <summary>
@@ -145,7 +147,6 @@
                 }
                 // Short name
                 else if (CommandOptionInput.IsOptionAlias(argument))
-                {
                     foreach (var alias in argument.Substring(1))
                     {
                         // Flush previous
@@ -155,12 +156,9 @@
                         currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
-                }
                 // Value
                 else if (!string.IsNullOrWhiteSpace(currentOptionAlias))
-                {
                     currentOptionValues.Add(argument);
-                }
             }
 
             // Flush last option

@@ -7,15 +7,14 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Typin.AutoCompletion;
     using Typin.Console;
-    using Typin.Directives;
     using Typin.Exceptions;
     using Typin.HelpWriter;
     using Typin.Internal;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.Internal.Pipeline;
+    using Typin.Internal.Schemas;
     using Typin.Modes;
     using Typin.OptionFallback;
 

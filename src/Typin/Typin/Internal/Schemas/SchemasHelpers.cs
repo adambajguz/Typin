@@ -1,8 +1,9 @@
-﻿namespace Typin.Internal.Extensions
+﻿namespace Typin.Internal.Schemas
 {
     using System;
     using System.Reflection;
     using Typin.Attributes;
+    using Typin.Internal.Extensions;
 
     internal static class SchemasHelpers
     {

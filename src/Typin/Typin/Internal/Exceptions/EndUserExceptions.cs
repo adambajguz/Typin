@@ -1,5 +1,6 @@
 ﻿namespace Typin.Internal.Exceptions
 {
+    using Typin.Directives;
     using Typin.Exceptions;
     using Typin.Input;
     using Typin.Schemas;

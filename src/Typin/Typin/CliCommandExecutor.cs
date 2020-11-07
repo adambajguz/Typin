@@ -9,8 +9,8 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Exceptions;
     using Typin.Input;
-    using Typin.Input.Resolvers;
     using Typin.Internal.Extensions;
+    using Typin.Internal.Input;
 
     internal sealed class CliCommandExecutor : ICliCommandExecutor
     {

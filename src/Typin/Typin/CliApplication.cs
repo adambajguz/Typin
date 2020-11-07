@@ -10,8 +10,7 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
-    using Typin.Internal.Exceptions;
-    using Typin.Schemas.Resolvers;
+    using Typin.Internal.Schemas;
 
     /// <summary>
     /// Command line application facade.

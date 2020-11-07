@@ -5,6 +5,7 @@
     using Typin;
     using Typin.Input;
     using Typin.Internal.Exceptions;
+    using Typin.Modes;
     using Typin.Schemas;
 
     internal sealed class HandleInteractiveCommands : IMiddleware
@@ -32,7 +33,7 @@
 
             // Handle commands not supported in direct mode
             //if (!_configuration.IsInteractiveModeAllowed && commandSchema.InteractiveModeOnly)
-            if (commandSchema.InteractiveModeOnly)
+            if (commandSchema.CanBeExecutedInMode<InteractiveMode>())
             {
                 throw InteractiveModeEndUserExceptions.InteractiveOnlyCommandButThisIsDirectApplication(commandSchema);
             }

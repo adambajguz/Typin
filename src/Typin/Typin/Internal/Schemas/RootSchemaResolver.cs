@@ -1,9 +1,10 @@
-﻿namespace Typin.Schemas.Resolvers
+﻿namespace Typin.Internal.Schemas
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Internal.Exceptions;
+    using Typin.Schemas;
 
     /// <summary>
     /// Resolves an instance of <see cref="RootSchema"/>.

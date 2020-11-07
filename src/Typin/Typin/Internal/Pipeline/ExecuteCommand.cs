@@ -8,6 +8,8 @@
     using Typin;
     using Typin.Input;
     using Typin.Internal.Exceptions;
+    using Typin.Internal.Input;
+    using Typin.Modes;
     using Typin.OptionFallback;
     using Typin.Schemas;
 
@@ -59,7 +61,7 @@
                 // Try to get the directive matching the input or fallback to default
                 DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw InteractiveModeEndUserExceptions.UnknownDirectiveName(directiveInput);
 
-                if (!isInteractiveMode && directive.InteractiveModeOnly)
+                if (!isInteractiveMode && directive.CanBeExecutedInMode<InteractiveMode>())
                     throw InteractiveModeEndUserExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
 
                 // Get directive instance

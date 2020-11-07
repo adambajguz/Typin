@@ -20,9 +20,10 @@
         public string? Description { get; set; }
 
         /// <summary>
-        /// Whether directive can run only in interactive mode.
+        /// List of CLI mode types, in which the directive can be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
         /// </summary>
-        public bool InteractiveModeOnly { get; set; }
+        public Type[]? SupportedModes { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandAttribute"/>.

@@ -1,4 +1,4 @@
-﻿namespace Typin.Schemas.Resolvers
+﻿namespace Typin.Internal.Schemas
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Reflection;
     using Typin.Attributes;
     using Typin.Internal.Exceptions;
-    using Typin.Internal.Extensions;
+    using Typin.Schemas;
 
     /// <summary>
     /// Resolves an instance of <see cref="CommandSchema"/>.
@@ -45,7 +45,7 @@
                 name,
                 attribute.Description,
                 attribute.Manual,
-                attribute.InteractiveModeOnly,
+                attribute.SupportedModes,
                 parameters!,
                 options!
             );

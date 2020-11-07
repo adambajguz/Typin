@@ -1,8 +1,9 @@
-﻿namespace Typin.Input
+﻿namespace Typin.Internal.Input
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.OptionFallback;

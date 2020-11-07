@@ -40,9 +40,10 @@
         public string? Manual { get; }
 
         /// <summary>
-        /// Whether command can run only in interactive mode.
+        /// List of CLI mode types, in which the command can be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
         /// </summary>
-        public bool InteractiveModeOnly { get; }
+        public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
         /// List of parameters.
@@ -68,20 +69,40 @@
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
         public CommandSchema(Type type,
-                               string? name,
-                               string? description,
-                               string? manual,
-                               bool interactiveModeOnly,
-                               IReadOnlyList<CommandParameterSchema> parameters,
-                               IReadOnlyList<CommandOptionSchema> options)
+                             string? name,
+                             string? description,
+                             string? manual,
+                             Type[]? supportedModes,
+                             IReadOnlyList<CommandParameterSchema> parameters,
+                             IReadOnlyList<CommandOptionSchema> options)
         {
             Type = type;
             Name = name;
             Description = description;
             Manual = manual;
-            InteractiveModeOnly = interactiveModeOnly;
+            SupportedModes = supportedModes.ToHashSet();
             Parameters = parameters;
             Options = options;
+        }
+
+        /// <summary>
+        /// Whether command can be executed in mode T.
+        /// </summary>
+        public bool CanBeExecutedInMode<T>()
+            where T : ICliMode
+        {
+            return CanBeExecutedInMode(typeof(T));
+        }
+
+        /// <summary>
+        /// Whether command can be executed in mode provided in parameter.
+        /// </summary>
+        public bool CanBeExecutedInMode(Type type)
+        {
+            if ((SupportedModes?.Count ?? 0) == 0)
+                return false;
+
+            return SupportedModes.Contains(type);
         }
 
         /// <summary>

@@ -1,7 +1,8 @@
-﻿namespace Typin.Schemas.Resolvers
+﻿namespace Typin.Internal.Schemas
 {
     using System.Reflection;
     using Typin.Attributes;
+    using Typin.Schemas;
 
     /// <summary>
     /// Resolves an instance of <see cref="CommandParameterSchema"/>.
