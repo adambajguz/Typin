@@ -55,12 +55,14 @@
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
                                                                                                                                  string commandLine,
+                                                                                                                                 bool containsExecutable = false,
                                                                                                                                  bool isInputRedirected = true)
         {
             return await BuildAndRunTestAsync(applicationBuilder,
                                               testOutput,
                                               commandLine,
                                               new Dictionary<string, string>(),
+                                              containsExecutable,
                                               isInputRedirected);
         }
 
@@ -68,6 +70,7 @@
                                                                                                                                  ITestOutputHelper testOutput,
                                                                                                                                  string commandLine,
                                                                                                                                  IReadOnlyDictionary<string, string> environmentVariables,
+                                                                                                                                 bool containsExecutable = false,
                                                                                                                                  bool isInputRedirected = true)
         {
             var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered(isInputRedirected: isInputRedirected);
@@ -75,7 +78,7 @@
             CliApplication application = applicationBuilder.UseConsole(console)
                                                            .Build();
 
-            int exitCode = await application.RunAsync(commandLine, environmentVariables);
+            int exitCode = await application.RunAsync(commandLine, environmentVariables, containsExecutable);
 
             testOutput.WriteLine("Exit Code: {0}", exitCode);
             testOutput.Print(stdOut, stdErr);

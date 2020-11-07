@@ -25,11 +25,6 @@
             return string.Join(separator, source);
         }
 
-        public static StringBuilder AppendIfNotEmpty(this StringBuilder builder, char value)
-        {
-            return builder.Length > 0 ? builder.Append(value) : builder;
-        }
-
         public static string ToFormattableString(this object obj,
                                                  IFormatProvider? formatProvider = null,
                                                  string? format = null)

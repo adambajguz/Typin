@@ -22,7 +22,6 @@
         [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello \" world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false)]
-        [InlineData(new string[] { "--str", "hello \" world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
@@ -39,7 +38,7 @@
             }
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
 
             // Assert
             exitCode.Should().Be(0);
@@ -48,17 +47,17 @@
         }
 
         [Theory]
-        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
-        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]
-        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false)]
-        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true)]
-        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false)]
-        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
-        [InlineData("--str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
-        [InlineData("--str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
-        [InlineData("--str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
-        [InlineData("--str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
-        public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive)
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true, false)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true, false)]
+        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("test.dll --str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
+        [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
+        [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
+        public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive, bool containsExecutable)
         {
             // Arrange
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
@@ -69,7 +68,7 @@
             }
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, isInputRedirected: interactive);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, containsExecutable, isInputRedirected: interactive);
 
             // Assert
             exitCode.Should().Be(0);
