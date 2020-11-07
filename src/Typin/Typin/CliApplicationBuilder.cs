@@ -290,13 +290,13 @@ namespace Typin
         #region Exceptions
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
-        /// Exception handler is configured as singleton.
+        /// Exception handler is configured as transient.
         /// </summary>
         public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
         {
             _configureServicesActions.Add(services =>
             {
-                services.AddSingleton(typeof(ICliExceptionHandler), exceptionHandlerType);
+                services.AddTransient(typeof(ICliExceptionHandler), exceptionHandlerType);
             });
 
             return this;
@@ -338,31 +338,6 @@ namespace Typin
             return this;
         }
         #endregion
-
-        ///// <summary>
-        ///// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
-        ///// By default this adds [default], [>], [.], and [..] and advanced command input.
-        /////
-        ///// If you wish to add only [default] directive, set addScopeDirectives to false.
-        ///// If you wish to disable history and auto completion set useAdvancedInput to false.
-        ///// </summary>
-        //[Obsolete("Use ConfigureInteractiveMode instead of UseInteractiveMode. UseInteractiveMode will be removed in Typin 3.0.")]
-        //public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
-        //                                                bool useAdvancedInput = true,
-        //                                                HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
-        //{
-        //    AddDirective<InteractiveDirective>();
-        //    AddDirective<DefaultDirective>();
-
-        //    if (addScopeDirectives)
-        //    {
-        //        AddDirective<ScopeDirective>();
-        //        AddDirective<ScopeResetDirective>();
-        //        AddDirective<ScopeUpDirective>();
-        //    }
-
-        //    return this;
-        //}
 
         #region Configuration
         //TODO add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
@@ -429,13 +404,14 @@ namespace Typin
         #region Middleware
         /// <summary>
         /// Adds a middleware to the command execution pipeline.
+        /// Middlewares are also registered as scoped services and are executed in registration order.
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
             _configureServicesActions.Add(services =>
             {
-                services.AddSingleton(typeof(IMiddleware), middleware);
-                services.AddSingleton(middleware);
+                services.AddScoped(typeof(IMiddleware), middleware);
+                services.AddScoped(middleware);
             });
 
             _middlewareTypes.AddFirst(middleware);

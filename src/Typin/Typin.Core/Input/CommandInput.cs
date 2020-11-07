@@ -50,7 +50,7 @@
         public bool IsVersionOptionSpecified => Options.Any(o => o.IsVersionOption);
 
         /// <summary>
-        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives other than [interactive].
+        /// Whether command input is default command or empty (no command name, no options, no parameters, and no directives.
         /// </summary>
         public bool IsDefaultCommandOrEmpty { get; }
 

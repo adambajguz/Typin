@@ -1,6 +1,5 @@
 ﻿namespace Typin.Internal.Pipeline
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
@@ -33,7 +32,7 @@
 
             // Help option
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
-                (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
+                (commandSchema == StubDefaultCommand.Schema && input.IsDefaultCommandOrEmpty))
             {
                 _helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
 

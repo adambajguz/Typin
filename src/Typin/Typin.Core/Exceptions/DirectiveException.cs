@@ -9,7 +9,7 @@ namespace Typin.Exceptions
     /// </summary>
     public class DirectiveException : Exception
     {
-        private const int DefaultExitCode = Typin.ExitCodes.Error;
+        private const int DefaultExitCode = ExitCodes.Error;
 
         private readonly bool _isMessageSet;
 

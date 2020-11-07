@@ -6,6 +6,7 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Invalid;
     using Typin.Tests.Data.CustomDirectives.Valid;
@@ -28,6 +29,7 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
+                .AddCommand<DefaultCommand>()
                 .AddDirective<PreviewDirective>();
 
             // Act
@@ -152,9 +154,7 @@
             stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
-            stdErr.GetString().Should().ContainAll(
-                "Directive", "[custom-interactive]", "is for interactive mode only."
-            );
+            stdErr.GetString().Should().Contain($"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' contains an invalid mode in SupportedModes parameter.");
 
             _output.WriteLine(stdOut.GetString());
         }
@@ -171,7 +171,9 @@
                 .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>();
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .UseDirectMode(true)
+                .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -198,8 +200,7 @@
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
                 .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
-                .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>();
+                .AddDirective<CustomStopDirective>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -227,7 +228,8 @@
                 .AddDirective<CustomThrowableDirectiveWithMessageAndShowHelp>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>();
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -258,7 +260,8 @@
                 .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>();
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -409,7 +412,8 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>();
+                .AddDirective<CustomInteractiveModeOnlyDirective>()
+                .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -420,7 +424,8 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in direct mode.");
+            stdErr.GetString().Should().ContainAll($"This application is running in '{typeof(DirectMode).FullName}' mode.",
+                                                   $"directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' can be executed only from the following modes");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

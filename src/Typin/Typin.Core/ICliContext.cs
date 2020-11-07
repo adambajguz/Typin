@@ -13,9 +13,9 @@
     public interface ICliContext : IDisposable
     {
         /// <summary>
-        /// Current command scope in interactive mode.
+        /// Context instance id.
         /// </summary>
-        string Scope { get; set; }
+        Guid Id { get; }
 
         /// <summary>
         /// Metadata associated with an application.

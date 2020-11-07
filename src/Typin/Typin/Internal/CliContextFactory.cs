@@ -23,7 +23,7 @@
             _console = console;
         }
 
-        public CliContext Create(IServiceProvider _)
+        public CliContext Create(IServiceProvider serviceProvider)
         {
             if (RootSchema is null)
                 throw new NullReferenceException($"Cannot create a new instance of {nameof(CliContext)} because {nameof(RootSchema)} has not been resolved yet.");

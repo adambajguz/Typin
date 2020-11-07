@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Input;
     using Typin.Internal.Extensions;
     using Typin.Modes;
 
@@ -30,7 +31,8 @@
     [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeDirective : IDirective
     {
-        private readonly CliContext _cliContext;
+        private readonly InteractiveModeSettings _settings;
+        private readonly ICliContext _cliContext;
 
         /// <inheritdoc/>
         public bool ContinueExecution => false;
@@ -38,9 +40,10 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(ICliContext cliContext)
+        public ScopeDirective(InteractiveModeSettings settings, ICliContext cliContext)
         {
-            _cliContext = (CliContext)cliContext;
+            _settings = settings;
+            _cliContext = cliContext;
         }
 
         /// <inheritdoc/>
@@ -49,15 +52,17 @@
             string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
 
             if (name != null)
-                _cliContext.Scope = name;
+                _settings.Scope = name;
 
             return default;
         }
 
         private string? GetFallbackCommandName()
         {
-            string potentialName = _cliContext.Input.Arguments.Skip(_cliContext.Input.Directives.Count)
-                                                              .JoinToString(' ');
+            CommandInput input = _cliContext.Input;
+
+            string potentialName = input.Arguments.Skip(input.Directives.Count)
+                                                  .JoinToString(' ');
 
             if (_cliContext.RootSchema.IsCommandOrSubcommandPart(potentialName))
                 return potentialName;

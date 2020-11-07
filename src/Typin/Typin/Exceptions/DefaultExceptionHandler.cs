@@ -9,22 +9,22 @@
     /// </summary>
     public class DefaultExceptionHandler : ICliExceptionHandler
     {
-        private readonly ICliContext _cliContext;
-        private readonly IHelpWriter _helpWriter;
+        private readonly IConsole _console;
+        private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Initializes an instance of <see cref="DefaultExceptionHandler"/>.
         /// </summary>
-        public DefaultExceptionHandler(ICliContext context, IHelpWriter helpWriter)
+        public DefaultExceptionHandler(IConsole console, IServiceProvider serviceProvider)
         {
-            _cliContext = context;
-            _helpWriter = helpWriter;
+            _console = console;
+            _serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc/>
         public bool HandleException(Exception ex)
         {
-            IConsole console = _cliContext.Console;
+            IConsole console = _console;
 
             switch (ex)
             {
@@ -35,7 +35,7 @@
                         console.Error.WriteLine();
 
                         if (cx.ShowHelp)
-                            _helpWriter.Write();
+                            ((IHelpWriter)_serviceProvider.GetService(typeof(IHelpWriter))).Write();
                     }
                     return true;
 
@@ -46,7 +46,7 @@
                         console.Error.WriteLine();
 
                         if (dx.ShowHelp)
-                            _helpWriter.Write();
+                            ((IHelpWriter)_serviceProvider.GetService(typeof(IHelpWriter))).Write();
                     }
                     return true;
 

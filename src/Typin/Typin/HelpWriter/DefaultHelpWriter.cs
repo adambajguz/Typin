@@ -40,10 +40,10 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext, ICliModeSwitcher modeSwitcher)
+        public DefaultHelpWriter(ICliContext cliContext, IConsole console, ICliModeSwitcher modeSwitcher)
         {
             _context = cliContext;
-            _console = cliContext.Console;
+            _console = console;
             _modeSwitcher = modeSwitcher;
         }
 

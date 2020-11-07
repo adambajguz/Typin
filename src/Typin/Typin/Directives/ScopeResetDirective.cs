@@ -19,7 +19,7 @@
     [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeResetDirective : IDirective
     {
-        private readonly CliContext _cliContext;
+        private readonly InteractiveModeSettings _settings;
 
         /// <inheritdoc/>
         public bool ContinueExecution => false;
@@ -27,15 +27,15 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeResetDirective"/>.
         /// </summary>
-        public ScopeResetDirective(ICliContext cliContext)
+        public ScopeResetDirective(InteractiveModeSettings settings)
         {
-            _cliContext = (CliContext)cliContext;
+            _settings = settings;
         }
 
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            _cliContext.Scope = string.Empty;
+            _settings.Scope = string.Empty;
 
             return default;
         }

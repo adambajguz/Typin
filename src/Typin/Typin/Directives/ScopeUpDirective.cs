@@ -20,7 +20,7 @@
     [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeUpDirective : IDirective
     {
-        private readonly CliContext _cliContext;
+        private readonly InteractiveModeSettings _settings;
 
         /// <inheritdoc/>
         public bool ContinueExecution => false;
@@ -28,24 +28,21 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
         /// </summary>
-        public ScopeUpDirective(ICliContext cliContext)
+        public ScopeUpDirective(InteractiveModeSettings interactiveModeSettings)
         {
-            _cliContext = (CliContext)cliContext;
+            _settings = interactiveModeSettings;
         }
 
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
             // Scope up
-            if (_cliContext.Input.HasDirective(BuiltInDirectives.ScopeUp))
-            {
-                string[] splittedScope = _cliContext.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedScope = _settings.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                if (splittedScope.Length > 1)
-                    _cliContext.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
-                else if (splittedScope.Length == 1)
-                    _cliContext.Scope = string.Empty;
-            }
+            if (splittedScope.Length > 1)
+                _settings.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
+            else if (splittedScope.Length == 1)
+                _settings.Scope = string.Empty;
 
             return default;
         }

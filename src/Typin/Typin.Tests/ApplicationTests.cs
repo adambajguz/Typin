@@ -91,7 +91,7 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is using CliApplication.");
+            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains an invalid mode in SupportedModes parameter.");
         }
 
         [Fact]
@@ -110,7 +110,7 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is not running in this mode.");
+            stdErr.GetString().Should().Contain($"This application is running in '{typeof(DirectMode).FullName}' mode.");
         }
 
         [Fact]

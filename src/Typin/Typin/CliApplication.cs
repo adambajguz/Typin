@@ -194,7 +194,9 @@
             bool isRunning = true;
             while (isRunning && !_console.GetCancellationToken().IsCancellationRequested)
             {
-                exitCode = await _cliModeSwitcher.Current!.Execute(commandLineArguments, _cliCommandExecutor);
+                ICliMode currentMode = _cliModeSwitcher.Current!;
+
+                exitCode = await currentMode.Execute(commandLineArguments, _cliCommandExecutor);
 
                 _cliModeSwitcher.TrySwitchModes();
                 isRunning = false;

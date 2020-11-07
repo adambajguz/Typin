@@ -17,7 +17,7 @@
         private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
 
         /// <inheritdoc/>
-        public string Scope { get; set; } = string.Empty;
+        public Guid Id { get; } = Guid.NewGuid();
 
         /// <inheritdoc/>
         public ApplicationMetadata Metadata { get; }
