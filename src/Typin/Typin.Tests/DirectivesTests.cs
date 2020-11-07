@@ -40,7 +40,7 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("This application does not support interactive mode.");
+            stdErr.GetString().Should().Contain("Unknown directive '[interactive]'.");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

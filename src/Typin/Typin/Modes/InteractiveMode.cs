@@ -52,7 +52,9 @@
         public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
             if (firstEnter)
-                await executor.ExecuteCommand(commandLineArguments);
+            {
+                //await executor.ExecuteCommand(commandLineArguments);
+            }
 
             await RunInteractivelyAsync(executor);
 

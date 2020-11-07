@@ -17,7 +17,7 @@
     public sealed class InteractiveDirective : IDirective
     {
         /// <inheritdoc/>
-        public bool ContinueExecution => true;
+        public bool ContinueExecution => false;
 
         private readonly ICliModeSwitcher _modeSwitcher;
 

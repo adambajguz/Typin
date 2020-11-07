@@ -290,13 +290,13 @@ namespace Typin
         #region Exceptions
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
-        /// Exception handler is configured as transient.
+        /// Exception handler is configured as scoped service.
         /// </summary>
         public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
         {
             _configureServicesActions.Add(services =>
             {
-                services.AddTransient(typeof(ICliExceptionHandler), exceptionHandlerType);
+                services.AddScoped(typeof(ICliExceptionHandler), exceptionHandlerType);
             });
 
             return this;
@@ -304,7 +304,7 @@ namespace Typin
 
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
-        /// Exception handler is configured as singleton.
+        /// Exception handler is configured as scoped service.
         /// </summary>
         public CliApplicationBuilder UseExceptionHandler<T>()
             where T : class, ICliExceptionHandler
@@ -455,25 +455,25 @@ namespace Typin
 
         #region Help Writer
         /// <summary>
-        /// Configures to use a specific help writer with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific help writer with transient lifetime.
         /// </summary>
-        public CliApplicationBuilder UseHelpWriter(Type helpWriterType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        public CliApplicationBuilder UseHelpWriter(Type helpWriterType)
         {
             _configureServicesActions.Add(services =>
             {
-                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), helpWriterType, lifetime));
+                services.AddTransient(typeof(IHelpWriter), helpWriterType);
             });
 
             return this;
         }
 
         /// <summary>
-        /// Configures to use a specific help writer with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific help writer with transient lifetime.
         /// </summary>
-        public CliApplicationBuilder UseHelpWriter<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
-            where T : IOptionFallbackProvider
+        public CliApplicationBuilder UseHelpWriter<T>()
+            where T : IHelpWriter
         {
-            return UseOptionFallbackProvider(typeof(T), lifetime);
+            return UseOptionFallbackProvider(typeof(T));
         }
         #endregion
 
@@ -563,8 +563,8 @@ namespace Typin
             }
 
             services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
-            services.TryAddSingleton<IHelpWriter, DefaultHelpWriter>();
-            services.TryAddSingleton<ICliExceptionHandler, DefaultExceptionHandler>();
+            services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
+            services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
 
             object? containerBuilder = _serviceProviderAdapter.CreateBuilder(services);
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)

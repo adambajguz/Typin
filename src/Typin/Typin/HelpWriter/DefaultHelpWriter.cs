@@ -164,7 +164,7 @@
                 DirectiveSchema schema = directive.Value;
 
                 // Name
-                if (schema.CanBeExecutedInMode<InteractiveMode>())
+                if (!schema.CanBeExecutedInMode<DirectMode>())
                 {
                     Write(InteractiveOnlyColor, "@");
                     WriteHorizontalMargin(1);
@@ -235,7 +235,7 @@
             WriteHeader("Usage");
 
             // Exe name
-            if (command.CanBeExecutedInMode<InteractiveMode>())
+            if (!command.CanBeExecutedInMode<DirectMode>())
             {
                 Write(InteractiveOnlyColor, "@");
                 WriteHorizontalMargin(1);
@@ -425,7 +425,7 @@
                     : childCommand.Name!;
 
                 // Name
-                if (childCommand.CanBeExecutedInMode<InteractiveMode>())
+                if (!childCommand.CanBeExecutedInMode<DirectMode>())
                 {
                     Write(InteractiveOnlyColor, "@");
                     WriteHorizontalMargin(1);
