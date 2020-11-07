@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Internal;
@@ -18,27 +19,26 @@
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
 
-        private readonly ConsoleColor _promptForeground;
-        private readonly ConsoleColor _commandForeground;
         private readonly AutoCompleteInput? _autoCompleteInput;
+
+        /// <summary>
+        /// Mode options.
+        /// </summary>
+        public InteractiveModeSettings Options { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
-        public InteractiveMode(IConsole console, ApplicationMetadata metadata)
+        public InteractiveMode(IOptions<InteractiveModeSettings> options, IConsole console, ApplicationMetadata metadata)
         {
+            Options = options.Value;
+
             _console = console;
             _metadata = metadata;
 
-            _promptForeground = ConsoleColor.Blue;
-            _commandForeground = ConsoleColor.Yellow;
-
-            HashSet<ShortcutDefinition> userDefinedShortcut = new HashSet<ShortcutDefinition>();
-
-            //if (cliContext.Configuration.IsAdvancedInputAllowed && !cliContext.Console.IsInputRedirected)
-            if (!console.IsInputRedirected)
+            if (Options.IsAdvancedInputAvailable && !console.IsInputRedirected)
             {
-                //_autoCompleteInput = new AutoCompleteInput(console, userDefinedShortcut)
+                //_autoCompleteInput = new AutoCompleteInput(console, Options.UserDefinedShortcut)
                 //{
                 //    AutoCompletionHandler = new AutoCompletionHandler(cliContext),
                 //};
@@ -80,10 +80,14 @@
         {
             string[] arguments;
             string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
+
             do
             {
+                ConsoleColor promptForeground = Options.PromptForeground;
+                ConsoleColor commandForeground = Options.CommandForeground;
+
                 // Print prompt
-                console.WithForegroundColor(_promptForeground, () =>
+                console.WithForegroundColor(promptForeground, () =>
                 {
                     console.Output.Write(executableName);
                 });
@@ -99,13 +103,13 @@
                     });
                 }
 
-                console.WithForegroundColor(_promptForeground, () =>
+                console.WithForegroundColor(promptForeground, () =>
                 {
                     console.Output.Write("> ");
                 });
 
                 // Read user input
-                console.WithForegroundColor(_commandForeground, () =>
+                console.WithForegroundColor(commandForeground, () =>
                 {
                     if (_autoCompleteInput is null)
                         line = console.Input.ReadLine();

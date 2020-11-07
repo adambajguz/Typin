@@ -16,12 +16,15 @@
         /// <summary>
         /// Resolves <see cref="CommandSchema"/>.
         /// </summary>
-        public static CommandSchema Resolve(Type type)
+        public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
         {
             if (!SchemasHelpers.IsCommandType(type))
                 throw ResolversExceptions.InvalidCommandType(type);
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
+
+            if (modeTypes != null && attribute.SupportedModes.Except(modeTypes).Any())
+                throw ResolversExceptions.InvalidSupportedModesInCommand(type);
 
             string? name = attribute.Name;
 

@@ -1,6 +1,8 @@
 ﻿namespace Typin.Internal.Schemas
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Typin.Attributes;
     using Typin.Internal.Exceptions;
@@ -14,12 +16,15 @@
         /// <summary>
         /// Resolves <see cref="DirectiveSchema"/>.
         /// </summary>
-        public static DirectiveSchema Resolve(Type type)
+        public static DirectiveSchema Resolve(Type type, IReadOnlyList<Type> modeTypes)
         {
             if (!SchemasHelpers.IsDirectiveType(type))
                 throw ResolversExceptions.InvalidDirectiveType(type);
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
+
+            if (attribute.SupportedModes.Except(modeTypes).Any())
+                throw ResolversExceptions.InvalidSupportedModesInDirective(type);
 
             string name = attribute.Name.TrimStart('[').TrimEnd(']');
             if (string.IsNullOrWhiteSpace(name))

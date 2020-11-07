@@ -19,8 +19,8 @@
         {
             app.AddCommandsFromThisAssembly()
                .AddDirective<DebugDirective>()
-               .RegisterMode<DirectMode>()
-               .RegisterMode<InteractiveMode>();
+               .UseDirectMode(true)
+               .UseInteractiveMode();
         }
     }
 }

@@ -13,6 +13,28 @@
     /// </summary>
     internal static class ResolversExceptions
     {
+        internal static TypinException InvalidSupportedModesInDirective(Type type)
+        {
+            var message = $@"
+Directive '{type.FullName}' contains an invalid mode in SupportedModes parameter.
+Either the type does not implement {nameof(ICliMode)} or CLI mode was not registered.
+
+If you're experiencing problems, please refer to the readme for a quickstart example.";
+
+            return new TypinException(message.Trim());
+        }
+
+        internal static TypinException InvalidSupportedModesInCommand(Type type)
+        {
+            var message = $@"
+Command '{type.FullName}' contains an invalid mode in SupportedModes parameter.
+Either the type does not implement {nameof(ICliMode)} or CLI mode was not registered.
+
+If you're experiencing problems, please refer to the readme for a quickstart example.";
+
+            return new TypinException(message.Trim());
+        }
+
         internal static TypinException DuplicatedShortcut(ShortcutDefinition definition)
         {
             var message = $@"
@@ -41,7 +63,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
             var message = $@"
 Directive '{type.FullName}' is not a valid directive type.
 
-In order to be a valid command type, it must:
+In order to be a valid directive type, it must:
 - Not be an abstract class
 - Implement {typeof(IDirective).FullName}
 - Be annotated with {typeof(DirectiveAttribute).FullName}

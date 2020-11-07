@@ -116,8 +116,8 @@
                 .UseExecutableName("test")
                 .UseVersionText("test")
                 .UseDescription("test")
-                .RegisterMode<DirectMode>()
-                .RegisterMode<InteractiveMode>()
+                .UseDirectMode(true)
+                .UseInteractiveMode()
                 .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .UseConsole(new VirtualConsole(Stream.Null))
                 .Build();
@@ -143,8 +143,7 @@
                .UseExecutableName("test")
                .UseVersionText("test")
                .UseDescription("test")
-               .RegisterMode<DirectMode>()
-               .RegisterMode<InteractiveMode>()
+               .UseInteractiveMode()
                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                .UseConsole<SystemConsole>()
                .Build();

@@ -27,8 +27,8 @@
                 .UseMiddleware<ExitCodeMiddleware>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseMiddleware<ExecutionLogMiddleware>()
-                .RegisterMode<DirectMode>()
-                .RegisterMode<InteractiveMode>()
+                .UseDirectMode(true)
+                .UseInteractiveMode()
                 .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .Build()
                 .RunAsync();

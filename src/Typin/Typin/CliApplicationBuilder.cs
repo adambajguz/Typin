@@ -292,7 +292,7 @@ namespace Typin
         {
             _configureServicesActions.Add(services =>
             {
-                services.AddSingleton(new ServiceDescriptor(typeof(IOptionFallbackProvider), exceptionHandlerType));
+                services.AddSingleton(typeof(ICliExceptionHandler), exceptionHandlerType);
             });
 
             return this;
@@ -308,36 +308,29 @@ namespace Typin
         }
         #endregion
 
-        //TODO add mode configuration
         #region Modes
         /// <summary>
         /// Registers a CLI mode. Only one mode can be registered as startup mode.
-        /// If no mode was registered or non of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
+        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
+        ///
+        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
         /// </summary>
-        public CliApplicationBuilder RegisterMode(Type cliMode, bool asStartup = false)
+        public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
+            where T : ICliMode
         {
+            Type cliMode = typeof(T);
             _modeTypes.Add(cliMode);
 
             _configureServicesActions.Add(services =>
             {
-                services.TryAddTransient(cliMode);
-                services.AddScoped(typeof(ICliMode), cliMode);
+                services.TryAddSingleton(cliMode);
+                services.AddSingleton(typeof(ICliMode), (IServiceProvider sp) => sp.GetService(cliMode));
             });
 
             if (asStartup)
                 _startupMode = _startupMode is null ? cliMode : throw new ArgumentException($"Only one mode can be registered as startup mode.", nameof(asStartup));
 
             return this;
-        }
-
-        /// <summary>
-        /// Registers a CLI mode. Only one mode can be registered as startup mode.
-        /// If no mode was registered or non of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
-        /// </summary>
-        public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
-            where T : ICliMode
-        {
-            return RegisterMode(typeof(T), asStartup);
         }
         #endregion
 
@@ -522,7 +515,7 @@ namespace Typin
             _console ??= new SystemConsole();
 
             if (_startupMode is null || _modeTypes.Count == 0)
-                RegisterMode<DirectMode>(true);
+                this.UseDirectMode(true);
 
             // Format startup message
             if (_startupMessage != null)
@@ -559,6 +552,7 @@ namespace Typin
             var cliContextFactory = new CliContextFactory(metadata, configuration, _console);
 
             // Add core services
+            _serviceCollection.AddOptions();
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
             _serviceCollection.AddSingleton(typeof(IConsole), _console);

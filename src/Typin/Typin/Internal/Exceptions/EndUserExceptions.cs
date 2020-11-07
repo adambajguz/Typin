@@ -9,7 +9,6 @@
     /// Interactive mode end-user-facing exceptions. Avoid internal details and fix recommendations here
     /// </summary>
     internal static class InteractiveModeEndUserExceptions
-
     {
         internal static TypinException InteractiveOnlyCommandButThisIsDirectApplication(CommandSchema command)
         {

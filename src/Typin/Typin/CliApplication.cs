@@ -142,7 +142,7 @@
                 _console.ForegroundColor = ConsoleColor.Gray;
 
                 _cliContextFactory.EnvironmentVariables = environmentVariables;
-                _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes).Resolve();
+                _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes, _configuration.ModeTypes).Resolve();
 
                 //TODO: OnStart()
 

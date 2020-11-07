@@ -11,8 +11,9 @@
     /// </summary>
     internal class RootSchemaResolver
     {
-        private IReadOnlyList<Type> CommandTypes { get; }
-        private IReadOnlyList<Type> DirectiveTypes { get; }
+        private IReadOnlyList<Type> _commandTypes { get; }
+        private IReadOnlyList<Type> _directiveTypes { get; }
+        private IReadOnlyList<Type> _modeTypes { get; }
 
         public CommandSchema? DefaultCommand { get; private set; }
         public Dictionary<string, CommandSchema>? Commands { get; private set; }
@@ -21,10 +22,11 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchemaResolver"/>.
         /// </summary>
-        public RootSchemaResolver(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes)
+        public RootSchemaResolver(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes, IReadOnlyList<Type> modeTypes)
         {
-            CommandTypes = commandTypes;
-            DirectiveTypes = directiveTypes;
+            _commandTypes = commandTypes;
+            _directiveTypes = directiveTypes;
+            _modeTypes = modeTypes;
         }
 
         /// <summary>
@@ -32,8 +34,8 @@
         /// </summary>
         public RootSchema Resolve()
         {
-            ResolveCommands(CommandTypes);
-            ResolveDirectives(DirectiveTypes);
+            ResolveCommands(_commandTypes);
+            ResolveDirectives(_directiveTypes);
 
             return new RootSchema(Directives!, Commands!, DefaultCommand);
         }
@@ -46,7 +48,7 @@
 
             foreach (Type commandType in commandTypes)
             {
-                CommandSchema command = CommandSchemaResolver.Resolve(commandType);
+                CommandSchema command = CommandSchemaResolver.Resolve(commandType, _modeTypes);
 
                 if (command.IsDefault)
                 {
@@ -81,7 +83,7 @@
 
             foreach (Type? directiveType in directiveTypes)
             {
-                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType);
+                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType, _modeTypes);
 
                 if (!directives.TryAdd(directive.Name, directive))
                     invalidDirectives.Add(directive);

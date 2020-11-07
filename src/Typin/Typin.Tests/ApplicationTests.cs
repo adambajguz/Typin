@@ -34,8 +34,8 @@
 
             if (interactive)
             {
-                builder.RegisterMode<DirectMode>()
-                       .RegisterMode<InteractiveMode>();
+                builder.UseDirectMode(true)
+                       .UseInteractiveMode();
             }
 
             // Act
@@ -65,8 +65,7 @@
 
             if (interactive)
             {
-                builder.RegisterMode<DirectMode>()
-                       .RegisterMode<InteractiveMode>();
+                builder.UseInteractiveMode();
             }
 
             // Act
@@ -101,8 +100,8 @@
             // Arrange
             var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
                                                      .AddCommand<NamedInteractiveOnlyCommand>()
-                                                     .RegisterMode<DirectMode>()
-                                                     .RegisterMode<InteractiveMode>();
+                                                     .UseDirectMode(true)
+                                                     .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
