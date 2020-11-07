@@ -23,3 +23,6 @@ jobs:
 
     - name: Deploy
       run: dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+
+    - name: Deploy
+      run: dotnet nuget push src/Typin/Typin.Core/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}

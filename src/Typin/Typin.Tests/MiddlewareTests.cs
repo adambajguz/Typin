@@ -1,11 +1,10 @@
 ﻿namespace Typin.Tests
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.Middlewares;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -22,22 +21,14 @@
         public async Task Middleware_types_collection_should_contain_all_user_defined_middlewares()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            // Act
-            var app = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<PipelineCommand>()
-                .UseConsole(console)
                 .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware(typeof(ExitCodeMiddleware))
-                .Build();
-
-            // Assert
-            app.Should().NotBeNull();
+                .UseMiddleware(typeof(ExitCodeMiddleware));
 
             // Act
-            int exitCode = await app.RunAsync(new string[] { "pipeline" }, new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "pipeline" });
 
             // Asert
             exitCode.Should().Be(0);
@@ -57,22 +48,14 @@
         public async Task Middleware_pipeline_should_be_executed()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            // Act
-            var app = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<PipelineCommand>()
-                .UseConsole(console)
                 .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware(typeof(ExitCodeMiddleware))
-                .Build();
-
-            // Assert
-            app.Should().NotBeNull();
+                .UseMiddleware(typeof(ExitCodeMiddleware));
 
             // Act
-            int exitCode = await app.RunAsync(new string[] { }, new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Asert
             exitCode.Should().Be(0);

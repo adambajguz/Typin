@@ -6,9 +6,11 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Invalid;
     using Typin.Tests.Data.CustomDirectives.Valid;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -22,28 +24,23 @@
         }
 
         [Fact]
-        public async Task Normal_mode_application_cannot_process_interactive_directive()
+        public async Task Direct_mode_application_cannot_process_interactive_directive()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective<PreviewDirective>()
-                .Build();
+                .AddCommand<DefaultCommand>()
+                .AddDirective<PreviewDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[interactive]" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "[interactive]" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("This application does not support interactive mode.");
+            stdErr.GetString().Should().Contain("Unknown directive '[interactive]'.");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());
@@ -53,18 +50,13 @@
         public async Task Preview_directive_can_be_specified_to_print_provided_arguments_as_they_were_parsed()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective<PreviewDirective>()
-                .Build();
+                .AddDirective<PreviewDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -80,20 +72,15 @@
         public async Task Custom_stop_directive_should_cancel_execution_after_running()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
-                .AddDirective<PreviewDirective>()
-                .UseConsole(console)
-                .Build();
+                .AddDirective<PreviewDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-stop]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-stop]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -105,20 +92,14 @@
         public async Task Custom_directive_should_run()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomDirective>()
-                .AddDirective<CustomStopDirective>()
-                .Build();
+                .AddDirective<CustomStopDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom]", "named" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "[custom]", "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -134,19 +115,13 @@
         public async Task Default_directive_should_allow_default_command_to_execute_when_there_is_a_name_conflict()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<DefaultCommandWithParameter>()
-                .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective<DefaultDirective>()
-                .Build();
+            var builder = new CliApplicationBuilder()
+                 .AddCommand<DefaultCommandWithParameter>()
+                 .AddCommand<NamedCommand>()
+                 .AddDirective<DefaultDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[!]", "named" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "[!]", "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -159,24 +134,19 @@
         }
 
         [Fact]
-        public async Task Custom_interactive_directive_should_not_run_in_normal_mode()
+        public async Task Custom_interactive_directive_should_not_run_in_direct_mode()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .AddDirective<CustomInteractiveModeOnlyDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().NotBe(0);
@@ -184,9 +154,7 @@
             stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
-            stdErr.GetString().Should().ContainAll(
-                "Directive", "[custom-interactive]", "is for interactive mode only."
-            );
+            stdErr.GetString().Should().Contain($"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' contains an invalid mode in SupportedModes parameter.");
 
             _output.WriteLine(stdOut.GetString());
         }
@@ -195,11 +163,8 @@
         public async Task Custom_throwable_directive_should_throw_exception()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
@@ -207,12 +172,12 @@
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .UseDirectMode(true)
+                .UseInteractiveMode();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-throwable]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-throwable]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirective.ExpectedExitCode);
@@ -228,24 +193,18 @@
         public async Task Custom_throwable_directive_with_message_should_throw_exception()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
                 .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
-                .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .AddDirective<CustomStopDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-throwable-with-message]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-throwable-with-message]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirectiveWithMessage.ExpectedExitCode);
@@ -260,11 +219,8 @@
         public async Task Custom_throwable_directive_with_message_and_show_help_should_throw_exception()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
@@ -273,12 +229,11 @@
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .UseInteractiveMode();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
@@ -297,11 +252,8 @@
         public async Task Custom_throwable_directive_with_inner_exception_should_throw_exception()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
@@ -309,12 +261,11 @@
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .UseInteractiveMode();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-throwable-with-inner-exception]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-throwable-with-inner-exception]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
@@ -348,18 +299,13 @@
         public async Task Custom_directive_should_have_proper_interface()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective(typeof(NoInterafaceDirective))
-                .Build();
+                .AddDirective(typeof(NoInterafaceDirective));
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[invalid-no-interface]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[invalid-no-interface]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
@@ -374,18 +320,13 @@
         public async Task Custom_directive_should_have_proper_attribute()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective<NoAttributeDirective>()
-                .Build();
+                .AddDirective<NoAttributeDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
@@ -401,19 +342,14 @@
         public async Task Custom_directive_should_be_registered_once()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
-                .AddDirective<DuplicatedDirective>()
-                .Build();
+                .AddDirective<DuplicatedDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
@@ -429,17 +365,13 @@
         public async Task Custom_directive_should_have_non_empty_name()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<PreviewDirective>()
-                .AddDirective<EmptyNameDirective>()
-                .Build();
+                .AddDirective<EmptyNameDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
                 new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
                 new Dictionary<string, string>());
 
@@ -457,17 +389,12 @@
         public async Task Custom_directive_should_be_registered_to_be_used()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
@@ -480,28 +407,25 @@
         }
 
         [Fact]
-        public async Task Interactive_only_directive_cannot_be_executed_in_normal_mode()
+        public async Task Interactive_only_directive_cannot_be_executed_in_direct_mode()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .Build();
+                .UseInteractiveMode();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("Directive '[custom-interactive]' is for interactive mode only. Thus, cannot be used in normal mode.");
+            stdErr.GetString().Should().ContainAll($"This application is running in '{typeof(DirectMode).FullName}' mode.",
+                                                   $"directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' can be executed only from the following modes");
 
             _output.WriteLine(stdOut.GetString());
             _output.WriteLine(stdErr.GetString());

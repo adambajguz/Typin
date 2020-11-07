@@ -5,7 +5,6 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Exceptions;
 
     [Command("webhost", Description = "Management of the background webhost in the interactive mode.")]
     public class WebHostCommand : ICommand
@@ -24,8 +23,8 @@
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            if (_cliContext.IsInteractiveMode)
-                throw new CommandException(Message, exitCode: 0, showHelp: false);
+            //if (_cliContext.ModeSwitcher.Current == CliModes.Interactive)
+            //    throw new CommandException(Message, exitCode: 0, showHelp: false);
 
             await _webHostRunnerService.RunAsync(console.GetCancellationToken());
         }

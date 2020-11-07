@@ -130,7 +130,7 @@
                 {
                     if (!_shortcuts.Add(shortcut))
                     {
-                        throw InternalTypinExceptions.DuplicatedShortcut(shortcut);
+                        throw ResolversExceptions.DuplicatedShortcut(shortcut);
                     }
                 }
             }

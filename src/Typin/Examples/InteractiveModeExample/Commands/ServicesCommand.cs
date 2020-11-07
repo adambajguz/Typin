@@ -20,7 +20,7 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            DebugPrintServices(console, _cliContext.Services);
+            DebugPrintServices(console, _cliContext.Configuration.Services);
 
             return default;
         }

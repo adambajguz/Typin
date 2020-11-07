@@ -8,6 +8,7 @@
     using Typin;
     using Typin.Input;
     using Typin.Internal.Exceptions;
+    using Typin.Internal.Input;
     using Typin.OptionFallback;
     using Typin.Schemas;
 
@@ -15,10 +16,14 @@
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IOptionFallbackProvider _optionFallbackProvider;
+        private readonly ICliModeSwitcher _modeSwitcher;
 
-        public ExecuteCommand(IServiceProvider serviceProvider, IOptionFallbackProvider optionFallbackProvider)
+        public ExecuteCommand(IServiceProvider serviceProvider,
+                              IOptionFallbackProvider optionFallbackProvider,
+                              ICliModeSwitcher modeSwitcher)
         {
             _serviceProvider = serviceProvider;
+            _modeSwitcher = modeSwitcher;
             _optionFallbackProvider = optionFallbackProvider;
         }
 
@@ -34,10 +39,15 @@
             //Get input and command schema from context
             CommandInput input = context.Input;
             CommandSchema commandSchema = context.CommandSchema;
+            Type currentModeType = _modeSwitcher.CurrentType!;
 
             // Execute directives
             if (!await ProcessDefinedDirectives(context))
                 return ExitCodes.Success;
+
+            // Handle commands not supported in current mode
+            if (!commandSchema.CanBeExecutedInMode(currentModeType))
+                throw ModeEndUserExceptions.CommandExecutedInInvalidMode(commandSchema, currentModeType);
 
             // Get command instance from context and bind arguments
             ICommand instance = context.Command;
@@ -51,16 +61,17 @@
 
         private async Task<bool> ProcessDefinedDirectives(ICliContext context)
         {
-            bool isInteractiveMode = context.IsInteractiveMode;
+            Type currentModeType = _modeSwitcher.CurrentType!;
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw EndUserTypinExceptions.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = context.RootSchema.TryFindDirective(directiveInput.Name) ?? throw ArgumentBindingExceptions.UnknownDirectiveName(directiveInput);
 
-                if (!isInteractiveMode && directive.InteractiveModeOnly)
-                    throw EndUserTypinExceptions.InteractiveModeDirectiveNotAvailable(directiveInput.Name);
+                // Handle interactive directives not supported in current mode
+                if (!directive.CanBeExecutedInMode(currentModeType))
+                    throw ModeEndUserExceptions.DirectiveExecutedInInvalidMode(directive, currentModeType);
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);

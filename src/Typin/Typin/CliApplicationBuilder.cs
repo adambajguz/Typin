@@ -7,15 +7,16 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Typin.AutoCompletion;
     using Typin.Console;
-    using Typin.Directives;
     using Typin.Exceptions;
+    using Typin.HelpWriter;
+    using Typin.Internal;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Extensions;
     using Typin.Internal.Pipeline;
+    using Typin.Internal.Schemas;
+    using Typin.Modes;
     using Typin.OptionFallback;
-    using Typin.Schemas;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
@@ -26,7 +27,7 @@ namespace Typin
 
         //Directives and commands settings
         private readonly List<Type> _commandTypes = new List<Type>();
-        private readonly List<Type> _customDirectives = new List<Type>();
+        private readonly List<Type> _directivesTypes = new List<Type>();
 
         //Metadata settings
         private string? _title;
@@ -35,26 +36,28 @@ namespace Typin
         private string? _description;
         private string? _startupMessage;
 
-        //Exceptions
-        private ICliExceptionHandler? _exceptionHandler;
-
         //Console
         private IConsole? _console;
 
         //Dependency injection
-        private IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
+        private IServiceFactoryAdapter _serviceProviderAdapter = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
         private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
         private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
 
-        //Interactive mode settings
-        private bool _useInteractiveMode = false;
-        private bool _useAdvancedInput = false;
-        private ConsoleColor _promptForeground = ConsoleColor.Blue;
-        private ConsoleColor _commandForeground = ConsoleColor.Yellow;
-        private HashSet<ShortcutDefinition>? _userDefinedShortcuts;
+        //Modes
+        private readonly List<Type> _modeTypes = new List<Type>();
+        private Type? _startupMode;
 
         //Middleware
         private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
+
+        /// <summary>
+        /// Initializes an instance of <see cref="CliApplicationBuilder"/>.
+        /// </summary>
+        public CliApplicationBuilder()
+        {
+
+        }
 
         #region Directives
         /// <summary>
@@ -62,7 +65,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            _customDirectives.Add(directiveType);
+            _directivesTypes.Add(directiveType);
 
             _configureServicesActions.Add(services =>
             {
@@ -99,7 +102,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(DirectiveSchema.IsDirectiveType))
+            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(SchemasHelpers.IsDirectiveType))
                 AddDirective(directiveType);
 
             return this;
@@ -170,7 +173,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (Type commandType in commandAssembly.ExportedTypes.Where(CommandSchema.IsCommandType))
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(SchemasHelpers.IsCommandType))
                 AddCommand(commandType);
 
             return this;
@@ -266,6 +269,11 @@ namespace Typin
         {
             _console = console;
 
+            _configureServicesActions.Add(services =>
+            {
+                services.AddSingleton<IConsole>(_console);
+            });
+
             return this;
         }
 
@@ -275,80 +283,57 @@ namespace Typin
         public CliApplicationBuilder UseConsole<T>()
             where T : class, IConsole, new()
         {
-            _console = new T();
-
-            return this;
+            return UseConsole(new T());
         }
         #endregion
 
         #region Exceptions
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
+        /// Exception handler is configured as scoped service.
         /// </summary>
-        public CliApplicationBuilder UseExceptionHandler<T>()
-            where T : class, ICliExceptionHandler, new()
+        public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
         {
-            _exceptionHandler = new T();
+            _configureServicesActions.Add(services =>
+            {
+                services.AddScoped(typeof(ICliExceptionHandler), exceptionHandlerType);
+            });
 
             return this;
         }
 
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
+        /// Exception handler is configured as scoped service.
         /// </summary>
-        public CliApplicationBuilder UseExceptionHandler(ICliExceptionHandler handler)
+        public CliApplicationBuilder UseExceptionHandler<T>()
+            where T : class, ICliExceptionHandler
         {
-            _exceptionHandler = handler;
-
-            return this;
+            return UseExceptionHandler(typeof(T));
         }
         #endregion
 
-        #region Interactive Mode
+        #region Modes
         /// <summary>
-        /// Configures whether interactive mode (enabled with [interactive] directive) is allowed in the application.
-        /// By default this adds [default], [>], [.], and [..] and advanced command input.
+        /// Registers a CLI mode. Only one mode can be registered as startup mode.
+        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
         ///
-        /// If you wish to add only [default] directive, set addScopeDirectives to false.
-        /// If you wish to disable history and auto completion set useAdvancedInput to false.
+        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
         /// </summary>
-        public CliApplicationBuilder UseInteractiveMode(bool addScopeDirectives = true,
-                                                        bool useAdvancedInput = true,
-                                                        HashSet<ShortcutDefinition>? userDefinedShortcuts = null)
+        public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
+            where T : ICliMode
         {
-            _useInteractiveMode = true;
-            _useAdvancedInput = useAdvancedInput;
+            Type cliMode = typeof(T);
+            _modeTypes.Add(cliMode);
 
-            AddDirective<DefaultDirective>();
-
-            if (addScopeDirectives)
+            _configureServicesActions.Add(services =>
             {
-                AddDirective<ScopeDirective>();
-                AddDirective<ScopeResetDirective>();
-                AddDirective<ScopeUpDirective>();
-            }
+                services.TryAddSingleton(cliMode);
+                services.AddSingleton(typeof(ICliMode), (IServiceProvider sp) => sp.GetService(cliMode));
+            });
 
-            _userDefinedShortcuts = userDefinedShortcuts;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures the command prompt foreground color in interactive mode.
-        /// </summary>
-        public CliApplicationBuilder UsePromptForeground(ConsoleColor color)
-        {
-            _promptForeground = color;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures the command input foreground color in interactive mode.
-        /// </summary>
-        public CliApplicationBuilder UseCommandInputForeground(ConsoleColor color)
-        {
-            _commandForeground = color;
+            if (asStartup)
+                _startupMode = _startupMode is null ? cliMode : throw new ArgumentException($"Only one mode can be registered as startup mode.", nameof(asStartup));
 
             return this;
         }
@@ -398,7 +383,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
         {
-            _serviceProviderFactory = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
+            _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
 
             return this;
         }
@@ -419,13 +404,14 @@ namespace Typin
         #region Middleware
         /// <summary>
         /// Adds a middleware to the command execution pipeline.
+        /// Middlewares are also registered as scoped services and are executed in registration order.
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
             _configureServicesActions.Add(services =>
             {
-                services.AddSingleton(typeof(IMiddleware), middleware);
-                services.AddSingleton(middleware);
+                services.AddScoped(typeof(IMiddleware), middleware);
+                services.AddScoped(middleware);
             });
 
             _middlewareTypes.AddFirst(middleware);
@@ -445,7 +431,7 @@ namespace Typin
 
         #region Value fallback
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
@@ -458,7 +444,7 @@ namespace Typin
         }
 
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime instead of Singleton <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
             where T : IOptionFallbackProvider
@@ -467,9 +453,34 @@ namespace Typin
         }
         #endregion
 
+        #region Help Writer
         /// <summary>
-        /// Creates an instance of <see cref="CliApplication"/> or <see cref="InteractiveCliApplication"/> using configured parameters.
+        /// Configures to use a specific help writer with transient lifetime.
+        /// </summary>
+        public CliApplicationBuilder UseHelpWriter(Type helpWriterType)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.AddTransient(typeof(IHelpWriter), helpWriterType);
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures to use a specific help writer with transient lifetime.
+        /// </summary>
+        public CliApplicationBuilder UseHelpWriter<T>()
+            where T : IHelpWriter
+        {
+            return UseOptionFallbackProvider(typeof(T));
+        }
+        #endregion
+
+        /// <summary>
+        /// Creates an instance of <see cref="CliApplication"/> using configured parameters.
         /// Default values are used in place of parameters that were not specified.
+        /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </summary>
         public CliApplication Build()
         {
@@ -483,8 +494,9 @@ namespace Typin
             _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
             _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
-            _exceptionHandler ??= new DefaultExceptionHandler();
-            _userDefinedShortcuts ??= new HashSet<ShortcutDefinition>();
+
+            if (_startupMode is null || _modeTypes.Count == 0)
+                this.UseDirectMode(true);
 
             // Format startup message
             if (_startupMessage != null)
@@ -504,45 +516,43 @@ namespace Typin
                 });
             }
 
-            // Add core middlewares
-            UseMiddleware<ResolveCommandSchema>();
-            UseMiddleware<HandleVersionOption>();
-            UseMiddleware<ResolveCommandInstance>();
-            UseMiddleware<HandleInteractiveDirective>();
-            UseMiddleware<HandleHelpOption>();
-            UseMiddleware<HandleInteractiveCommands>();
-            UseMiddleware<ExecuteCommand>();
+            // Add core middlewares to the end of the pipeline
+            AddCoreMiddlewares();
 
             // Create context
-            var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
-            var configuration = new ApplicationConfiguration(_commandTypes,
-                                                             _customDirectives,
-                                                             _exceptionHandler,
-                                                             _useInteractiveMode,
-                                                             _useAdvancedInput);
-
             var _serviceCollection = new ServiceCollection();
-            var cliContext = new CliContext(metadata, configuration, _serviceCollection, _console, _middlewareTypes);
+
+            var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
+            var configuration = new ApplicationConfiguration(_modeTypes,
+                                                             _commandTypes,
+                                                             _directivesTypes,
+                                                             _middlewareTypes,
+                                                             _startupMode!,
+                                                             _serviceCollection);
+
+            var cliContextFactory = new CliContextFactory(metadata, configuration, _console);
 
             // Add core services
-            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), (provider) => metadata);
-            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), (provider) => configuration);
-            _serviceCollection.AddSingleton(typeof(IConsole), (provider) => _console);
-            _serviceCollection.AddSingleton(typeof(ICliContext), (provider) => cliContext);
+            _serviceCollection.AddOptions();
+            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
+            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
+            _serviceCollection.AddSingleton(typeof(IConsole), _console);
+            _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
+            _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
+            _serviceCollection.AddSingleton<ICliModeSwitcher, CliModeSwitcher>();
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            // Create application instance
-            if (_useInteractiveMode)
-            {
-                return new InteractiveCliApplication(serviceProvider,
-                                                     cliContext,
-                                                     _promptForeground,
-                                                     _commandForeground,
-                                                     _userDefinedShortcuts);
-            }
+            return new CliApplication(serviceProvider, cliContextFactory);
+        }
 
-            return new CliApplication(serviceProvider, cliContext);
+        private void AddCoreMiddlewares()
+        {
+            UseMiddleware<ResolveCommandSchema>();
+            UseMiddleware<HandleVersionOption>();
+            UseMiddleware<ResolveCommandInstance>();
+            UseMiddleware<HandleHelpOption>();
+            UseMiddleware<ExecuteCommand>();
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
@@ -551,17 +561,20 @@ namespace Typin
             {
                 configureServicesAction(services);
             }
-            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
 
-            object? containerBuilder = _serviceProviderFactory.CreateBuilder(services);
+            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
+            services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
+            services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
+
+            object? containerBuilder = _serviceProviderAdapter.CreateBuilder(services);
             foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
             {
                 containerAction.ConfigureContainer(containerBuilder);
             }
 
-            IServiceProvider? appServices = _serviceProviderFactory.CreateServiceProvider(containerBuilder);
+            IServiceProvider? appServices = _serviceProviderAdapter.CreateServiceProvider(containerBuilder);
 
-            return appServices ?? throw new InvalidOperationException($"The IServiceProviderFactory returned a null IServiceProvider.");
+            return appServices ?? throw new InvalidOperationException($"{nameof(IServiceFactoryAdapter)} returned a null instance of object implementing {nameof(IServiceProvider)}.");
         }
     }
 }

@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[3.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="[3.0,]" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
@@ -50,15 +51,8 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
-  <!-- The following item group and target ensure that the analyzer project is copied into the output NuGet package -->
   <ItemGroup>
-    <ProjectReference Include="..\Typin.Analyzers\Typin.Analyzers.csproj" ReferenceOutputAssembly="true" IncludeAssets="Typin.Analyzers.dll" />
+    <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
   </ItemGroup>
-
-  <Target Name="CopyAnalyzerToPackage">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutDir)/Typin.Analyzers.dll" PackagePath="analyzers/dotnet/cs" BuildAction="none" />
-    </ItemGroup>
-  </Target>
 
 </Project>

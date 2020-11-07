@@ -13,8 +13,6 @@
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             await next();
-
-            bool isInteractive = context.IsInteractiveMode;
             int? exitCode = context.ExitCode;
 
             if (context.ExitCode == 0)

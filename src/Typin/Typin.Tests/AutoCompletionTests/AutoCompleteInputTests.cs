@@ -8,6 +8,7 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Extensions;
+    using Typin.Tests.Data;
     using Xunit;
     using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
