@@ -25,7 +25,8 @@
 
         public static string ToCamelCase(this string s1)
         {
-            return _toCamelCaseRegex.Replace(s1, delegate (Match m) {
+            return _toCamelCaseRegex.Replace(s1, delegate (Match m)
+            {
                 return m.ToString().TrimStart('_').ToUpper();
             });
         }

@@ -5,32 +5,37 @@
     /// <summary>
     /// Provides methods to switch and get current CLI mode.
     /// </summary>
-    public interface ICliModeSwitcher
+    public interface ICliApplicationLifetime
     {
+        /// <summary>
+        /// Current application state.
+        /// </summary>
+        CliLifetimes State { get; }
+
         /// <summary>
         /// Current mode or null if startup mode was not initialized.
         /// </summary>
-        ICliMode? Current { get; }
+        ICliMode? CurrentMode { get; }
 
         /// <summary>
         /// Current mode type or null if startup mode was not initialized.
         /// </summary>
-        Type? CurrentType { get; }
+        Type? CurrentModeType { get; }
 
         /// <summary>
-        /// Mode to switch to or null if nothing needs to be changes.
+        /// Requested to switch to or null if nothing needs to be changes.
         /// </summary>
-        ICliMode? Pending { get; }
+        ICliMode? RequestedMode { get; }
 
         /// <summary>
-        /// Pending mode type or null if startup mode was not initialized.
+        /// Requested mode type or null if startup mode was not initialized.
         /// </summary>
-        Type? PendingType { get; }
+        Type? RequestedModeType { get; }
 
         /// <summary>
         /// Whether mode change was queued.
         /// </summary>
-        bool IsPending { get; }
+        bool IsModeRequested { get; }
 
         /// <summary>
         /// Queues a mode reset to startup mode when mode differs from current and pending.
@@ -55,5 +60,10 @@
         /// True if mode change was queued, otherwise false.
         /// </returns>
         bool RequestMode(Type cliMode);
+
+        /// <summary>
+        /// Queues a stop. Application will stop after the end of current command execution if there was no requested mode change.
+        /// </summary>
+        void RequestStop();
     }
 }

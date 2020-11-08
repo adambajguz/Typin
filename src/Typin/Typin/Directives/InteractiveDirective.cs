@@ -16,23 +16,23 @@
     [Directive(BuiltInDirectives.Interactive, Description = "Starts an interactive mode.")]
     public sealed class InteractiveDirective : IDirective
     {
+        private readonly ICliApplicationLifetime _applicationLifetime;
+
         /// <inheritdoc/>
         public bool ContinueExecution => false;
-
-        private readonly ICliModeSwitcher _modeSwitcher;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveDirective"/>.
         /// </summary>
-        public InteractiveDirective(ICliModeSwitcher cliContext)
+        public InteractiveDirective(ICliApplicationLifetime cliContext)
         {
-            _modeSwitcher = cliContext;
+            _applicationLifetime = cliContext;
         }
 
         /// <inheritdoc/>
         public ValueTask HandleAsync(IConsole console)
         {
-            _modeSwitcher.RequestMode<InteractiveMode>();
+            _applicationLifetime.RequestMode<InteractiveMode>();
 
             return default;
         }

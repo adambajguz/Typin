@@ -10,6 +10,8 @@
     /// </summary>
     public class DirectMode : ICliMode
     {
+        private readonly ICliApplicationLifetime _applicationLifetime;
+
         /// <summary>
         /// Mode options.
         /// </summary>
@@ -18,15 +20,19 @@
         /// <summary>
         /// Initializes an instance of <see cref="DirectMode"/>.
         /// </summary>
-        public DirectMode(IOptions<DirectModeSettings> options)
+        public DirectMode(IOptions<DirectModeSettings> options, ICliApplicationLifetime applicationLifetime)
         {
             Options = options.Value;
+            _applicationLifetime = applicationLifetime;
         }
 
         /// <inheritdoc/>
         public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            return await executor.ExecuteCommand(commandLineArguments);
+            int exitCode = await executor.ExecuteCommand(commandLineArguments);
+            _applicationLifetime.RequestStop();
+
+            return exitCode;
         }
     }
 }
