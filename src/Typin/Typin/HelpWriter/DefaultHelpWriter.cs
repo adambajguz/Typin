@@ -30,7 +30,7 @@
 
         private readonly ICliContext _context;
         private readonly IConsole _console;
-        private readonly ICliModeSwitcher _modeSwitcher;
+        private readonly ICliApplicationLifetime _applicationLifetime;
 
         private int _column;
         private int _row;
@@ -40,11 +40,11 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext, IConsole console, ICliModeSwitcher modeSwitcher)
+        public DefaultHelpWriter(ICliContext cliContext, IConsole console, ICliApplicationLifetime applicationLifetime)
         {
             _context = cliContext;
             _console = console;
-            _modeSwitcher = modeSwitcher;
+            _applicationLifetime = applicationLifetime;
         }
 
         /// <inheritdoc/>
@@ -243,7 +243,7 @@
             else
                 WriteHorizontalMargin();
 
-            if (_modeSwitcher.Current is DirectMode)
+            if (_applicationLifetime.CurrentMode is DirectMode)
                 Write(_context.Metadata.ExecutableName);
 
             // Child command placeholder
@@ -449,7 +449,7 @@
             WriteVerticalMargin();
             Write("You can run `");
 
-            bool isDirectMode = _modeSwitcher.Current is DirectMode;
+            bool isDirectMode = _applicationLifetime.CurrentMode is DirectMode;
             if (isDirectMode)
                 Write(_context.Metadata.ExecutableName);
 

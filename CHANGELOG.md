@@ -5,7 +5,7 @@
 - Advanced interactive input is disabled when input is redirected.
 - Renamed `normal mode` to `direct mode`.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
-- Major API and command execution changes: a) added `ICliModeSwitcher`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
+- Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
 - Replaced `IsInteractiveModeOnly` with `SupportedModes`.
 - Added support for options with no name by automatic conversion of property names. 
 

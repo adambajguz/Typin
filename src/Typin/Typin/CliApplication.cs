@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Console;
@@ -24,7 +25,7 @@
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
-        private readonly CliModeSwitcher _cliModeSwitcher;
+        private readonly CliApplicationLifetime _applicationLifetime;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
@@ -38,7 +39,7 @@
             _metadata = serviceProvider.GetService<ApplicationMetadata>();
             _console = serviceProvider.GetService<IConsole>();
             _cliCommandExecutor = serviceProvider.GetService<ICliCommandExecutor>();
-            _cliModeSwitcher = (CliModeSwitcher)serviceProvider.GetService<ICliModeSwitcher>();
+            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetService<ICliApplicationLifetime>();
         }
 
         /// <summary>
@@ -184,20 +185,23 @@
 
         private async Task<int> StartAppAsync(IReadOnlyList<string> commandLineArguments)
         {
-            //Perform startup mode switching.
-            _cliModeSwitcher.TrySwitchModes();
+            _applicationLifetime.Initialize();
 
             int exitCode = ExitCodes.Error;
+            CancellationToken cancellationToken = _console.GetCancellationToken();
 
-            bool isRunning = true; //TODO: add app lifetime with start and stop events
-            while (isRunning && !_console.GetCancellationToken().IsCancellationRequested)
+            while (_applicationLifetime.State == CliLifetimes.Running && !cancellationToken.IsCancellationRequested)
             {
-                ICliMode currentMode = _cliModeSwitcher.Current!;
+                ICliMode? currentMode = _applicationLifetime.CurrentMode;
 
-                exitCode = await currentMode.Execute(commandLineArguments, _cliCommandExecutor);
+                if (currentMode != null)
+                    exitCode = await currentMode.Execute(commandLineArguments, _cliCommandExecutor);
 
-                isRunning = false || _cliModeSwitcher.TrySwitchModes();
+                _applicationLifetime.TrySwitchModes();
+                _applicationLifetime.TryStop();
             }
+
+            _applicationLifetime.State = CliLifetimes.Stopped;
 
             return exitCode;
         }

@@ -539,7 +539,7 @@ namespace Typin
             _serviceCollection.AddSingleton(typeof(IConsole), _console);
             _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
-            _serviceCollection.AddSingleton<ICliModeSwitcher, CliModeSwitcher>();
+            _serviceCollection.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 

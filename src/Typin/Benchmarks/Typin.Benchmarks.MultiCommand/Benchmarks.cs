@@ -18,7 +18,7 @@ namespace Typin.Benchmarks.MultiCommand
     [RankColumn]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     //[RPlotExporter]
-    [MemoryDiagnoser]
+    //[MemoryDiagnoser]
     public class Benchmarks
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };

@@ -5,27 +5,21 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
-    [Command("webhost", Description = "Management of the background webhost in the interactive mode.")]
+    [Command("webhost", Description = "Management of the background webhost in the interactive mode.",
+             SupportedModes = new[] { typeof(InteractiveMode) })]
     public class WebHostCommand : ICommand
     {
-        private readonly ICliContext _cliContext;
         private readonly IWebHostRunnerService _webHostRunnerService;
 
-        [CommandParameter(0, Name = "message", Description = "Exception message.")]
-        public string Message { get; set; } = string.Empty;
-
-        public WebHostCommand(ICliContext cliContext, IWebHostRunnerService webHostRunnerService)
+        public WebHostCommand(IWebHostRunnerService webHostRunnerService)
         {
-            _cliContext = cliContext;
             _webHostRunnerService = webHostRunnerService;
         }
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            //if (_cliContext.ModeSwitcher.Current == CliModes.Interactive)
-            //    throw new CommandException(Message, exitCode: 0, showHelp: false);
-
             await _webHostRunnerService.RunAsync(console.GetCancellationToken());
         }
     }

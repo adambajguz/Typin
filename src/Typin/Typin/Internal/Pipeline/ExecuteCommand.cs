@@ -16,14 +16,14 @@
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IOptionFallbackProvider _optionFallbackProvider;
-        private readonly ICliModeSwitcher _modeSwitcher;
+        private readonly ICliApplicationLifetime _applicationLifetime;
 
         public ExecuteCommand(IServiceProvider serviceProvider,
                               IOptionFallbackProvider optionFallbackProvider,
-                              ICliModeSwitcher modeSwitcher)
+                              ICliApplicationLifetime applicationLifetime)
         {
             _serviceProvider = serviceProvider;
-            _modeSwitcher = modeSwitcher;
+            _applicationLifetime = applicationLifetime;
             _optionFallbackProvider = optionFallbackProvider;
         }
 
@@ -39,7 +39,7 @@
             //Get input and command schema from context
             CommandInput input = context.Input;
             CommandSchema commandSchema = context.CommandSchema;
-            Type currentModeType = _modeSwitcher.CurrentType!;
+            Type currentModeType = _applicationLifetime.CurrentModeType!;
 
             // Execute directives
             if (!await ProcessDefinedDirectives(context))
@@ -61,7 +61,7 @@
 
         private async Task<bool> ProcessDefinedDirectives(ICliContext context)
         {
-            Type currentModeType = _modeSwitcher.CurrentType!;
+            Type currentModeType = _applicationLifetime.CurrentModeType!;
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             foreach (DirectiveInput directiveInput in directives)
