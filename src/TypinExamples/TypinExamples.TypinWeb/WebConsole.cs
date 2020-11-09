@@ -5,8 +5,11 @@
     using System.Threading;
     using Typin.Console;
 
-    public class WebConsole : IConsole
+    public sealed class WebConsole : IConsole
     {
+        private readonly IWebTerminal _webTerminal;
+        private readonly CancellationToken _cancellationToken;
+
         public StreamReader Input { get; }
         public bool IsInputRedirected { get; }
         public StreamWriter Output { get; }
@@ -22,19 +25,39 @@
         public int BufferWidth { get; set; }
         public int BufferHeight { get; set; }
 
-        public void Clear()
+        public WebConsole(IWebTerminal webTerminal, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            _cancellationToken = cancellationToken;
+            _webTerminal = webTerminal;
+
+            Input = new StreamReader(new WebTerminalStream(webTerminal));
+
+            Output = new StreamWriter(new WebTerminalStream(webTerminal))
+            {
+                AutoFlush = true
+            };
+
+            Error = new StreamWriter(new WebTerminalStream(webTerminal))
+            {
+                AutoFlush = true
+            };
+        }
+
+        public async void Clear()
+        {
+            await _webTerminal.ClearAsync();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Input.Dispose();
+            Output.Dispose();
+            Error.Dispose();
         }
 
         public CancellationToken GetCancellationToken()
         {
-            throw new NotImplementedException();
+            return _cancellationToken;
         }
 
         public ConsoleKeyInfo ReadKey(bool intercept = false)
@@ -44,12 +67,12 @@
 
         public void ResetColor()
         {
-            throw new NotImplementedException();
+
         }
 
         public void SetCursorPosition(int left, int top)
         {
-            throw new NotImplementedException();
+
         }
     }
 }
