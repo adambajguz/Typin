@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("xnor")]
     public class XnorCommand : ICommand
     {
         [CommandParameter(0)]

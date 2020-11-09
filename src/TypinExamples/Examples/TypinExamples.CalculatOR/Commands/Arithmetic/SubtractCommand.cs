@@ -1,13 +1,14 @@
 ﻿namespace TypinExamples.CalculatOR.Commands.Arithmetic
 {
     using System.Collections.Generic;
+    using System.Numerics;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("substract", Description = "The result of subtracting n consecutive numbers from the first number")]
     public class SubtractCommand : ICommand
     {
         [CommandParameter(0)]
@@ -16,9 +17,14 @@
         [CommandParameter(1)]
         public IEnumerable<Number> B { get; set; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public async ValueTask ExecuteAsync(IConsole console)
         {
-            return default;
+            BigInteger counter = A.Value;
+            foreach (var x in B)
+            {
+                BigInteger sum = counter - x.Value;
+                await console.Output.WriteLineAsync(counter + "-" + x.Value + "=" + sum);
+            }
         }
     }
 }

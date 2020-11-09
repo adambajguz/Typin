@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("nand")]
     public class NandCommand : ICommand
     {
         [CommandParameter(0)]

@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("xor")]
     public class XorCommand : ICommand
     {
         [CommandParameter(0)]

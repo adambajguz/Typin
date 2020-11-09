@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("nor")]
     public class NorCommand : ICommand
     {
         [CommandParameter(0)]

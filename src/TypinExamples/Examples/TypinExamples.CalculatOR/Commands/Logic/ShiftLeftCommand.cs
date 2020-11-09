@@ -6,7 +6,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("shiftleft")]
     public class ShiftLeftCommand : ICommand
     {
         [CommandParameter(0)]

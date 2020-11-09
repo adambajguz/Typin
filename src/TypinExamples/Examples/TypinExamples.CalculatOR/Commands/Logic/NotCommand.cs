@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("not")]
     public class NotCommand : ICommand
     {
         [CommandParameter(0)]

@@ -1,22 +1,35 @@
 ﻿namespace TypinExamples.CalculatOR.Domain
 {
+    using Microsoft.Extensions.Primitives;
     using System;
+    using System.Globalization;
+    using System.Linq.Expressions;
+    using System.Numerics;
 
     public struct Number
     {
-        public string Value { get; }
+        public BigInteger Value { get; }
 
         public NumberBase Base { get; }
 
-        public Number(string value, NumberBase @base)
+        public Number(BigInteger value, NumberBase @base)
         {
             Value = value;
             Base = @base;
         }
 
-        public static Number Parser(string number)
+        public static Number Parse(string number)
         {
-            throw new NotImplementedException();
+            BigInteger bigInt;
+            if (number.Length >= 2 && number[0] == '0' && char.ToLower(number[1]) == 'x')
+            {
+                bigInt = BigInteger.Parse(number, NumberStyles.HexNumber);
+            return new Number(bigInt, NumberBase.Hexadecimal);
+            }
+
+            bigInt = BigInteger.Parse(number, NumberStyles.Integer);
+            return new Number(bigInt, NumberBase.Decimal);
+
         }
 
         public override bool Equals(object obj)

@@ -7,7 +7,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command]
+    [Command("or")]
     public class OrCommand : ICommand
     {
         [CommandParameter(0)]
