@@ -24,11 +24,11 @@
                 return null;
 
             string configuration = File.ReadAllText(CONFIGURATION_FILE);
-            Configuration options = JsonSerializer.Deserialize<Configuration>(configuration);
+            Configuration? options = JsonSerializer.Deserialize<Configuration>(configuration);
 
-            ExampleDescriptor? descriptor = options.ExamplesSettings?.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
+            ExampleDescriptor? descriptor = options?.ExamplesSettings?.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
                                                                                            (x.Name?.Contains(exampleName) ?? false))
-                                                                               .FirstOrDefault();
+                                                                                .FirstOrDefault();
 
             return descriptor;
         }

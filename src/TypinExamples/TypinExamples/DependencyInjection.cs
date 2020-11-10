@@ -3,7 +3,6 @@
     using System;
     using System.Net.Http;
     using Blazor.Extensions.Logging;
-    using Blazor.Extensions.Storage;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +16,6 @@
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IWebAssemblyHostEnvironment environment)
         {
             services.AddOptions();
-            services.AddStorage();
 
             services.AddLogging(builder => builder.AddBrowserConsole()
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
