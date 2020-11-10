@@ -6,91 +6,91 @@
     public class TerminalOptions
     {
         [JsonPropertyName("allowTransparency")]
-        public bool? AllowTransparency { get; set; }
+        public bool? AllowTransparency { get; init; }
 
         [JsonPropertyName("bellSound")]
-        public string? BellSound { get; set; }
+        public string? BellSound { get; init; }
 
         [JsonPropertyName("bellStyle")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public BellStyle? BellStyle { get; set; }
+        public BellStyle? BellStyle { get; init; }
 
         [JsonPropertyName("cols")]
-        public int? Columns { get; set; }
+        public int? Columns { get; init; }
 
         [JsonPropertyName("convertEol")]
-        public bool? ConvertEOL { get; set; }
+        public bool? ConvertEOL { get; init; }
 
         [JsonPropertyName("cursorBlink")]
-        public bool? CursorBlink { get; set; }
+        public bool? CursorBlink { get; init; }
 
         [JsonPropertyName("cursorStyle")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public CursorStyle? CursorStyle { get; set; }
+        public CursorStyle? CursorStyle { get; init; }
 
         [JsonPropertyName("disableStdin")]
-        public bool? DisableStdin { get; set; }
+        public bool? DisableStdin { get; init; }
 
         [JsonPropertyName("drawBoldTextInBrightColors")]
-        public bool? DrawBoldTextInBrightColors { get; set; }
+        public bool? DrawBoldTextInBrightColors { get; init; }
 
         [JsonPropertyName("fastScrollModifier")]
-        public FastScrollModifiers? FastScrollModifier { get; set; }
+        public FastScrollModifiers? FastScrollModifier { get; init; }
 
         [JsonPropertyName("fastScrollSensitivity")]
-        public double? FastScrollSensitivity { get; set; }
+        public double? FastScrollSensitivity { get; init; }
 
         [JsonPropertyName("fontFamily")]
-        public string? FontFamily { get; set; }
+        public string? FontFamily { get; init; }
 
         [JsonPropertyName("fontSize")]
-        public double? FontSize { get; set; }
+        public double? FontSize { get; init; }
 
         [JsonPropertyName("fontWeight")]
-        public FontWeights? FontWeight { get; set; }
+        public FontWeights? FontWeight { get; init; }
 
         [JsonPropertyName("fontWeightBold")]
-        public FontWeights? FontWeightBold { get; set; }
+        public FontWeights? FontWeightBold { get; init; }
 
         [JsonPropertyName("letterSpacing")]
-        public double? LetterSpacing { get; set; }
+        public double? LetterSpacing { get; init; }
 
         [JsonPropertyName("lineHeight")]
-        public double? LineHeight { get; set; }
+        public double? LineHeight { get; init; }
 
         [JsonPropertyName("logLevel")]
-        public XTermLogLevels? LogLevel { get; set; }
+        public XTermLogLevels? LogLevel { get; init; }
 
         [JsonPropertyName("macOptionClickForcesSelection")]
-        public bool? MacOptionClickForcesSelection { get; set; }
+        public bool? MacOptionClickForcesSelection { get; init; }
 
         [JsonPropertyName("macOptionIsMeta")]
-        public bool? MacOptionIsMeta { get; set; }
+        public bool? MacOptionIsMeta { get; init; }
 
         [JsonPropertyName("minimumContrastRatio")]
-        public double? MinimumContrastRatio { get; set; }
+        public double? MinimumContrastRatio { get; init; }
 
         [JsonPropertyName("rendererType")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public RendererType? RendererType { get; set; }
+        public RendererType? RendererType { get; init; }
 
         [JsonPropertyName("rightClickSelectsWord")]
-        public bool? RightClickSelectsWord { get; set; }
+        public bool? RightClickSelectsWord { get; init; }
 
         [JsonPropertyName("rows")]
-        public int? Rows { get; set; }
+        public int? Rows { get; init; }
 
         [JsonPropertyName("screenReaderMode")]
-        public bool? ScreenReaderMode { get; set; }
+        public bool? ScreenReaderMode { get; init; }
 
         [JsonPropertyName("scrollSensitivity")]
-        public double? ScrollSensitivity { get; set; }
+        public double? ScrollSensitivity { get; init; }
 
         [JsonPropertyName("scrollback")]
-        public double? Scrollback { get; set; }
+        public double? Scrollback { get; init; }
 
         [JsonPropertyName("tabStopWidth")]
-        public double? TabStopWidth { get; set; }
+        public double? TabStopWidth { get; init; }
 
         //TODO:
         //[JsonPropertyName("theme")]
@@ -100,10 +100,10 @@
         //public object? WindowOptions { get; set; }
 
         [JsonPropertyName("windowsMode")]
-        public bool? WindowsMode { get; set; }
+        public bool? WindowsMode { get; init; }
 
         [JsonPropertyName("wordSeparator")]
-        public string? WordSeparator { get; set; }
+        public string? WordSeparator { get; init; }
     }
 
     public enum FontWeights

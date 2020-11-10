@@ -29,7 +29,7 @@
             Type? type = Type.GetType(descriptor.ProgramClass);
 
             Task<int>? task = type?.GetMethod("WebMain")?.Invoke(null, new object[] { console, commandLineArguments, environmentVariables }) as Task<int>;
-            int? exitCode = task?.GetAwaiter().GetResult();
+            int? exitCode = task?.GetAwaiter().GetResult(); //TODO fix
 
             return exitCode;
         }

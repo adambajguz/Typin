@@ -5,11 +5,11 @@
         /// <summary>
         /// Application name.
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; init; }
 
         /// <summary>
         /// Application logo path.
         /// </summary>
-        public string? LogoPath { get; set; }
+        public string? LogoPath { get; init; }
     }
 }

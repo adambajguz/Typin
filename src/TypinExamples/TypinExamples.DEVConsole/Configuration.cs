@@ -2,6 +2,6 @@
 {
     public sealed class Configuration
     {
-        public ExamplesSettings? ExamplesSettings { get; set; }
+        public ExamplesSettings? ExamplesSettings { get; init; }
     }
 }

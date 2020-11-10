@@ -8,7 +8,7 @@
 
         public MonacoEditorService(IJSRuntime runtime)
         {
-            Runtime = runtime as IJSInProcessRuntime;
+            Runtime = (IJSInProcessRuntime)runtime;
         }
 
         public void Initialize(string elementId, string initialCode, string language, string theme, bool readOnly)
