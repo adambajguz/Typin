@@ -54,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		..\..\.gitattributes = ..\..\.gitattributes
 		..\..\.gitignore = ..\..\.gitignore
 		..\..\.github\workflows\CI-Examples.yml = ..\..\.github\workflows\CI-Examples.yml
+		clean.ps1 = clean.ps1
 		..\..\codecov.yml = ..\..\codecov.yml
 		..\..\LICENSE = ..\..\LICENSE
 	EndProjectSection
@@ -68,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Timer", "Exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.DEVConsole", "TypinExamples.DEVConsole\TypinExamples.DEVConsole.csproj", "{2ED12AD9-AA65-454B-808E-38A11BB545DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.HelloWorld.Tests", "Examples\TypinExamples.HelloWorld.Tests\TypinExamples.HelloWorld.Tests.csproj", "{8D8B9305-7405-4F31-B16D-938B360F261F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.HelloWorld.Tests", "Examples\TypinExamples.HelloWorld.Tests\TypinExamples.HelloWorld.Tests.csproj", "{8D8B9305-7405-4F31-B16D-938B360F261F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
