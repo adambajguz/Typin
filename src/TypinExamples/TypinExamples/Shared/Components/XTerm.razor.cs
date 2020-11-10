@@ -21,20 +21,20 @@ namespace TypinExamples.Shared.Components
         public string Id { get; } = string.Concat("m-", Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture));
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> InputAttributes { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> InputAttributes { get; init; } = new Dictionary<string, object>();
 
         [Parameter]
-        public EventCallback<KeyboardEventArgs> OnKey { get; set; }
+        public EventCallback<KeyboardEventArgs> OnKey { get; init; }
 
         [Parameter]
-        public EventCallback OnLineFeed { get; set; }
+        public EventCallback OnLineFeed { get; init; }
 
         [Parameter]
-        public TerminalOptions Options { get; set; } = new TerminalOptions();
+        public TerminalOptions Options { get; init; } = new TerminalOptions();
 
-        [Inject] private ExampleRunnerService ExampleRunner { get; set; } = default!;
-        [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-        [Inject] private ILogger<XTerm> Logger { get; set; } = default!;
+        [Inject] private ExampleRunnerService ExampleRunner { get; init; } = default!;
+        [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
+        [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

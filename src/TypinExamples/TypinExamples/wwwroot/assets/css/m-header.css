@@ -6,7 +6,7 @@
     header > .hero > .logo {
         flex: 1;
         flex-direction: column;
-        padding: 4rem;
+        margin: 12rem 4rem 12rem 4rem;
     }
 
         header > .hero > .logo svg {

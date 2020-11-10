@@ -9,7 +9,7 @@
 
                 @if (!isLast)
                 {
-                    <span>•</span>
+                    <span> • </span>
                 }
             }
         </p>
@@ -21,8 +21,8 @@
 
 @code
 {
-    [Inject] protected IMarkdownService Markdown { get; set; } = default!;
+    [Inject] protected IMarkdownService Markdown { get; init; } = default!;
 
-    [Inject] private IOptions<FooterSettings> _FooterSettings { get; set; } = default!;
+    [Inject] private IOptions<FooterSettings> _FooterSettings { get; init; } = default!;
     protected FooterSettings FooterSettings => _FooterSettings.Value;
 }

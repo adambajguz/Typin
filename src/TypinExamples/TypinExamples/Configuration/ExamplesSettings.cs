@@ -9,6 +9,7 @@
 
     public sealed class ExampleDescriptor
     {
+        public string? Page { get; init; }
         public string? Name { get; init; }
         public string? ProgramClass { get; init; }
         public string? Description { get; init; }
