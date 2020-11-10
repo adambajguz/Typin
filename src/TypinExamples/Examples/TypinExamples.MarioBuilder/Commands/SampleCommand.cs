@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.MarioBuilder
+﻿namespace TypinExamples.MarioBuilder.Commands
 {
     using System.Threading.Tasks;
     using Typin;

@@ -1,0 +1,18 @@
+﻿<div>
+    @foreach (var example in ExamplesSettings.Examples)
+    {
+        <p>
+            <span class="tag">@example.Name</span>
+            <span>@example.Description</span>
+            <Link href="/" Title="Run >" IsExternal="false" />
+        </p>
+    }
+</div>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; set; } = default!;
+
+    [Inject] private IOptions<ExamplesSettings> _ExamplesSettings { get; set; } = default!;
+    private ExamplesSettings ExamplesSettings => _ExamplesSettings.Value;
+}

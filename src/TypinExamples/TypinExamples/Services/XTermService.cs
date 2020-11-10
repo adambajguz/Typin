@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using TypinExamples.Shared.Components;
 
@@ -12,22 +13,24 @@
 
         private const string MODULE_NAME = "xtermInterop";
 
-        private readonly IJSInProcessRuntime Runtime;
+        private readonly IJSInProcessRuntime _runtime;
+        private readonly ILogger<XTermService> _logger;
 
-        public XTermService(IJSRuntime runtime)
+        public XTermService(IJSRuntime runtime, ILogger<XTermService> logger)
         {
-            Runtime = runtime as IJSInProcessRuntime;
+            _runtime = runtime as IJSInProcessRuntime;
+            _logger = logger;
         }
 
         public void Initialize(string id, XTerm terminal)
         {
-            Runtime.Invoke<object>($"{MODULE_NAME}.initialize", id);
+            _runtime.Invoke<object>($"{MODULE_NAME}.initialize", id);
             _terminals[id] = terminal;
         }
 
         public void Finalize(string id)
         {
-            Runtime.Invoke<string>($"{MODULE_NAME}.dispose", id);
+            _runtime.Invoke<string>($"{MODULE_NAME}.dispose", id);
 
             if (_terminals.ContainsKey(id))
                 _terminals.Remove(id);
@@ -35,12 +38,12 @@
 
         public string Write(string id, string str)
         {
-            return Runtime.Invoke<string>($"{MODULE_NAME}.write", id, str);
+            return _runtime.Invoke<string>($"{MODULE_NAME}.write", id, str);
         }
 
         public string WriteLine(string id, string str)
         {
-            return Runtime.Invoke<string>($"{MODULE_NAME}.writeLine", id, str);
+            return _runtime.Invoke<string>($"{MODULE_NAME}.writeLine", id, str);
         }
 
         public void Dispose()
