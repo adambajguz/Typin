@@ -83,10 +83,7 @@
 
     protected override void OnInitialized()
     {
-        if (Descriptor is null)
-        {
-            Descriptor = ExamplesSettings.Examples.Where(x => x.Page == ExampleKey)
-                                                  .FirstOrDefault();
-        }
+        Descriptor ??= ExamplesSettings.Examples
+            .FirstOrDefault(x => x.Page == ExampleKey);
     }
 }

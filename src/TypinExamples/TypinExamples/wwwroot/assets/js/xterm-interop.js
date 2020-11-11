@@ -8,11 +8,60 @@ xtermInterop.initialize = function (id) {
         xtermInterop.terminals.set(id, terminal);
 
         terminal.open(document.getElementById(id));
-        terminal.write("~$ ");
+        shellprompt = '$ ';
+        //terminal.on("data", (data) => {
+        //    terminal.write(data);
+        //});
+        terminal.id = id;
+        terminal.prompt = function () {
+            terminal.write('\r\n' + shellprompt);
+        };
+        terminal.cmd = '';
+        terminal.on('key', function (key, ev) {
+            let printable = (
+                !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey
+            );
 
-        terminal.on("data", (data) => {
+            if (ev.keyCode == 13) {
+                if (terminal.cmd === 'clear' || terminal.cmd === 'cls') {
+                    terminal.reset();
+                    terminal.cmd = '';
+                    terminal.prompt();
+                }
+                else if (terminal.cmd.startsWith(".\run") || terminal.cmd.startsWith("./run")
+                    || terminal.cmd.startsWith("run.exe") || terminal.cmd.startsWith(".\run.exe")
+                    || terminal.cmd.startsWith("./run.exe")) {
+                    terminal.writeln("");
+                    DotNet.invokeMethodAsync('TypinExamples', 'ExampleInit', terminal.id, terminal.cmd)
+                        .then(() => {
+                            terminal.prompt();
+                            terminal.cmd = '';
+                        });
+                }
+                else {
+                    terminal.writeln("");
+                    terminal.writeln(terminal.cmd + ": command not found");
+                    terminal.cmd = '';
+                    terminal.prompt();
+                }
+            } else if (ev.keyCode == 8) {
+                // Do not delete the prompt
+                console.log(terminal.rows);
+                if (terminal.cmd.length > 0) {
+                    terminal.cmd = terminal.cmd.slice(0, -1);
+                    terminal.write('\b \b');
+                }
+            } else if (printable) {
+                terminal.cmd += key;
+                terminal.write(key);
+            }
+        });
+
+        terminal.on('paste', function (data, ev) {
             terminal.write(data);
         });
+
+        terminal.prompt();
     }
 }
 

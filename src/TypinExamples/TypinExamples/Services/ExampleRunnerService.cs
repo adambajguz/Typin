@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Microsoft.VisualBasic;
     using Typin.Console;
     using TypinExamples.Configuration;
 
@@ -27,36 +29,36 @@
             Console = console;
         }
 
-        public int? Run(string exampleName)
+        public async Task<int?> Run(string exampleName)
         {
-            return Run(exampleName, new List<string>(), new Dictionary<string, string>());
+            return await Run(exampleName, new List<string>(), new Dictionary<string, string>());
         }
 
-        public int? Run(string exampleName, IReadOnlyList<string> commandLineArguments)
+        public async Task<int?> Run(string exampleName, IReadOnlyList<string> commandLineArguments)
         {
-            return Run(exampleName, commandLineArguments, new Dictionary<string, string>());
+            return await Run(exampleName, commandLineArguments, new Dictionary<string, string>());
         }
 
-        public int? Run(string exampleName, IReadOnlyList<string> commandLineArguments, IReadOnlyDictionary<string, string> environmentVariables)
+        public async Task<int?> Run(string exampleName, IReadOnlyList<string> commandLineArguments, IReadOnlyDictionary<string, string> environmentVariables)
         {
             ExampleDescriptor? descriptor = Options.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
                                                                          (x.Name?.Contains(exampleName) ?? false))
                                                              .FirstOrDefault();
 
-            return Run(descriptor, commandLineArguments, environmentVariables);
+            return await Run(descriptor, commandLineArguments, environmentVariables);
         }
 
-        public int? Run(ExampleDescriptor? descriptor)
+        public async Task<int?> Run(ExampleDescriptor? descriptor)
         {
-            return Run(descriptor, new List<string>(), new Dictionary<string, string>());
+            return await Run(descriptor, new List<string>(), new Dictionary<string, string>());
         }
 
-        public int? Run(ExampleDescriptor? descriptor, IReadOnlyList<string> commandLineArguments)
+        public async Task<int?> Run(ExampleDescriptor? descriptor, IReadOnlyList<string> commandLineArguments)
         {
-            return Run(descriptor, commandLineArguments, new Dictionary<string, string>());
+            return await Run(descriptor, commandLineArguments, new Dictionary<string, string>());
         }
 
-        public int? Run(ExampleDescriptor? descriptor, IReadOnlyList<string> commandLineArguments, IReadOnlyDictionary<string, string> environmentVariables)
+        public async Task<int?> Run(ExampleDescriptor? descriptor, IReadOnlyList<string> commandLineArguments, IReadOnlyDictionary<string, string> environmentVariables)
         {
             if (Console is null)
             {
@@ -73,9 +75,9 @@
             Type? type = Type.GetType(descriptor.ProgramClass);
 
             Task<int>? task = type?.GetMethod("WebMain")?.Invoke(null, new object[] { Console, commandLineArguments, environmentVariables }) as Task<int>;
-            int? exitCode = task?.GetAwaiter().GetResult(); //TODO fix
+            int? exitCode = task == null ? null : await task;  //TODO fix to remove
 
-            if(exitCode is null)
+            if (exitCode is null)
             {
                 _logger.LogError($"Failed to run {descriptor}.");
             }
