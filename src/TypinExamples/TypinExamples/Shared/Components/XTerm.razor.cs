@@ -3,11 +3,13 @@ namespace TypinExamples.Shared.Components
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
+    using Typin.Internal;
     using TypinExamples.Configuration;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
@@ -46,20 +48,25 @@ namespace TypinExamples.Shared.Components
             {
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
-                //TerminalManager.RegisterTerminal(TerminalId, this);
+                TerminalManager.RegisterTerminal(Id, this);
 
                 WebConsole webConsole = new WebConsole(this);
                 ExampleRunner.AttachConsole(webConsole);
             }
 
             //ExampleRunner.Run(ExampleDescriptor, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
-            ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
+            //ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
         public async Task ResetAsync()
         {
             Logger.LogDebug("ResetAsync()");
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.reset", Id);
+        }
+
+        public async Task RunExample(string args)
+        {
+            await ExampleRunner.Run(ExampleDescriptor, CommandLineSplitter.Split(args).Skip(1).ToList());
         }
 
         public async Task ClearAsync()
@@ -139,7 +146,7 @@ namespace TypinExamples.Shared.Components
             IsDisposed = true;
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
             Logger.LogDebug("Disposed XTerm terminal ({Id})", Id);
-            //TerminalManager.UnregisterTerminal(TerminalId);
+            TerminalManager.UnregisterTerminal(Id);
         }
     }
 }

@@ -21,6 +21,16 @@ namespace TypinExamples.Services.Terminal
                 _terminals.Remove(id);
         }
 
+        [JSInvokable("ExampleInit")]
+        public static async Task OnExampleInit(string id, string input)
+        {
+
+            if (_terminals.TryGetValue(id, out XTerm? term))
+            {
+                await term.RunExample(input);
+            }
+        }
+
         [JSInvokable]
         public static async Task OnKey(string id, KeyboardEventArgs @event)
         {

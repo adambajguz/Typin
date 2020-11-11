@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.TypinWeb
 {
+    using System;
     using System.IO;
     using System.Text;
 
@@ -47,7 +48,7 @@
         {
             string text = Encoding.UTF8.GetString(buffer, offset, count);
 
-            await _webTerminal.WriteAsync(text);
+            await _webTerminal.WriteAsync(text.Replace(Environment.NewLine, "\r\n"));
         }
     }
 }

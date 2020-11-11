@@ -11,6 +11,7 @@
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
     using TypinExamples.Services;
+    using TypinExamples.Services.Terminal;
 
     public static class DependencyInjection
     {
@@ -31,6 +32,7 @@
                     .AddScoped<IMarkdownService, MarkdownService>()
                     .AddScoped<MonacoEditorService>()
                     .AddScoped<XTermService>()
+                    .AddScoped<TerminalManager>()
                     .AddTransient<ExampleRunnerService>();
 
             return services;
