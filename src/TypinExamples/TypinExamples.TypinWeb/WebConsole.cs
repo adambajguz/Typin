@@ -20,10 +20,7 @@
         public bool IsErrorRedirected { get; }
         public ConsoleColor ForegroundColor
         {
-            get
-            {
-                return foregroundColor;
-            }
+            get => foregroundColor;
 
             //https://misc.flogisoft.com/bash/tip_colors_and_formatting
             set
@@ -54,10 +51,7 @@
         }
         public ConsoleColor BackgroundColor
         {
-            get
-            {
-                return backgroundColor;
-            }
+            get => backgroundColor;
             set
             {
                 backgroundColor = value;
