@@ -34,6 +34,8 @@ xtermInterop.initialize = function (id) {
                     terminal.writeln("");
                     DotNet.invokeMethodAsync('TypinExamples', 'ExampleInit', terminal.id, terminal.cmd)
                         .then(() => {
+
+                            terminal.write('\u001b[39m')
                             terminal.prompt();
                             terminal.cmd = '';
                         });
