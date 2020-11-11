@@ -1,5 +1,5 @@
 ﻿footer.footer-bg {
-    background-color: #0d2832;
+    background-color: var(--bg-secondary-color);
     padding: 4rem;
 }
 

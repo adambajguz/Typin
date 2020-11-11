@@ -8,6 +8,7 @@ namespace TypinExamples.Shared.Components
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
+    using TypinExamples.Configuration;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
     using TypinExamples.TypinWeb;
@@ -22,6 +23,9 @@ namespace TypinExamples.Shared.Components
 
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object> InputAttributes { get; init; } = new Dictionary<string, object>();
+
+        [Parameter]
+        public ExampleDescriptor? ExampleDescriptor { get; init; }
 
         [Parameter]
         public EventCallback<KeyboardEventArgs> OnKey { get; init; }
@@ -43,15 +47,13 @@ namespace TypinExamples.Shared.Components
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
                 //TerminalManager.RegisterTerminal(TerminalId, this);
+
+                WebConsole webConsole = new WebConsole(this);
+                ExampleRunner.AttachConsole(webConsole);
             }
 
-            await Task.Delay(1000);
-
-            WebConsole webConsole = new WebConsole(this);
-
-            ExampleRunner.Run("HelloWorld", webConsole, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
-
-            //await HelloWorld.Program.WebMain(webConsole, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
+            //ExampleRunner.Run(ExampleDescriptor, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
+            ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
         public async Task ResetAsync()

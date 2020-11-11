@@ -47,14 +47,14 @@
         /// current route matches the NavLink href.
         /// </summary>
         [Parameter]
-        public string? ActiveClass { get; set; }
+        public string? ActiveClass { get; init; }
 
         /// <summary>
         /// Gets or sets a collection of additional attributes that will be added to the generated
         /// <c>a</c> element.
         /// </summary>
         [Parameter(CaptureUnmatchedValues = true)]
-        public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+        public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; init; }
 
         /// <summary>
         /// Gets or sets the computed CSS class based on whether or not the link is active.
@@ -65,15 +65,15 @@
         /// Gets or sets the child content of the component.
         /// </summary>
         [Parameter]
-        public RenderFragment? ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; init; }
 
         /// <summary>
         /// Gets or sets a value representing the URL matching behavior.
         /// </summary>
         [Parameter]
-        public NavLinkExtendedMatch Match { get; set; }
+        public NavLinkExtendedMatch Match { get; init; }
 
-        [Inject] private NavigationManager NavigationManger { get; set; } = default!;
+        [Inject] private NavigationManager NavigationManger { get; init; } = default!;
 
         /// <inheritdoc />
         protected override void OnInitialized()
@@ -93,7 +93,7 @@
             }
 
             _uri = href == null ? null : NavigationManger.ToAbsoluteUri(href);
-            _hrefAbsolute = _uri == null ? null : _uri.AbsoluteUri;
+            _hrefAbsolute = _uri?.AbsoluteUri;
 
             _isActive = ShouldMatch(NavigationManger.Uri);
 
@@ -186,7 +186,7 @@
                 // which in turn is because it's common for servers to return the same page
                 // for http://host/vdir as they do for host://host/vdir/ as it's no
                 // good to display a blank page in that case.
-                if (_hrefAbsolute[_hrefAbsolute.Length - 1] == '/'
+                if (_hrefAbsolute[^1] == '/'
                     && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
@@ -196,7 +196,7 @@
             return false;
         }
 
-        private string? CombineWithSpace(string? str1, string str2)
+        private static string? CombineWithSpace(string? str1, string str2)
         {
             return str1 == null ? str2 : $"{str1} {str2}";
         }

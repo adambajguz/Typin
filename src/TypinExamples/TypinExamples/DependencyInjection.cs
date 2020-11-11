@@ -31,7 +31,7 @@
                     .AddScoped<IMarkdownService, MarkdownService>()
                     .AddScoped<MonacoEditorService>()
                     .AddScoped<XTermService>()
-                    .AddScoped<ExampleRunnerService>();
+                    .AddTransient<ExampleRunnerService>();
 
             return services;
         }
