@@ -10,6 +10,11 @@
     {
         private readonly string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
 
+        public HistoryTests()
+        {
+
+        }
+
         [Fact]
         public void Should_add_collection_to_history()
         {

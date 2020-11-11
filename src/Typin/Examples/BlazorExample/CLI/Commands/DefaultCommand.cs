@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command(Description = "Runs webhost in normal mode.")]
+    [Command(Description = "Runs webhost in direct mode.")]
     public class DefaultCommand : ICommand
     {
         private readonly IWebHostRunnerService _webHostRunnerService;
