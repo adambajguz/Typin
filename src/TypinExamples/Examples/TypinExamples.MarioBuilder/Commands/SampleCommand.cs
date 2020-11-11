@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.MarioBuilder
+﻿namespace TypinExamples.MarioBuilder.Commands
 {
     using System.Threading.Tasks;
     using Typin;
@@ -28,7 +28,7 @@
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            await console.Output.WriteLineAsync(StrOption);
+            await console.Output.WriteLineAsync(typeof(SampleCommand).AssemblyQualifiedName);
         }
     }
 }

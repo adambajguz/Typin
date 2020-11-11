@@ -24,12 +24,14 @@
 
             services.AddConfiguration<ApplicationSettings>(configuration)
                     .AddConfiguration<HeaderSettings>(configuration)
-                    .AddConfiguration<FooterSettings>(configuration);
+                    .AddConfiguration<FooterSettings>(configuration)
+                    .AddConfiguration<ExamplesSettings>(configuration);
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
                     .AddScoped<MonacoEditorService>()
-                    .AddScoped<XTermService>();
+                    .AddScoped<XTermService>()
+                    .AddTransient<ExampleRunnerService>();
 
             return services;
         }

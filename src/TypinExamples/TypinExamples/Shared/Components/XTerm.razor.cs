@@ -8,6 +8,8 @@ namespace TypinExamples.Shared.Components
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
+    using TypinExamples.Configuration;
+    using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
     using TypinExamples.TypinWeb;
 
@@ -20,19 +22,23 @@ namespace TypinExamples.Shared.Components
         public string Id { get; } = string.Concat("m-", Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture));
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> InputAttributes { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> InputAttributes { get; init; } = new Dictionary<string, object>();
 
         [Parameter]
-        public EventCallback<KeyboardEventArgs> OnKey { get; set; }
+        public ExampleDescriptor? ExampleDescriptor { get; init; }
 
         [Parameter]
-        public EventCallback OnLineFeed { get; set; }
+        public EventCallback<KeyboardEventArgs> OnKey { get; init; }
 
         [Parameter]
-        public TerminalOptions Options { get; set; } = new TerminalOptions();
+        public EventCallback OnLineFeed { get; init; }
 
-        [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-        [Inject] private ILogger<XTerm> Logger { get; set; } = default!;
+        [Parameter]
+        public TerminalOptions Options { get; init; } = new TerminalOptions();
+
+        [Inject] private ExampleRunnerService ExampleRunner { get; init; } = default!;
+        [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
+        [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -41,12 +47,13 @@ namespace TypinExamples.Shared.Components
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
                 //TerminalManager.RegisterTerminal(TerminalId, this);
+
+                WebConsole webConsole = new WebConsole(this);
+                ExampleRunner.AttachConsole(webConsole);
             }
 
-            await Task.Delay(1000);
-
-            WebConsole webConsole = new WebConsole(this);
-            await HelloWorld.Program.WebMain(webConsole, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
+            //ExampleRunner.Run(ExampleDescriptor, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
+            ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
         public async Task ResetAsync()

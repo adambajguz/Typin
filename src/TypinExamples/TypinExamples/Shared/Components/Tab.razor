@@ -1,18 +1,17 @@
-<div id="tab-content"
-     class="@(Parent?.Active == this ? string.Empty : "is-hidden")">
+<div class="@(Parent?.Active == this ? string.Empty : "is-hidden")">
     @ChildContent
 </div>
 
 @code
 {
     [CascadingParameter]
-    private TabContainer? Parent { get; set; }
+    private TabContainer? Parent { get; init; }
 
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; init; }
 
     [Parameter]
-    public string Text { get; set; } = string.Empty;
+    public string Text { get; init; } = string.Empty;
 
     protected override void OnInitialized()
     {

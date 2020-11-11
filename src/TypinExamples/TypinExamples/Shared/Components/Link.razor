@@ -13,11 +13,11 @@ else
 {
     [Parameter]
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "This is link href parameter.")]
-    public string? href { get; set; }
+    public string? href { get; init; }
 
     [Parameter]
-    public string? Title { get; set; }
+    public string? Title { get; init; }
 
     [Parameter]
-    public bool IsExternal { get; set; }
+    public bool IsExternal { get; init; }
 }

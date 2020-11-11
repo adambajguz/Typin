@@ -9,19 +9,19 @@
     public class SimpleCommand : ICommand
     {
         [CommandOption("name", 'n')]
-        public string? Name { get; set; }
+        public string? Name { get; init; }
 
         [CommandOption("surname", 's')]
-        public string? Surname { get; set; }
+        public string? Surname { get; init; }
 
         [CommandOption("mail", 'm', Description = "Email address")]
-        public string? Mail { get; set; }
+        public string? Mail { get; init; }
 
         [CommandOption("age", 'a', Description = "Age.")]
-        public int Age { get; set; }
+        public int Age { get; init; }
 
         [CommandOption("height", Description = "Height.")]
-        public double? Height { get; set; } = null;
+        public double? Height { get; init; } = null;
 
         public async ValueTask ExecuteAsync(IConsole console)
         {

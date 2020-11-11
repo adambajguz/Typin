@@ -7,11 +7,11 @@
         /// <summary>
         /// Authors with Markdown formatting.
         /// </summary>
-        public string? Authors { get; set; }
+        public string? Authors { get; init; }
 
         /// <summary>
         /// Links colleciton.
         /// </summary>
-        public LinkDefinition[] Links { get; set; } = Array.Empty<LinkDefinition>();
+        public LinkDefinition[] Links { get; init; } = Array.Empty<LinkDefinition>();
     }
 }

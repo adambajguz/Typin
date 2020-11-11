@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -16,5 +16,14 @@
     <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\TypinExamples\wwwroot\appsettings.json" Link="appsettings.json" />
+    <Content Include="..\TypinExamples\wwwroot\appsettings.Development.json" Link="appsettings.Development.json" />
+  </ItemGroup>
+
+  <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
+    <Copy SourceFiles="%(Content.Identity)" DestinationFiles="$(OutputPath)\%(Content.Link)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
+  </Target>
 
 </Project>

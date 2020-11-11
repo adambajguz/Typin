@@ -1,0 +1,40 @@
+﻿<div class="c-box--container">
+    @foreach (ExampleDescriptor descriptor in ExamplesSettings.Examples)
+    {
+        <div class="c-box">
+            <div class="c-box--top">
+                <div class="row">
+                    <div class="col-8 is-vertical-align">
+                        @if (descriptor.IsNew)
+                        {
+                            <h2 class="is-vertical-align">
+                                <span class="tag is-small text-success bd-success new-example-tag">New</span>
+                                <span>@descriptor.Name</span>
+                            </h2>
+                        }
+                        else
+                        {
+                            <h2>
+                                <span>@descriptor.Name</span>
+                            </h2>
+                        }
+                    </div>
+                    <div class="col-4 is-vertical-align is-right">
+                        <NavLinkExtended href="@("/example/" + descriptor.Page)" class="button outline primary">Run ></NavLinkExtended>
+                    </div>
+                </div>
+            </div>
+            <div class="c-box--content text-light">
+                @Markdown.ToHtml(descriptor.Description ?? string.Empty)
+            </div>
+        </div>
+    }
+</div>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; init; } = default!;
+
+    [Inject] private IOptions<ExamplesSettings> _ExamplesSettings { get; init; } = default!;
+    private ExamplesSettings ExamplesSettings => _ExamplesSettings.Value;
+}
