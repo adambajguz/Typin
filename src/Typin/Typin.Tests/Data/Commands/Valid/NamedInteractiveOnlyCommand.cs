@@ -4,8 +4,10 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
-    [Command("named-interactive-only", Description = "Named command description", InteractiveModeOnly = true)]
+    [Command("named-interactive-only", Description = "Named command description",
+             SupportedModes = new[] { typeof(InteractiveMode) })]
     public class NamedInteractiveOnlyCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(NamedInteractiveOnlyCommand);

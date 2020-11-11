@@ -3,6 +3,10 @@
     "InteractiveModeExample": {
       "commandName": "Project",
       "commandLineArgs": "[interactive]"
+    },
+    "InteractiveModeExample - InputRedirection": {
+      "commandName": "Executable",
+      "executablePath": "./input-redirection.bat"
     }
   }
 }

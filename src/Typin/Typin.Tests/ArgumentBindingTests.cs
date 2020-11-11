@@ -1,9 +1,7 @@
 ﻿namespace Typin.Tests
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Directives;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
@@ -23,15 +21,11 @@
         public async Task Property_annotated_as_an_option_can_be_bound_from_multiple_values_even_if_the_inputs_use_mixed_naming()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithStringArrayOptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithStringArrayOptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
@@ -51,15 +45,11 @@
         public async Task Property_annotated_as_a_required_option_must_always_be_set()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithSingleRequiredOptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
@@ -67,23 +57,17 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Property_annotated_as_a_required_option_must_always_be_bound_to_some_value()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithSingleRequiredOptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a"
             });
@@ -91,23 +75,17 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Property_annotated_as_a_required_option_must_always_be_bound_to_at_least_one_value_if_it_expects_multiple_values()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithRequiredOptionsCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithRequiredOptionsCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
@@ -115,8 +93,6 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Theory]
@@ -127,15 +103,11 @@
         public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order(int number)
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "foo", number.ToString(), "bar", "baz"
             });
@@ -158,21 +130,16 @@
         public async Task Property_annotated_as_parameter_is_bound_directly_from_argument_value_according_to_the_order_even_if_there_is_a_hyphen()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "-", "0", "bar", "-", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
-            _output.WriteLine(stdErr.GetString());
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -190,15 +157,11 @@
         public async Task Property_annotated_as_parameter_must_always_be_bound_to_some_value()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithSingleParameterCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithSingleParameterCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd"
             });
@@ -206,23 +169,17 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Property_annotated_as_parameter_must_always_be_bound_to_at_least_one_value_if_it_expects_multiple_values()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "foo", "13"
             });
@@ -230,23 +187,17 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task All_provided_option_arguments_must_be_bound_to_corresponding_properties()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--non-existing-option", "13"
             });
@@ -254,23 +205,17 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task All_provided_parameter_arguments_must_be_bound_to_corresponding_properties()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(new[]
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cnd", "non-existing-parameter"
             });
@@ -278,34 +223,24 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Named_command_should_execute_even_when_default_takes_a_parameter()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommandWithParameter>()
                 .AddCommand<NamedCommand>()
-                .UseConsole(console)
-                .AddDirective<DefaultDirective>()
-                .Build();
+                .AddDirective<DefaultDirective>();
 
             // Act
-            int exitCode = await application.RunAsync(
-                new[] { "named" },
-                new Dictionary<string, string>());
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
         }
     }
 }

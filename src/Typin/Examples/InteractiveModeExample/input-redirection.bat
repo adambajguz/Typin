@@ -1,0 +1,1 @@
+InteractiveModeExample.exe [interactive] < commands.txt

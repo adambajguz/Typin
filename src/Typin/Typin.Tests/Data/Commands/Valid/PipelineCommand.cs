@@ -21,7 +21,7 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            DebugPrintServices(console, _cliContext.Middlewares);
+            DebugPrintServices(console, _cliContext.Configuration.MiddlewareTypes);
 
             return default;
         }

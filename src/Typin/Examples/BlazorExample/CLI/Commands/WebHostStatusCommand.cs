@@ -5,8 +5,10 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
-    [Command("webhost status", Description = "Returns webhost worker status in the interactive mode.", InteractiveModeOnly = true)]
+    [Command("webhost status", Description = "Returns webhost worker status in the interactive mode.",
+             SupportedModes = new[] { typeof(InteractiveMode) })]
     public class WebHostStatusCommand : ICommand
     {
         private readonly ICliContext _cliContex;

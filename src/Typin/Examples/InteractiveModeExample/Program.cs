@@ -7,6 +7,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
+    using Typin.Modes;
 
     public static class Program
     {
@@ -26,6 +27,7 @@
                 .UseMiddleware<ExitCodeMiddleware>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseMiddleware<ExecutionLogMiddleware>()
+                .UseDirectMode(true)
                 .UseInteractiveMode()
                 .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .Build()

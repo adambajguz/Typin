@@ -7,12 +7,13 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Exceptions;
+    using Typin.Modes;
     using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Startups;
-    using Typin.Utilities.CliFx.Utilities;
+    using Typin.Utilities;
     using Xunit;
 
     public class ApplicationBuilderTests
@@ -47,7 +48,7 @@
         }
 
         [Fact]
-        public void Application_in_normal_mode_can_be_created_with_a_custom_configuration()
+        public void Application_in_direct_mode_can_be_created_with_a_custom_configuration()
         {
             // Act
             var app = new CliApplicationBuilder()
@@ -73,7 +74,7 @@
         }
 
         [Fact]
-        public void Application_in_normal_mode_can_be_created_with_a_custom_configuration_and_middlewares()
+        public void Application_in_direct_mode_can_be_created_with_a_custom_configuration_and_middlewares()
         {
             // Act
             var app = new CliApplicationBuilder()
@@ -115,8 +116,8 @@
                 .UseExecutableName("test")
                 .UseVersionText("test")
                 .UseDescription("test")
+                .UseDirectMode(true)
                 .UseInteractiveMode()
-                .UsePromptForeground(ConsoleColor.Magenta)
                 .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .UseConsole(new VirtualConsole(Stream.Null))
                 .Build();
@@ -142,8 +143,7 @@
                .UseExecutableName("test")
                .UseVersionText("test")
                .UseDescription("test")
-               .UseInteractiveMode(false, false)
-               .UsePromptForeground(ConsoleColor.Magenta)
+               .UseInteractiveMode()
                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                .UseConsole<SystemConsole>()
                .Build();
@@ -156,7 +156,7 @@
         public void Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
         {
             // Arrange
-            IConsole console = new VirtualConsole(output: new MemoryStreamWriter(), isOutputRedirected: false,
+            IConsole console = new VirtualConsole(isInputRedirected: false, output: new MemoryStreamWriter(), isOutputRedirected: false,
                                                   error: new MemoryStreamWriter(Encoding.UTF8), isErrorRedirected: true);
 
             // Act
@@ -182,7 +182,7 @@
         public void Application_can_be_created_with_VirtualConsole_CreateBuffered()
         {
             // Arrange
-            var (console, _, _) = VirtualConsole.CreateBuffered();
+            var (console, _, _) = VirtualConsole.CreateBuffered(isInputRedirected: false);
 
             // Act
             var app = new CliApplicationBuilder()
@@ -191,7 +191,7 @@
                 .AddCommands(new[] { typeof(DefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(DefaultCommand).Assembly })
                 .AddCommandsFromThisAssembly()
-                .UseExceptionHandler(new DefaultExceptionHandler())
+                .UseExceptionHandler(typeof(DefaultExceptionHandler))
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
@@ -201,7 +201,6 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(console)
-                .UseCommandInputForeground(ConsoleColor.Yellow)
                 .Build();
 
             // Assert
