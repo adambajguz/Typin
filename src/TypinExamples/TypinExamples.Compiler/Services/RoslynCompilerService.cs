@@ -64,7 +64,8 @@
             async Task InitializeInternal()
             {
                 Logger.LogInformation("Initializing compiler");
-                BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+                BlazorBoot? response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+
                 HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 
                 List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
@@ -79,6 +80,7 @@
                 References = references;
                 Logger.LogInformation("Finished compiler initilization");
             }
+
             InitializationTask = InitializeInternal();
         }
 
