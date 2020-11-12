@@ -65,7 +65,7 @@
             {
                 Logger.LogInformation("Initializing compiler");
                 BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
-                HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
+                HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 
                 List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
                 foreach (HttpResponseMessage asm in assemblies)
