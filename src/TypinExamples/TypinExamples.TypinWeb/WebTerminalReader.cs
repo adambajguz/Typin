@@ -21,10 +21,7 @@
         public override bool CanWrite => false;
 
         /// <inheritdoc/>
-        public override long Length
-        {
-            get => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
-        }
+        public override long Length => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
 
         /// <inheritdoc/>
         public override long Position

@@ -9,15 +9,19 @@
     {
         private readonly IWebTerminal _webTerminal;
         private readonly CancellationToken _cancellationToken;
-        private ConsoleColor foregroundColor;
-        private ConsoleColor backgroundColor;
+
+        private ConsoleColor foregroundColor = ConsoleColor.White;
+        private ConsoleColor backgroundColor = ConsoleColor.Black;
 
         public StreamReader Input { get; }
-        public bool IsInputRedirected { get; }
+        public bool IsInputRedirected => false;
+
         public StreamWriter Output { get; }
-        public bool IsOutputRedirected { get; }
+        public bool IsOutputRedirected => false;
+
         public StreamWriter Error { get; }
-        public bool IsErrorRedirected { get; }
+        public bool IsErrorRedirected => false;
+
         public ConsoleColor ForegroundColor
         {
             get => foregroundColor;
@@ -25,7 +29,7 @@
             //https://misc.flogisoft.com/bash/tip_colors_and_formatting
             set
             {
-                foregroundColor = value;
+                foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
 
                 string unicode = value switch
                 {
@@ -56,7 +60,7 @@
             get => backgroundColor;
             set
             {
-                backgroundColor = value;
+                backgroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
 
                 string unicode = value switch
                 {
@@ -76,18 +80,48 @@
                     ConsoleColor.Magenta => "\u001b[105m",
                     ConsoleColor.Cyan => "\u001b[106m",
                     ConsoleColor.White => "\u001b[107m",
-                    _ => "\u001b[39m"
+                    _ => "\u001b[49m"
                 };
 
                 _webTerminal.WriteAsync(unicode).Wait(10);
             }
         }
-        public int CursorLeft { get; set; }
-        public int CursorTop { get; set; }
-        public int WindowWidth { get; set; }
-        public int WindowHeight { get; set; }
-        public int BufferWidth { get; set; }
-        public int BufferHeight { get; set; }
+
+        public int CursorLeft
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int CursorTop
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int WindowWidth
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int WindowHeight
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int BufferWidth
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int BufferHeight
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
 
         public WebConsole(IWebTerminal webTerminal, CancellationToken cancellationToken = default)
         {
@@ -112,13 +146,6 @@
             await _webTerminal.ClearAsync();
         }
 
-        public void Dispose()
-        {
-            Input.Dispose();
-            Output.Dispose();
-            Error.Dispose();
-        }
-
         public CancellationToken GetCancellationToken()
         {
             return _cancellationToken;
@@ -131,12 +158,21 @@
 
         public void ResetColor()
         {
-
+            foregroundColor = ConsoleColor.White;
+            backgroundColor = ConsoleColor.Black;
+            _webTerminal.WriteAsync("\u001b[39m\u001b[49m").Wait(10);
         }
 
         public void SetCursorPosition(int left, int top)
         {
+            throw new NotImplementedException();
+        }
 
+        public void Dispose()
+        {
+            Input.Dispose();
+            Output.Dispose();
+            Error.Dispose();
         }
     }
 }

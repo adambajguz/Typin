@@ -78,7 +78,6 @@ xtermInterop.initialize = function (id) {
                 }
             } else if (ev.keyCode == 8) {
                 // Do not delete the prompt
-                console.log(terminal.rows);
                 if (terminal.cmd.length > 0) {
                     terminal.cmd = terminal.cmd.slice(0, -1);
                     terminal.write('\b \b');
