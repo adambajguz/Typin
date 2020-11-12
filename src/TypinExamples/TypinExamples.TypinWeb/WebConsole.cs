@@ -29,7 +29,7 @@
             //https://misc.flogisoft.com/bash/tip_colors_and_formatting
             set
             {
-                foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
+                foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.White : value;
 
                 string unicode = value switch
                 {
