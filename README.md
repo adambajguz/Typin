@@ -37,7 +37,7 @@
 
 **Typin** is a simple to use, ASP.NET Core inspired framework for building both interactive command line applications and command line tools (direct mode). However, it is not limited to direct and interactive modes, because you can create your own modes.
 
-> **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Type in".
+> **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Ty pin".
 
 Typin is not just a parser but a complete application framework. Its main goal is to provide an enjoyable, similar to ASP.NET Core, development experience when building command line applications. Its primary goal is to completely take over the user input layer, letting you forget about the infrastructure and instead focus on writing your application.
 
