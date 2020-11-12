@@ -1,23 +1,39 @@
 ﻿@page "/example/{ExampleKey}"
 
-<section>
-    @if (Descriptor is null)
-    {
+
+@if (Descriptor is null)
+{
+    <section>
         <div class="row">
-            <div class="col">
-                <p class="text-error">INVALID EXAMPLE</p>
+            <div class="col-8">
+                <p class="text-error"><b>Error:</b> unknown example.</p>
+            </div>
+            <div class="col is-vertical-align is-right">
+                <NavLinkExtended href="/" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
             </div>
         </div>
-    }
-    else
-    {
-        <h1>@Descriptor.Name</h1>
+    </section>
+}
+else
+{
+    <section>
+        <div class="row">
+            <div class="col-8">
+                <h1>@Descriptor.Name</h1>
+            </div>
+            <div class="col is-vertical-align is-right">
+                <NavLinkExtended href="/" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col">
                 @Markdown.ToHtml(Descriptor.Description ?? string.Empty)
             </div>
         </div>
+    </section>
 
+    <section>
         <div class="row">
             <div class="col">
                 <TabContainer>
@@ -53,8 +69,10 @@
                 </TabContainer>
             </div>
         </div>
+    </section>
 
-        <div class="Row">
+    <section>
+        <div class="row">
             <div class="col">
                 <TabContainer>
                     <Tab Text="Terminal">
@@ -63,10 +81,9 @@
                 </TabContainer>
             </div>
         </div>
-    }
+    </section>
+}
 
-
-</section>
 
 @code
 {
