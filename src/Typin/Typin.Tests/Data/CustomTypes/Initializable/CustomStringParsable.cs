@@ -2,19 +2,19 @@
 {
     using Newtonsoft.Json;
 
-    public class CustomStringParseable
+    public class CustomStringParsable
     {
         public string Value { get; }
 
         [JsonConstructor]
-        private CustomStringParseable(string value)
+        private CustomStringParsable(string value)
         {
             Value = value;
         }
 
-        public static CustomStringParseable Parse(string value)
+        public static CustomStringParsable Parse(string value)
         {
-            return new CustomStringParseable(value);
+            return new CustomStringParsable(value);
         }
     }
 }

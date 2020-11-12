@@ -28,6 +28,9 @@
                 [typeof(uint)] = v => uint.Parse(v!, FormatProvider),
                 [typeof(long)] = v => long.Parse(v!, FormatProvider),
                 [typeof(ulong)] = v => ulong.Parse(v!, FormatProvider),
+#if NET5_0
+                [typeof(Half)] = v => Half.Parse(v!, FormatProvider),
+#endif
                 [typeof(float)] = v => float.Parse(v!, FormatProvider),
                 [typeof(double)] = v => double.Parse(v!, FormatProvider),
                 [typeof(decimal)] = v => decimal.Parse(v!, FormatProvider),
@@ -36,7 +39,7 @@
                 [typeof(TimeSpan)] = v => TimeSpan.Parse(v!, FormatProvider),
             };
 
-        #region Value Converter
+#region Value Converter
         private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType)
         {
             try
@@ -125,7 +128,7 @@
                 return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType);
             }
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Binds input values to command.

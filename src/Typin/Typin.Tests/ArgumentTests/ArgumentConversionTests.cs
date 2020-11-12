@@ -1,10 +1,9 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Newtonsoft.Json;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomTypes.Initializable;
     using Typin.Tests.Extensions;
@@ -20,32 +19,192 @@
             _output = output;
         }
 
-        [Fact]
-        public async Task Property_of_type_object_is_bound_directly_from_the_argument_value()
+        [Theory]
+        [InlineData(@"cmd --obj value", @"{ ""obj"": ""value"" }")]
+        [InlineData(@"cmd --str value", @"{ ""str"": ""value"" }")]
+        [InlineData(@"cmd --str", @"{ ""str"": null }")]
+        [InlineData(@"cmd --str --bool", @"{ ""str"": null, ""bool"": true }")]
+
+        //Simple types
+        [InlineData(@"cmd --bool true", @"{ ""bool"": true }")]
+        [InlineData(@"cmd --bool", @"{ ""bool"": true }")]
+        [InlineData(@"cmd --bool false", @"{ ""bool"": false }")]
+
+        [InlineData(@"cmd --char a", @"{ ""char"": ""a"" }")]
+
+        [InlineData(@"cmd --byte 15", @"{ ""byte"": 15 }")]
+        [InlineData(@"cmd --sbyte 15", @"{ ""sbyte"": 15 }")]
+        [InlineData(@"cmd --sbyte -15", @"{ ""sbyte"": -15 }")]
+
+        [InlineData(@"cmd --short -15", @"{ ""short"": -15 }")]
+        [InlineData(@"cmd --short 15", @"{ ""short"": 15 }")]
+        [InlineData(@"cmd --ushort 15", @"{ ""ushort"": 15 }")]
+
+        [InlineData(@"cmd --int -15", @"{ ""int"": -15 }")]
+        [InlineData(@"cmd --int 15", @"{ ""int"": 15 }")]
+        [InlineData(@"cmd --uint 15", @"{ ""uint"": 15 }")]
+
+        [InlineData(@"cmd --long -15", @"{ ""long"": -15 }")]
+        [InlineData(@"cmd --long 15", @"{ ""long"": 15 }")]
+        [InlineData(@"cmd --ulong 15", @"{ ""ulong"": 15 }")]
+
+        //[InlineData(@"cmd --half -15.123", @"{ ""half"": -15.123 }")]
+        //[InlineData(@"cmd --half 15.123", @"{ ""half"": 15.123 }")]
+
+        [InlineData(@"cmd --float -15.123", @"{ ""float"": -15.123 }")]
+        [InlineData(@"cmd --float 15.123", @"{ ""float"": 15.123 }")]
+
+        [InlineData(@"cmd --double -15.123", @"{ ""double"": -15.123 }")]
+        [InlineData(@"cmd --double 15.123", @"{ ""double"": 15.123 }")]
+
+        [InlineData(@"cmd --decimal -15.123", @"{ ""decimal"": -15.123 }")]
+        [InlineData(@"cmd --decimal 15.123", @"{ ""decimal"": 15.123 }")]
+
+        [InlineData(@"cmd --datetime ""28 Apr 1995""", @"{ ""datetime"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime 2020-11-12", @"{ ""datetime"": ""2020-11-12T00:00:00"" }")]
+        [InlineData(@"cmd --datetime ""2020-11-12 12:00:56""", @"{ ""datetime"": ""2020-11-12T12:00:56"" }")]
+
+        [InlineData(@"cmd --datetime-offset ""28 Apr 1995""", @"{ ""datetime-offset"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset 2020-11-12", @"{ ""datetime-offset"": ""2020-11-12T00:00:00"" }")]
+
+        [InlineData(@"cmd --timespan 00:14:59", @"{ ""timespan"": ""00:14:59"" }")]
+        [InlineData(@"cmd --timespan 40:17:00", @"{ ""timespan"": ""40:17:00"" }")]
+
+        //Simple nullable types
+        [InlineData(@"cmd --bool-nullable true", @"{ ""bool-nullable"": true }")]
+        [InlineData(@"cmd --bool-nullable", @"{ ""bool-nullable"": null }")]
+        [InlineData(@"cmd --bool-nullable false", @"{ ""bool-nullable"": false }")]
+
+        [InlineData(@"cmd --char-nullable a", @"{ ""char-nullable"": ""a"" }")]
+        [InlineData(@"cmd --char-nullable", @"{ ""char-nullable"": null }")]
+
+        [InlineData(@"cmd --byte-nullable 15", @"{ ""byte-nullable"": 15 }")]
+        [InlineData(@"cmd --byte-nullable", @"{ ""byte-nullable"": null }")]
+        [InlineData(@"cmd --sbyte-nullable 15", @"{ ""sbyte-nullable"": 15 }")]
+        [InlineData(@"cmd --sbyte-nullable -15", @"{ ""sbyte-nullable"": -15 }")]
+        [InlineData(@"cmd --sbyte-nullable", @"{ ""sbyte-nullable"": null }")]
+
+        [InlineData(@"cmd --short-nullable -15", @"{ ""short-nullable"": -15 }")]
+        [InlineData(@"cmd --short-nullable 15", @"{ ""short-nullable"": 15 }")]
+        [InlineData(@"cmd --short-nullable", @"{ ""short-nullable"": null }")]
+        [InlineData(@"cmd --ushort-nullable 15", @"{ ""ushort-nullable"": 15 }")]
+        [InlineData(@"cmd --ushort-nullable", @"{ ""ushort-nullable"": null }")]
+
+        [InlineData(@"cmd --int-nullable -15", @"{ ""int-nullable"": -15 }")]
+        [InlineData(@"cmd --int-nullable 15", @"{ ""int-nullable"": 15 }")]
+        [InlineData(@"cmd --int-nullable", @"{ ""int-nullable"": null }")]
+        [InlineData(@"cmd --uint-nullable 15", @"{ ""uint-nullable"": 15 }")]
+        [InlineData(@"cmd --uint-nullable", @"{ ""uint-nullable"": null }")]
+
+        [InlineData(@"cmd --long-nullable -15", @"{ ""long-nullable"": -15 }")]
+        [InlineData(@"cmd --long-nullable 15", @"{ ""long-nullable"": 15 }")]
+        [InlineData(@"cmd --long-nullable", @"{ ""long-nullable"": null }")]
+        [InlineData(@"cmd --ulong-nullable 15", @"{ ""ulong-nullable"": 15 }")]
+        [InlineData(@"cmd --ulong-nullable", @"{ ""ulong-nullable"": null }")]
+
+        //[InlineData(@"cmd --half-nullable -15.123", @"{ ""half"": -15.123 }")]
+        //[InlineData(@"cmd --half-nullable 15.123", @"{ ""half"": 15.123 }")]
+
+        [InlineData(@"cmd --float-nullable -15.123", @"{ ""float-nullable"": -15.123 }")]
+        [InlineData(@"cmd --float-nullable 15.123", @"{ ""float-nullable"": 15.123 }")]
+        [InlineData(@"cmd --float-nullable", @"{ ""float-nullable"": null }")]
+
+        [InlineData(@"cmd --double-nullable -15.123", @"{ ""double-nullable"": -15.123 }")]
+        [InlineData(@"cmd --double-nullable 15.123", @"{ ""double-nullable"": 15.123 }")]
+        [InlineData(@"cmd --double-nullable", @"{ ""double-nullable"": null }")]
+
+        [InlineData(@"cmd --decimal-nullable -15.123", @"{ ""decimal-nullable"": -15.123 }")]
+        [InlineData(@"cmd --decimal-nullable 15.123", @"{ ""decimal-nullable"": 15.123 }")]
+        [InlineData(@"cmd --decimal-nullable", @"{ ""decimal-nullable"": null }")]
+
+        [InlineData(@"cmd --datetime-nullable ""28 Apr 1995""", @"{ ""datetime-nullable"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-nullable 2020-11-12", @"{ ""datetime-nullable"": ""2020-11-12T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-nullable ""2020-11-12 12:00:56""", @"{ ""datetime-nullable"": ""2020-11-12T12:00:56"" }")]
+        [InlineData(@"cmd --datetime-nullable", @"{ ""datetime-nullable"": null }")]
+
+        [InlineData(@"cmd --datetime-offset-nullable ""28 Apr 1995""", @"{ ""datetime-offset-nullable"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset-nullable 2020-11-12", @"{ ""datetime-offset-nullable"": ""2020-11-12T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset-nullable", @"{ ""datetime-offset-nullable"": null }")]
+
+        [InlineData(@"cmd --timespan-nullable 00:14:59", @"{ ""timespan-nullable"": ""00:14:59"" }")]
+        [InlineData(@"cmd --timespan-nullable 40:17:00", @"{ ""timespan-nullable"": ""40:17:00"" }")]
+        [InlineData(@"cmd --timespan-nullable", @"{ ""timespan-nullable"": null }")]
+
+        //Custom enum
+        [InlineData(@"cmd --enum value2", @"{ ""enum"": ""value2"" }")]
+        [InlineData(@"cmd --enum 2", @"{ ""enum"": ""value2"" }")]
+        [InlineData(@"cmd --enum-nullable value2", @"{ ""enum-nullable"": ""value2"" }")]
+        [InlineData(@"cmd --enum-nullable 2", @"{ ""enum-nullable"": ""value2"" }")]
+        [InlineData(@"cmd --enum-nullable", @"{ ""enum-nullable"": null }")]
+        [InlineData(@"cmd --enum-nullable --enum 2", @"{ ""enum-nullable"": null, ""enum"": ""value2"" }")]
+        [InlineData(@"cmd --enum-array 1 2", @"{ ""enum-array"": [""value1"", ""value2""] }")]
+        [InlineData(@"cmd --enum-array value1 2", @"{ ""enum-array"": [""value1"", ""value2""] }")]
+        [InlineData(@"cmd --enum-array value1 value3", @"{ ""enum-array"": [""value1"", ""value3""] }")]
+
+        //Parasable or constructible
+        [InlineData(@"cmd --str-parsable foobar", @"{ ""str-parsable"": { ""Value"": ""foobar""} }")]
+        [InlineData(@"cmd --str-parsable-format foobar", @"{ ""str-parsable-format"": { ""Value"": ""foobar ""} }")] //TODO: why space at the end?
+        [InlineData(@"cmd --str-constructible foobar", @"{ ""str-constructible"": { ""Value"": ""foobar""} }")]
+        [InlineData(@"cmd --str-constructible-array foo bar ""foo bar""", @"{ ""str-constructible-array"": [ { ""Value"": ""foo""}, { ""Value"": ""bar""}, { ""Value"": ""foo bar""}] }")]
+
+        //Collections
+        [InlineData(@"cmd --obj-array foo bar", @"{ ""obj-array"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --obj-array foo "" """, @"{ ""obj-array"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --obj-array", @"{ ""obj-array"": [] }")]
+
+        [InlineData(@"cmd --str-array foo bar", @"{ ""str-array"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --str-array foo "" """, @"{ ""str-array"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --str-array", @"{ ""str-array"": [] }")]
+
+        [InlineData(@"cmd --str-enumerable foo bar", @"{ ""str-enumerable"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --str-enumerable foo "" """, @"{ ""str-enumerable"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --str-enumerable", @"{ ""str-enumerable"": [] }")]
+
+        [InlineData(@"cmd --str-read-only-list foo bar", @"{ ""str-read-only-list"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --str-read-only-list foo "" """, @"{ ""str-read-only-list"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --str-read-only-list", @"{ ""str-read-only-list"": [] }")]
+
+        [InlineData(@"cmd --str-list foo bar", @"{ ""str-list"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --str-list foo "" """, @"{ ""str-list"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --str-list", @"{ ""str-list"": [] }")]
+
+        [InlineData(@"cmd --str-set foo bar", @"{ ""str-set"": [""foo"", ""bar""] }")]
+        [InlineData(@"cmd --str-set foo "" """, @"{ ""str-set"": [""foo"", "" ""] }")]
+        [InlineData(@"cmd --str-set", @"{ ""str-set"": [] }")]
+
+        [InlineData(@"cmd --int-array 1 -1 0 -0", @"{ ""int-array"": [1, -1, 0, 0] }")]
+        [InlineData(@"cmd --int-array", @"{ ""int-array"": [] }")]
+
+        [InlineData(@"cmd --int-nullable-array 1 -1 0 -0", @"{ ""int-nullable-array"": [1, -1, 0, 0] }")]
+        [InlineData(@"cmd --int-nullable-array 1 -1 """" -0", @"{ ""int-nullable-array"": [1, -1, 0] }")] //TODO: how to input null int?
+        [InlineData(@"cmd --int-nullable-array", @"{ ""int-nullable-array"": [] }")]
+        public async Task Property_should_be_bound(string args, string output)
         {
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
+
+            var settings = new JsonSerializerSettings
             {
-                "cmd", "--obj", "value"
-            });
+                NullValueHandling = NullValueHandling.Include,
+                MissingMemberHandling = MissingMemberHandling.Error,
+                DefaultValueHandling = DefaultValueHandling.Include
+            };
 
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
+            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>(settings);
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Object = "value"
-            });
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+            commandInstance.Should().BeEquivalentTo(testInstance);
         }
 
         [Fact]
-        public async Task Property_of_type_string_is_bound_directly_from_the_argument_value()
+        public async Task Property_of_a_type_that_has_a_static_Parse_method_accepting_a_string_and_format_provider_is_bound_by_invoking_the_method()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -54,7 +213,7 @@
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--str", "value"
+                "cmd", "--str-parsable-format", "foobar"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
@@ -64,487 +223,7 @@
 
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
-                String = "value"
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_bool_is_bound_as_true_if_the_argument_value_is_true()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--bool", "true"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Bool = true
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_bool_is_bound_as_false_if_the_argument_value_is_false()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--bool", "false"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Bool = false
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_bool_is_bound_as_true_if_the_argument_value_is_not_set()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--bool"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Bool = true
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_char_is_bound_directly_from_the_argument_value_if_it_contains_only_one_character()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--char", "a"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Char = 'a'
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_sbyte_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--sbyte", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Sbyte = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_byte_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--byte", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Byte = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_short_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--short", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Short = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_ushort_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--ushort", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Ushort = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_int_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--int", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Int = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_uint_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--uint", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Uint = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_long_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--long", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Long = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_ulong_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--ulong", "15"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Ulong = 15
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_float_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--float", "3.14"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Float = 3.14f
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_double_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--double", "3.14"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Double = 3.14
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_decimal_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--decimal", "3.14"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Decimal = 3.14m
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_DateTime_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--datetime", "28 Apr 1995"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                DateTime = new DateTime(1995, 04, 28)
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_DateTimeOffset_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--datetime-offset", "28 Apr 1995"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                DateTimeOffset = new DateTime(1995, 04, 28)
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_type_TimeSpan_is_bound_by_parsing_the_argument_value()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--timespan", "00:14:59"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                TimeSpan = new TimeSpan(00, 14, 59)
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_an_enum_type_is_bound_by_parsing_the_argument_value_as_name()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--enum", "value2"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Enum = CustomEnum.Value2
-            });
-        }
-
-        [Fact]
-        public async Task Property_of_an_enum_type_is_bound_by_parsing_the_argument_value_as_id()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--enum", "2"
-            });
-
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
-            {
-                Enum = CustomEnum.Value2
+                StringParsableWithFormatProvider = CustomStringParsableWithFormatProvider.Parse("foobar", CultureInfo.InvariantCulture)
             });
         }
     }
