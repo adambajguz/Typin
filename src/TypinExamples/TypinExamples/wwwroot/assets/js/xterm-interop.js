@@ -62,13 +62,17 @@ xtermInterop.initialize = function (id) {
                     terminal.cmd.startsWith("./run.exe") ||
                     terminal.cmd.startsWith("run")) {
                     terminal.writeln("");
-                    DotNet.invokeMethodAsync('TypinExamples', 'ExampleInit', terminal.id, terminal.cmd)
-                        .then(() => {
 
+                    DotNet.invokeMethodAsync('TypinExamples', 'TerminalManager_ExampleInit', terminal.id, terminal.cmd)
+                        .then(() => {
                             terminal.write('\u001b[39m')
                             terminal.prompt();
                             terminal.cmd = '';
                         });
+                }
+                else if (terminal.cmd.isNullOrWhiteSpace()) {
+                    terminal.cmd = '';
+                    terminal.prompt();
                 }
                 else {
                     terminal.writeln("");

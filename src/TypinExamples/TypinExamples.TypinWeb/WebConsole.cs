@@ -52,7 +52,7 @@
                     _ => "\u001b[39m"
                 };
 
-                _webTerminal.WriteAsync(unicode).Wait(10);
+                Output.Write(unicode);
             }
         }
         public ConsoleColor BackgroundColor
@@ -83,7 +83,7 @@
                     _ => "\u001b[49m"
                 };
 
-                _webTerminal.WriteAsync(unicode).Wait(10);
+                Output.Write(unicode);
             }
         }
 
@@ -160,7 +160,7 @@
         {
             foregroundColor = ConsoleColor.White;
             backgroundColor = ConsoleColor.Black;
-            _webTerminal.WriteAsync("\u001b[39m\u001b[49m").Wait(10);
+            Output.Write("\u001b[39m\u001b[49m");
         }
 
         public void SetCursorPosition(int left, int top)

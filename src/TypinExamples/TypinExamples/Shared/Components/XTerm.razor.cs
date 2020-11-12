@@ -58,17 +58,18 @@ namespace TypinExamples.Shared.Components
             //ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
+        public async Task RunExample(string args)
+        {
+            IEnumerable<string> splittedArgs = CommandLineSplitter.Split(args);
+
+            await ExampleRunner.Run(ExampleDescriptor, splittedArgs.Skip(1).ToList());
+        }
+
         public async Task ResetAsync()
         {
             Logger.LogDebug("ResetAsync()");
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.reset", Id);
         }
-
-        public async Task RunExample(string args)
-        {
-            await ExampleRunner.Run(ExampleDescriptor, CommandLineSplitter.Split(args).Skip(1).ToList());
-        }
-
         public async Task ClearAsync()
         {
             Logger.LogDebug("ClearAsync()");
@@ -109,6 +110,18 @@ namespace TypinExamples.Shared.Components
         {
             //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, str);
+        }
+
+        public async Task WriteAsync(byte[] buffer)
+        {
+            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, buffer);
+        }
+
+        public async Task WriteLineAsync(byte[] buffer)
+        {
+            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, buffer);
         }
 
         public async Task ScrollLinesAsync(int lines)

@@ -41,7 +41,7 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            _webTerminal.WriteAsync(text.Replace(Environment.NewLine, "\r\n")).Wait(10);
+            _webTerminal.WriteAsync(text).Wait(10);
         }
 
         /// <inheritdoc/>
@@ -50,7 +50,7 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            await _webTerminal.WriteAsync(text.Replace(Environment.NewLine, "\r\n"));
+            await _webTerminal.WriteAsync(text);
         }
 
         /// <inheritdoc/>
@@ -75,6 +75,8 @@
         public override void Write(byte[] buffer, int offset, int count)
         {
             string text = Encoding.UTF8.GetString(buffer, offset, count);
+            text = text.Replace(Environment.NewLine, "\r\n");
+
             _buffer.Append(text);
         }
 
