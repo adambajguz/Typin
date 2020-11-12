@@ -26,6 +26,7 @@
             set
             {
                 foregroundColor = value;
+
                 string unicode = value switch
                 {
                     ConsoleColor.Black => "\u001b[30m",
@@ -46,7 +47,8 @@
                     ConsoleColor.White => "\u001b[97m",
                     _ => "\u001b[39m"
                 };
-                _webTerminal.WriteAsync(unicode).Wait(2);
+
+                _webTerminal.WriteAsync(unicode).Wait(10);
             }
         }
         public ConsoleColor BackgroundColor
@@ -55,6 +57,7 @@
             set
             {
                 backgroundColor = value;
+
                 string unicode = value switch
                 {
                     ConsoleColor.Black => "\u001b[40m",
@@ -75,7 +78,8 @@
                     ConsoleColor.White => "\u001b[107m",
                     _ => "\u001b[39m"
                 };
-                _webTerminal.WriteAsync(unicode).Wait(2);
+
+                _webTerminal.WriteAsync(unicode).Wait(10);
             }
         }
         public int CursorLeft { get; set; }
@@ -90,14 +94,14 @@
             _cancellationToken = cancellationToken;
             _webTerminal = webTerminal;
 
-            Input = new StreamReader(new WebTerminalStream(webTerminal));
+            Input = new StreamReader(new WebTerminalReader(webTerminal));
 
-            Output = new StreamWriter(new WebTerminalStream(webTerminal))
+            Output = new StreamWriter(new WebTerminalWriter(webTerminal))
             {
                 AutoFlush = true
             };
 
-            Error = new StreamWriter(new WebTerminalStream(webTerminal))
+            Error = new StreamWriter(new WebTerminalWriter(webTerminal))
             {
                 AutoFlush = true
             };

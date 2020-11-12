@@ -101,13 +101,13 @@ namespace TypinExamples.Shared.Components
 
         public async Task WriteAsync(string str)
         {
-            Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, str);
         }
 
         public async Task WriteLineAsync(string str)
         {
-            Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, str);
         }
 
