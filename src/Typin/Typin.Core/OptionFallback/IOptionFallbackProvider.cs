@@ -46,7 +46,7 @@
         /// <param name="key">The key to locate.</param>
         /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter. This parameter is passed uninitialized.</param>
         /// <returns>true if contains an element that has the specified key; otherwise, false.</returns>
-        bool TryGetValue(string key, out string value);
+        bool TryGetValue(string key, out string? value);
 
         /// <summary>
         /// Gets the value that is associated with the specified key. This method is called by Typin to to get fallback value.
@@ -55,6 +55,6 @@
         /// <param name="targetType">The target type.</param>
         /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter. This parameter is passed uninitialized.</param>
         /// <returns>true if contains an element that has the specified key; otherwise, false.</returns>
-        bool TryGetValue(string key, Type targetType, out string value);
+        bool TryGetValue(string key, Type targetType, out string? value);
     }
 }

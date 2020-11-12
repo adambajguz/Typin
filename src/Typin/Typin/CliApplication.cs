@@ -35,11 +35,11 @@
             _serviceProvider = serviceProvider;
             _cliContextFactory = cliContextFactory;
 
-            _configuration = serviceProvider.GetService<ApplicationConfiguration>();
-            _metadata = serviceProvider.GetService<ApplicationMetadata>();
-            _console = serviceProvider.GetService<IConsole>();
-            _cliCommandExecutor = serviceProvider.GetService<ICliCommandExecutor>();
-            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetService<ICliApplicationLifetime>();
+            _configuration = serviceProvider.GetRequiredService<ApplicationConfiguration>();
+            _metadata = serviceProvider.GetRequiredService<ApplicationMetadata>();
+            _console = serviceProvider.GetRequiredService<IConsole>();
+            _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
+            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
         }
 
         /// <summary>
@@ -119,7 +119,7 @@
             Dictionary<string, string> environmentVariables = Environment.GetEnvironmentVariables()
                                                                          .Cast<DictionaryEntry>()
                                                                          .ToDictionary(x => (string)x.Key,
-                                                                                       x => (string)x.Value,
+                                                                                       x => (x.Value as string) ?? string.Empty,
                                                                                        StringComparer.Ordinal);
 
             return await RunAsync(commandLineArguments, environmentVariables);

@@ -4,6 +4,7 @@
     using Microsoft.Extensions.DependencyInjection;
 
     internal class ServiceFactoryAdapter<TContainerBuilder> : IServiceFactoryAdapter
+        where TContainerBuilder : notnull
     {
         private readonly IServiceProviderFactory<TContainerBuilder> _serviceProviderFactory;
 

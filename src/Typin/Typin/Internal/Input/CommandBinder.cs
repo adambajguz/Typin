@@ -36,8 +36,8 @@
             }
 
             // Non-scalar parameter (only one is allowed)
-            CommandParameterSchema nonScalarParameter = parameters.OrderBy(p => p.Order)
-                                                                  .FirstOrDefault(p => !p.IsScalar);
+            CommandParameterSchema? nonScalarParameter = parameters.OrderBy(p => p.Order)
+                                                                   .FirstOrDefault(p => !p.IsScalar);
 
             if (nonScalarParameter != null)
             {
@@ -84,9 +84,9 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.Property!.PropertyType, out string value))
+                    optionFallbackProvider.TryGetValue(v, option.Property!.PropertyType, out string? value))
                 {
-                    string[] values = option.IsScalar ? new[] { value } : value.Split(Path.PathSeparator);
+                    string[] values = option.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
                     option.BindOn(instance, values);
                     unsetRequiredOptions.Remove(option);

@@ -37,13 +37,13 @@
         public string this[string key, Type targetType] => _environmentVariables[key];
 
         /// <inheritdoc/>
-        public bool TryGetValue(string key, out string value)
+        public bool TryGetValue(string key, out string? value)
         {
             return _environmentVariables.TryGetValue(key, out value);
         }
 
         /// <inheritdoc/>
-        public bool TryGetValue(string key, Type targetType, out string value)
+        public bool TryGetValue(string key, Type targetType, out string? value)
         {
             return _environmentVariables.TryGetValue(key, out value);
         }

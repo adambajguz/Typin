@@ -12,7 +12,6 @@ namespace Typin
     using Typin.HelpWriter;
     using Typin.Internal;
     using Typin.Internal.DependencyInjection;
-    using Typin.Internal.Extensions;
     using Typin.Internal.Pipeline;
     using Typin.Internal.Schemas;
     using Typin.Modes;
@@ -329,7 +328,7 @@ namespace Typin
             _configureServicesActions.Add(services =>
             {
                 services.TryAddSingleton(cliMode);
-                services.AddSingleton(typeof(ICliMode), (IServiceProvider sp) => sp.GetService(cliMode));
+                services.AddSingleton(typeof(ICliMode), (IServiceProvider sp) => sp.GetRequiredService(cliMode));
             });
 
             if (asStartup)
@@ -382,6 +381,7 @@ namespace Typin
         /// Overrides the factory used to create the service provider.
         /// </summary>
         public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+            where TContainerBuilder : notnull
         {
             _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
 
@@ -490,9 +490,9 @@ namespace Typin
             _cliApplicationBuilt = true;
 
             // Set default values
-            _title ??= AssemblyExtensions.TryGetDefaultTitle() ?? "App";
-            _executableName ??= AssemblyExtensions.TryGetDefaultExecutableName() ?? "app";
-            _versionText ??= AssemblyExtensions.TryGetDefaultVersionText() ?? "v1.0";
+            _title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
+            _executableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
+            _versionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
             _console ??= new SystemConsole();
 
             if (_startupMode is null || _modeTypes.Count == 0)

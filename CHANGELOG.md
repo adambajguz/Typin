@@ -7,7 +7,8 @@
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
 - Replaced `IsInteractiveModeOnly` with `SupportedModes`.
-- Added support for options with no name by automatic conversion of property names. 
+- Added support for options with no name by automatic conversion of property names.
+- Added native support for .NET 5.0.
 
 ### v2.1.1 (18-Oct-2020)
 
