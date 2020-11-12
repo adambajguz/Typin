@@ -102,7 +102,7 @@
             if ((SupportedModes?.Count ?? 0) == 0)
                 return true;
 
-            return SupportedModes.Contains(type);
+            return SupportedModes!.Contains(type);
         }
 
         /// <summary>

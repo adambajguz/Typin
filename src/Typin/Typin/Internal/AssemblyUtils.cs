@@ -1,10 +1,11 @@
-﻿namespace Typin.Internal.Extensions
+﻿namespace Typin.Internal
 {
     using System;
     using System.IO;
     using System.Reflection;
+    using Typin.Internal.Extensions;
 
-    internal static class AssemblyExtensions
+    internal static class AssemblyUtils
     {
         private static readonly Lazy<Assembly?> LazyEntryAssembly = new Lazy<Assembly?>(Assembly.GetEntryAssembly);
 
@@ -32,7 +33,7 @@
 
         public static string? TryGetDefaultVersionText()
         {
-            return EntryAssembly != null ? $"v{EntryAssembly.GetName().Version.ToSemanticString()}" : null;
+            return EntryAssembly != null ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}" : null;
         }
     }
 }

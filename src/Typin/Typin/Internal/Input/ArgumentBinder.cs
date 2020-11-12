@@ -19,24 +19,27 @@
                 [typeof(object)] = v => v,
                 [typeof(string)] = v => v,
                 [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
-                [typeof(char)] = v => v.Single(),
-                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
-                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
-                [typeof(short)] = v => short.Parse(v, FormatProvider),
-                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
-                [typeof(int)] = v => int.Parse(v, FormatProvider),
-                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
-                [typeof(long)] = v => long.Parse(v, FormatProvider),
-                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-                [typeof(float)] = v => float.Parse(v, FormatProvider),
-                [typeof(double)] = v => double.Parse(v, FormatProvider),
-                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
-                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
-                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
-                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
+                [typeof(char)] = v => v!.Single(),
+                [typeof(sbyte)] = v => sbyte.Parse(v!, FormatProvider),
+                [typeof(byte)] = v => byte.Parse(v!, FormatProvider),
+                [typeof(short)] = v => short.Parse(v!, FormatProvider),
+                [typeof(ushort)] = v => ushort.Parse(v!, FormatProvider),
+                [typeof(int)] = v => int.Parse(v!, FormatProvider),
+                [typeof(uint)] = v => uint.Parse(v!, FormatProvider),
+                [typeof(long)] = v => long.Parse(v!, FormatProvider),
+                [typeof(ulong)] = v => ulong.Parse(v!, FormatProvider),
+#if NET5_0
+                [typeof(Half)] = v => Half.Parse(v!, FormatProvider),
+#endif
+                [typeof(float)] = v => float.Parse(v!, FormatProvider),
+                [typeof(double)] = v => double.Parse(v!, FormatProvider),
+                [typeof(decimal)] = v => decimal.Parse(v!, FormatProvider),
+                [typeof(DateTime)] = v => DateTime.Parse(v!, FormatProvider),
+                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v!, FormatProvider),
+                [typeof(TimeSpan)] = v => TimeSpan.Parse(v!, FormatProvider),
             };
 
-        #region Value Converter
+#region Value Converter
         private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType)
         {
             try
@@ -48,7 +51,7 @@
 
                 // Enum
                 if (targetType.IsEnum)
-                    return Enum.Parse(targetType, value, true);
+                    return Enum.Parse(targetType, value ?? string.Empty, true);
 
                 // Nullable
                 Type? nullableUnderlyingType = targetType.TryGetNullableUnderlyingType();
@@ -62,7 +65,7 @@
                 // String-constructible
                 ConstructorInfo? stringConstructor = targetType.GetConstructor(new[] { typeof(string) });
                 if (stringConstructor != null)
-                    return stringConstructor.Invoke(new object[] { value! });
+                    return stringConstructor.Invoke(new object?[] { value });
 
                 // String-parseable (with format provider)
                 MethodInfo? parseMethodWithFormatProvider = targetType.GetStaticParseMethod(true);
@@ -72,7 +75,7 @@
                 // String-parseable (without format provider)
                 MethodInfo? parseMethod = targetType.GetStaticParseMethod();
                 if (parseMethod != null)
-                    return parseMethod.Invoke(null, new object[] { value! });
+                    return parseMethod.Invoke(null, new object?[] { value });
             }
             catch (Exception ex)
             {
@@ -125,7 +128,7 @@
                 return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType);
             }
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Binds input values to command.

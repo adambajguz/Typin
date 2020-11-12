@@ -11,9 +11,9 @@
     /// </summary>
     internal class RootSchemaResolver
     {
-        private IReadOnlyList<Type> _commandTypes { get; }
-        private IReadOnlyList<Type> _directiveTypes { get; }
-        private IReadOnlyList<Type> _modeTypes { get; }
+        private readonly IReadOnlyList<Type> _commandTypes;
+        private readonly IReadOnlyList<Type> _directiveTypes;
+        private readonly IReadOnlyList<Type> _modeTypes;
 
         public CommandSchema? DefaultCommand { get; private set; }
         public Dictionary<string, CommandSchema>? Commands { get; private set; }
@@ -67,7 +67,7 @@
             {
                 IGrouping<string, CommandSchema> duplicateNameGroup = invalidCommands.Union(commands.Values)
                                                                                      .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
-                                                                                     .FirstOrDefault();
+                                                                                     .First();
 
                 throw ResolversExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
@@ -91,9 +91,9 @@
 
             if (invalidDirectives.Count > 0)
             {
-                IGrouping<string, DirectiveSchema>? duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
-                                                                                          .FirstOrDefault();
+                IGrouping<string, DirectiveSchema> duplicateNameGroup = invalidDirectives.Union(directives.Values)
+                                                                                         .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
+                                                                                         .First();
 
                 throw ResolversExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }

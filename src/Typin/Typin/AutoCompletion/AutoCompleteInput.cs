@@ -31,7 +31,7 @@
                 {
                     if (History.SelectionUp())
                     {
-                        _lineInputHandler.ClearLine();
+                        _lineInputHandler!.ClearLine();
                         _lineInputHandler.Write(History.GetSelection());
                     }
                 }),
@@ -39,7 +39,7 @@
                 {
                     if (History.SelectionDown())
                     {
-                        _lineInputHandler.ClearLine();
+                        _lineInputHandler!.ClearLine();
                         _lineInputHandler.Write(History.GetSelection());
                     }
                 }),

@@ -35,7 +35,7 @@
                         console.Error.WriteLine();
 
                         if (cx.ShowHelp)
-                            ((IHelpWriter)_serviceProvider.GetService(typeof(IHelpWriter))).Write();
+                            (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
                     }
                     return true;
 
@@ -46,7 +46,7 @@
                         console.Error.WriteLine();
 
                         if (dx.ShowHelp)
-                            ((IHelpWriter)_serviceProvider.GetService(typeof(IHelpWriter))).Write();
+                            (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
                     }
                     return true;
 

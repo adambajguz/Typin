@@ -84,7 +84,7 @@
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is ShortcutDefinition sd && Key == sd.Key && Modifiers == sd.Modifiers;
         }
