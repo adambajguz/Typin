@@ -12,7 +12,7 @@ namespace TypinExamples.Services.Terminal
 
         public static void RegisterTerminal(string id, XTerm terminal)
         {
-            _terminals[id] = terminal;
+            _terminals.TryAdd(id, terminal);
         }
 
         public static void UnregisterTerminal(string id)
@@ -21,10 +21,9 @@ namespace TypinExamples.Services.Terminal
                 _terminals.Remove(id);
         }
 
-        [JSInvokable("ExampleInit")]
+        [JSInvokable("TerminalManager_ExampleInit")]
         public static async Task OnExampleInit(string id, string input)
         {
-
             if (_terminals.TryGetValue(id, out XTerm? term))
             {
                 await term.RunExample(input);
@@ -34,15 +33,19 @@ namespace TypinExamples.Services.Terminal
         [JSInvokable]
         public static async Task OnKey(string id, KeyboardEventArgs @event)
         {
-            if (_terminals.ContainsKey(id))
-                await _terminals[id]?.OnKey.InvokeAsync(@event);
+            if (_terminals.TryGetValue(id, out XTerm? term))
+            {
+                await term.OnKey.InvokeAsync(@event);
+            }
         }
 
         [JSInvokable]
         public static async Task OnLineFeed(string id)
         {
-            if (_terminals.ContainsKey(id))
-                await _terminals[id]?.OnLineFeed.InvokeAsync(string.Empty);
+            if (_terminals.TryGetValue(id, out XTerm? term))
+            {
+                await term.OnLineFeed.InvokeAsync(string.Empty);
+            }
         }
     }
 }

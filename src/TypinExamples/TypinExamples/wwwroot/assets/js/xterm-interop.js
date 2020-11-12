@@ -13,9 +13,33 @@ xtermInterop.initialize = function (id) {
         //    terminal.write(data);
         //});
         terminal.id = id;
+
         terminal.prompt = function () {
             terminal.write('\r\n' + shellprompt);
         };
+
+        terminal.welcome = function () {
+            terminal.writeln("Welcome to TypinExamples.");
+            terminal.writeln("This is a local terminal emulation.");
+            terminal.writeln("Type './run' to run an example or 'help' for more informations.");
+        };
+
+        terminal.help = function () {
+            terminal.writeln("");
+            terminal.writeln("Emulated commands:");
+            terminal.writeln("  ./run <args>         run an example with or without optional arguments");
+            terminal.writeln("  ./run.exe <args>");
+            terminal.writeln("  run.exe <args>");
+            terminal.writeln("  run <args>");
+            terminal.writeln("");
+            terminal.writeln("  clear                clears screen");
+            terminal.writeln("  cls");
+            terminal.writeln("");
+            terminal.writeln("  help                 show this help");
+        };
+
+        terminal.welcome();
+
         terminal.cmd = '';
         terminal.on('key', function (key, ev) {
             let printable = (
@@ -28,17 +52,27 @@ xtermInterop.initialize = function (id) {
                     terminal.cmd = '';
                     terminal.prompt();
                 }
-                else if (terminal.cmd.startsWith(".\run") || terminal.cmd.startsWith("./run")
-                    || terminal.cmd.startsWith("run.exe") || terminal.cmd.startsWith(".\run.exe")
-                    || terminal.cmd.startsWith("./run.exe")) {
+                else if (terminal.cmd === 'help') {
+                    terminal.help();
+                    terminal.cmd = '';
+                    terminal.prompt();
+                }
+                else if (terminal.cmd.startsWith("./run") || //".\\run.exe" does not work
+                    terminal.cmd.startsWith("run.exe") ||
+                    terminal.cmd.startsWith("./run.exe") ||
+                    terminal.cmd.startsWith("run")) {
                     terminal.writeln("");
-                    DotNet.invokeMethodAsync('TypinExamples', 'ExampleInit', terminal.id, terminal.cmd)
-                        .then(() => {
 
+                    DotNet.invokeMethodAsync('TypinExamples', 'TerminalManager_ExampleInit', terminal.id, terminal.cmd)
+                        .then(() => {
                             terminal.write('\u001b[39m')
                             terminal.prompt();
                             terminal.cmd = '';
                         });
+                }
+                else if (terminal.cmd.isNullOrWhiteSpace()) {
+                    terminal.cmd = '';
+                    terminal.prompt();
                 }
                 else {
                     terminal.writeln("");
@@ -48,7 +82,6 @@ xtermInterop.initialize = function (id) {
                 }
             } else if (ev.keyCode == 8) {
                 // Do not delete the prompt
-                console.log(terminal.rows);
                 if (terminal.cmd.length > 0) {
                     terminal.cmd = terminal.cmd.slice(0, -1);
                     terminal.write('\b \b');
