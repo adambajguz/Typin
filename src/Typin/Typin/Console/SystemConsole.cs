@@ -89,6 +89,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int WindowWidth
         {
             get => Console.WindowWidth;
@@ -97,6 +98,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int WindowHeight
         {
             get => Console.WindowHeight;
@@ -105,6 +107,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int BufferWidth
         {
             get => Console.BufferWidth;
@@ -113,6 +116,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int BufferHeight
         {
             get => Console.BufferHeight;

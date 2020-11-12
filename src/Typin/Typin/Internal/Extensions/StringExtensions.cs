@@ -54,7 +54,7 @@
                                                  IFormatProvider? formatProvider = null,
                                                  string? format = null)
         {
-            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString();
+            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString() ?? string.Empty;
         }
 
         public static string PadBoth(this string source, int length, char paddingChar = ' ')

@@ -1,7 +1,6 @@
 ﻿namespace Typin
 {
     using System;
-    using Microsoft.Extensions.DependencyInjection;
     using Typin.Internal.Exceptions;
 
     /// <summary>

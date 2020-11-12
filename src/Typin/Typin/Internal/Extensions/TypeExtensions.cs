@@ -43,7 +43,7 @@
                        .FirstOrDefault();
         }
 
-        public static MethodInfo GetToStringMethod(this Type type)
+        public static MethodInfo? GetToStringMethod(this Type type)
         {
             return type.GetMethod(nameof(ToString), Type.EmptyTypes);
         }
@@ -53,7 +53,7 @@
             return type.GetToStringMethod() != typeof(object).GetToStringMethod();
         }
 
-        public static MethodInfo GetStaticParseMethod(this Type type, bool withFormatProvider = false)
+        public static MethodInfo? GetStaticParseMethod(this Type type, bool withFormatProvider = false)
         {
             Type[] argumentTypes = withFormatProvider
                 ? new[] { typeof(string), typeof(IFormatProvider) }

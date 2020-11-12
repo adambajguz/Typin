@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests
+﻿namespace Typin.Tests.ArgumentTests
 {
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -189,36 +189,21 @@
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
-        [Fact]
-        public async Task All_provided_option_arguments_must_be_bound_to_corresponding_properties()
+        [Theory]
+        [InlineData("cmd", "--non-existing-option", "13")]
+        [InlineData("cmd", "--non-existing-option", "13", "--non2")]
+        [InlineData("cmd", "--non-existing-option", "13", "non2")]
+        [InlineData("cmd", "non-existing-parameter")]
+        [InlineData("cmd", "--non-existing-option", "13", "non-existing-parameter")]
+        [InlineData("cmd", "non-existing-parameter", "--non-existing-option", "13")]
+        public async Task All_provided_parameter_and_option_arguments_must_be_bound_to_corresponding_properties(params string[] args)
         {
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd", "--non-existing-option", "13"
-            });
-
-            // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
-            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public async Task All_provided_parameter_arguments_must_be_bound_to_corresponding_properties()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<SupportedArgumentTypesCommand>();
-
-            // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cnd", "non-existing-parameter"
-            });
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);

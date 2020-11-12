@@ -17,6 +17,7 @@
         [CommandOption("str")]
         public string? String { get; set; } = "foo bar";
 
+        #region Simple types
         [CommandOption("bool")]
         public bool Bool { get; set; }
 
@@ -64,19 +65,67 @@
 
         [CommandOption("timespan")]
         public TimeSpan TimeSpan { get; set; }
+        #endregion
 
-        [CommandOption("enum")]
-        public CustomEnum Enum { get; set; }
+        #region Simple nullable types
+        [CommandOption("bool-nullable")]
+        public bool? BoolNullabe { get; set; }
+
+        [CommandOption("char-nullable")]
+        public char? CharNullable { get; set; }
+
+        [CommandOption("sbyte-nullable")]
+        public sbyte? SbyteNullable { get; set; }
+
+        [CommandOption("byte-nullable")]
+        public byte? ByteNullable { get; set; }
+
+        [CommandOption("short-nullable")]
+        public short? ShortNullable { get; set; }
+
+        [CommandOption("ushort-nullable")]
+        public ushort? UshortNullable { get; set; }
 
         [CommandOption("int-nullable")]
         public int? IntNullable { get; set; }
 
-        [CommandOption("enum-nullable")]
-        public CustomEnum? EnumNullable { get; set; }
+        [CommandOption("uint-nullable")]
+        public uint? UintNullable { get; set; }
+
+        [CommandOption("long-nullable")]
+        public long? LongNullable { get; set; }
+
+        [CommandOption("ulong-nullable")]
+        public ulong? UlongNullable { get; set; }
+
+        [CommandOption("float-nullable")]
+        public float? FloatNullable { get; set; }
+
+        [CommandOption("double-nullable")]
+        public double? DoubleNullable { get; set; }
+
+        [CommandOption("decimal-nullable")]
+        public decimal? DecimalNullable { get; set; }
+
+        [CommandOption("datetime-nullable")]
+        public DateTime? DateTimeNullable { get; set; }
+
+        [CommandOption("datetime-offset-nullable")]
+        public DateTimeOffset? DateTimeOffsetNullable { get; set; }
 
         [CommandOption("timespan-nullable")]
         public TimeSpan? TimeSpanNullable { get; set; }
+        #endregion
 
+        #region Custom enum
+        [CommandOption("enum")]
+        public CustomEnum Enum { get; set; }
+
+        [CommandOption("enum-nullable")]
+        public CustomEnum? EnumNullable { get; set; }
+        #endregion
+
+        #region Parasable or constructible
         [CommandOption("str-constructible")]
         public CustomStringConstructible? StringConstructible { get; set; }
 
@@ -85,7 +134,9 @@
 
         [CommandOption("str-parseable-format")]
         public CustomStringParseableWithFormatProvider? StringParseableWithFormatProvider { get; set; }
+        #endregion
 
+        #region Collections
         [CommandOption("obj-array")]
         public object[]? ObjectArray { get; set; }
 
@@ -115,5 +166,6 @@
 
         [CommandOption("str-set")]
         public HashSet<string>? StringHashSet { get; set; }
+        #endregion
     }
 }

@@ -80,7 +80,7 @@
             if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
                 return DefaultCommand;
 
-            Commands.TryGetValue(commandName, out CommandSchema value);
+            Commands.TryGetValue(commandName, out CommandSchema? value);
 
             return value;
         }
@@ -93,7 +93,7 @@
             if (string.IsNullOrWhiteSpace(directiveName))
                 return null;
 
-            Directives.TryGetValue(directiveName, out DirectiveSchema value);
+            Directives.TryGetValue(directiveName, out DirectiveSchema? value);
 
             return value;
         }
