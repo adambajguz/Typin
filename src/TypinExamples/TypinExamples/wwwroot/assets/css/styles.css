@@ -25,14 +25,6 @@ body.dark {
     --color-accent: #00d5ff;
 }
 
-    body.dark #grid .card {
-        background-color: rgba(26, 159, 96, 0.4);
-    }
-
-    body.dark .card {
-        box-shadow: 0 1px 3px var(--color-darkGrey);
-    }
-
 .container {
     padding: 0;
 }
