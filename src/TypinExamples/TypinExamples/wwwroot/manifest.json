@@ -3,8 +3,8 @@
   "short_name": "TypinExamples",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0e3842",
-  "theme_color": "#0d2832",
+  "background_color": "#080a0a",
+  "theme_color": "#00d5ff",
   "icons": [
     {
       "src": "assets/images/typin-icon/typin-favicon-512px.png",
