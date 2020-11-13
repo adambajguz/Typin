@@ -1,6 +1,6 @@
 ﻿img.img-zoom-in-out {
     transform-origin: center center;
-    animation: img-zoom-in-out--keyframes 5s infinite;
+    animation: img-zoom-in-out--keyframes 4s infinite;
     max-width: 100%;
 }
 
