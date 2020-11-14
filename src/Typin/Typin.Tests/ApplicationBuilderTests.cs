@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Text;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
@@ -13,7 +12,6 @@
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Startups;
-    using Typin.Utilities;
     using Xunit;
 
     public class ApplicationBuilderTests

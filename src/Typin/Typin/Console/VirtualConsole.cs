@@ -60,12 +60,12 @@
                                                                                                                    CancellationToken cancellationToken = default)
         {
             // Memory streams don't need to be disposed
-            var output = new MemoryStreamWriter(Console.OutputEncoding, isOutputRedirected);
-            var error = new MemoryStreamWriter(Console.OutputEncoding, isErrorRedirected);
+            var output = new MemoryStreamWriter(Console.OutputEncoding);
+            var error = new MemoryStreamWriter(Console.OutputEncoding);
 
             var console = new VirtualConsole(input: null, isInputRedirected,
-                                             output.BaseStream, isOutputRedirected,
-                                             error.BaseStream, isErrorRedirected,
+                                             output.Stream, isOutputRedirected,
+                                             error.Stream, isErrorRedirected,
                                              cancellationToken);
 
             return (console, output, error);

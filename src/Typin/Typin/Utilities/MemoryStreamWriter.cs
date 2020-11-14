@@ -2,8 +2,6 @@
 {
     using System.IO;
     using System.Text;
-    using Typin.Console;
-    using Typin.Console.IO;
 
     /// <summary>
     /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
@@ -11,16 +9,21 @@
     public class MemoryStreamWriter
     {
         /// <summary>
-        /// Gets the underlying stream that interfaces with a backing store.
+        /// Gets the stream that interfaces with a backing store.
         /// </summary>
-        public MemoryStream BaseStream { get; } = new MemoryStream();
+        public MemoryStream Stream { get; } = new MemoryStream();
+
+        /// <summary>
+        /// Gets the stream that interfaces with a backing store.
+        /// </summary>
+        public Encoding Encoding { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
-        public MemoryStreamWriter()
+        public MemoryStreamWriter(Encoding encoding)
         {
-
+            Encoding = encoding;
         }
 
         /// <summary>
@@ -28,8 +31,8 @@
         /// </summary>
         public byte[] GetBytes()
         {
-            BaseStream.Flush();
-            return BaseStream.ToArray();
+            Stream.Flush();
+            return Stream.ToArray();
         }
 
         /// <summary>
@@ -39,6 +42,15 @@
         {
             byte[] bytes = GetBytes();
             return Encoding.GetString(bytes);
+        }
+
+        /// <summary>
+        /// Gets the string written to the underlying stream.
+        /// </summary>
+        public string GetString(Encoding encoding)
+        {
+            byte[] bytes = GetBytes();
+            return encoding.GetString(bytes);
         }
     }
 }
