@@ -1,23 +1,26 @@
 ﻿namespace TypinExamples.CalculatOR.Commands.Logic
 {
+    using System.Numerics;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command("shiftleft")]
+    [Command("shiftleft", Description = "Logic left shift n bits")]
     public class ShiftLeftCommand : ICommand
     {
         [CommandParameter(0)]
         public Number A { get; set; }
 
-        [CommandOption('n')]
-        public uint N { get; set; }
+        [CommandParameter(1)]
+        public int N { get; set; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public async ValueTask ExecuteAsync(IConsole console)
         {
-            return default;
+            BigInteger score = A.Value << N;
+            await console.Output.WriteLineAsync(A.Value + " shift left " + N + " bits = " + score);
+
         }
     }
 }

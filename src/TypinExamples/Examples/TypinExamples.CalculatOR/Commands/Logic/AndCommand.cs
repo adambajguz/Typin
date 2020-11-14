@@ -8,7 +8,7 @@
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command("and")]
+    [Command("and", Description = "The result of a logical operation 'and' n consecutive numbers with the first number") ]
     public class AndCommand : ICommand
     {
         [CommandParameter(0)]
@@ -23,7 +23,7 @@
             foreach (var x in B)
             {
                 BigInteger score = counter & x.Value;
-                await console.Output.WriteLineAsync(counter + "&" + x.Value + " = " + score);
+                await console.Output.WriteLineAsync(counter + " and " + x.Value + " = " + score);
             }
         }
     }

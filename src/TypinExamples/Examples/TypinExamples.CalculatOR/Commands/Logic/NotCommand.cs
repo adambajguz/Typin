@@ -1,24 +1,24 @@
 ﻿namespace TypinExamples.CalculatOR.Commands.Logic
 {
     using System.Collections.Generic;
+    using System.Numerics;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
 
-    [Command("not")]
+    [Command("not", Description = "The result of a logical operation 'not' on a number")]
     public class NotCommand : ICommand
     {
         [CommandParameter(0)]
         public Number A { get; set; }
 
-        [CommandParameter(1)]
-        public IEnumerable<Number> B { get; set; }
-
-        public ValueTask ExecuteAsync(IConsole console)
+        public async ValueTask ExecuteAsync(IConsole console)
         {
-            return default;
+            BigInteger score = ~A.Value;
+            await console.Output.WriteLineAsync( "Not " + A.Value + " = " + score);
+
         }
     }
 }

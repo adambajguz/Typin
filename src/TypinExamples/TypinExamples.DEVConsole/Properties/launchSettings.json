@@ -9,7 +9,7 @@
     },
     "Run: CalculatOR": {
       "commandName": "Project",
-      "commandLineArgs": "and 10 15",
+      "commandLineArgs": "-h",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.CalculatOR.Program"
       }
