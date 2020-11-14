@@ -2,9 +2,10 @@
 {
     using System.IO;
     using System.Text;
+    using Typin.Console;
 
     /// <summary>
-    /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
+    /// Wrapper over a <see cref="MemoryStream"/> for <see cref="VirtualConsole"/>.
     /// </summary>
     public class MemoryStreamWriter
     {

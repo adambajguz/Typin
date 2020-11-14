@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests.Extensions
 {
-    using Typin.Console;
     using Typin.Utilities;
     using Xunit.Abstractions;
 
