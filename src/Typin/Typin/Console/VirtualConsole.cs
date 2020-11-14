@@ -18,22 +18,13 @@
         private bool disposedValue;
 
         /// <inheritdoc />
-        public StreamReader Input { get; }
+        public StandardStreamReader Input { get; }
 
         /// <inheritdoc />
-        public bool IsInputRedirected { get; }
+        public StandardStreamWriter Output { get; }
 
         /// <inheritdoc />
-        public StreamWriter Output { get; }
-
-        /// <inheritdoc />
-        public bool IsOutputRedirected { get; }
-
-        /// <inheritdoc />
-        public StreamWriter Error { get; }
-
-        /// <inheritdoc />
-        public bool IsErrorRedirected { get; }
+        public StandardStreamWriter Error { get; }
 
         /// <inheritdoc />
         public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.Gray;
@@ -46,19 +37,14 @@
         /// Initializes an instance of <see cref="VirtualConsole"/>.
         /// Use named parameters to specify the streams you want to override.
         /// </summary>
-        public VirtualConsole(StreamReader? input = null, bool isInputRedirected = true,
-                              StreamWriter? output = null, bool isOutputRedirected = true,
-                              StreamWriter? error = null, bool isErrorRedirected = true,
+        public VirtualConsole(StandardStreamReader? input = null,
+                              StandardStreamWriter? output = null,
+                              StandardStreamWriter? error = null,
                               CancellationToken cancellationToken = default)
         {
-            Input = input ?? StreamReader.Null;
-            IsInputRedirected = isInputRedirected;
-
-            Output = output ?? StreamWriter.Null;
-            IsOutputRedirected = isOutputRedirected;
-
-            Error = error ?? StreamWriter.Null;
-            IsErrorRedirected = isErrorRedirected;
+            Input = input ?? StandardStreamReader.Null;
+            Output = output ?? StandardStreamWriter.Null;
+            Error = error ?? StandardStreamWriter.Null;
 
             _cancellationToken = cancellationToken;
         }
@@ -71,9 +57,9 @@
                               Stream? output = null, bool isOutputRedirected = true,
                               Stream? error = null, bool isErrorRedirected = true,
                               CancellationToken cancellationToken = default)
-            : this(WrapInput(input), isInputRedirected,
-                   WrapOutput(output), isOutputRedirected,
-                   WrapOutput(error), isErrorRedirected,
+            : this(WrapInput(input, isInputRedirected),
+                   WrapOutput(output, isOutputRedirected),
+                   WrapOutput(error, isErrorRedirected),
                    cancellationToken)
         {
 
@@ -179,20 +165,20 @@
         }
 
         #region Helpers
-        private static StreamReader WrapInput(Stream? stream)
+        private static StandardStreamReader WrapInput(Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamReader.Null;
+                return StandardStreamReader.Null;
 
-            return new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false);
+            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected);
         }
 
-        private static StreamWriter WrapOutput(Stream? stream)
+        private static StandardStreamWriter WrapOutput(Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamWriter.Null;
+                return StandardStreamWriter.Null;
 
-            return new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding)
+            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected)
             {
                 AutoFlush = true
             };

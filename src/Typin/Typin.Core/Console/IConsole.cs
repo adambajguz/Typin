@@ -1,44 +1,13 @@
 ﻿namespace Typin.Console
 {
     using System;
-    using System.IO;
     using System.Threading;
 
     /// <summary>
     /// Abstraction for interacting with the console.
     /// </summary>
-    public interface IConsole : IDisposable
+    public interface IConsole : IStandardInput, IStandardOutput, IStandardError, IDisposable
     {
-        /// <summary>
-        /// Input stream (stdin).
-        /// </summary>
-        StreamReader Input { get; }
-
-        /// <summary>
-        /// Whether the input stream is redirected.
-        /// </summary>
-        bool IsInputRedirected { get; }
-
-        /// <summary>
-        /// Output stream (stdout).
-        /// </summary>
-        StreamWriter Output { get; }
-
-        /// <summary>
-        /// Whether the output stream is redirected.
-        /// </summary>
-        bool IsOutputRedirected { get; }
-
-        /// <summary>
-        /// Error stream (stderr).
-        /// </summary>
-        StreamWriter Error { get; }
-
-        /// <summary>
-        /// Whether the error stream is redirected.
-        /// </summary>
-        bool IsErrorRedirected { get; }
-
         /// <summary>
         /// Current foreground color.
         /// </summary>

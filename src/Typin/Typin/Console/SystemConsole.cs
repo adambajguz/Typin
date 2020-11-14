@@ -15,22 +15,13 @@
         private bool disposedValue;
 
         /// <inheritdoc />
-        public StreamReader Input { get; }
+        public StandardStreamReader Input { get; }
 
         /// <inheritdoc />
-        public bool IsInputRedirected => Console.IsInputRedirected;
+        public StandardStreamWriter Output { get; }
 
         /// <inheritdoc />
-        public StreamWriter Output { get; }
-
-        /// <inheritdoc />
-        public bool IsOutputRedirected => Console.IsOutputRedirected;
-
-        /// <inheritdoc />
-        public StreamWriter Error { get; }
-
-        /// <inheritdoc />
-        public bool IsErrorRedirected => Console.IsErrorRedirected;
+        public StandardStreamWriter Error { get; }
 
         /// <inheritdoc />
         public ConsoleColor ForegroundColor
@@ -52,9 +43,9 @@
         /// </summary>
         public SystemConsole()
         {
-            Input = WrapInput(Console.OpenStandardInput());
-            Output = WrapOutput(Console.OpenStandardOutput());
-            Error = WrapOutput(Console.OpenStandardError());
+            Input = WrapInput(Console.OpenStandardInput(), Console.IsInputRedirected);
+            Output = WrapOutput(Console.OpenStandardOutput(), Console.IsOutputRedirected);
+            Error = WrapOutput(Console.OpenStandardError(), Console.IsErrorRedirected);
         }
         #endregion
 
@@ -187,7 +178,7 @@
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
             //TODO: fix enter and maybe other
-            if (IsInputRedirected)
+            if (Input.IsRedirected)
             {
                 int v = -1;
                 while (v == -1)
@@ -228,20 +219,20 @@
         }
 
         #region Helpers
-        private static StreamReader WrapInput(Stream? stream)
+        private static StandardStreamReader WrapInput(Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamReader.Null;
+                return StandardStreamReader.Null;
 
-            return new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false);
+            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected);
         }
 
-        private static StreamWriter WrapOutput(Stream? stream)
+        private static StandardStreamWriter WrapOutput(Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamWriter.Null;
+                return StandardStreamWriter.Null;
 
-            return new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding)
+            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected)
             {
                 AutoFlush = true
             };
