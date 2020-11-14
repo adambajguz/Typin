@@ -13,12 +13,19 @@
             return type.GetInterfaces().Contains(interfaceType);
         }
 
-        public static Type? GetNullableUnderlyingType(this Type type)
+        public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
+        {
+            return property != null && property.PropertyType != typeof(string)
+                       ? property.PropertyType.TryGetEnumerableUnderlyingType()
+                       : null;
+        }
+
+        public static Type? TryGetNullableUnderlyingType(this Type type)
         {
             return Nullable.GetUnderlyingType(type);
         }
 
-        public static Type? GetEnumerableUnderlyingType(this Type type)
+        public static Type? TryGetEnumerableUnderlyingType(this Type type)
         {
             if (type.IsPrimitive)
                 return null;
@@ -30,13 +37,13 @@
                 return type.GetGenericArguments().FirstOrDefault();
 
             return type.GetInterfaces()
-                       .Select(GetEnumerableUnderlyingType)
+                       .Select(TryGetEnumerableUnderlyingType)
                        .Where(t => t != null)
                        .OrderByDescending(t => t != typeof(object)) // prioritize more specific types
                        .FirstOrDefault();
         }
 
-        public static MethodInfo GetToStringMethod(this Type type)
+        public static MethodInfo? GetToStringMethod(this Type type)
         {
             return type.GetMethod(nameof(ToString), Type.EmptyTypes);
         }
@@ -46,7 +53,7 @@
             return type.GetToStringMethod() != typeof(object).GetToStringMethod();
         }
 
-        public static MethodInfo GetStaticParseMethod(this Type type, bool withFormatProvider = false)
+        public static MethodInfo? GetStaticParseMethod(this Type type, bool withFormatProvider = false)
         {
             Type[] argumentTypes = withFormatProvider
                 ? new[] { typeof(string), typeof(IFormatProvider) }

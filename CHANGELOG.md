@@ -1,4 +1,17 @@
+### v3.0.0 (xx-Oct-2020)
+
+- Added `Typin.Core` library.
+- Added `CliApplication.RunAsync` with string command line.
+- Advanced interactive input is disabled when input is redirected.
+- Renamed `normal mode` to `direct mode`.
+- It is now possible to register multiple exception handleres to handle different exceptions in app.
+- Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
+- Replaced `IsInteractiveModeOnly` with `SupportedModes`.
+- Added support for options with no name by automatic conversion of property names.
+- Added native support for .NET 5.0.
+
 ### v2.1.1 (18-Oct-2020)
+
 - Fixed `CommandOptionInput.IsOptionAlias` bug.
 - It is no possible to scope to `cmd` command even if there is only `cmd sub` in application.
 - Added `CommandInput.Arguments`.
@@ -8,7 +21,7 @@
 ### v2.1 (17-Oct-2020)
 
 - Schemas resolving improvements
-- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and normal modes.
+- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and direct modes.
 - Fixed negative numbers handling by forbidding options starting from digit. Options must have a name starting from char other than digit, while short name must not be a digit.
 - Auto-completion bug fixes.
 

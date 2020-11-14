@@ -1,0 +1,17 @@
+﻿
+.tabs > .dropdown > summary,
+.tabs > a {
+    color: var(--color-lightGrey);
+    border-bottom: 2px solid var(--color-lightGrey);
+    text-align: center;
+}
+
+    .tabs > a.active,
+    .tabs > a:hover {
+        opacity: 1;
+        border-bottom: 2px solid var(--color-primary);
+    }
+
+.tabs.tabs-bg {
+    background-color: var(--bg-secondary-color);
+}

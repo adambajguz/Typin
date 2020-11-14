@@ -1,6 +1,5 @@
 ﻿namespace Typin.Internal.Pipeline
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
@@ -11,9 +10,11 @@
 
     internal sealed class HandleHelpOption : IMiddleware
     {
-        public HandleHelpOption()
-        {
+        private readonly IHelpWriter _helpTextWriter;
 
+        public HandleHelpOption(IHelpWriter helpTextWriter)
+        {
+            _helpTextWriter = helpTextWriter;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
@@ -31,10 +32,9 @@
 
             // Help option
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||
-                (commandSchema == StubDefaultCommand.Schema && !input.Parameters.Any() && !input.Options.Any()))
+                (commandSchema == StubDefaultCommand.Schema && input.IsDefaultCommandOrEmpty))
             {
-                IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
-                helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
+                _helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
 
                 return ExitCodes.Success;
             }

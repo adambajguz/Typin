@@ -17,34 +17,34 @@
     public class BlazorBoot
     {
         [JsonPropertyName("cacheBootResources")]
-        public bool CacheBootResources { get; set; }
+        public bool CacheBootResources { get; init; }
 
         [JsonPropertyName("config")]
-        public string[] Config { get; set; } = Array.Empty<string>();
+        public string[] Config { get; init; } = Array.Empty<string>();
 
         [JsonPropertyName("debugBuild")]
-        public bool DebugBuild { get; set; }
+        public bool DebugBuild { get; init; }
 
         [JsonPropertyName("entryAssembly")]
-        public string EntryAssembly { get; set; } = string.Empty;
+        public string EntryAssembly { get; init; } = string.Empty;
 
         [JsonPropertyName("linkerEnabled")]
-        public bool LinkerEnabled { get; set; }
+        public bool LinkerEnabled { get; init; }
 
         [JsonPropertyName("resources")]
-        public Resources Resources { get; set; } = new Resources();
+        public Resources Resources { get; init; } = new Resources();
     }
 
     public class Resources
     {
         [JsonPropertyName("assembly")]
-        public Dictionary<string, string> Assembly { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Assembly { get; init; } = new Dictionary<string, string>();
 
         [JsonPropertyName("pdb")]
-        public Dictionary<string, string> Pdb { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Pdb { get; init; } = new Dictionary<string, string>();
 
         [JsonPropertyName("runtime")]
-        public Dictionary<string, string> Runtime { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Runtime { get; init; } = new Dictionary<string, string>();
     }
 
     public class RoslynCompilerService
@@ -64,8 +64,9 @@
             async Task InitializeInternal()
             {
                 Logger.LogInformation("Initializing compiler");
-                BlazorBoot response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
-                HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/_bin/" + x)));
+                BlazorBoot? response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+
+                HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 
                 List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
                 foreach (HttpResponseMessage asm in assemblies)
@@ -79,6 +80,7 @@
                 References = references;
                 Logger.LogInformation("Finished compiler initilization");
             }
+
             InitializationTask = InitializeInternal();
         }
 

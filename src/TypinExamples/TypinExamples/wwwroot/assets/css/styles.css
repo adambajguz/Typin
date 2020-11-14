@@ -1,38 +1,47 @@
 ﻿@import "../frameworks/chota/dist/chota.min.css";
 @import "../frameworks/xterm/xterm.min.css";
 
+@import "c-dots-wave-loader.css";
 @import "code-highlight.css";
+@import "img-zoom-in-out.css";
+@import "custom-scrollbars.css";
 
 @import "c-top-scroller.css";
+@import "c-box.css";
+@import "c-tabs.css";
 @import "m-header.css";
 @import "m-footer.css";
 
 body.dark {
-    --bg-color: #0e3842;
-    --bg-secondary-color: #262626;
+    /*Chota overrides*/
+    --bg-color: #080a0a;
+    --bg-secondary-color: #082542;
+    --page-column-bg-color: #0f3952;
     --font-color: #f5f5f5;
     --color-grey: #bbb;
-    --color-darkGrey: #888;
+    --color-darkGrey: #777;
     --color-primary: #17c16f;
     --color-error: #ea4f4f;
+    --color-accent: #00d5ff;
 }
 
-    body.dark #grid .card {
-        background-color: rgba(26, 159, 96, 0.4);
-    }
-
-    body.dark .card {
-        box-shadow: 0 1px 3px var(--color-darkGrey);
-    }
-
-.container.container-bg {
-    background-color: #0d2832;
+.container {
+    padding: 0;
 }
 
-    .container.container-bg main {
-        padding: 2rem;
-        margin-bottom: 3rem;
+    .container.container-bg {
     }
+
+        .container.container-bg main {
+            padding: 3rem;
+            margin-bottom: 3rem;
+            background-color: var(--page-column-bg-color);
+        }
+
+.card {
+    box-shadow: none;
+    border-radius: 0;
+}
 
 section {
     margin: 5rem auto;
@@ -72,3 +81,7 @@ hr {
     .buttons > .button + .button {
         margin-left: 0.5rem;
     }
+
+.tag.new-example-tag {
+    margin-right: 1rem;
+}

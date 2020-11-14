@@ -1,9 +1,9 @@
 ﻿<CascadingValue Value="this">
 
-    <nav class="tabs is-full">
+    <nav class="tabs tabs-bg is-full">
         @foreach (Tab tab in Tabs)
         {
-            <a class="@(tab == Active ? "active" : string.Empty)"
+            <a class="text-uppercase @(tab == Active ? "active" : string.Empty)"
                @onclick="( () => Active = tab )">
                 @tab.Text
             </a>
@@ -16,7 +16,7 @@
 @code
 {
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; init; }
 
     public Tab? Active { get; set; }
     protected List<Tab> Tabs = new List<Tab>();

@@ -6,8 +6,10 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Exceptions;
+    using Typin.Modes;
 
-    [Command("webhost restart", Description = "Restarts the webhost worker in the interactive mode.", InteractiveModeOnly = true)]
+    [Command("webhost restart", Description = "Restarts the webhost worker in the interactive mode.",
+             SupportedModes = new[] { typeof(InteractiveMode) })]
     public class WebHostRestartCommand : ICommand
     {
         private readonly IBackgroundWebHostProvider _webHostProvider;

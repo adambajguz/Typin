@@ -4,14 +4,14 @@
     height: 4rem;
     border-radius: 50%;
     display: inline-block;
-    background: var(--color-primary);
+    background: var(--color-accent);
     bottom: 2rem;
     right: 3rem;
     text-decoration: none;
     text-align: center;
     padding: 0.5rem;
     color: white;
-    line-height: 3rem;
+    line-height: 2.5rem;
     font-size: 3rem;
     -webkit-box-shadow: 1px 1px 6px 0 rgba(0,0,0,0.7);
     -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.7);

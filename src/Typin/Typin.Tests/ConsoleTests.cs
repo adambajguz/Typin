@@ -8,9 +8,17 @@
     using FluentAssertions;
     using Typin.Console;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class ConsoleTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public ConsoleTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public async Task Real_implementation_of_console_maps_directly_to_system_console()
         {

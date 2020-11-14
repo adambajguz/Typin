@@ -8,10 +8,10 @@
     [Command("cmd")]
     public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
-        [CommandOption("str-non-initializable")]
+        [CommandOption("str-non-initializable-class")]
         public NonInitializableClassType? StringNonInitializable { get; set; }
 
-        [CommandOption("str-non-initializable")]
+        [CommandOption("str-non-initializable-struct")]
         public NonInitializableStructType? StringNonInitializableStruct { get; set; }
 
         [CommandOption("str-enumerable-non-initializable")]

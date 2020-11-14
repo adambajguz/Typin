@@ -2,10 +2,35 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
+    using System.Text.RegularExpressions;
 
     internal static class StringExtensions
     {
+        private static readonly Regex _toLowerCaseRegex = new Regex("[A-Z]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _toCamelCaseRegex = new Regex("_[a-z]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        public static string ToHyphenCase(this string s)
+        {
+            return _toLowerCaseRegex.Replace(s, "-$0")
+                                    .TrimStart('-')
+                                    .Replace('_', '-')
+                                    .ToLower();
+        }
+
+        public static string ToSnakeCase(this string s)
+        {
+            return _toLowerCaseRegex.Replace(s, "_$0")
+                                    .ToLower();
+        }
+
+        public static string ToCamelCase(this string s1)
+        {
+            return _toCamelCaseRegex.Replace(s1, delegate (Match m)
+            {
+                return m.ToString().TrimStart('_').ToUpper();
+            });
+        }
+
         public static string Quote(this string str)
         {
             return string.Concat("\"", str, "\"");
@@ -25,16 +50,11 @@
             return string.Join(separator, source);
         }
 
-        public static StringBuilder AppendIfNotEmpty(this StringBuilder builder, char value)
-        {
-            return builder.Length > 0 ? builder.Append(value) : builder;
-        }
-
         public static string ToFormattableString(this object obj,
                                                  IFormatProvider? formatProvider = null,
                                                  string? format = null)
         {
-            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString();
+            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString() ?? string.Empty;
         }
 
         public static string PadBoth(this string source, int length, char paddingChar = ' ')

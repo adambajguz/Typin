@@ -1,12 +1,11 @@
 ﻿namespace Typin.Tests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Invalid;
     using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -19,130 +18,117 @@
             _output = output;
         }
 
-        [Fact]
-        public async Task Application_can_be_created_and_executed_with_benchmark_default_command()
+        [Theory]
+        [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello \" world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true)]
+        public async Task Application_can_be_created_and_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+
+            if (interactive)
+            {
+                builder.UseDirectMode(true)
+                       .UseInteractiveMode();
+            }
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .UseConsole(console)
-                                                 .Build();
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
 
             // Assert
-            app.Should().NotBeNull();
-
-            // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "13", "-b" }, new Dictionary<string, string>());
-
-            // Asert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}");
+            stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
-
-            _output.WriteLine(stdOut.GetString());
         }
 
-        [Fact]
-        public async Task Application_with_interactive_mode_can_be_created_and_executed_in_normal_mode_with_benchmark_default_command()
+        [Theory]
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("--str \"hello \\ world\" -i 13 -b", "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true, false)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("--str \"hello \\\" world\" -i 13 -b", "{\"StrOption\":\"hello \\\" world\",\"IntOption\":13,\"BoolOption\":true}", true, false)]
+        [InlineData("--str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", false, false)]
+        [InlineData("", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false, false)]
+        [InlineData("test.dll --str \"hello world\" -i 13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
+        [InlineData("test.dll --str \"hello world\" -i -13 -b", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false, true)]
+        [InlineData("test.dll --str \"hello world\" -i \"-13\" \"-b\"", "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true, true)]
+        [InlineData("test.dll", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false, true)]
+        [InlineData("test.dll", "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true, true)]
+        public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive, bool containsExecutable)
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+
+            if (interactive)
+            {
+                builder.UseInteractiveMode();
+            }
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .UseInteractiveMode()
-                                                 .UseConsole(console)
-                                                 .Build();
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, containsExecutable, isInputRedirected: interactive);
 
             // Assert
-            app.Should().NotBeNull();
-
-            // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "-13", "-b" }, new Dictionary<string, string>());
-
-            // Asert
             exitCode.Should().Be(0);
-            stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
+            stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
         public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                     .AddCommand<NamedInteractiveOnlyCommand>();
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .AddCommand<NamedInteractiveOnlyCommand>()
-                                                 .UseConsole(console)
-                                                 .Build();
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
-            app.Should().NotBeNull();
-
-            // Act
-            int exitCode = await app.RunAsync(new string[] { "named-interactive-only" }, new Dictionary<string, string>());
-
-            // Asert
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is using CliApplication.");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
+            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains an invalid mode in SupportedModes parameter.");
         }
 
         [Fact]
         public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands_even_if_supports_interactive_mode_but_is_not_started()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                     .AddCommand<NamedInteractiveOnlyCommand>()
+                                                     .UseDirectMode(true)
+                                                     .UseInteractiveMode();
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .AddCommand<NamedInteractiveOnlyCommand>()
-                                                 .UseConsole(console)
-                                                 .UseInteractiveMode()
-                                                 .Build();
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
-            app.Should().NotBeNull();
-
-            // Act
-            int exitCode = await app.RunAsync(new string[] { "named-interactive-only" }, new Dictionary<string, string>());
-
-            // Asert
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain("can be executed only in interactive mode, but this application is not running in this mode.");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
+            stdErr.GetString().Should().Contain($"This application is running in '{typeof(DirectMode).FullName}' mode.");
         }
 
         [Fact]
         public async Task Application_can_be_created_and_executed_with_benchmark_commands()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
 
             // Act
-            var app = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                 .UseConsole(console)
-                                                 .Build();
-
-            // Assert
-            app.Should().NotBeNull();
-
-            // Act
-            int exitCode = await app.RunAsync(new string[] { "--str", "hello world", "-i", "-13", "-b" }, new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "-13", "-b" });
 
             // Assert
             exitCode.Should().Be(0);
@@ -154,381 +140,281 @@
         public async Task At_least_one_command_must_be_defined_in_an_application()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .UseConsole(console)
-                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
-            int exitCode = await application.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Commands_must_implement_the_corresponding_interface()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand(typeof(NonImplementedCommand))
-                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
-                .UseConsole(console)
-                .Build();
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
-            int exitCode = await application.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Commands_must_be_annotated_by_an_attribute()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
-                .AddCommand<NonAnnotatedCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NonAnnotatedCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Commands_must_have_unique_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<GenericExceptionCommand>()
-                .AddCommand<CommandExceptionCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<CommandExceptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_can_be_default_but_only_if_it_is_the_only_such_command()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
-                .AddCommand<OtherDefaultCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<OtherDefaultCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_option_must_have_valid_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<InvalidOptionNameCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<InvalidOptionNameCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_option_must_have_valid_shortnames()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<InvalidOptionShortNameCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<InvalidOptionShortNameCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_parameters_must_have_unique_order()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<DuplicateParameterOrderCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DuplicateParameterOrderCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_parameters_must_have_unique_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<DuplicateParameterNameCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DuplicateParameterNameCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_parameter_can_be_non_scalar_only_if_no_other_such_parameter_is_present()
         {
-            // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<MultipleNonScalarParametersCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<MultipleNonScalarParametersCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_parameter_can_be_non_scalar_only_if_it_is_the_last_in_order()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<NonLastNonScalarParameterCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NonLastNonScalarParameterCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
-        public async Task Command_options_must_have_names_that_are_not_empty()
+        public async Task Command_options_can_have_names_that_are_empty()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<EmptyOptionNameCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<EmptyOptionNameCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd --help");
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
-            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
 
-            _output.WriteLine(stdErr.GetString());
+            stdOut.GetString().Should().ContainAll(
+                "Options",
+                "--apple",
+                "--blackberries",
+                "--west-indian-cherry",
+                "--coconut-meat--or--pitaya-dragonfruit",
+                "--coconut-meat-or--pitaya");
         }
 
         [Fact]
         public async Task Command_options_must_have_names_that_are_longer_than_one_character()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<SingleCharacterOptionNameCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<SingleCharacterOptionNameCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_options_must_have_unique_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<DuplicateOptionNamesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionNamesCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_options_must_have_unique_short_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<DuplicateOptionShortNamesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionShortNamesCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_options_must_have_unique_environment_variable_names()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<DuplicateOptionEnvironmentVariableNamesCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DuplicateOptionEnvironmentVariableNamesCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_options_must_not_have_conflicts_with_the_implicit_help_option()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<ConflictWithHelpOptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<ConflictWithHelpOptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
         public async Task Command_options_must_not_have_conflicts_with_the_implicit_version_option()
         {
             // Arrange
-            var (console, _, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<ConflictWithVersionOptionCommand>()
-                .UseConsole(console)
-                .Build();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<ConflictWithVersionOptionCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>());
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdErr.GetString());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Directives
 {
     /// <summary>
     /// Standard command directives definitions.

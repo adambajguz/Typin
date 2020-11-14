@@ -5,16 +5,16 @@
         /// <summary>
         /// Target path or URL.
         /// </summary>
-        public string? Href { get; set; }
+        public string? Href { get; init; }
 
         /// <summary>
         /// Link title.
         /// </summary>
-        public string? Title { get; set; }
+        public string? Title { get; init; }
 
         /// <summary>
         /// Whether link is external.
         /// </summary>
-        public bool IsExternal { get; set; }
+        public bool IsExternal { get; init; }
     }
 }

@@ -17,17 +17,24 @@
     <link href="/assets/css/styles.css" rel="stylesheet" />
 </head>
 
-<body id="top" class="dark">
+<body id="body" class="dark">
     <app>
         <header class="container">
             <div class="hero is-full-screen">
                 <div class="logo is-center is-vertical-align">
+
+                    <div class="wave-loader">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+
                     <div class="row is-center">
                         <div class="col-3">
-                            <img src="./assets/images/typin-icon/typin-favicon-no-bg-256px.png" alt="Icon">
+                            <img class="img-zoom-in-out" src="./assets/images/typin-icon/typin-favicon-no-bg-256px.png" alt="Icon">
                         </div>
                     </div>
-                    <strong>Loading...</strong>
+
                 </div>
             </div>
         </header>
@@ -41,10 +48,11 @@
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/Blazor.Extensions.Logging/blazor.extensions.logging.js" defer></script>
-    <script src="/assets/frameworks/xterm/xterm.min.js"></script>
-    <script src="/assets/frameworks/monaco-editor/min/vs/loader.js"></script>
-    <script src="/assets/js/monaco-editor-interop.js"></script>
-    <script src="/assets/js/xterm-interop.js"></script>
+    <script src="/assets/frameworks/xterm/xterm.min.js" defer></script>
+    <script src="/assets/frameworks/monaco-editor/min/vs/loader.js" defer></script>
+    <script src="/assets/js/js-extensions.js" defer></script>
+    <script src="/assets/js/monaco-editor-interop.js" defer></script>
+    <script src="/assets/js/xterm-interop.js" defer></script>
 
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>

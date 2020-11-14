@@ -4,8 +4,9 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Modes;
 
-    [Directive("custom-interactive", Description = "Custom interactive only directive.", InteractiveModeOnly = true)]
+    [Directive("custom-interactive", Description = "Custom interactive only directive.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class CustomInteractiveModeOnlyDirective : IDirective
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);

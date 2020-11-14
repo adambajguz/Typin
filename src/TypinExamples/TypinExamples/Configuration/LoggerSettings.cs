@@ -2,13 +2,13 @@
 {
     public sealed class LoggerSettings
     {
-        public bool IsBrowserOutputEnabled { get; set; }
-        public string? BrowserOutputTemplate { get; set; }
+        public bool IsBrowserOutputEnabled { get; init; }
+        public string? BrowserOutputTemplate { get; init; }
 
-        public bool IsConsoleOutputEnabled { get; set; }
-        public string? ConsoleOutputTemplate { get; set; }
+        public bool IsConsoleOutputEnabled { get; init; }
+        public string? ConsoleOutputTemplate { get; init; }
 
-        public string? SentryDSN { get; set; }
-        public bool SentryEnabled { get; set; }
+        public string? SentryDSN { get; init; }
+        public bool SentryEnabled { get; init; }
     }
 }

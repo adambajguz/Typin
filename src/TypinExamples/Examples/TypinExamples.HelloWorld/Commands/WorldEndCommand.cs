@@ -10,13 +10,13 @@
     public class WorldEndCommand : ICommand
     {
         [CommandParameter(0, Description = "The date of World's end.")]
-        public DateTime Date { get; set; }
+        public DateTime Date { get; init; }
 
         [CommandOption("CONFIRM", IsRequired = true)]
-        public bool Confirm { get; set; }
+        public bool Confirm { get; init; }
 
         [CommandOption("force", 'f')]
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         public async ValueTask ExecuteAsync(IConsole console)
         {

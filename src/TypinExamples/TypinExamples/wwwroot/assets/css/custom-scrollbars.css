@@ -1,0 +1,19 @@
+﻿/*https://w3generator.com/scrollbar*/
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00d5ff;
+    border-radius: 0px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #00b9de;
+    }
+
+::-webkit-scrollbar-track {
+    visibility: hidden
+    border-radius: 0px;
+}

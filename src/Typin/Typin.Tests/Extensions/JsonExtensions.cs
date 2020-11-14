@@ -4,9 +4,10 @@
 
     internal static class JsonExtensions
     {
-        public static T DeserializeJson<T>(this string json)
+        public static T DeserializeJson<T>(this string json, JsonSerializerSettings? settings = null)
+            where T : notnull
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json, settings)!;
         }
     }
 }
