@@ -11,7 +11,10 @@
         /// <summary>
         /// A <see cref="StandardStreamReader"/> object around an empty stream.
         /// </summary>
-        public static new readonly StandardStreamReader Null = new StandardStreamReader(Stream.Null, new UTF8Encoding(false, true), isRedirected: true, bounedConsole: null);
+        public static StandardStreamReader CreateNull(IConsole boundedConsole)
+        {
+            return new StandardStreamReader(Stream.Null, new UTF8Encoding(false, true), isRedirected: true, boundedConsole);
+        }
 
         /// <inheritdoc/>
         public IConsole BoundedConsole { get; }
@@ -22,61 +25,61 @@
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, bool isRedirected, IConsole boundedConsole) :
             base(stream)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, bool detectEncodingFromByteOrderMarks, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, bool detectEncodingFromByteOrderMarks, bool isRedirected, IConsole boundedConsole) :
             base(stream, detectEncodingFromByteOrderMarks)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, Encoding encoding, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, Encoding encoding, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding, detectEncodingFromByteOrderMarks)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamReader"/>.
         /// </summary>
-        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize, bool leaveOpen, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize, bool leaveOpen, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
     }
 }

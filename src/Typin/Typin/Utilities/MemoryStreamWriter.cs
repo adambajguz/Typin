@@ -8,27 +8,17 @@
     /// <summary>
     /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
     /// </summary>
-    public class MemoryStreamWriter : StandardStreamWriter
+    public class MemoryStreamWriter
     {
         /// <summary>
         /// Gets the underlying stream that interfaces with a backing store.
         /// </summary>
-        private new MemoryStream BaseStream => (MemoryStream)base.BaseStream;
+        public MemoryStream BaseStream { get; } = new MemoryStream();
 
         /// <summary>
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
-        public MemoryStreamWriter(Encoding encoding, bool isRedirected)
-            : base(new MemoryStream(), encoding, isRedirected, null)
-        {
-
-        }
-
-        /// <summary>
-        /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
-        /// </summary>
-        public MemoryStreamWriter(bool isRedirected)
-            : base(new MemoryStream(), isRedirected, null)
+        public MemoryStreamWriter()
         {
 
         }
@@ -38,7 +28,7 @@
         /// </summary>
         public byte[] GetBytes()
         {
-            Flush();
+            BaseStream.Flush();
             return BaseStream.ToArray();
         }
 
@@ -47,7 +37,8 @@
         /// </summary>
         public string GetString()
         {
-            return Encoding.GetString(GetBytes());
+            byte[] bytes = GetBytes();
+            return Encoding.GetString(bytes);
         }
     }
 }

@@ -9,9 +9,12 @@
     public class StandardStreamWriter : StreamWriter, IStandardRedirectableConsoleStream
     {
         /// <summary>
-        /// A <see cref="StandardStreamWriter"/> object around an empty stream.
+        /// Returns a <see cref="StandardStreamWriter"/> object around an empty stream.
         /// </summary>
-        public static new readonly StandardStreamWriter Null = new StandardStreamWriter(Stream.Null, new UTF8Encoding(false, true), 128, true, isRedirected: true, bounedConsole: null);
+        public static StandardStreamWriter CreateNull(IConsole boundedConsole)
+        {
+            return new StandardStreamWriter(Stream.Null, new UTF8Encoding(false, true), 128, true, isRedirected: true, boundedConsole);
+        }
 
         /// <inheritdoc/>
         public IConsole BoundedConsole { get; }
@@ -22,41 +25,41 @@
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamWriter"/>.
         /// </summary>
-        public StandardStreamWriter(Stream stream, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamWriter(Stream stream, bool isRedirected, IConsole boundedConsole) :
             base(stream)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamWriter"/>.
         /// </summary>
-        public StandardStreamWriter(Stream stream, Encoding encoding, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamWriter(Stream stream, Encoding encoding, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamWriter"/>.
         /// </summary>
-        public StandardStreamWriter(Stream stream, Encoding encoding, int bufferSize, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamWriter(Stream stream, Encoding encoding, int bufferSize, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding, bufferSize)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="StandardStreamWriter"/>.
         /// </summary>
-        public StandardStreamWriter(Stream stream, Encoding encoding, int bufferSize, bool leaveOpen, bool isRedirected, IConsole bounedConsole) :
+        public StandardStreamWriter(Stream stream, Encoding encoding, int bufferSize, bool leaveOpen, bool isRedirected, IConsole boundedConsole) :
             base(stream, encoding, bufferSize, leaveOpen)
         {
             IsRedirected = isRedirected;
-            BoundedConsole = bounedConsole;
+            BoundedConsole = boundedConsole;
         }
     }
 }
