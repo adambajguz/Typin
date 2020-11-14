@@ -1,4 +1,4 @@
-﻿namespace Typin.Console
+﻿namespace Typin.Console.IO
 {
     /// <summary>
     /// Abstraction for interacting with the standard error stream.

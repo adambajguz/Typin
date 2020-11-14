@@ -3,6 +3,7 @@
     using System.IO;
     using System.Text;
     using Typin.Console;
+    using Typin.Console.IO;
 
     /// <summary>
     /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
@@ -18,7 +19,7 @@
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
         public MemoryStreamWriter(Encoding encoding, bool isRedirected)
-            : base(new MemoryStream(), encoding, isRedirected)
+            : base(new MemoryStream(), encoding, isRedirected, null)
         {
 
         }
@@ -27,7 +28,7 @@
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
         public MemoryStreamWriter(bool isRedirected)
-            : base(new MemoryStream(), isRedirected)
+            : base(new MemoryStream(), isRedirected, null)
         {
 
         }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using Typin.Console.IO;
 
     /// <summary>
     /// Abstraction for interacting with the console.
@@ -63,7 +64,7 @@
         /// Subsequent calls to this method return the same token.
         /// </summary>
         /// <remarks>
-        /// When working with SystemConsole:<br/>
+        /// When working with System.Console:<br/>
         /// - Cancellation can be requested by the user by pressing Ctrl+C.<br/>
         /// - Cancellation can only be deferred once, subsequent requests to cancel by the user will result in instant termination.<br/>
         /// - Any code executing prior to calling this method is not cancellation-aware and as such will terminate instantly when cancellation is requested.
@@ -80,45 +81,5 @@
         /// </summary>
         /// <param name="intercept">Determines whether to display the pressed key in the console window. true to not display the pressed key; otherwise, false.</param>
         ConsoleKeyInfo ReadKey(bool intercept = false);
-    }
-
-    /// <summary>
-    /// Extensions for <see cref="IConsole"/>.
-    /// </summary>
-    public static class ConsoleExtensions
-    {
-        /// <summary>
-        /// Sets console foreground color, executes specified action, and sets the color back to the original value.
-        /// </summary>
-        public static void WithForegroundColor(this IConsole console, ConsoleColor foregroundColor, Action action)
-        {
-            ConsoleColor lastColor = console.ForegroundColor;
-            console.ForegroundColor = foregroundColor;
-
-            action();
-
-            console.ForegroundColor = lastColor;
-        }
-
-        /// <summary>
-        /// Sets console background color, executes specified action, and sets the color back to the original value.
-        /// </summary>
-        public static void WithBackgroundColor(this IConsole console, ConsoleColor backgroundColor, Action action)
-        {
-            ConsoleColor lastColor = console.BackgroundColor;
-            console.BackgroundColor = backgroundColor;
-
-            action();
-
-            console.BackgroundColor = lastColor;
-        }
-
-        /// <summary>
-        /// Sets console foreground and background colors, executes specified action, and sets the colors back to the original values.
-        /// </summary>
-        public static void WithColors(this IConsole console, ConsoleColor foregroundColor, ConsoleColor backgroundColor, Action action)
-        {
-            console.WithForegroundColor(foregroundColor, () => console.WithBackgroundColor(backgroundColor, action));
-        }
     }
 }

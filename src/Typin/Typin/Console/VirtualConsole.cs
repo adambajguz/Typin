@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using Typin.Console.IO;
     using Typin.Extensions;
     using Typin.Utilities;
 
@@ -37,32 +38,16 @@
         /// Initializes an instance of <see cref="VirtualConsole"/>.
         /// Use named parameters to specify the streams you want to override.
         /// </summary>
-        public VirtualConsole(StandardStreamReader? input = null,
-                              StandardStreamWriter? output = null,
-                              StandardStreamWriter? error = null,
-                              CancellationToken cancellationToken = default)
-        {
-            Input = input ?? StandardStreamReader.Null;
-            Output = output ?? StandardStreamWriter.Null;
-            Error = error ?? StandardStreamWriter.Null;
-
-            _cancellationToken = cancellationToken;
-        }
-
-        /// <summary>
-        /// Initializes an instance of <see cref="VirtualConsole"/>.
-        /// Use named parameters to specify the streams you want to override.
-        /// </summary>
         public VirtualConsole(Stream? input = null, bool isInputRedirected = true,
                               Stream? output = null, bool isOutputRedirected = true,
                               Stream? error = null, bool isErrorRedirected = true,
                               CancellationToken cancellationToken = default)
-            : this(WrapInput(input, isInputRedirected),
-                   WrapOutput(output, isOutputRedirected),
-                   WrapOutput(error, isErrorRedirected),
-                   cancellationToken)
         {
+            Input = WrapInput(this, input, isInputRedirected);
+            Output = WrapOutput(this, output, isOutputRedirected);
+            Error = WrapOutput(this, error, isErrorRedirected);
 
+            _cancellationToken = cancellationToken;
         }
 
         /// <summary>
@@ -75,11 +60,13 @@
                                                                                                                    CancellationToken cancellationToken = default)
         {
             // Memory streams don't need to be disposed
-            var input = new StandardStreamReader(Stream.Null, isInputRedirected);
             var output = new MemoryStreamWriter(Console.OutputEncoding, isOutputRedirected);
             var error = new MemoryStreamWriter(Console.OutputEncoding, isErrorRedirected);
 
-            var console = new VirtualConsole(input, output, error, cancellationToken);
+            var console = new VirtualConsole(input: null, isInputRedirected,
+                                             output.BaseStream, isOutputRedirected,
+                                             error.BaseStream, isErrorRedirected,
+                                             cancellationToken);
 
             return (console, output, error);
         }
@@ -163,20 +150,20 @@
         }
 
         #region Helpers
-        private static StandardStreamReader WrapInput(Stream? stream, bool isRedirected)
+        private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
                 return StandardStreamReader.Null;
 
-            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected);
+            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
 
-        private static StandardStreamWriter WrapOutput(Stream? stream, bool isRedirected)
+        private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
                 return StandardStreamWriter.Null;
 
-            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected)
+            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {
                 AutoFlush = true
             };

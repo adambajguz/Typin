@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using Typin.Console.IO;
     using Typin.Extensions;
 
     /// <summary>
@@ -43,9 +44,9 @@
         /// </summary>
         public SystemConsole()
         {
-            Input = WrapInput(Console.OpenStandardInput(), Console.IsInputRedirected);
-            Output = WrapOutput(Console.OpenStandardOutput(), Console.IsOutputRedirected);
-            Error = WrapOutput(Console.OpenStandardError(), Console.IsErrorRedirected);
+            Input = WrapInput(this, Console.OpenStandardInput(), Console.IsInputRedirected);
+            Output = WrapOutput(this, Console.OpenStandardOutput(), Console.IsOutputRedirected);
+            Error = WrapOutput(this, Console.OpenStandardError(), Console.IsErrorRedirected);
         }
         #endregion
 
@@ -219,20 +220,20 @@
         }
 
         #region Helpers
-        private static StandardStreamReader WrapInput(Stream? stream, bool isRedirected)
+        private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
                 return StandardStreamReader.Null;
 
-            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected);
+            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
 
-        private static StandardStreamWriter WrapOutput(Stream? stream, bool isRedirected)
+        private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
                 return StandardStreamWriter.Null;
 
-            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected)
+            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {
                 AutoFlush = true
             };
