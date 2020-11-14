@@ -156,8 +156,8 @@
         public void Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
         {
             // Arrange
-            IConsole console = new VirtualConsole(isInputRedirected: false, output: new MemoryStreamWriter(), isOutputRedirected: false,
-                                                  error: new MemoryStreamWriter(Encoding.UTF8), isErrorRedirected: true);
+            IConsole console = new VirtualConsole(output: new MemoryStreamWriter(false),
+                                                  error: new MemoryStreamWriter(Encoding.UTF8, true));
 
             // Act
             var app = new CliApplicationBuilder()

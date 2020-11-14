@@ -2,11 +2,12 @@
 {
     using System.IO;
     using System.Text;
+    using Typin.Console;
 
     /// <summary>
     /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
     /// </summary>
-    public class MemoryStreamWriter : StreamWriter
+    public class MemoryStreamWriter : StandardStreamWriter
     {
         /// <summary>
         /// Gets the underlying stream that interfaces with a backing store.
@@ -16,8 +17,8 @@
         /// <summary>
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
-        public MemoryStreamWriter(Encoding encoding)
-            : base(new MemoryStream(), encoding)
+        public MemoryStreamWriter(Encoding encoding, bool isRedirected)
+            : base(new MemoryStream(), encoding, isRedirected)
         {
 
         }
@@ -25,8 +26,8 @@
         /// <summary>
         /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
         /// </summary>
-        public MemoryStreamWriter()
-            : base(new MemoryStream())
+        public MemoryStreamWriter(bool isRedirected)
+            : base(new MemoryStream(), isRedirected)
         {
 
         }
