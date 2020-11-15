@@ -1,24 +1,34 @@
 ﻿namespace TypinExamples.CalculatOR.Commands.Logic
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
+    using TypinExamples.CalculatOR.Utils;
 
-    [Command]
+    [Command("not", Description = "Performs a logical 'NOT' operation on a number.")]
     public class NotCommand : ICommand
     {
         [CommandParameter(0)]
         public Number A { get; set; }
 
-        [CommandParameter(1)]
-        public IEnumerable<Number> B { get; set; }
+        [CommandOption("steps", 's', Description = "Whether to show steps.")]
+        public bool ShowSteps { get; set; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        [CommandOption("base", 'b', Description = "Base that will be used for displaying all numbers. Default means auto.")]
+        public NumberBase? Base { get; set; } = null;
+
+        private readonly OperationEvaluatorService _evaluator;
+
+        public NotCommand(OperationEvaluatorService evaluator)
         {
-            return default;
+            _evaluator = evaluator;
+        }
+
+        public async ValueTask ExecuteAsync(IConsole console)
+        {
+            await _evaluator.Eval(A, new[] { A }, "NOT", ShowSteps, Base, (x, y) => ~(x));
         }
     }
 }
