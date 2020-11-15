@@ -5,30 +5,37 @@
     using Typin;
     using Typin.HelpWriter;
     using Typin.Input;
-    using Typin.Internal;
     using Typin.Schemas;
 
-    internal sealed class HandleHelpOption : IMiddleware
+    internal sealed class HandleSpecialOptions : IMiddleware
     {
         private readonly IHelpWriter _helpTextWriter;
 
-        public HandleHelpOption(IHelpWriter helpTextWriter)
+        public HandleSpecialOptions(IHelpWriter helpTextWriter)
         {
             _helpTextWriter = helpTextWriter;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            context.ExitCode ??= Execute((CliContext)context);
+            context.ExitCode ??= Execute(context);
 
             await next();
         }
 
-        private int? Execute(CliContext context)
+        private int? Execute(ICliContext context)
         {
             // Get input and command schema from context
             CommandInput input = context.Input;
             CommandSchema commandSchema = context.CommandSchema;
+
+            // Version option
+            if (commandSchema.IsVersionOptionAvailable && input.IsVersionOptionSpecified)
+            {
+                context.Console.Output.WriteLine(context.Metadata.VersionText);
+
+                return ExitCodes.Success;
+            }
 
             // Help option
             if ((commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) ||

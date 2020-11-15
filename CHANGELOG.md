@@ -6,10 +6,16 @@
 - Renamed `normal mode` to `direct mode`.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
+- Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
 - Replaced `IsInteractiveModeOnly` with `SupportedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
 - Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- User middlewares are now executed after command instance creation.
+- Middleware types collection in `ApplicationConfiguration` order was reversed.
+- Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
+- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `ExecuteCommand`).
+- Removed unnecessary casts to `CliContext` from `ICliContext`.
 
 ### v2.1.1 (18-Oct-2020)
 
