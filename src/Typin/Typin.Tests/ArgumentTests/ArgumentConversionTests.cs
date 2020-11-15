@@ -176,7 +176,7 @@
         [InlineData(@"cmd --int-array", @"{ ""int-array"": [] }")]
 
         [InlineData(@"cmd --int-nullable-array 1 -1 0 -0", @"{ ""int-nullable-array"": [1, -1, 0, 0] }")]
-        [InlineData(@"cmd --int-nullable-array 1 -1 """" -0", @"{ ""int-nullable-array"": [1, -1, 0] }")] //TODO: how to input null int?
+        [InlineData(@"cmd --int-nullable-array 1 -1 """" -0", @"{ ""int-nullable-array"": [1, -1, null, 0] }")]
         [InlineData(@"cmd --int-nullable-array", @"{ ""int-nullable-array"": [] }")]
         public async Task Property_should_be_bound(string args, string output)
         {

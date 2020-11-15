@@ -31,7 +31,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "pipeline" });
 
             // Asert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
@@ -58,7 +58,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Asert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 

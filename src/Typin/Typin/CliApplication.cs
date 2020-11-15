@@ -148,8 +148,8 @@
 
                 PrintStartupMessage();
 
-                List<string> filteredArgs = commandLineArguments.Where(x => !string.IsNullOrEmpty(x)).ToList();
-                int exitCode = await StartAppAsync(filteredArgs);
+                //List<string> filteredArgs = commandLineArguments.Where(x => !string.IsNullOrEmpty(x)).ToList();
+                int exitCode = await StartAppAsync(commandLineArguments);
 
                 //TODO: OnStop()
 
