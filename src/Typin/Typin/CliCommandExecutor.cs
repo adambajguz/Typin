@@ -81,7 +81,7 @@
             CancellationToken cancellationToken = cliContext.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
 
-            foreach (Type middlewareType in middlewareTypes)
+            foreach (Type middlewareType in middlewareTypes.Reverse())
             {
                 IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
                 next = instance.Next(cliContext, next, cancellationToken);

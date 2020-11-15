@@ -11,16 +11,16 @@
     [Command("pipeline", Description = "Prints a middleware pipeline structure in application.")]
     public class PipelineCommand : ICommand
     {
-        private readonly ICliContext _cliContext;
+        private readonly ApplicationConfiguration _configuration;
 
-        public PipelineCommand(ICliContext cliContext)
+        public PipelineCommand(ApplicationConfiguration configuration)
         {
-            _cliContext = cliContext;
+            _configuration = configuration;
         }
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            DebugPrintServices(console, _cliContext.Configuration.MiddlewareTypes);
+            DebugPrintServices(console, _configuration.MiddlewareTypes);
 
             return default;
         }
@@ -28,9 +28,8 @@
         private void DebugPrintServices(IConsole console, IReadOnlyCollection<Type> middlewares)
         {
             TableUtils.Write(console,
-                             middlewares.Reverse()
-                                        .Concat(new Type?[] { null })
-                                        .Concat(middlewares),
+                             middlewares.Concat(new Type?[] { null })
+                                        .Concat(middlewares.Reverse()),
                              new string[] { "Middleware type name", "Assembly" },
                              footnotes: null,
                              x => x == null ? "<PipelineTermination>" : (x.FullName == null ? string.Empty : x.FullName.ToString()),

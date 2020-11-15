@@ -55,7 +55,8 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder()
         {
-
+            UseMiddleware<ResolveCommandSchema>();
+            UseMiddleware<ResolveCommandInstance>();
         }
 
         #region Directives
@@ -414,7 +415,7 @@ namespace Typin
                 services.AddScoped(middleware);
             });
 
-            _middlewareTypes.AddFirst(middleware);
+            _middlewareTypes.AddLast(middleware);
 
             return this;
         }
@@ -548,10 +549,7 @@ namespace Typin
 
         private void AddCoreMiddlewares()
         {
-            UseMiddleware<ResolveCommandSchema>();
-            UseMiddleware<HandleVersionOption>();
-            UseMiddleware<ResolveCommandInstance>();
-            UseMiddleware<HandleHelpOption>();
+            UseMiddleware<HandleSpecialOptions>();
             UseMiddleware<ExecuteCommand>();
         }
 

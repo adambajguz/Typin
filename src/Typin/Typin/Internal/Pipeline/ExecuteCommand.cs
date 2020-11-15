@@ -29,12 +29,12 @@
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            context.ExitCode ??= await Execute((CliContext)context);
+            context.ExitCode ??= await Execute(context);
 
             await next();
         }
 
-        private async Task<int> Execute(CliContext context)
+        private async Task<int> Execute(ICliContext context)
         {
             //Get input and command schema from context
             CommandInput input = context.Input;
