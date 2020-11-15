@@ -2,10 +2,8 @@
 {
     public enum NumberBase
     {
-        Binary = 2,
-        Ternary = 3,
-        Octal = 8,
-        Decimal = 10,
-        Hexadecimal = 16
+        BIN = 2,
+        DEC = 10,
+        HEX = 16
     }
 }

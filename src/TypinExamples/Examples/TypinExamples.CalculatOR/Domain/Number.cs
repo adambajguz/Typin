@@ -1,10 +1,9 @@
 ﻿namespace TypinExamples.CalculatOR.Domain
 {
-    using Microsoft.Extensions.Primitives;
     using System;
     using System.Globalization;
-    using System.Linq.Expressions;
     using System.Numerics;
+    using TypinExamples.CalculatOR.Extensions;
 
     public struct Number
     {
@@ -21,30 +20,41 @@
         public static Number Parse(string number)
         {
             BigInteger bigInt;
-            if (number.Length >= 2 && number[0] == '0' && char.ToLower(number[1]) == 'x')
+            if (number.Length >= 2 && number[0] == '0')
             {
-                bigInt = BigInteger.Parse(number, NumberStyles.HexNumber);
-            return new Number(bigInt, NumberBase.Hexadecimal);
+                if (char.ToLower(number[1]) == 'x')
+                {
+                    string tmp = number.Replace("0x", string.Empty, true, CultureInfo.InvariantCulture);
+                    bigInt = BigInteger.Parse(tmp, NumberStyles.HexNumber);
+
+                    return new Number(bigInt, NumberBase.HEX);
+                }
+                else if (char.ToLower(number[1]) == 'b')
+                {
+                    bigInt = number.BinaryToBigInteger();
+
+                    return new Number(bigInt, NumberBase.BIN);
+                }
             }
 
             bigInt = BigInteger.Parse(number, NumberStyles.Integer);
-            return new Number(bigInt, NumberBase.Decimal);
 
+            return new Number(bigInt, NumberBase.DEC);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            throw new NotImplementedException();
+            return obj is Number num ? num.Value == Value && num.Base == Base : false;
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return HashCode.Combine(Value, Base);
         }
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"[{Base}: {Value}]";
         }
 
         public static bool operator ==(Number left, Number right)
@@ -54,7 +64,7 @@
 
         public static bool operator !=(Number left, Number right)
         {
-            return !(left == right);
+            return !left.Equals(right);
         }
     }
 }
