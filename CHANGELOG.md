@@ -9,6 +9,7 @@
 - Replaced `IsInteractiveModeOnly` with `SupportedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
+- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 
 ### v2.1.1 (18-Oct-2020)
 
