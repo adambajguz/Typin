@@ -149,7 +149,7 @@
                 new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().NotBe(0);
+            exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"

@@ -26,12 +26,10 @@
         [InlineData(new string[] { "--str", "hello world", "-i", "13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "--str", "", "-i", "-13", "-b" }, "{\"StrOption\":\"\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "", "-i", "-13", "-b" }, "{\"StrOption\":\"\",\"IntOption\":-13,\"BoolOption\":true}", true)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello world", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
-        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
-        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
-        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false)]
-        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true)]
         public async Task Application_can_be_created_and_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
@@ -47,9 +45,34 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Theory]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", false)]
+        [InlineData(new string[] { "--str", "hello world", "", "-i", "-13", "-b", "" }, "{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}", true)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", false)]
+        [InlineData(new string[] { "" }, "{\"StrOption\":null,\"IntOption\":0,\"BoolOption\":false}", true)]
+        public async Task Application_can_be_created_but_not_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+
+            if (interactive)
+            {
+                builder.UseDirectMode(true)
+                       .UseInteractiveMode();
+            }
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().NotContainEquivalentOf(result);
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
         [Theory]
@@ -80,7 +103,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, containsExecutable, isInputRedirected: interactive);
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -131,7 +154,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "-13", "-b" });
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
