@@ -46,7 +46,7 @@
         {
             // We don't do anything if stdout is redirected to avoid polluting output
             // when there's no active console window.
-            if (!_console.IsOutputRedirected)
+            if (!_console.Output.IsRedirected)
             {
                 RenderProgress(progress);
             }

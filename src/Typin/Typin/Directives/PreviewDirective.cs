@@ -37,6 +37,20 @@
 
         private void WriteCommandLineInput(IConsole console, CommandInput input)
         {
+            // Directives
+            console.Output.Write('{');
+            foreach (DirectiveInput directive in input.Directives)
+            {
+                console.WithForegroundColor(ConsoleColor.White, () =>
+                {
+                    // Name
+                    console.Output.Write(directive.Name.ToString());
+                });
+
+                console.Output.Write(' ');
+            }
+            console.Output.Write('}');
+
             // Command name
             if (!string.IsNullOrWhiteSpace(input.CommandName))
             {

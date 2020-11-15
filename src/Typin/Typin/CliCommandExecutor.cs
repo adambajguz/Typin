@@ -74,7 +74,7 @@
             }
         }
 
-        private async Task RunPipelineAsync(IServiceProvider serviceProvider, CliContext cliContext)
+        private static async Task RunPipelineAsync(IServiceProvider serviceProvider, CliContext cliContext)
         {
             IReadOnlyCollection<Type> middlewareTypes = cliContext.Configuration.MiddlewareTypes;
 
