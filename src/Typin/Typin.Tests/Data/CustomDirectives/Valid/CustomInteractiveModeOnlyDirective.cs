@@ -1,28 +1,26 @@
 ﻿namespace Typin.Tests.Data.CustomDirectives.Valid
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class CustomInteractiveModeOnlyDirective : IDirective
+    public sealed class CustomInteractiveModeOnlyDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);
 
-        public bool ContinueExecution => true;
-
-        public CustomInteractiveModeOnlyDirective()
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
-
+            return default;
         }
 
-        public ValueTask HandleAsync(IConsole console)
+        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken _)
         {
-            console.Output.Write(ExpectedOutput);
+            context.Console.Output.Write(ExpectedOutput);
 
-            return default;
+            await next();
         }
     }
 }

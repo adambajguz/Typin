@@ -2,9 +2,9 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Input;
     using Typin.Internal.Extensions;
     using Typin.Modes;
@@ -29,13 +29,10 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeDirective : IDirective
+    public sealed class ScopeDirective : IPipelinedDirective
     {
         private readonly InteractiveModeSettings _settings;
         private readonly ICliContext _cliContext;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
@@ -47,7 +44,13 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
 

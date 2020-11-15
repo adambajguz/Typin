@@ -1,9 +1,9 @@
 ﻿namespace InteractiveModeExample.Directives
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.",
@@ -12,18 +12,16 @@
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);
 
-        public bool ContinueExecution => true;
-
-        public CustomInteractiveModeOnlyDirective()
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
-
+            return default;
         }
 
-        public ValueTask HandleAsync(IConsole console)
+        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            console.Output.WriteLine(ExpectedOutput);
+            context.Console.Output.Write(ExpectedOutput);
 
-            return default;
+            await next();
         }
     }
 }

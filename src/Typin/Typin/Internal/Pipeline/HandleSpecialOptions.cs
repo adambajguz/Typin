@@ -18,13 +18,6 @@
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            context.ExitCode ??= Execute(context);
-
-            await next();
-        }
-
-        private int? Execute(ICliContext context)
-        {
             // Get input and command schema from context
             CommandInput input = context.Input;
             CommandSchema commandSchema = context.CommandSchema;
@@ -34,7 +27,8 @@
             {
                 context.Console.Output.WriteLine(context.Metadata.VersionText);
 
-                return ExitCodes.Success;
+                context.ExitCode ??= ExitCodes.Success;
+                return;
             }
 
             // Help option
@@ -43,10 +37,11 @@
             {
                 _helpTextWriter.Write(commandSchema, context.CommandDefaultValues);
 
-                return ExitCodes.Success;
+                context.ExitCode ??= ExitCodes.Success;
+                return;
             }
 
-            return null;
+            await next();
         }
     }
 }
