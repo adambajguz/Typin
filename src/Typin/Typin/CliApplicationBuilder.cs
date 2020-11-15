@@ -338,69 +338,6 @@ namespace Typin
         }
         #endregion
 
-        #region Configuration
-        //TODO add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
-
-        /// <summary>
-        /// Configures application services.
-        /// </summary>
-        public CliApplicationBuilder Configure(Action<CliApplicationBuilder> action)
-        {
-            action.Invoke(this);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures application services.
-        /// </summary>
-        public CliApplicationBuilder ConfigureServices(Action<IServiceCollection> action)
-        {
-            _configureServicesActions.Add(action);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Configures application using <see cref="ICliStartup"/> class instance.
-        /// </summary>
-        public CliApplicationBuilder UseStartup<T>()
-            where T : class, ICliStartup, new()
-        {
-            ICliStartup t = new T();
-            _configureServicesActions.Add(t.ConfigureServices);
-            t.Configure(this);
-
-            return this;
-        }
-
-
-        //https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
-
-        /// <summary>
-        /// Overrides the factory used to create the service provider.
-        /// </summary>
-        public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
-            where TContainerBuilder : notnull
-        {
-            _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
-
-            return this;
-        }
-
-        /// <summary>
-        /// Enables configuring the instantiated dependency container. This can be called multiple times and
-        /// the results will be additive.
-        /// </summary>
-        public CliApplicationBuilder ConfigureContainer<TContainerBuilder>(Action<TContainerBuilder> configureDelegate)
-        {
-            _configureContainerActions.Add(new ConfigureContainerAdapter<TContainerBuilder>(configureDelegate
-                ?? throw new ArgumentNullException(nameof(configureDelegate))));
-
-            return this;
-        }
-        #endregion
-
         #region Middleware
         /// <summary>
         /// Adds a middleware to the command execution pipeline.
@@ -474,6 +411,69 @@ namespace Typin
             where T : IHelpWriter
         {
             return UseOptionFallbackProvider(typeof(T));
+        }
+        #endregion
+
+        #region Configuration
+        //TODO add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
+        /// <summary>
+        /// Configures application services.
+        /// </summary>
+        public CliApplicationBuilder Configure(Action<CliApplicationBuilder> action)
+        {
+            action.Invoke(this);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures application services.
+        /// </summary>
+        public CliApplicationBuilder ConfigureServices(Action<IServiceCollection> action)
+        {
+            _configureServicesActions.Add(action);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures application using <see cref="ICliStartup"/> class instance.
+        /// </summary>
+        public CliApplicationBuilder UseStartup<T>()
+            where T : class, ICliStartup, new()
+        {
+            ICliStartup t = new T();
+            _configureServicesActions.Add(t.ConfigureServices);
+            t.Configure(this);
+
+            return this;
+        }
+
+
+        //https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
+
+        /// <summary>
+        /// Overrides the factory used to create the service provider.
+        /// </summary>
+        public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+            where TContainerBuilder : notnull
+        {
+            _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Enables configuring the instantiated dependency container. This can be called multiple times and
+        /// the results will be additive.
+        /// </summary>
+        public CliApplicationBuilder ConfigureContainer<TContainerBuilder>(Action<TContainerBuilder> configureDelegate)
+        {
+            _configureContainerActions.Add(new ConfigureContainerAdapter<TContainerBuilder>(configureDelegate
+                ?? throw new ArgumentNullException(nameof(configureDelegate))));
+
+            return this;
         }
         #endregion
 

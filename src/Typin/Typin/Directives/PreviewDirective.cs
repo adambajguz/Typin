@@ -46,6 +46,7 @@
                     console.Output.Write(' ');
             }
             console.Output.Write('}');
+            console.Output.Write(' ');
 
             // Command name
             if (!string.IsNullOrWhiteSpace(input.CommandName))

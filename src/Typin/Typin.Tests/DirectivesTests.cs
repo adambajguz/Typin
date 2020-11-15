@@ -69,6 +69,49 @@
         }
 
         [Fact]
+        public async Task Preview_directive_can_be_specified_before_debug_directive()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseInteractiveMode()
+                .AddDirective<PreviewDirective>()
+                .AddDirective<DebugDirective>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[preview]", "[debug]", "named", "param", "-abc", "--option", "foo" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContain("Attach debugger to PID");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task Preview_directive_should_work_in_direct_mode_even_if_directives_from_other_mode_are_specified()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseInteractiveMode()
+                .AddDirective<PreviewDirective>()
+                .AddDirective<DebugDirective>(); //TODO add test when UseInteractiv and AddDirective<ScopeUp> are used and check if error is thrown
+            //TODO: what if unknown directive is passed after [preview]?
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[preview]", "[debug]", "named", "param", "-abc", "--option", "foo" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContain("Attach debugger to PID");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
         public async Task Custom_stop_directive_should_cancel_execution_after_running()
         {
             // Arrange

@@ -25,7 +25,12 @@
         /// <inheritdoc/>
         public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
+#if NET5_0
+            int processId = Environment.ProcessId;
+#else
             int processId = Process.GetCurrentProcess().Id;
+#endif
+
             IConsole console = context.Console;
 
             console.WithForegroundColor(ConsoleColor.Green, () =>
@@ -37,8 +42,8 @@
                 await Task.Delay(100, cancellationToken);
 
             //Replace with an event
-            console.WithForegroundColor(ConsoleColor.Green, () =>
-                console.Output.WriteLine($"Debugger attached to PID {processId}."));
+            //console.WithForegroundColor(ConsoleColor.Green, () =>
+            //    console.Output.WriteLine($"Debugger attached to PID {processId}."));
 
             await next();
         }
