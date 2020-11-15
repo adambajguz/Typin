@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
     using Typin.Modes;
 
@@ -25,9 +26,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
         /// </summary>
-        public ScopeUpDirective(InteractiveModeSettings interactiveModeSettings)
+        public ScopeUpDirective(IOptions<InteractiveModeSettings> interactiveModeSettings)
         {
-            _settings = interactiveModeSettings;
+            _settings = interactiveModeSettings.Value;
         }
 
         /// <inheritdoc/>
@@ -46,6 +47,8 @@
                 _settings.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
             else if (splittedScope.Length == 1)
                 _settings.Scope = string.Empty;
+
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

@@ -29,7 +29,7 @@
             {
                 context.Console.WithForegroundColor(ConsoleColor.DarkGray, () =>
                 {
-                    context.Console.Output.WriteLine("--- Command finished succesfully after {0} ms.",
+                    context.Console.Output.WriteLine("--- Command finished successfully after {0} ms.",
                                                      stopwatch.Elapsed.TotalMilliseconds);
                 });
             }
