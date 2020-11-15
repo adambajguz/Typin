@@ -6,7 +6,7 @@
     using Typin.Attributes;
 
     [Directive("custom", Description = "Custom directive.")]
-    public sealed class CustomDirective : IDirective
+    public sealed class CustomDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomDirective);
 

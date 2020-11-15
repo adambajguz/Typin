@@ -7,7 +7,7 @@
     using Typin.Modes;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class CustomInteractiveModeOnlyDirective : IDirective
+    public sealed class CustomInteractiveModeOnlyDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);
 

@@ -83,7 +83,7 @@
                 new[] { "[custom-stop]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(CustomStopDirective.ExpectedExitCode);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Be(CustomStopDirective.ExpectedOutput);
         }

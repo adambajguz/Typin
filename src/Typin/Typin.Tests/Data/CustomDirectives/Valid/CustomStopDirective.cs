@@ -6,9 +6,10 @@
     using Typin.Attributes;
 
     [Directive("custom-stop", Description = "Custom stop directive.")]
-    public sealed class CustomStopDirective : IDirective
+    public sealed class CustomStopDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomStopDirective);
+        public const int ExpectedExitCode = 2;
 
         public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
@@ -18,6 +19,7 @@
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken _)
         {
             context.Console.Output.Write(ExpectedOutput);
+            context.ExitCode ??= ExpectedExitCode;
 
             return default;
         }

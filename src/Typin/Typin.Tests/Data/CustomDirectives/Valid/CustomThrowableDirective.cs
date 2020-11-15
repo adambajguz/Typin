@@ -7,7 +7,7 @@
     using Typin.Exceptions;
 
     [Directive("custom-throwable", Description = "Custom throwable directive.")]
-    public sealed class CustomThrowableDirective : IDirective
+    public sealed class CustomThrowableDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomThrowableDirective);
         public const int ExpectedExitCode = 1;
