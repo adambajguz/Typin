@@ -52,7 +52,7 @@
         /// <inheritdoc/>
         public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            //TODO fix advanced mode execution
+            //TODO: fix advanced mode execution
             if (firstEnter)
             {
                 //await executor.ExecuteCommand(commandLineArguments);

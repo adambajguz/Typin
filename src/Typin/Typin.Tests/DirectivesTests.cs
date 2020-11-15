@@ -97,7 +97,7 @@
                 .AddCommand<NamedCommand>()
                 .UseInteractiveMode()
                 .AddDirective<PreviewDirective>()
-                .AddDirective<DebugDirective>(); //TODO add test when UseInteractiv and AddDirective<ScopeUp> are used and check if error is thrown
+                .AddDirective<DebugDirective>(); //TODO: add test when UseInteractiv and AddDirective<ScopeUp> are used and check if error is thrown
             //TODO: what if unknown directive is passed after [preview]?
 
             // Act
