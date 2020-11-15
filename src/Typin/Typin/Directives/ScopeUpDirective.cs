@@ -2,9 +2,9 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     /// <summary>
@@ -18,12 +18,9 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeUpDirective : IDirective
+    public sealed class ScopeUpDirective : IPipelinedDirective
     {
         private readonly InteractiveModeSettings _settings;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
@@ -34,7 +31,13 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             // Scope up
             string[] splittedScope = _settings.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);

@@ -48,10 +48,10 @@
             using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
             {
                 IServiceProvider provider = serviceScope.ServiceProvider;
-                CliContext cliContext = (CliContext)provider.GetRequiredService<ICliContext>();
+                ICliContext cliContext = provider.GetRequiredService<ICliContext>();
 
                 CommandInput input = CommandInputResolver.Parse(commandLineArguments, cliContext.RootSchema.GetCommandNames());
-                cliContext.Input = input;
+                ((CliContext)cliContext).Input = input;
 
                 try
                 {
@@ -74,17 +74,17 @@
             }
         }
 
-        private static async Task RunPipelineAsync(IServiceProvider serviceProvider, CliContext cliContext)
+        private static async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)
         {
-            IReadOnlyCollection<Type> middlewareTypes = cliContext.Configuration.MiddlewareTypes;
+            IReadOnlyCollection<Type> middlewareTypes = context.Configuration.MiddlewareTypes;
 
-            CancellationToken cancellationToken = cliContext.Console.GetCancellationToken();
+            CancellationToken cancellationToken = context.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
 
             foreach (Type middlewareType in middlewareTypes.Reverse())
             {
                 IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
-                next = instance.Next(cliContext, next, cancellationToken);
+                next = instance.Next(context, next, cancellationToken);
             }
 
             await next();

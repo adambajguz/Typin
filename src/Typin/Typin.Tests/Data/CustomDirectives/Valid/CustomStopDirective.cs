@@ -1,25 +1,23 @@
 ﻿namespace Typin.Tests.Data.CustomDirectives.Valid
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Directive("custom-stop", Description = "Custom stop directive.")]
     public sealed class CustomStopDirective : IDirective
     {
         public const string ExpectedOutput = nameof(CustomStopDirective);
 
-        public bool ContinueExecution => false;
-
-        public CustomStopDirective()
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
-
+            return default;
         }
 
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken _)
         {
-            console.Output.Write(ExpectedOutput);
+            context.Console.Output.Write(ExpectedOutput);
 
             return default;
         }

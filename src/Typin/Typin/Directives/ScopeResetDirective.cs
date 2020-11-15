@@ -1,9 +1,9 @@
 ﻿namespace Typin.Directives
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     /// <summary>
@@ -17,12 +17,9 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeResetDirective : IDirective
+    public sealed class ScopeResetDirective : IPipelinedDirective
     {
         private readonly InteractiveModeSettings _settings;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeResetDirective"/>.
@@ -33,7 +30,13 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             _settings.Scope = string.Empty;
 

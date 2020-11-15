@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -12,30 +13,24 @@
     /// This is useful when troubleshooting issues related to command routing and argument binding.
     /// </summary>
     [Directive(BuiltInDirectives.Preview, Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
-    public sealed class PreviewDirective : IDirective
+    public sealed class PreviewDirective : IPipelinedDirective
     {
-        private readonly ICliContext _cliContext;
-
         /// <inheritdoc/>
-        public bool ContinueExecution => false;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="CliApplication"/>.
-        /// </summary>
-        public PreviewDirective(ICliContext cliContext)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
-            _cliContext = cliContext;
+            return default;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            WriteCommandLineInput(console, _cliContext.Input);
+            WriteCommandLineInput(context.Console, context.Input);
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }
 
-        private void WriteCommandLineInput(IConsole console, CommandInput input)
+        private static void WriteCommandLineInput(IConsole console, CommandInput input)
         {
             // Directives
             console.Output.Write('{');
@@ -47,7 +42,8 @@
                     console.Output.Write(directive.Name.ToString());
                 });
 
-                console.Output.Write(' ');
+                if (directive != input.Directives[input.Directives.Count - 1])
+                    console.Output.Write(' ');
             }
             console.Output.Write('}');
 

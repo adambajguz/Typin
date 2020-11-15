@@ -1,8 +1,8 @@
 ﻿namespace Typin.Directives
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
 
     /// <summary>
     /// Normally when application runs in interactive mode, an empty line does nothing; but [!] will override this behaviour, executing a root or scoped command.
@@ -12,18 +12,7 @@
     public sealed class DefaultDirective : IDirective
     {
         /// <inheritdoc/>
-        public bool ContinueExecution => true;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="DefaultDirective"/>.
-        /// </summary>
-        public DefaultDirective()
-        {
-
-        }
-
-        /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
             return default;
         }

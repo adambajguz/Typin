@@ -55,8 +55,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder()
         {
-            UseMiddleware<ResolveCommandSchema>();
-            UseMiddleware<ResolveCommandInstance>();
+            this.AddAfterInputParseMiddlewares();
         }
 
         #region Directives
@@ -518,7 +517,7 @@ namespace Typin
             }
 
             // Add core middlewares to the end of the pipeline
-            AddCoreMiddlewares();
+            this.AddAfterUserMiddlewares();
 
             // Create context
             var _serviceCollection = new ServiceCollection();
@@ -545,12 +544,6 @@ namespace Typin
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
             return new CliApplication(serviceProvider, cliContextFactory);
-        }
-
-        private void AddCoreMiddlewares()
-        {
-            UseMiddleware<HandleSpecialOptions>();
-            UseMiddleware<ExecuteCommand>();
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)

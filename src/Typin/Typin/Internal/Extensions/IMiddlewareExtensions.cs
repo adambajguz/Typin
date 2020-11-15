@@ -14,5 +14,13 @@
         {
             return () => commandMiddleware.HandleAsync(cliContext, next, cancellationToken);
         }
+
+        public static CommandPipelineHandlerDelegate Next(this IPipelinedDirective pipelineDirective,
+                                                          ICliContext cliContext,
+                                                          CommandPipelineHandlerDelegate next,
+                                                          CancellationToken cancellationToken)
+        {
+            return () => pipelineDirective.HandleAsync(cliContext, next, cancellationToken);
+        }
     }
 }
