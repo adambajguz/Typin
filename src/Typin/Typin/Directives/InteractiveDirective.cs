@@ -36,6 +36,7 @@
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

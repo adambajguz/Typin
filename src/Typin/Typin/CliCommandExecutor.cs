@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Extensions;
@@ -20,11 +21,13 @@
         /// <remarks>
         /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </remarks>
-        private IServiceScopeFactory ServiceScopeFactory { get; }
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger _logger;
 
-        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory)
+        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory, ILogger<CliCommandExecutor> logger)
         {
-            ServiceScopeFactory = serviceScopeFactory;
+            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
@@ -45,7 +48,9 @@
         [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
         {
-            using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
+            _logger.LogInformation("Executing command '{CommandLineArguments}'", commandLineArguments);
+
+            using (IServiceScope serviceScope = _serviceScopeFactory.CreateScope())
             {
                 IServiceProvider provider = serviceScope.ServiceProvider;
                 ICliContext cliContext = provider.GetRequiredService<ICliContext>();

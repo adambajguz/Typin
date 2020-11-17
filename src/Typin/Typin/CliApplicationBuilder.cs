@@ -7,6 +7,7 @@ namespace Typin
     using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Logging;
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.HelpWriter;
@@ -438,6 +439,19 @@ namespace Typin
         }
 
         /// <summary>
+        /// Configures application services.
+        /// </summary>
+        public CliApplicationBuilder ConfigureLogging(Action<ILoggingBuilder> action)
+        {
+            _configureServicesActions.Add(services =>
+            {
+                services.AddLogging(action);
+            });
+
+            return this;
+        }
+
+        /// <summary>
         /// Configures application using <see cref="ICliStartup"/> class instance.
         /// </summary>
         public CliApplicationBuilder UseStartup<T>()
@@ -540,6 +554,13 @@ namespace Typin
             _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
             _serviceCollection.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
+
+            _serviceCollection.AddLogging(cfg =>
+            {
+                cfg.ClearProviders();
+                cfg.AddDebug();
+                cfg.SetMinimumLevel(LogLevel.Information);
+            });
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
