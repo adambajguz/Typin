@@ -18,6 +18,7 @@
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
+- Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
 
 ### v2.1.1 (18-Oct-2020)
 
@@ -68,7 +69,7 @@
 - Rewritten `RootSchema` with HashSet for faster execution, esspecially in interactive mode.
 - Added tests of the command used in benchmarking to easily check if it executs correctly and won't cause banchmarking freezing.
 - Improved code readability.
-- Removed `CliApplicationBuilder.UseTypeActivator` and added Microsoft.Extensions.DependencyInjection
+- Removed `CliApplicationBuilder.UseTypeActivator` and added `Microsoft.Extensions.DependencyInjection`
 - Added support for middlewares.
 - Added `TableUtils` and `TextUtils`.
 - Added history and auto-completion in interactive mode.

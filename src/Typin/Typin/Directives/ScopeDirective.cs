@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
     using Typin.Input;
     using Typin.Internal.Extensions;
@@ -37,9 +38,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(InteractiveModeSettings settings, ICliContext cliContext)
+        public ScopeDirective(IOptions<InteractiveModeSettings> settings, ICliContext cliContext)
         {
-            _settings = settings;
+            _settings = settings.Value;
             _cliContext = cliContext;
         }
 
@@ -52,10 +53,13 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
+            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName(); //TODO: fix scope directives hadnling by interactive mode
 
             if (name != null)
+            {
                 _settings.Scope = name;
+                context.ExitCode ??= ExitCodes.Success;
+            }
 
             return default;
         }

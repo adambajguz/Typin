@@ -25,6 +25,14 @@ namespace Typin.Benchmarks.MultiCommand
 
 #pragma warning disable CA1822 // Mark members as static
         #region Typin
+        [Benchmark(Description = "Typin - warmup")]
+        public async ValueTask<int> ExecuteWithTypinWarmup()
+        {
+            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
+                                                    .Build()
+                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+        }
+
         [Benchmark(Description = "Typin - 1 command", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {

@@ -3,6 +3,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
     using Typin.Modes;
 
@@ -24,9 +25,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="ScopeResetDirective"/>.
         /// </summary>
-        public ScopeResetDirective(InteractiveModeSettings settings)
+        public ScopeResetDirective(IOptions<InteractiveModeSettings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         /// <inheritdoc/>
@@ -39,6 +40,7 @@
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             _settings.Scope = string.Empty;
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }
