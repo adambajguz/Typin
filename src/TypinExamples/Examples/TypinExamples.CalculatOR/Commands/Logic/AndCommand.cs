@@ -8,7 +8,7 @@
     using TypinExamples.CalculatOR.Domain;
     using TypinExamples.CalculatOR.Utils;
 
-    [Command("and", Description = "Performs a logical 'AND' operation on two or more numbers.") ]
+    [Command("and", Description = "Performs a logical 'AND' operation on two or more numbers.")]
     public class AndCommand : ICommand
     {
         [CommandParameter(0)]

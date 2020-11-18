@@ -1,0 +1,37 @@
+﻿.m-log-viewer {
+}
+
+    .m-log-viewer tbody {
+        font-size: calc(var(--font-size) * .7);
+        font-family: var(--font-family-mono);
+    }
+
+    .m-log-viewer .text-ltrace {
+        color: #c0dddb;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .text-ldbg {
+        color: #21daff;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .text-linfo {
+        color: #22E51B;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .text-lwrn {
+        color: #e3eb25;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .text-lerr {
+        color: #ff3333;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .text-lcrit {
+        color: #c400c4;
+        font-weight: bold;
+    }

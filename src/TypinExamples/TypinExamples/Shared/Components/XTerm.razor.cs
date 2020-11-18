@@ -3,19 +3,15 @@ namespace TypinExamples.Shared.Components
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
-    using Typin.Internal;
-    using TypinExamples.Configuration;
-    using TypinExamples.Services;
-    using TypinExamples.Services.Terminal;
-    using TypinExamples.TypinWeb;
+    using TypinExamples.Core.Services;
+    using TypinExamples.TypinWeb.Console;
+    using TypinExamples.TypinWeb.Logging;
 
-    public sealed partial class XTerm : ComponentBase, IWebTerminal, IAsyncDisposable
+    public sealed partial class XTerm : ComponentBase, IWebTerminal
     {
         private const string MODULE_NAME = "xtermInterop";
 
@@ -27,20 +23,18 @@ namespace TypinExamples.Shared.Components
         public Dictionary<string, object> InputAttributes { get; init; } = new Dictionary<string, object>();
 
         [Parameter]
-        public ExampleDescriptor? ExampleDescriptor { get; init; }
+        public string? ExampleKey { get; init; }
+
+        //[Parameter]
+        //public TerminalOptions Options { get; init; } = new TerminalOptions();
 
         [Parameter]
-        public EventCallback<KeyboardEventArgs> OnKey { get; init; }
+        public IWebLoggerDestination? LoggerDestination { get; init; }
 
-        [Parameter]
-        public EventCallback OnLineFeed { get; init; }
-
-        [Parameter]
-        public TerminalOptions Options { get; init; } = new TerminalOptions();
-
-        [Inject] private ExampleRunnerService ExampleRunner { get; init; } = default!;
+        [Inject] public WebExampleInvokerService ExampleInvoker { get; init; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
+        [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -48,21 +42,17 @@ namespace TypinExamples.Shared.Components
             {
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
-                TerminalManager.RegisterTerminal(Id, this);
+                TerminalRepository.RegisterTerminal(this);
 
                 WebConsole webConsole = new WebConsole(this);
-                ExampleRunner.AttachConsole(webConsole);
+                ExampleInvoker.AttachConsole(webConsole);
+                ExampleInvoker.AttachLogger(LoggerDestination);
             }
-
-            //ExampleRunner.Run(ExampleDescriptor, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
-            //ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
         public async Task RunExample(string args)
         {
-            IEnumerable<string> splittedArgs = CommandLineSplitter.Split(args);
-
-            await ExampleRunner.Run(ExampleDescriptor, splittedArgs.Skip(1).ToList());
+            await ExampleInvoker.Run(ExampleKey, args);
         }
 
         public async Task ResetAsync()
@@ -102,25 +92,25 @@ namespace TypinExamples.Shared.Components
 
         public async Task WriteAsync(string str)
         {
-            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, str);
         }
 
         public async Task WriteLineAsync(string str)
         {
-            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, str);
         }
 
         public async Task WriteAsync(byte[] buffer)
         {
-            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteAsync(\"{buffer}\")", buffer);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, buffer);
         }
 
         public async Task WriteLineAsync(byte[] buffer)
         {
-            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteLineAsync(\"{buffer}\")", buffer);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, buffer);
         }
 
@@ -157,9 +147,9 @@ namespace TypinExamples.Shared.Components
         public async ValueTask DisposeAsync()
         {
             IsDisposed = true;
-            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
+            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.dispose", Id);
             Logger.LogDebug("Disposed XTerm terminal ({Id})", Id);
-            TerminalManager.UnregisterTerminal(Id);
+            TerminalRepository.UnregisterTerminal(Id);
         }
     }
 }

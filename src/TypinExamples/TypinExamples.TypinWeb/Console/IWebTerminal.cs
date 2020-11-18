@@ -1,9 +1,11 @@
-﻿namespace TypinExamples.TypinWeb
+﻿namespace TypinExamples.TypinWeb.Console
 {
+    using System;
     using System.Threading.Tasks;
 
-    public interface IWebTerminal
+    public interface IWebTerminal : IAsyncDisposable
     {
+        string Id { get; }
         bool IsDisposed { get; }
 
         Task ResetAsync();
@@ -19,5 +21,7 @@
         Task ScrollToBottomAsync();
         Task ScrollToTopAsync();
         Task ScrollToLineAsync(int lineNumber);
+
+        Task RunExample(string args);
     }
 }

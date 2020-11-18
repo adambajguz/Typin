@@ -1,6 +1,7 @@
 ﻿namespace TypinExamples.HelloWorld.Commands
 {
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
@@ -23,8 +24,22 @@
         [CommandOption("height", Description = "Height.")]
         public double? Height { get; init; } = null;
 
+        private readonly ILogger _logger;
+
+        public SimpleCommand(ILogger<SimpleCommand> logger)
+        {
+            _logger = logger;
+        }
+
         public async ValueTask ExecuteAsync(IConsole console)
         {
+            _logger.LogTrace("Hello world!");
+            _logger.LogDebug("Hello world!");
+            _logger.LogInformation("Hello world!");
+            _logger.LogWarning("Hello world!");
+            _logger.LogError("Hello world!");
+            _logger.LogCritical("Hello world!");
+
             if (Name is null && Surname is null)
                 await console.Output.WriteLineAsync("Hello World!");
             else if (Mail is null)

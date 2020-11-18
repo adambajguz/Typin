@@ -44,7 +44,7 @@
 
         public override bool Equals(object? obj)
         {
-            return obj is Number num ? num.Value == Value && num.Base == Base : false;
+            return obj is Number num && num.Value == Value && num.Base == Base;
         }
 
         public override int GetHashCode()

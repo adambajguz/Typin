@@ -1,24 +1,25 @@
-﻿namespace TypinExamples.TypinWeb
+﻿namespace TypinExamples.TypinWeb.Console.IO
 {
     using System;
     using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using TypinExamples.TypinWeb.Console;
 
-    public class WebTerminalReader : Stream
+    public class WebTerminalWriter : Stream
     {
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly IWebTerminal _webTerminal;
 
         /// <inheritdoc/>
-        public override bool CanRead => true;
+        public override bool CanRead => false;
 
         /// <inheritdoc/>
         public override bool CanSeek => false;
 
         /// <inheritdoc/>
-        public override bool CanWrite => false;
+        public override bool CanWrite => true;
 
         /// <inheritdoc/>
         public override long Length => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
@@ -30,7 +31,7 @@
             set => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
         }
 
-        public WebTerminalReader(IWebTerminal webTerminal)
+        public WebTerminalWriter(IWebTerminal webTerminal)
         {
             _webTerminal = webTerminal;
         }
@@ -38,19 +39,25 @@
         /// <inheritdoc/>
         public override void Flush()
         {
-            throw new IOException($"{nameof(WebTerminalReader)} can flush.");
+            string text = _buffer.ToString();
+            _buffer.Clear();
+
+            _webTerminal.WriteAsync(text).Wait(10);
         }
 
         /// <inheritdoc/>
-        public override Task FlushAsync(CancellationToken cancellationToken)
+        public override async Task FlushAsync(CancellationToken cancellationToken)
         {
-            throw new IOException($"{nameof(WebTerminalReader)} can flush.");
+            string text = _buffer.ToString();
+            _buffer.Clear();
+
+            await _webTerminal.WriteAsync(text);
         }
 
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return 'A';
+            throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support reading.");
         }
 
         /// <inheritdoc/>
@@ -68,13 +75,17 @@
         /// <inheritdoc/>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support writing.");
+            string text = Encoding.UTF8.GetString(buffer, offset, count);
+            text = text.Replace(Environment.NewLine, "\r\n");
+
+            _buffer.Append(text);
         }
 
         /// <inheritdoc/>
         public override void Close()
         {
             base.Close();
+            Flush();
         }
     }
 }

@@ -32,7 +32,7 @@
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            await _evaluator.Eval(A, B, "XNOR", ShowSteps, Base, (x, y) => ~(x^ y));
+            await _evaluator.Eval(A, B, "XNOR", ShowSteps, Base, (x, y) => ~(x ^ y));
         }
     }
 }

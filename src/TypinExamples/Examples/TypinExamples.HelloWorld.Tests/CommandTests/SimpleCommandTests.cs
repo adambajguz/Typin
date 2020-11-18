@@ -1,4 +1,4 @@
-namespace TypinExamples.HelloWorld.Tests
+namespace TypinExamples.HelloWorld.Tests.CommandTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

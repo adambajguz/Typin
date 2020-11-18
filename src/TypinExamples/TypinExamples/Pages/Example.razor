@@ -1,12 +1,11 @@
 ﻿@page "/example/{ExampleKey}"
 
-
 @if (Descriptor is null)
 {
     <section>
         <div class="row">
             <div class="col-8">
-                <p class="text-error"><b>Error:</b> unknown example.</p>
+                <p class="text-error"><b>Error:</b> not found any example for key '@(ExampleKey)'.</p>
             </div>
             <div class="col is-vertical-align is-right">
                 <NavLinkExtended href="/" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
@@ -19,7 +18,7 @@ else
     <section>
         <div class="row">
             <div class="col-8">
-                <h1>@Descriptor.Name</h1>
+                <h1>@(Descriptor?.Name ?? string.Empty)</h1>
             </div>
             <div class="col is-vertical-align is-right">
                 <NavLinkExtended href="/" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
@@ -28,7 +27,7 @@ else
 
         <div class="row">
             <div class="col">
-                @Markdown.ToHtml(Descriptor.Description ?? string.Empty)
+                @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
             </div>
         </div>
     </section>
@@ -50,15 +49,10 @@ else
                         </section>
                     </Tab>
                     <Tab Text="Logs">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget efficitur lectus. Vivamus dapibus at ex eget vulputate. Etiam dui est, pretium eu diam ac, pellentesque egestas risus. Mauris nisi neque, porta ac porta commodo, vulputate non felis. Mauris ante turpis, gravida rutrum mi vel, aliquet tincidunt diam. Vestibulum pulvinar tempor enim eget viverra. Phasellus eros lectus, pharetra pharetra risus et, aliquet tristique odio.
-                        </p>
-                        <p>
-                            Pellentesque semper ex sed arcu placerat tempus eget ac odio. Duis semper quis arcu a sollicitudin. Sed sit amet justo nec mi rhoncus sagittis vitae vitae lectus. Nullam vitae placerat est, eget euismod eros. Nullam vel neque non lacus fringilla vehicula. Vivamus viverra odio sit amet lectus lacinia, in dapibus metus tempus. Vestibulum velit orci, dictum a turpis sit amet, facilisis pharetra risus. Phasellus neque augue, rhoncus at ex eget, faucibus commodo sapien. Quisque ornare nibh a leo pretium, vitae aliquet enim dapibus.
-                        </p>
+                        <LogViewer @ref="LogViewerInstance"/>
                     </Tab>
                     <Tab Text="Quick start">
-                        @Markdown.ToHtml(Descriptor.Description ?? string.Empty)
+                        @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
                         <p>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget efficitur lectus. Vivamus dapibus at ex eget vulputate. Etiam dui est, pretium eu diam ac, pellentesque egestas risus. Mauris nisi neque, porta ac porta commodo, vulputate non felis. Mauris ante turpis, gravida rutrum mi vel, aliquet tincidunt diam. Vestibulum pulvinar tempor enim eget viverra. Phasellus eros lectus, pharetra pharetra risus et, aliquet tristique odio.
                         </p>
@@ -76,7 +70,7 @@ else
             <div class="col">
                 <TabContainer>
                     <Tab Text="Terminal">
-                        <XTerm ExampleDescriptor="@Descriptor" />
+                        <XTerm ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance"/>
                     </Tab>
                 </TabContainer>
             </div>
@@ -88,6 +82,9 @@ else
 @code
 {
     [Parameter]
+    public LogViewer? LogViewerInstance { get; set; }
+
+    [Parameter]
     public ExampleDescriptor? Descriptor { get; set; }
 
     [Parameter]
@@ -95,12 +92,20 @@ else
 
     [Inject] private IMarkdownService Markdown { get; init; } = default!;
 
-    [Inject] private IOptions<ExamplesSettings> _ExamplesSettings { get; init; } = default!;
-    private ExamplesSettings ExamplesSettings => _ExamplesSettings.Value;
+    [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
 
     protected override void OnInitialized()
     {
-        Descriptor ??= ExamplesSettings.Examples
-            .FirstOrDefault(x => x.Page == ExampleKey);
+        Descriptor ??= GetDescriptor();
+    }
+
+    private ExampleDescriptor? GetDescriptor()
+    {
+        string key = ExampleKey ?? string.Empty;
+
+        ExampleDescriptor? descriptor = ExamplesSettings.Value.Examples.Where(x => x.Key == key)
+                                                                       .FirstOrDefault();
+
+        return descriptor;
     }
 }

@@ -8,9 +8,24 @@
 
 @import "c-top-scroller.css";
 @import "c-box.css";
+@import "c-table.css";
 @import "c-tabs.css";
 @import "m-header.css";
 @import "m-footer.css";
+@import "m-log-viewer.css";
+
+@font-face {
+    font-family: 'CascadiaCode';
+    src: url('../fonts/CascadiaCode.woff2') format('woff2')
+}
+
+body {
+    --grid-maxWidth: 120rem;
+    --grid-gutter: 2rem;
+    --font-size: 1.6rem;
+    --font-family-sans: -apple-system, BlinkMacSystemFont, Avenir, "Avenir Next", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    --font-family-mono: "CascadiaCode", monaco, "Consolas", "Lucida Console", monospace;
+}
 
 body.dark {
     /*Chota overrides*/
@@ -84,4 +99,12 @@ hr {
 
 .tag.new-example-tag {
     margin-right: 1rem;
+}
+
+.text-small {
+    font-size: calc(var(--font-size) * 0.82);
+}
+
+.text-tiny {
+    font-size: calc(var(--font-size) * .7);
 }

@@ -10,6 +10,8 @@
     using Microsoft.Extensions.Logging;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
+    using TypinExamples.Core.Configuration;
+    using TypinExamples.Core.Services;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
 
@@ -25,15 +27,12 @@
 
             services.AddConfiguration<ApplicationSettings>(configuration)
                     .AddConfiguration<HeaderSettings>(configuration)
-                    .AddConfiguration<FooterSettings>(configuration)
-                    .AddConfiguration<ExamplesSettings>(configuration);
+                    .AddConfiguration<FooterSettings>(configuration);
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
-                    .AddScoped<MonacoEditorService>()
-                    .AddScoped<XTermService>()
-                    .AddScoped<TerminalManager>()
-                    .AddTransient<ExampleRunnerService>();
+                    .AddSingleton<ITerminalRepository, TerminalRepository>()
+                    .AddScoped<MonacoEditorService>();
 
             return services;
         }

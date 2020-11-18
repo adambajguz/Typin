@@ -8,51 +8,18 @@
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Reflection;
-    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.Extensions.Logging;
-
-    public class BlazorBoot
-    {
-        [JsonPropertyName("cacheBootResources")]
-        public bool CacheBootResources { get; init; }
-
-        [JsonPropertyName("config")]
-        public string[] Config { get; init; } = Array.Empty<string>();
-
-        [JsonPropertyName("debugBuild")]
-        public bool DebugBuild { get; init; }
-
-        [JsonPropertyName("entryAssembly")]
-        public string EntryAssembly { get; init; } = string.Empty;
-
-        [JsonPropertyName("linkerEnabled")]
-        public bool LinkerEnabled { get; init; }
-
-        [JsonPropertyName("resources")]
-        public Resources Resources { get; init; } = new Resources();
-    }
-
-    public class Resources
-    {
-        [JsonPropertyName("assembly")]
-        public Dictionary<string, string> Assembly { get; init; } = new Dictionary<string, string>();
-
-        [JsonPropertyName("pdb")]
-        public Dictionary<string, string> Pdb { get; init; } = new Dictionary<string, string>();
-
-        [JsonPropertyName("runtime")]
-        public Dictionary<string, string> Runtime { get; init; } = new Dictionary<string, string>();
-    }
+    using TypinExamples.Compiler.Models;
 
     public class RoslynCompilerService
     {
         private Task? InitializationTask { get; set; }
         private List<MetadataReference>? References { get; set; }
 
-        private ILogger<RoslynCompilerService> Logger { get; }
+        private ILogger Logger { get; }
 
         public RoslynCompilerService(ILogger<RoslynCompilerService> logger)
         {

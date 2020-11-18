@@ -10,10 +10,13 @@ namespace TypinExamples
         public static async Task Main(string[] args)
         {
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
+            WebAssemblyHostConfiguration configuration = builder.Configuration;
+            IWebAssemblyHostEnvironment hostEnvironment = builder.HostEnvironment;
+
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.ConfigureServices(builder.Configuration, builder.HostEnvironment)
-                            .ConfigureCoreServices()
+            builder.Services.ConfigureServices(configuration, hostEnvironment)
+                            .ConfigureCoreServices(configuration)
                             .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();
