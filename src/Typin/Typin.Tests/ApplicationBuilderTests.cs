@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Text;
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
@@ -13,7 +12,6 @@
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Startups;
-    using Typin.Utilities;
     using Xunit;
 
     public class ApplicationBuilderTests
@@ -156,8 +154,7 @@
         public void Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
         {
             // Arrange
-            IConsole console = new VirtualConsole(isInputRedirected: false, output: new MemoryStreamWriter(), isOutputRedirected: false,
-                                                  error: new MemoryStreamWriter(Encoding.UTF8), isErrorRedirected: true);
+            var (console, _, _) = VirtualConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: true);
 
             // Act
             var app = new CliApplicationBuilder()

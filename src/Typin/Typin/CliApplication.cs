@@ -8,6 +8,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
@@ -26,6 +27,7 @@
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
         private readonly CliApplicationLifetime _applicationLifetime;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
@@ -40,6 +42,7 @@
             _console = serviceProvider.GetRequiredService<IConsole>();
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
             _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
+            _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
         }
 
         /// <summary>
@@ -140,7 +143,9 @@
             {
                 _console.ResetColor();
                 _console.ForegroundColor = ConsoleColor.Gray;
+                _logger.LogInformation("Starting CLI application...");
 
+                _logger.LogDebug("Resolving root schema.");
                 _cliContextFactory.EnvironmentVariables = environmentVariables;
                 _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes, _configuration.ModeTypes).Resolve();
 
@@ -148,10 +153,10 @@
 
                 PrintStartupMessage();
 
-                List<string> filteredArgs = commandLineArguments.Where(x => !string.IsNullOrEmpty(x)).ToList();
-                int exitCode = await StartAppAsync(filteredArgs);
+                int exitCode = await StartAppAsync(commandLineArguments);
 
                 //TODO: OnStop()
+                _logger.LogInformation("CLI application stopped.");
 
                 return exitCode;
             }
@@ -173,6 +178,8 @@
             // because we still want the IDE to show them to the developer.
             catch (Exception ex) when (!Debugger.IsAttached)
             {
+                _logger.LogError(ex, "Unhandled exception caused app to stop.");
+
                 _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
 
                 _console.Error.WriteLine();
@@ -200,6 +207,8 @@
                 _applicationLifetime.TrySwitchModes();
                 _applicationLifetime.TryStop();
             }
+
+            _logger.LogInformation("CLI application will stop with '{ExitCode}'.", exitCode);
 
             _applicationLifetime.State = CliLifetimes.Stopped;
 

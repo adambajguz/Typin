@@ -5,6 +5,7 @@
     using InteractiveModeExample.Middlewares;
     using InteractiveModeExample.Services;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Typin;
     using Typin.Directives;
     using Typin.Modes;
@@ -24,11 +25,13 @@
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseMiddleware<ExitCodeMiddleware>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware<ExecutionLogMiddleware>()
                 .UseDirectMode(true)
                 .UseInteractiveMode()
+                .ConfigureLogging(cfg =>
+                {
+                    cfg.SetMinimumLevel(LogLevel.Debug);
+                })
                 .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
                 .Build()
                 .RunAsync();

@@ -34,6 +34,11 @@
         public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
+        /// Whether directive is pipelined directive.
+        /// </summary>
+        public bool IsPipelinedDirective { get; }
+
+        /// <summary>
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
         /// </summary>
         public DirectiveSchema(Type type,
@@ -45,6 +50,7 @@
             Name = name;
             Description = description;
             SupportedModes = supportedModes?.ToHashSet();
+            IsPipelinedDirective = typeof(IPipelinedDirective).IsAssignableFrom(type);
         }
 
         /// <summary>

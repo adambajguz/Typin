@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal
+﻿namespace Typin
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
