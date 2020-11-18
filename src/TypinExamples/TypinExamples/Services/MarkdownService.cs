@@ -4,11 +4,6 @@
     using Microsoft.AspNetCore.Components;
     using TypinExamples.Extensions;
 
-    public interface IMarkdownService
-    {
-        MarkupString ToHtml(string content);
-    }
-
     public class MarkdownService : IMarkdownService
     {
         private readonly MarkdownPipeline pipeline;

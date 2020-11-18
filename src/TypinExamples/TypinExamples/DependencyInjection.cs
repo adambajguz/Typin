@@ -31,7 +31,6 @@
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
                     .AddScoped<MonacoEditorService>()
-                    .AddScoped<XTermService>()
                     .AddScoped<TerminalManager>()
                     .AddTransient<ExampleRunnerService>();
 

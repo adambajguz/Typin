@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.TypinWeb
+﻿namespace TypinExamples.TypinWeb.Console
 {
     using System.Threading.Tasks;
 

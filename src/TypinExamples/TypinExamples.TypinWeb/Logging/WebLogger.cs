@@ -1,7 +1,20 @@
-﻿namespace TypinExamples.TypinWeb
+﻿namespace TypinExamples.TypinWeb.Logging
 {
     using System;
     using Microsoft.Extensions.Logging;
+
+    public class WebLoggerProvider : ILoggerProvider
+    {
+        public ILogger CreateLogger(string categoryName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class WebLogger : ILogger
     {

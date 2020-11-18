@@ -3,17 +3,15 @@ namespace TypinExamples.Shared.Components
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
-    using Typin.Internal;
     using TypinExamples.Configuration;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
-    using TypinExamples.TypinWeb;
+    using TypinExamples.TypinWeb.Console;
 
     public sealed partial class XTerm : ComponentBase, IWebTerminal, IAsyncDisposable
     {
@@ -53,16 +51,11 @@ namespace TypinExamples.Shared.Components
                 WebConsole webConsole = new WebConsole(this);
                 ExampleRunner.AttachConsole(webConsole);
             }
-
-            //ExampleRunner.Run(ExampleDescriptor, new string[] { "world", "end", "08/18/2018 07:22:16", "--CONFIRM", "false", "-f" }, new Dictionary<string, string>());
-            //ExampleRunner.Run(ExampleDescriptor, new string[] { "--help" });
         }
 
         public async Task RunExample(string args)
         {
-            IEnumerable<string> splittedArgs = CommandLineSplitter.Split(args);
-
-            await ExampleRunner.Run(ExampleDescriptor, splittedArgs.Skip(1).ToList());
+            await ExampleRunner.Run(ExampleDescriptor, args);
         }
 
         public async Task ResetAsync()
@@ -102,25 +95,25 @@ namespace TypinExamples.Shared.Components
 
         public async Task WriteAsync(string str)
         {
-            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, str);
         }
 
         public async Task WriteLineAsync(string str)
         {
-            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, str);
         }
 
         public async Task WriteAsync(byte[] buffer)
         {
-            //Logger.LogDebug("WriteAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteAsync(\"{buffer}\")", buffer);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.write", Id, buffer);
         }
 
         public async Task WriteLineAsync(byte[] buffer)
         {
-            //Logger.LogDebug("WriteLineAsync(\"{str}\")", str);
+            Logger.LogDebug("WriteLineAsync(\"{buffer}\")", buffer);
             await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.writeLine", Id, buffer);
         }
 
