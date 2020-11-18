@@ -9,6 +9,7 @@
     using Typin.Console;
     using TypinExamples.Core.Configuration;
     using TypinExamples.TypinWeb.Configuration;
+    using TypinExamples.TypinWeb.Logging;
 
     public class WebExampleInvokerService
     {
@@ -30,26 +31,28 @@
             Configuration.Console = console;
         }
 
-        public void AttachLogger(ILoggerProvider loggerProvider)
+        public void AttachLogger(IWebLoggerDestination? loggerDestination)
         {
-            Configuration.LoggerProvider = loggerProvider;
+            Configuration.LoggerDestination = loggerDestination;
         }
 
-        public async Task<int?> Run(string exampleName)
+        public async Task<int?> Run(string? key)
         {
-            return await Run(exampleName, string.Empty, new Dictionary<string, string>());
+            return await Run(key, string.Empty, new Dictionary<string, string>());
         }
 
-        public async Task<int?> Run(string exampleName, string commandLine)
+        public async Task<int?> Run(string? key, string commandLine)
         {
-            return await Run(exampleName, commandLine, new Dictionary<string, string>());
+            return await Run(key, commandLine, new Dictionary<string, string>());
         }
 
-        public async Task<int?> Run(string exampleName, string commandLine, IReadOnlyDictionary<string, string> environmentVariables)
+        public async Task<int?> Run(string? key, string commandLine, IReadOnlyDictionary<string, string> environmentVariables)
         {
-            ExampleDescriptor? descriptor = Options.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
-                                                                         (x.Name?.Contains(exampleName) ?? false))
-                                                             .FirstOrDefault();
+
+            ExampleDescriptor? descriptor = Options.Examples?.Where(x => x.Key == key ||
+                                                                         (x.ProgramClass?.Contains(key ?? string.Empty) ?? false) ||
+                                                                         (x.Name?.Contains(key ?? string.Empty) ?? false))
+                                                             .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
 
             return await Run(descriptor, commandLine, environmentVariables);
         }
@@ -79,7 +82,7 @@
             }
 
             Type? type = Type.GetType(descriptor.ProgramClass);
-            Task<int>? task = type?.GetMethod("WebMain")?.Invoke(null, new object[] { Configuration, commandLine, environmentVariables }) as Task<int>;
+            Task<int>? task = type?.GetMethod("WebMain")?.Invoke(null, BuildWebProgramMainArgs(commandLine, environmentVariables)) as Task<int>;
 
             int? exitCode = task == null ? null : await task;
             if (exitCode is null)
@@ -88,6 +91,11 @@
             }
 
             return exitCode;
+        }
+
+        private object[] BuildWebProgramMainArgs(string commandLine, IReadOnlyDictionary<string, string> environmentVariables)
+        {
+            return new object[] { Configuration, commandLine, environmentVariables };
         }
     }
 }

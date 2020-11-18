@@ -49,12 +49,7 @@ else
                         </section>
                     </Tab>
                     <Tab Text="Logs">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget efficitur lectus. Vivamus dapibus at ex eget vulputate. Etiam dui est, pretium eu diam ac, pellentesque egestas risus. Mauris nisi neque, porta ac porta commodo, vulputate non felis. Mauris ante turpis, gravida rutrum mi vel, aliquet tincidunt diam. Vestibulum pulvinar tempor enim eget viverra. Phasellus eros lectus, pharetra pharetra risus et, aliquet tristique odio.
-                        </p>
-                        <p>
-                            Pellentesque semper ex sed arcu placerat tempus eget ac odio. Duis semper quis arcu a sollicitudin. Sed sit amet justo nec mi rhoncus sagittis vitae vitae lectus. Nullam vitae placerat est, eget euismod eros. Nullam vel neque non lacus fringilla vehicula. Vivamus viverra odio sit amet lectus lacinia, in dapibus metus tempus. Vestibulum velit orci, dictum a turpis sit amet, facilisis pharetra risus. Phasellus neque augue, rhoncus at ex eget, faucibus commodo sapien. Quisque ornare nibh a leo pretium, vitae aliquet enim dapibus.
-                        </p>
+                        <LogViewer @ref="LogViewerInstance"/>
                     </Tab>
                     <Tab Text="Quick start">
                         @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
@@ -75,7 +70,7 @@ else
             <div class="col">
                 <TabContainer>
                     <Tab Text="Terminal">
-                        <XTerm ExampleKey="@(Descriptor?.Key)" />
+                        <XTerm ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance"/>
                     </Tab>
                 </TabContainer>
             </div>
@@ -86,6 +81,9 @@ else
 
 @code
 {
+    [Parameter]
+    public LogViewer? LogViewerInstance { get; set; }
+
     [Parameter]
     public ExampleDescriptor? Descriptor { get; set; }
 

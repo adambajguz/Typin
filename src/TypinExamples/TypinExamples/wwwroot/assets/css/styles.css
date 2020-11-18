@@ -8,9 +8,11 @@
 
 @import "c-top-scroller.css";
 @import "c-box.css";
+@import "c-table.css";
 @import "c-tabs.css";
 @import "m-header.css";
 @import "m-footer.css";
+@import "m-log-viewer.css";
 
 body.dark {
     /*Chota overrides*/
@@ -84,4 +86,12 @@ hr {
 
 .tag.new-example-tag {
     margin-right: 1rem;
+}
+
+.text-small {
+    font-size: calc(var(--font-size) * 0.82);
+}
+
+.text-tiny {
+    font-size: calc(var(--font-size) * .7);
 }

@@ -1,0 +1,47 @@
+﻿@implements IWebLoggerDestination
+
+<div class="m-log-viewer overflow">
+    <table class="striped condensed">
+        <caption class="text-right text-primary">
+            (Total: @logs.Count)
+        </caption>
+        <thead class="text-uppercase">
+            <tr>
+                <th>Timestamp</th>
+                <th>Level</th>
+                <th>Category</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody class="text-small">
+            <Virtualize Items="@logs">
+                <ItemContent>
+                    <tr>
+                        <td class="text-grey">@context.TimestampUtc.ToLocalTime().ToString()</td>
+                        <td class="@HtmlHelpers.GetLogLevelCSSClasses(context.Level)">@HtmlHelpers.GetLogLevelAlias(context.Level)</td>
+                        <td class="text-grey">@context.Category</td>
+                        <td>@context.Text</td>
+                    </tr>
+                </ItemContent>
+                <Placeholder>
+                    <tr>
+                        <td>Empty.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </Placeholder>
+            </Virtualize>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private LinkedList<LogEntry> logs = new();
+
+    void IWebLoggerDestination.WriteLog(LogEntry entry)
+    {
+        logs.AddLast(entry);
+        StateHasChanged();
+    }
+}

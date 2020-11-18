@@ -13,7 +13,6 @@
     [ProviderAlias("Web")]
     public class WebLoggerProvider : LoggerProvider
     {
-        private readonly List<LogEntry> _infoQueue = new();
         private readonly IWebLoggerDestination _webLoggerDestination;
         private WebLoggerOptions _settings;
 

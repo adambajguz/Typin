@@ -13,7 +13,7 @@
         /// <summary>
         /// Date and time, in UTC, of the creation time of this instance
         /// </summary>
-        public DateTime TimeStampUtc { get; private set; }
+        public DateTime TimestampUtc { get; private set; }
 
         /// <summary>
         /// Category this instance belongs to.
@@ -70,7 +70,7 @@
         /// </summary>
         public LogEntry()
         {
-            TimeStampUtc = DateTime.UtcNow;
+            TimestampUtc = DateTime.UtcNow;
         }
     }
 }

@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.DEVConsole", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.HelloWorld.Tests", "Examples\TypinExamples.HelloWorld.Tests\TypinExamples.HelloWorld.Tests.csproj", "{8D8B9305-7405-4F31-B16D-938B360F261F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.CalculatOR.Tests", "Examples\TypinExamples.CalculatOR.Tests\TypinExamples.CalculatOR.Tests.csproj", "{8076407D-A614-4081-823A-EFEB1FF8E700}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.CalculatOR.Tests", "Examples\TypinExamples.CalculatOR.Tests\TypinExamples.CalculatOR.Tests.csproj", "{8076407D-A614-4081-823A-EFEB1FF8E700}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

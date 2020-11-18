@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.TypinWeb.Extensions
 {
+    using Microsoft.Extensions.Logging;
     using Typin;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Logging;
@@ -15,10 +16,9 @@
             {
                 builder.ConfigureLogging((cfg) =>
                 {
-                    if (configuration.LoggerDestination is not null)
-                    {
-                        cfg.AddWebLogger(configuration.LoggerDestination);
-                    }
+                    cfg.ClearProviders();
+                    cfg.AddWebLogger(configuration.LoggerDestination, (c) => c.LogLevel = LogLevel.Trace);
+                    cfg.SetMinimumLevel(LogLevel.Trace);
                 });
             }
 
