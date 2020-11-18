@@ -62,13 +62,6 @@ section {
     margin: 5rem auto;
 }
 
-#features ul {
-    list-style-type: none;
-    padding: 0;
-    font-size: 1.2em;
-    font-weight: 200;
-}
-
 hr {
     margin: 3rem 0;
 }
@@ -107,4 +100,16 @@ hr {
 
 .text-tiny {
     font-size: calc(var(--font-size) * .7);
+}
+
+.bd-accent {
+    border: 1px solid var(--color-accent) !important;
+}
+
+.text-accent {
+    color: var(--color-accent) !important;
+}
+
+.bg-accent {
+    background-color: var(--color-accent) !important;
 }
