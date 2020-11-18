@@ -1,8 +1,8 @@
 ﻿namespace TypinExamples.TypinWeb.Extensions
 {
-    using Microsoft.Extensions.Logging;
     using Typin;
     using TypinExamples.TypinWeb.Configuration;
+    using TypinExamples.TypinWeb.Logging;
 
     public static class CliApplicationBuilderExtensions
     {
@@ -11,12 +11,14 @@
             if (configuration.Console is not null)
                 builder.UseConsole(configuration.Console);
 
-            if (configuration.LoggerProvider is not null)
+            if (configuration.LoggerDestination is not null)
             {
                 builder.ConfigureLogging((cfg) =>
                 {
-                    if (configuration.LoggerProvider is not null)
-                        cfg.AddProvider(configuration.LoggerProvider);
+                    if (configuration.LoggerDestination is not null)
+                    {
+                        cfg.AddWebLogger(configuration.LoggerDestination);
+                    }
                 });
             }
 

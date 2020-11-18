@@ -1,8 +1,9 @@
 ﻿namespace TypinExamples.TypinWeb.Console
 {
+    using System;
     using System.Threading.Tasks;
 
-    public interface IWebTerminal
+    public interface IWebTerminal : IAsyncDisposable
     {
         string Id { get; }
         bool IsDisposed { get; }
