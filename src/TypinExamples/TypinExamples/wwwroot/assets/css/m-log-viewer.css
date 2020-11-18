@@ -1,6 +1,10 @@
 ﻿.m-log-viewer {
-    font-family: var(--font-family-mono);
 }
+
+    .m-log-viewer tbody {
+        font-size: calc(var(--font-size) * .7);
+        font-family: var(--font-family-mono);
+    }
 
     .m-log-viewer .text-ltrace {
         color: #c0dddb;

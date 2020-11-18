@@ -8,6 +8,7 @@ xtermInterop.initialize = function (id) {
         xtermInterop.terminals.set(id, terminal);
 
         terminal.open(document.getElementById(id));
+
         shellprompt = '$ ';
         //terminal.on("data", (data) => {
         //    terminal.write(data);
