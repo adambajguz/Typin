@@ -34,6 +34,7 @@ namespace TypinExamples.Shared.Components
         [Inject] private WebExampleInvokerService ExampleInvoker { get; init; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
+        [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
 
         [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
 
@@ -55,7 +56,7 @@ namespace TypinExamples.Shared.Components
             {
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
-                TerminalManager.RegisterTerminal(Id, this);
+                TerminalRepository.RegisterTerminal(this);
 
                 WebConsole webConsole = new WebConsole(this);
                 ExampleInvoker.AttachConsole(webConsole);
@@ -160,9 +161,9 @@ namespace TypinExamples.Shared.Components
         public async ValueTask DisposeAsync()
         {
             IsDisposed = true;
-            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
+            await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.dispose", Id);
             Logger.LogDebug("Disposed XTerm terminal ({Id})", Id);
-            TerminalManager.UnregisterTerminal(Id);
+            TerminalRepository.UnregisterTerminal(Id);
         }
     }
 }

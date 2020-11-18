@@ -3,21 +3,40 @@ namespace TypinExamples.Services.Terminal
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
+    using TypinExamples.Core.Services;
     using TypinExamples.TypinWeb.Console;
 
-    public class TerminalManager
+    public class TerminalRepository : ITerminalRepository
     {
         private static readonly Dictionary<string, IWebTerminal> _terminals = new Dictionary<string, IWebTerminal>();
 
-        public static void RegisterTerminal(string id, IWebTerminal terminal)
+        public TerminalRepository()
         {
-            _terminals.TryAdd(id, terminal);
+
         }
 
-        public static void UnregisterTerminal(string id)
+        public void RegisterTerminal(IWebTerminal terminal)
+        {
+            _terminals.TryAdd(terminal.Id, terminal);
+        }
+
+        public void UnregisterTerminal(string id)
         {
             if (_terminals.ContainsKey(id))
                 _terminals.Remove(id);
+        }
+
+        public void UnregisterTerminal(IWebTerminal terminal)
+        {
+            if (_terminals.ContainsKey(terminal.Id))
+                _terminals.Remove(terminal.Id);
+        }
+
+        public IWebTerminal? GetOrDefault(string id)
+        {
+            _terminals.TryGetValue(id, out IWebTerminal? term);
+
+            return term;
         }
 
         [JSInvokable("TerminalManager_ExampleInit")]

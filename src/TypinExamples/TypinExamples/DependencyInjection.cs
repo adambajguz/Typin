@@ -11,7 +11,9 @@
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
     using TypinExamples.Core.Configuration;
+    using TypinExamples.Core.Services;
     using TypinExamples.Services;
+    using TypinExamples.Services.Terminal;
 
     public static class DependencyInjection
     {
@@ -30,6 +32,7 @@
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
+                    .AddSingleton<ITerminalRepository, TerminalRepository>()
                     .AddScoped<MonacoEditorService>();
 
             return services;

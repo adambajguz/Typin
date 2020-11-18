@@ -200,7 +200,7 @@ xtermInterop.dispose = function (id) {
 
     if (terminal) {
         terminal.dispose();
-        terminals.terminals.delete(id);
+        xtermInterop.terminals.delete(id);
     }
 }
 

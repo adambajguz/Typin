@@ -4,6 +4,7 @@
 
     public interface IWebTerminal
     {
+        string Id { get; }
         bool IsDisposed { get; }
 
         Task ResetAsync();
