@@ -1,9 +1,9 @@
 ﻿namespace Typin.Directives
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     /// <summary>
@@ -14,12 +14,9 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.Interactive, Description = "Starts an interactive mode.")]
-    public sealed class InteractiveDirective : IDirective
+    public sealed class InteractiveDirective : IPipelinedDirective
     {
         private readonly ICliApplicationLifetime _applicationLifetime;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveDirective"/>.
@@ -30,9 +27,16 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

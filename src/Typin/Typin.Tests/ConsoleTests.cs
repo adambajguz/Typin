@@ -94,9 +94,9 @@
             console.Output.Should().NotBeSameAs(Console.Out);
             console.Error.Should().NotBeSameAs(Console.Error);
 
-            console.IsInputRedirected.Should().BeTrue();
-            console.IsOutputRedirected.Should().BeTrue();
-            console.IsErrorRedirected.Should().BeTrue();
+            console.Input.IsRedirected.Should().BeTrue();
+            console.Output.IsRedirected.Should().BeTrue();
+            console.Error.IsRedirected.Should().BeTrue();
 
             console.ForegroundColor.Should().NotBe(Console.ForegroundColor);
             console.BackgroundColor.Should().NotBe(Console.BackgroundColor);

@@ -2,9 +2,10 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     /// <summary>
@@ -18,23 +19,26 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeUpDirective : IDirective
+    public sealed class ScopeUpDirective : IPipelinedDirective
     {
         private readonly InteractiveModeSettings _settings;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
         /// </summary>
-        public ScopeUpDirective(InteractiveModeSettings interactiveModeSettings)
+        public ScopeUpDirective(IOptions<InteractiveModeSettings> interactiveModeSettings)
         {
-            _settings = interactiveModeSettings;
+            _settings = interactiveModeSettings.Value;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             // Scope up
             string[] splittedScope = _settings.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -43,6 +47,8 @@
                 _settings.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
             else if (splittedScope.Length == 1)
                 _settings.Scope = string.Empty;
+
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

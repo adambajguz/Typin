@@ -5,14 +5,22 @@
 
     internal static class IMiddlewareExtensions
     {
-        public static CommandPipelineHandlerDelegate PipelineTermination => () => Task.CompletedTask;
+        public static CommandPipelineHandlerDelegate PipelineTermination => () => default;
 
         public static CommandPipelineHandlerDelegate Next(this IMiddleware commandMiddleware,
                                                           ICliContext cliContext,
                                                           CommandPipelineHandlerDelegate next,
                                                           CancellationToken cancellationToken)
         {
-            return () => commandMiddleware.HandleAsync(cliContext, next, cancellationToken);
+            return () => new ValueTask(commandMiddleware.HandleAsync(cliContext, next, cancellationToken));
+        }
+
+        public static CommandPipelineHandlerDelegate Next(this IPipelinedDirective pipelineDirective,
+                                                          ICliContext cliContext,
+                                                          CommandPipelineHandlerDelegate next,
+                                                          CancellationToken cancellationToken)
+        {
+            return () => pipelineDirective.HandleAsync(cliContext, next, cancellationToken);
         }
     }
 }

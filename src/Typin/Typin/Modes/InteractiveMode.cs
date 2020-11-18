@@ -37,7 +37,7 @@
             _metadata = metadata;
 
             //TODO: fix advanced mode
-            if (Options.IsAdvancedInputAvailable && !console.IsInputRedirected)
+            if (Options.IsAdvancedInputAvailable && !console.Input.IsRedirected)
             {
                 //_autoCompleteInput = new AutoCompleteInput(console, Options.UserDefinedShortcut)
                 //{
@@ -52,7 +52,7 @@
         /// <inheritdoc/>
         public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            //TODO fix advanced mode execution
+            //TODO: fix advanced mode execution
             if (firstEnter)
             {
                 //await executor.ExecuteCommand(commandLineArguments);

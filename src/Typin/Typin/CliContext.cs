@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
@@ -10,11 +11,13 @@
     /// <inheritdoc/>
     internal sealed class CliContext : ICliContext
     {
-        private CommandInput? input;
-        private InputHistoryProvider? inputHistoryProvider;
-        private CommandSchema? commandSchema;
-        private ICommand? command;
-        private IReadOnlyDictionary<ArgumentSchema, object?>? commandDefaultValues;
+        private CommandInput? _input;
+        private InputHistoryProvider? _inputHistoryProvider;
+        private CommandSchema? _commandSchema;
+        private IReadOnlyList<IDirective>? _directives;
+        private IReadOnlyList<IPipelinedDirective>? _pipelinedDirectives;
+        private ICommand? _command;
+        private IReadOnlyDictionary<ArgumentSchema, object?>? _commandDefaultValues;
 
         /// <inheritdoc/>
         public Guid Id { get; } = Guid.NewGuid();
@@ -37,39 +40,53 @@
         /// <inheritdoc/>
         public CommandInput Input
         {
-            get => input ?? throw new NullReferenceException($"{nameof(Input)} is uninitialized in this context.");
-            internal set => input = value;
+            get => _input ?? throw new NullReferenceException($"{nameof(Input)} is uninitialized in this context.");
+            internal set => _input = value;
         }
 
         /// <inheritdoc/>
         internal InputHistoryProvider InternalInputHistory
         {
-            get => inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InternalInputHistory)} is either uninitialized in this context or not available due to direct mode.");
-            set => inputHistoryProvider = value;
+            get => _inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InternalInputHistory)} is either uninitialized in this context or not available due to direct mode.");
+            set => _inputHistoryProvider = value;
         }
 
         /// <inheritdoc/>
-        public IInputHistoryProvider InputHistory => inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InputHistory)} is either uninitialized in this context or not available due to direct mode.");
+        public IInputHistoryProvider InputHistory => _inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InputHistory)} is either uninitialized in this context or not available due to direct mode.");
 
         /// <inheritdoc/>
         public CommandSchema CommandSchema
         {
-            get => commandSchema ?? throw new NullReferenceException($"{nameof(CommandSchema)} is uninitialized in this context.");
-            internal set => commandSchema = value;
+            get => _commandSchema ?? throw new NullReferenceException($"{nameof(CommandSchema)} is uninitialized in this context.");
+            internal set => _commandSchema = value;
         }
 
         /// <inheritdoc/>
         public ICommand Command
         {
-            get => command ?? throw new NullReferenceException($"{nameof(Command)} is uninitialized in this context.");
-            internal set => command = value;
+            get => _command ?? throw new NullReferenceException($"{nameof(Command)} is uninitialized in this context.");
+            internal set => _command = value;
         }
 
         /// <inheritdoc/>
         public IReadOnlyDictionary<ArgumentSchema, object?> CommandDefaultValues
         {
-            get => commandDefaultValues ?? throw new NullReferenceException($"{nameof(CommandDefaultValues)} is uninitialized in this context.");
-            internal set => commandDefaultValues = value;
+            get => _commandDefaultValues ?? throw new NullReferenceException($"{nameof(CommandDefaultValues)} is uninitialized in this context.");
+            internal set => _commandDefaultValues = value;
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<IDirective> Directives
+        {
+            get => _directives ?? throw new NullReferenceException($"{nameof(Directives)} is uninitialized in this context.");
+            internal set => _directives = value;
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<IPipelinedDirective> PipelinedDirectives
+        {
+            get => _pipelinedDirectives ?? throw new NullReferenceException($"{nameof(PipelinedDirectives)} is uninitialized in this context.");
+            internal set => _pipelinedDirectives = value;
         }
 
         /// <inheritdoc/>
@@ -92,12 +109,38 @@
         }
 
         /// <inheritdoc/>
+        public IDirective? GetDirectiveInstance<T>()
+            where T : IDirective
+        {
+            return GetDirectiveInstance(typeof(T));
+        }
+
+        /// <inheritdoc/>
+        public IDirective? GetDirectiveInstance(Type type)
+        {
+            return Directives.Where(x => x.GetType() == type).FirstOrDefault();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<IDirective> GetDirectiveInstances<T>()
+            where T : IDirective
+        {
+            return GetDirectiveInstances(typeof(T));
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<IDirective> GetDirectiveInstances(Type type)
+        {
+            return Directives.Where(x => x.GetType() == type);
+        }
+
+        /// <inheritdoc/>
         public void Dispose()
         {
-            input = default!;
-            command = default!;
-            commandSchema = default!;
-            commandDefaultValues = default!;
+            _input = default!;
+            _command = default!;
+            _commandSchema = default!;
+            _commandDefaultValues = default!;
             ExitCode = null;
         }
     }

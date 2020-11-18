@@ -65,12 +65,12 @@
             else if (modifiers.HasFlag(ConsoleModifiers.Control) && !modifiers.HasFlag(ConsoleModifiers.Alt))
             {
                 UnhandledControlSequenceDetected?.Invoke(ref keyInfo);
-                inputModified = true; //TODO refactor - this should not be there - having a KeyHandler instaed of only line handler is problematic
+                inputModified = true; //TODO: refactor - this should not be there - having a KeyHandler instaed of only line handler is problematic
             }
             else
             {
                 UnhandledKeyDetected?.Invoke(ref keyInfo);
-                inputModified = true; //TODO refactor - this should not be there
+                inputModified = true; //TODO: refactor - this should not be there
             }
 
             if (inputModified)

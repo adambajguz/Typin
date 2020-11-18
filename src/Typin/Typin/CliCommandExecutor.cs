@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Extensions;
@@ -20,11 +21,13 @@
         /// <remarks>
         /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
         /// </remarks>
-        private IServiceScopeFactory ServiceScopeFactory { get; }
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger _logger;
 
-        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory)
+        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory, ILogger<CliCommandExecutor> logger)
         {
-            ServiceScopeFactory = serviceScopeFactory;
+            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
@@ -45,13 +48,15 @@
         [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
         {
-            using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
+            _logger.LogInformation("Executing command '{CommandLineArguments}'", commandLineArguments);
+
+            using (IServiceScope serviceScope = _serviceScopeFactory.CreateScope())
             {
                 IServiceProvider provider = serviceScope.ServiceProvider;
-                CliContext cliContext = (CliContext)provider.GetRequiredService<ICliContext>();
+                ICliContext cliContext = provider.GetRequiredService<ICliContext>();
 
                 CommandInput input = CommandInputResolver.Parse(commandLineArguments, cliContext.RootSchema.GetCommandNames());
-                cliContext.Input = input;
+                ((CliContext)cliContext).Input = input;
 
                 try
                 {
@@ -74,17 +79,17 @@
             }
         }
 
-        private async Task RunPipelineAsync(IServiceProvider serviceProvider, CliContext cliContext)
+        private static async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)
         {
-            IReadOnlyCollection<Type> middlewareTypes = cliContext.Configuration.MiddlewareTypes;
+            IReadOnlyCollection<Type> middlewareTypes = context.Configuration.MiddlewareTypes;
 
-            CancellationToken cancellationToken = cliContext.Console.GetCancellationToken();
+            CancellationToken cancellationToken = context.Console.GetCancellationToken();
             CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
 
-            foreach (Type middlewareType in middlewareTypes)
+            foreach (Type middlewareType in middlewareTypes.Reverse())
             {
                 IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
-                next = instance.Next(cliContext, next, cancellationToken);
+                next = instance.Next(context, next, cancellationToken);
             }
 
             await next();
