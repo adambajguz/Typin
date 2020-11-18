@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Services
+﻿namespace TypinExamples.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,20 +7,21 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Typin.Console;
-    using TypinExamples.Configuration;
+    using TypinExamples.Core.Configuration;
     using TypinExamples.TypinWeb.Configuration;
 
-    public class ExampleRunnerService
+    public class WebExampleInvokerService
     {
-        private readonly ILogger<ExampleRunnerService> _logger;
+        private readonly ILogger _logger;
 
         public ExamplesSettings Options { get; }
         public WebCliConfiguration Configuration { get; }
 
-        public ExampleRunnerService(IOptions<ExamplesSettings> options, ILogger<ExampleRunnerService> logger)
+        public WebExampleInvokerService(IOptions<ExamplesSettings> options, ILogger<WebExampleInvokerService> logger)
         {
             Options = options.Value;
             _logger = logger;
+
             Configuration = new WebCliConfiguration();
         }
 
@@ -29,7 +30,7 @@
             Configuration.Console = console;
         }
 
-        public void AttachLoggere(ILoggerProvider loggerProvider)
+        public void AttachLogger(ILoggerProvider loggerProvider)
         {
             Configuration.LoggerProvider = loggerProvider;
         }

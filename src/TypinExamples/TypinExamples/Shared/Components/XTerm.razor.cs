@@ -3,13 +3,14 @@ namespace TypinExamples.Shared.Components
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
-    using Microsoft.AspNetCore.Components.Web;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.JSInterop;
-    using TypinExamples.Configuration;
-    using TypinExamples.Services;
+    using TypinExamples.Core.Configuration;
+    using TypinExamples.Core.Services;
     using TypinExamples.Services.Terminal;
     using TypinExamples.TypinWeb.Console;
 
@@ -25,20 +26,28 @@ namespace TypinExamples.Shared.Components
         public Dictionary<string, object> InputAttributes { get; init; } = new Dictionary<string, object>();
 
         [Parameter]
-        public ExampleDescriptor? ExampleDescriptor { get; init; }
-
-        [Parameter]
-        public EventCallback<KeyboardEventArgs> OnKey { get; init; }
-
-        [Parameter]
-        public EventCallback OnLineFeed { get; init; }
+        public string? ExampleKey { get; init; }
 
         [Parameter]
         public TerminalOptions Options { get; init; } = new TerminalOptions();
 
-        [Inject] private ExampleRunnerService ExampleRunner { get; init; } = default!;
+        [Inject] private WebExampleInvokerService ExampleInvoker { get; init; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
+
+        [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
+
+        private ExampleDescriptor? GetDescriptor()
+        {
+            string key = ExampleKey ?? string.Empty;
+
+            ExampleDescriptor? descriptor = ExamplesSettings.Value.Examples.Where(x => (x.ProgramClass?.Contains(key) ?? false) ||
+                                                                                       (x.Name?.Contains(key) ?? false) ||
+                                                                                       x.Key == key)
+                                                                           .FirstOrDefault();
+
+            return descriptor;
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -49,13 +58,14 @@ namespace TypinExamples.Shared.Components
                 TerminalManager.RegisterTerminal(Id, this);
 
                 WebConsole webConsole = new WebConsole(this);
-                ExampleRunner.AttachConsole(webConsole);
+                ExampleInvoker.AttachConsole(webConsole);
             }
         }
 
         public async Task RunExample(string args)
         {
-            await ExampleRunner.Run(ExampleDescriptor, args);
+            ExampleDescriptor? descriptor = GetDescriptor();
+            await ExampleInvoker.Run(descriptor, args);
         }
 
         public async Task ResetAsync()

@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
+    <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
   </ItemGroup>
 
 </Project>

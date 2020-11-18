@@ -27,7 +27,7 @@
             Configuration? options = JsonSerializer.Deserialize<Configuration>(configuration);
 
             ExampleDescriptor? descriptor = options?.ExamplesSettings?.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
-                                                                                           (x.Name?.Contains(exampleName) ?? false))
+                                                                                            (x.Name?.Contains(exampleName) ?? false))
                                                                                 .FirstOrDefault();
 
             return descriptor;

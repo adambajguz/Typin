@@ -19,5 +19,7 @@
         Task ScrollToBottomAsync();
         Task ScrollToTopAsync();
         Task ScrollToLineAsync(int lineNumber);
+
+        Task RunExample(string args);
     }
 }

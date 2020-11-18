@@ -2,15 +2,14 @@ namespace TypinExamples.Services.Terminal
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Components.Web;
     using Microsoft.JSInterop;
-    using TypinExamples.Shared.Components;
+    using TypinExamples.TypinWeb.Console;
 
     public class TerminalManager
     {
-        private static readonly Dictionary<string, XTerm> _terminals = new Dictionary<string, XTerm>();
+        private static readonly Dictionary<string, IWebTerminal> _terminals = new Dictionary<string, IWebTerminal>();
 
-        public static void RegisterTerminal(string id, XTerm terminal)
+        public static void RegisterTerminal(string id, IWebTerminal terminal)
         {
             _terminals.TryAdd(id, terminal);
         }
@@ -24,27 +23,9 @@ namespace TypinExamples.Services.Terminal
         [JSInvokable("TerminalManager_ExampleInit")]
         public static async Task OnExampleInit(string id, string input)
         {
-            if (_terminals.TryGetValue(id, out XTerm? term))
+            if (_terminals.TryGetValue(id, out IWebTerminal? term))
             {
                 await term.RunExample(input);
-            }
-        }
-
-        [JSInvokable]
-        public static async Task OnKey(string id, KeyboardEventArgs @event)
-        {
-            if (_terminals.TryGetValue(id, out XTerm? term))
-            {
-                await term.OnKey.InvokeAsync(@event);
-            }
-        }
-
-        [JSInvokable]
-        public static async Task OnLineFeed(string id)
-        {
-            if (_terminals.TryGetValue(id, out XTerm? term))
-            {
-                await term.OnLineFeed.InvokeAsync(string.Empty);
             }
         }
     }

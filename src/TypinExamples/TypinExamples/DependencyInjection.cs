@@ -10,8 +10,8 @@
     using Microsoft.Extensions.Logging;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
+    using TypinExamples.Core.Configuration;
     using TypinExamples.Services;
-    using TypinExamples.Services.Terminal;
 
     public static class DependencyInjection
     {
@@ -30,9 +30,7 @@
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
-                    .AddScoped<MonacoEditorService>()
-                    .AddScoped<TerminalManager>()
-                    .AddTransient<ExampleRunnerService>();
+                    .AddScoped<MonacoEditorService>();
 
             return services;
         }
