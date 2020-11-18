@@ -24,6 +24,8 @@
         public ConsoleColor ForegroundColor
         {
             get => _foregroundColor;
+
+            //https://misc.flogisoft.com/bash/tip_colors_and_formatting
             set
             {
                 _foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.White : value;
@@ -116,7 +118,7 @@
             _foregroundColor = ConsoleColor.White;
             _backgroundColor = ConsoleColor.Black;
 
-            Output.Write(string.Concat(Ansi.Color.Foreground.White, Ansi.Color.Background.Black));
+            Output.Write(string.Concat(Ansi.Color.Foreground.Default, Ansi.Color.Background.Default));
         }
 
         public void SetCursorPosition(int left, int top)

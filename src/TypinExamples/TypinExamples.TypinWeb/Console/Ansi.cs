@@ -30,20 +30,20 @@
                 public static string Default { get; } = $"{Esc}[49m";
 
                 public static string Black => $"{Esc}[40m";
-                public static string DarkRed { get; } = $"{Esc}[41m";
-                public static string DarkGreen { get; } = $"{Esc}[42m";
-                public static string DarkYellow { get; } = $"{Esc}[43m";
-                public static string DarkBlue { get; } = $"{Esc}[44m";
-                public static string DarkMagenta { get; } = $"{Esc}[45m";
-                public static string DarkCyan { get; } = $"{Esc}[46m";
-                public static string Gray { get; } = $"{Esc}[47m";
+                public static string Red { get; } = $"{Esc}[41m";
+                public static string Green { get; } = $"{Esc}[42m";
+                public static string Yellow { get; } = $"{Esc}[43m";
+                public static string Blue { get; } = $"{Esc}[44m";
+                public static string Magenta { get; } = $"{Esc}[45m";
+                public static string Cyan { get; } = $"{Esc}[46m";
+                public static string LightGray { get; } = $"{Esc}[47m";
                 public static string DarkGray { get; } = $"{Esc}[100m";
-                public static string Red { get; } = $"{Esc}[101m";
-                public static string Green { get; } = $"{Esc}[102m";
-                public static string Yellow { get; } = $"{Esc}[103m";
-                public static string Blue { get; } = $"{Esc}[104m";
-                public static string Magenta { get; } = $"{Esc}[105m";
-                public static string Cyan { get; } = $"{Esc}[106m";
+                public static string LightRed { get; } = $"{Esc}[101m";
+                public static string LightGreen { get; } = $"{Esc}[102m";
+                public static string LightYellow { get; } = $"{Esc}[103m";
+                public static string LightBlue { get; } = $"{Esc}[104m";
+                public static string LightMagenta { get; } = $"{Esc}[105m";
+                public static string LightCyan { get; } = $"{Esc}[106m";
                 public static string White { get; } = $"{Esc}[107m";
 
                 public static string Rgb(byte r, byte g, byte b)
@@ -56,20 +56,20 @@
                     return background switch
                     {
                         ConsoleColor.Black => Black,
-                        ConsoleColor.DarkRed => DarkRed,
-                        ConsoleColor.DarkGreen => DarkGreen,
-                        ConsoleColor.DarkYellow => DarkYellow,
-                        ConsoleColor.DarkBlue => DarkBlue,
-                        ConsoleColor.DarkMagenta => DarkMagenta,
-                        ConsoleColor.DarkCyan => DarkCyan,
-                        ConsoleColor.Gray => Gray,
+                        ConsoleColor.DarkRed => Red,
+                        ConsoleColor.DarkGreen => Green,
+                        ConsoleColor.DarkYellow => Yellow,
+                        ConsoleColor.DarkBlue => Blue,
+                        ConsoleColor.DarkMagenta => Magenta,
+                        ConsoleColor.DarkCyan => Cyan,
+                        ConsoleColor.Gray => LightGray,
                         ConsoleColor.DarkGray => DarkGray,
-                        ConsoleColor.Red => Red,
-                        ConsoleColor.Green => Green,
-                        ConsoleColor.Yellow => Yellow,
-                        ConsoleColor.Blue => Blue,
-                        ConsoleColor.Magenta => Magenta,
-                        ConsoleColor.Cyan => Cyan,
+                        ConsoleColor.Red => LightRed,
+                        ConsoleColor.Green => LightGreen,
+                        ConsoleColor.Yellow => LightYellow,
+                        ConsoleColor.Blue => LightBlue,
+                        ConsoleColor.Magenta => LightMagenta,
+                        ConsoleColor.Cyan => LightCyan,
                         ConsoleColor.White => White,
                         _ => Default
                     };
@@ -81,20 +81,20 @@
                 public static string Default => $"{Esc}[39m";
 
                 public static string Black { get; } = $"{Esc}[30m";
-                public static string DarkRed { get; } = $"{Esc}[31m";
-                public static string DarkGreen { get; } = $"{Esc}[32m";
-                public static string DarkYellow { get; } = $"{Esc}[33m";
-                public static string DarkBlue { get; } = $"{Esc}[34m";
-                public static string DarkMagenta { get; } = $"{Esc}[35m";
-                public static string DarkCyan { get; } = $"{Esc}[36m";
-                public static string Gray { get; } = $"{Esc}[37m";
+                public static string Red { get; } = $"{Esc}[31m";
+                public static string Green { get; } = $"{Esc}[32m";
+                public static string Yellow { get; } = $"{Esc}[33m";
+                public static string Blue { get; } = $"{Esc}[34m";
+                public static string Magenta { get; } = $"{Esc}[35m";
+                public static string Cyan { get; } = $"{Esc}[36m";
+                public static string LightGray { get; } = $"{Esc}[37m";
                 public static string DarkGray { get; } = $"{Esc}[90m";
-                public static string Red { get; } = $"{Esc}[91m";
-                public static string Green { get; } = $"{Esc}[92m";
-                public static string Yellow { get; } = $"{Esc}[93m";
-                public static string Blue { get; } = $"{Esc}[94m";
-                public static string Magenta { get; } = $"{Esc}[95m";
-                public static string Cyan { get; } = $"{Esc}[96m";
+                public static string LightRed { get; } = $"{Esc}[91m";
+                public static string LightGreen { get; } = $"{Esc}[92m";
+                public static string LightYellow { get; } = $"{Esc}[93m";
+                public static string LightBlue { get; } = $"{Esc}[94m";
+                public static string LightMagenta { get; } = $"{Esc}[95m";
+                public static string LightCyan { get; } = $"{Esc}[96m";
                 public static string White { get; } = $"{Esc}[97m";
 
                 public static string Rgb(byte r, byte g, byte b)
@@ -107,20 +107,20 @@
                     return foreground switch
                     {
                         ConsoleColor.Black => Black,
-                        ConsoleColor.DarkRed => DarkRed,
-                        ConsoleColor.DarkGreen => DarkGreen,
-                        ConsoleColor.DarkYellow => DarkYellow,
-                        ConsoleColor.DarkBlue => DarkBlue,
-                        ConsoleColor.DarkMagenta => DarkMagenta,
-                        ConsoleColor.DarkCyan => DarkCyan,
-                        ConsoleColor.Gray => Gray,
+                        ConsoleColor.DarkRed => Red,
+                        ConsoleColor.DarkGreen => Green,
+                        ConsoleColor.DarkYellow => Yellow,
+                        ConsoleColor.DarkBlue => Blue,
+                        ConsoleColor.DarkMagenta => Magenta,
+                        ConsoleColor.DarkCyan => Cyan,
+                        ConsoleColor.Gray => LightGray,
                         ConsoleColor.DarkGray => DarkGray,
-                        ConsoleColor.Red => Red,
-                        ConsoleColor.Green => Green,
-                        ConsoleColor.Yellow => Yellow,
-                        ConsoleColor.Blue => Blue,
-                        ConsoleColor.Magenta => Magenta,
-                        ConsoleColor.Cyan => Cyan,
+                        ConsoleColor.Red => LightRed,
+                        ConsoleColor.Green => LightGreen,
+                        ConsoleColor.Yellow => LightYellow,
+                        ConsoleColor.Blue => LightBlue,
+                        ConsoleColor.Magenta => LightMagenta,
+                        ConsoleColor.Cyan => LightCyan,
                         ConsoleColor.White => White,
                         _ => Default
                     };
