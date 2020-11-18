@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Directives;
+    using TypinExamples.Timer.Middleware;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
@@ -13,6 +14,7 @@
         {
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
                                                     .AddDirective<PreviewDirective>()
+                                                    .UseMiddleware<ExecutionTimingMiddleware>()
                                                     .UseWebExample(configuration)
                                                     .Build()
                                                     .RunAsync(commandLine, environmentVariables, true);

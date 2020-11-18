@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Directives;
+    using TypinExamples.Timer.Middleware;
 
     public static class Program
     {
@@ -10,6 +11,7 @@
         {
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
                                                     .AddDirective<PreviewDirective>()
+                                                    .UseMiddleware<ExecutionTimingMiddleware>()
                                                     .Build()
                                                     .RunAsync();
         }
