@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Directives;
+    using Typin.Modes;
 
     public static class Program
     {
@@ -10,6 +11,7 @@
         {
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
                                                     .AddDirective<PreviewDirective>()
+                                                    .UseInteractiveMode()
                                                     .Build()
                                                     .RunAsync();
         }

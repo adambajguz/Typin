@@ -2,6 +2,7 @@
     @foreach (ExampleDescriptor descriptor in ExamplesSettings.Examples)
     {
         <div class="c-box">
+
             <div class="c-box--top">
                 <div class="row">
                     <div class="col-8 is-vertical-align">
@@ -23,10 +24,21 @@
                         <NavLinkExtended href="@("/example/" + descriptor.Key)" class="button outline primary">Run ></NavLinkExtended>
                     </div>
                 </div>
-            </div>
+             </div>
+
             <div class="c-box--content text-light">
                 @Markdown.ToHtml(descriptor.Description ?? string.Empty)
+                @if (descriptor.Modes is not null)
+                {
+                    <p>
+                        @foreach (string mode in descriptor.Modes)
+                        {
+                            <span class="tag is-small text-accent bd-accent">@mode mode</span>
+                        }
+                    </p>
+                }
             </div>
+
         </div>
     }
 </div>

@@ -51,7 +51,7 @@
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return 'A';
+            return 13;
         }
 
         /// <inheritdoc/>
