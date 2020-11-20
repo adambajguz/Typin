@@ -22,6 +22,17 @@
         }
 
         /// <summary>
+        /// Call worker command.
+        /// </summary>
+        public WorkerMessageFromMainBuilder CallCommand<T>(T data)
+            where T : IWorkerRequest
+        {
+            CommandType = typeof(T);
+            Data = data;
+            return this;
+        }
+
+        /// <summary>
         /// Send notification to worker.
         /// </summary>
         public WorkerMessageFromMainBuilder Notify<T>()

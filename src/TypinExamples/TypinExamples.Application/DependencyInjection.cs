@@ -4,6 +4,7 @@
     using MediatR;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using TypinExamples.Application.Services;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Core.Configuration;
     using TypinExamples.Core.Services;
@@ -20,6 +21,7 @@
             });
 
             services.AddTransient<WebExampleInvokerService>();
+            services.AddTransient<TimerService>();
 
             return services;
         }

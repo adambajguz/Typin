@@ -12,6 +12,7 @@
         protected Type? CommandType { get; set; }
         protected Type? NotificationType { get; set; }
         protected Dictionary<string, object> Arguments { get; } = new();
+        protected object Data { get; set; }
 
         protected WorkerMessageBuilder()
         {

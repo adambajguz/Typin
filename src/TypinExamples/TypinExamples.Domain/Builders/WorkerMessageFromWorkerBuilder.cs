@@ -22,6 +22,17 @@
         }
 
         /// <summary>
+        /// Call core command.
+        /// </summary>
+        public WorkerMessageFromWorkerBuilder CallCommand<T>(T data)
+            where T : ICoreRequest
+        {
+            CommandType = typeof(T);
+            Data = data;
+            return this;
+        }
+
+        /// <summary>
         /// Send notification to core.
         /// </summary>
         public WorkerMessageFromWorkerBuilder Notify<T>()

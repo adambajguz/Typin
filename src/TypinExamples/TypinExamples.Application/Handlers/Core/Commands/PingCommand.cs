@@ -2,6 +2,7 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using TypinExamples.Core.Handlers.Workers.Commands;
     using TypinExamples.Core.Services;
     using TypinExamples.Domain.Extensions;
@@ -30,7 +31,7 @@
 
                 WorkerMessageModel result = await _taskDispatcher.RunAsync(message);
 
-                return result.Arguments?["Result"] as string ?? string.Empty;
+                return JsonConvert.SerializeObject(result);
             }
         }
     }

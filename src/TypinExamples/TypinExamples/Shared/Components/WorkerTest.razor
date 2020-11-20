@@ -9,6 +9,6 @@
 
     async Task Click()
     {
-        Result = await Mediator.Send(new TypinExamples.Core.Handlers.Commands.PingCommand { Value = 13181208 });
+        Result = await Mediator.Send(new PingCommand { Value = 13181208 });
     }
 }

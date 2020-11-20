@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.Core.Handlers.Workers.Commands
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using TypinExamples.Core.Handlers.Core.Commands;
@@ -22,10 +23,17 @@
             {
                 WorkerMessageModel message = this.CreateMessageBuilder()
                                                  .CallCommand<PingCommand>()
-                                                 .AddArgument(nameof(Value), request.Value)
+                                                 .AddArgument("Result", $"Processed by WorkerPingCommand {request.Value}")
                                                  .Build();
 
-                return Task.FromResult(new WorkerMessageModel());
+                var wait = DateTime.UtcNow.AddSeconds(5);
+
+                while(DateTime.UtcNow < wait)
+                {
+
+                }
+
+                return Task.FromResult(message);
             }
         }
     }

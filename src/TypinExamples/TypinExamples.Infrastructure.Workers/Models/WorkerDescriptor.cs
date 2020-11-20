@@ -9,6 +9,10 @@
         public IWorker Worker { get; init; } = default!;
         public IWorkerBackgroundService<WorkerService> BackgroundService { get; init; } = default!;
 
-        public bool IsInUse { get; set; }
+        public bool IsIdling => !IsInUse && !IsDisposed;
+        public bool IsInUse { get; internal set; }
+
+        public bool IsDisposed => WGCLifetime <= 0;
+        public int WGCLifetime { get; internal set; }
     }
 }

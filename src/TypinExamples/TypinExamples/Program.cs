@@ -18,7 +18,7 @@ namespace TypinExamples
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
                             .ConfigureCoreServices(configuration)
-                            .ConfigureWorkersLayer()
+                            .ConfigureWorkersLayer(configuration)
                             .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();

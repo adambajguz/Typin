@@ -6,6 +6,12 @@
 
     public sealed class WorkerMessageModel
     {
+        public static WorkerMessageModel Empty { get; } = new WorkerMessageModel
+        {
+            Id = Guid.Empty,
+            CreatedOn = DateTime.MinValue
+        };
+
         [JsonProperty("id")]
         public Guid Id { get; internal init; } = Guid.NewGuid();
 
@@ -21,7 +27,15 @@
         [JsonProperty("nfnc")]
         public string? TargetNotificationType { get; internal init; }
 
+        [JsonProperty("data")]
+        public string? Data { get; internal init; }
+
         [JsonProperty("args")]
         public Dictionary<string, object> Arguments { get; internal init; } = new();
+
+        internal WorkerMessageModel()
+        {
+
+        }
     }
 }

@@ -3,6 +3,7 @@
     using System.Reflection;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
+    using TypinExamples.Application.Services;
 
     public static class WorkerDependencyInjection
     {
@@ -13,6 +14,7 @@
                 typeof(DependencyInjection).GetTypeInfo().Assembly,
             });
 
+            services.AddTransient<TimerService>();
             //services.AddTransient<WebExampleInvokerService>();
 
             return services;

@@ -1,11 +1,14 @@
 ﻿namespace TypinExamples.Workers.Services
 {
     using System;
+    using System.Threading.Tasks;
     using BlazorWorker.WorkerCore;
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using TypinExamples.Core;
+    using TypinExamples.Core.Handlers.Workers.Commands;
+    using TypinExamples.Core.Handlers.Workers.Notifications;
     using TypinExamples.Domain.Models;
 
     public sealed class WorkerService : IDisposable
@@ -36,19 +39,35 @@
             IMediator mediator = _provider.GetRequiredService<IMediator>();
         }
 
-        public string Execute(string data)
+        public async Task<string> Execute(string data)
         {
             Console.WriteLine(data);
             WorkerMessageModel deserialized = JsonConvert.DeserializeObject<WorkerMessageModel>(data);
 
-            return JsonConvert.SerializeObject(Execute(deserialized));
+            WorkerMessageModel result = await Execute(deserialized);
+
+            return JsonConvert.SerializeObject(result);
         }
 
-        public WorkerMessageModel Execute(WorkerMessageModel data)
+        public async Task<WorkerMessageModel> Execute(WorkerMessageModel data)
         {
             IMediator mediator = _provider.GetRequiredService<IMediator>();
 
-            return new WorkerMessageModel();
+            if (data.TargetCommandType is not null)
+            {
+                Type? type = Type.GetType(data.TargetCommandType);
+
+                return await mediator.Send(new WorkerPingCommand());
+            }
+
+            if (data.TargetNotificationType is not null)
+            {
+                Type? type = Type.GetType(data.TargetNotificationType);
+
+                await mediator.Publish(new WorkerPingNotification());
+            }
+
+            return WorkerMessageModel.Empty;
         }
 
         public void Dispose()
