@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Configurations>Debug;Release</Configurations>
+    <Version>2.0.0</Version>
+    <Authors>Tor Knutsson (Tewr)</Authors>
+    <Company>Tor Knutsson (Tewr)</Company>
+    <Product>BlazorWorker</Product>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>BlazorWorker.WorkerCore.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="LinkerConfig.xml">
+      <LogicalName>$(MSBuildProjectName).xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
+  </ItemGroup>
+
+</Project>

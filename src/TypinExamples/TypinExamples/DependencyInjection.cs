@@ -4,6 +4,7 @@
     using System.Net.Http;
     using Blazor.Extensions.Logging;
     using Blazor.Extensions.Storage;
+    using BlazorWorker.Core;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@
         {
             services.AddOptions();
             services.AddStorage();
+            services.AddWorkerFactory();
 
             services.AddLogging(builder => builder.AddBrowserConsole()
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
