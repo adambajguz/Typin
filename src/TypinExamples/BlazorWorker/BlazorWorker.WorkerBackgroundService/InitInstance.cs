@@ -1,6 +1,4 @@
-﻿using System.Net.WebSockets;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
     public class InitInstance : BaseMessage
     {

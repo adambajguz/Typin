@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorWorker.WorkerCore.SimpleInstanceService
 {
     public class DisposeInstanceRequest
     {
-        public readonly static string Prefix = 
+        public static readonly string Prefix =
             $"{SimpleInstanceService.MessagePrefix}{SimpleInstanceService.DiposeMessagePrefix}";
 
         public long CallId { get; set; }
@@ -27,9 +26,9 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
                     s => result.CallId = long.Parse(s),
                     s => result.InstanceId = long.Parse(s)
                 });
-            
+
             CSVSerializer.Deserialize(Prefix, message, parsers);
-            
+
             return result;
         }
 

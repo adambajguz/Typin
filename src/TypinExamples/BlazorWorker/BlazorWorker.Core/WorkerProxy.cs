@@ -1,7 +1,7 @@
-﻿using BlazorWorker.WorkerCore;
-using Microsoft.JSInterop;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using BlazorWorker.WorkerCore;
+using Microsoft.JSInterop;
 namespace BlazorWorker.Core
 {
     [DependencyHint(typeof(MessageService))]
@@ -24,30 +24,31 @@ namespace BlazorWorker.Core
         public WorkerProxy(IJSRuntime jsRuntime)
         {
             this.jsRuntime = jsRuntime;
-            this.scriptLoader = new ScriptLoader(this.jsRuntime);
-            this.Identifier = ++idSource;
+            scriptLoader = new ScriptLoader(this.jsRuntime);
+            Identifier = ++idSource;
         }
 
         public async ValueTask DisposeAsync()
         {
             if (!isDisposed)
             {
-                await this.jsRuntime.InvokeVoidAsync("BlazorWorker.disposeWorker", this.Identifier);
+                await jsRuntime.InvokeVoidAsync("BlazorWorker.disposeWorker", Identifier);
                 isDisposed = true;
             }
         }
 
         public async Task InitAsync(WorkerInitOptions initOptions)
         {
-            await this.scriptLoader.InitScript();
+            await scriptLoader.InitScript();
 
-            await this.jsRuntime.InvokeVoidAsync(
-                "BlazorWorker.initWorker", 
-                this.Identifier, 
-                DotNetObjectReference.Create(this), 
-                new WorkerInitOptions {
-                    DependentAssemblyFilenames = 
-                        new[] { 
+            await jsRuntime.InvokeVoidAsync(
+                "BlazorWorker.initWorker",
+                Identifier,
+                DotNetObjectReference.Create(this),
+                new WorkerInitOptions
+                {
+                    DependentAssemblyFilenames =
+                        new[] {
                             "BlazorWorker.WorkerCore.dll",
                             "netstandard.dll",
                             "mscorlib.dll",
@@ -179,7 +180,7 @@ namespace BlazorWorker.Core
                         },
                     CallbackMethod = nameof(OnMessage),
                     MessageEndPoint = messageMethod
-               }.MergeWith(initOptions));
+                }.MergeWith(initOptions));
         }
 
         [JSInvokable]
@@ -192,7 +193,7 @@ namespace BlazorWorker.Core
 
         public async Task PostMessageAsync(string message)
         {
-            await jsRuntime.InvokeVoidAsync("BlazorWorker.postMessage", this.Identifier, message);
+            await jsRuntime.InvokeVoidAsync("BlazorWorker.postMessage", Identifier, message);
         }
 
         public long Identifier { get; }

@@ -27,12 +27,13 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
             {
                 throw new FormatException($"Unexpected start of message, expected {prefix}");
             }
-            var body = message.Substring(prefix.Length+1);
+            var body = message.Substring(prefix.Length + 1);
             var sb = new StringBuilder(body.Length);
             var lastChar = ' ';
             var pos = -1;
 
-            void nextParser() {
+            void nextParser()
+            {
                 var fieldValue = sb.ToString();
                 try
                 {
@@ -67,10 +68,10 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
                     sb.Append(chr);
                     lastChar = chr;
                 }
-                
+
             }
 
-            if(fieldParserQueue.Count > 1)
+            if (fieldParserQueue.Count > 1)
             {
                 throw new FormatException($"Unexpected end of message prefixed {prefix}");
             }

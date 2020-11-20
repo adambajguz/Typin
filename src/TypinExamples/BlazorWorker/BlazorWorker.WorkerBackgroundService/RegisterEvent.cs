@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
-    public class RegisterEvent: BaseMessage
+    public class RegisterEvent : BaseMessage
     {
         public RegisterEvent()
         {

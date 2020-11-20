@@ -1,16 +1,16 @@
-﻿using BlazorWorker.WorkerCore.SimpleInstanceService;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorWorker.WorkerCore.SimpleInstanceService;
 
 namespace BlazorWorker.Core.SimpleInstanceService
 {
     public class SimpleInstanceServiceProxy : ISimpleInstanceService
     {
         private readonly IWorker worker;
-        private Dictionary<long, TaskCompletionSource<DisposeResult>> disposeResultSourceByCallId = 
+        private readonly Dictionary<long, TaskCompletionSource<DisposeResult>> disposeResultSourceByCallId =
             new Dictionary<long, TaskCompletionSource<DisposeResult>>();
-        private Dictionary<long, TaskCompletionSource<InitInstanceResult>> initInstanceResultByCallId =
+        private readonly Dictionary<long, TaskCompletionSource<InitInstanceResult>> initInstanceResultByCallId =
             new Dictionary<long, TaskCompletionSource<InitInstanceResult>>();
         private TaskCompletionSource<InitServiceResult> initWorker;
 
@@ -25,14 +25,14 @@ namespace BlazorWorker.Core.SimpleInstanceService
         }
 
         public async Task InitializeAsync(WorkerInitOptions options = null)
-        {   
+        {
             if (!IsInitialized)
             {
-                if (!this.worker.IsInitialized)
+                if (!worker.IsInitialized)
                 {
                     initWorker = new TaskCompletionSource<InitServiceResult>();
-                    await this.worker.InitAsync(options);
-                    await this.initWorker.Task;
+                    await worker.InitAsync(options);
+                    await initWorker.Task;
                 }
 
                 IsInitialized = true;
@@ -42,7 +42,8 @@ namespace BlazorWorker.Core.SimpleInstanceService
         private void OnIncomingMessage(object sender, string message)
         {
             Console.WriteLine($"{nameof(SimpleInstanceServiceProxy)}:{message}");
-            if (DisposeResult.CanDeserialize(message)) {
+            if (DisposeResult.CanDeserialize(message))
+            {
                 var result = DisposeResult.Deserialize(message);
                 if (disposeResultSourceByCallId.TryGetValue(result.CallId, out var taskCompletionSource))
                 {
@@ -73,7 +74,7 @@ namespace BlazorWorker.Core.SimpleInstanceService
             request.CallId = ++callIdSource;
             var res = new TaskCompletionSource<DisposeResult>();
             disposeResultSourceByCallId.Add(request.CallId, res);
-            await this.worker.PostMessageAsync(request.Serialize());
+            await worker.PostMessageAsync(request.Serialize());
             return await res.Task;
         }
 
@@ -82,7 +83,7 @@ namespace BlazorWorker.Core.SimpleInstanceService
             request.CallId = ++callIdSource;
             var res = new TaskCompletionSource<InitInstanceResult>();
             initInstanceResultByCallId.Add(request.CallId, res);
-            await this.worker.PostMessageAsync(request.Serialize());
+            await worker.PostMessageAsync(request.Serialize());
             return await res.Task;
         }
     }

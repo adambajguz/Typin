@@ -46,13 +46,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorWorker\BlazorWorker.ServiceFactory\BlazorWorker.BackgroundServiceFactory.csproj" />
-    <ProjectReference Include="..\BlazorWorker\BlazorWorker.WorkerBackgroundService\BlazorWorker.WorkerBackgroundService.csproj" />
-    <ProjectReference Include="..\BlazorWorker\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.csproj" />
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
     <ProjectReference Include="..\TypinExamples.Core\TypinExamples.Core.csproj" />
     <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
+    <ProjectReference Include="..\TypinExamples.Workers\TypinExamples.Workers.csproj" />
   </ItemGroup>
 
 </Project>

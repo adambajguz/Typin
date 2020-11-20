@@ -4,6 +4,7 @@ namespace TypinExamples
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using TypinExamples.Compiler.Services;
     using TypinExamples.Core;
+    using TypinExamples.Workers;
 
     public static class Program
     {
@@ -17,6 +18,7 @@ namespace TypinExamples
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
                             .ConfigureCoreServices(configuration)
+                            .ConfigureWorkersLayer()
                             .ConfigureCompilerServices();
 
             await builder.Build().RunAsync();

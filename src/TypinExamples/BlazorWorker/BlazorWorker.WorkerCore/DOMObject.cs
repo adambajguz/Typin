@@ -4,9 +4,9 @@ using BlazorWorker.WorkerCore.WebAssemblyBindingsProxy;
 namespace BlazorWorker.WorkerCore
 {
     // Serves as a wrapper around a JSObject.
-    class DOMObject : IDisposable
+    internal class DOMObject : IDisposable
     {
-        
+
         public JSObject ManagedJSObject { get; private set; }
 
         public DOMObject(JSObject jsobject)

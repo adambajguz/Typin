@@ -4,14 +4,12 @@
     using System.Net.Http;
     using Blazor.Extensions.Logging;
     using Blazor.Extensions.Storage;
-    using BlazorWorker.Core;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
-    using TypinExamples.Core.Configuration;
     using TypinExamples.Core.Services;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
@@ -22,7 +20,6 @@
         {
             services.AddOptions();
             services.AddStorage();
-            services.AddWorkerFactory();
 
             services.AddLogging(builder => builder.AddBrowserConsole()
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
@@ -33,7 +30,7 @@
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
-                    .AddSingleton<ITerminalRepository, TerminalRepository>()
+                    .AddScoped<ITerminalRepository, TerminalRepository>()
                     .AddScoped<MonacoEditorService>();
 
             return services;

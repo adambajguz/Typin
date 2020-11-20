@@ -3,7 +3,7 @@
     public class WorkerInstanceDisposeException : WorkerException
     {
         public WorkerInstanceDisposeException(string message, string fullMessage)
-            :base($"Error when disposing instance: {message}", fullMessage)
+            : base($"Error when disposing instance: {message}", fullMessage)
         {
         }
     }

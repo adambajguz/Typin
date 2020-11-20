@@ -5,7 +5,7 @@ namespace BlazorWorker.Core.CoreInstanceService
 {
     internal class CoreInstanceHandle : IInstanceHandle
     {
-        private Func<Task> onDispose;
+        private readonly Func<Task> onDispose;
 
         public CoreInstanceHandle(Func<Task> onDispose)
         {
@@ -14,7 +14,7 @@ namespace BlazorWorker.Core.CoreInstanceService
 
         public async ValueTask DisposeAsync()
         {
-            await this.onDispose();
+            await onDispose();
         }
     }
 }

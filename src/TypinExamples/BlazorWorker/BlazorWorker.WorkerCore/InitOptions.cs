@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BlazorWorker.Core
@@ -47,14 +46,14 @@ namespace BlazorWorker.Core
 
             return new WorkerInitOptions
             {
-                CallbackMethod = initOptions.CallbackMethod ?? this.CallbackMethod,
-                DependentAssemblyFilenames = this.DependentAssemblyFilenames
+                CallbackMethod = initOptions.CallbackMethod ?? CallbackMethod,
+                DependentAssemblyFilenames = DependentAssemblyFilenames
                     .Concat(initOptions.DependentAssemblyFilenames)
                     .Distinct()
                     .ToArray(),
                 UseConventionalServiceAssembly = initOptions.UseConventionalServiceAssembly,
-                MessageEndPoint = initOptions.MessageEndPoint ?? this.MessageEndPoint,
-                InitEndPoint = initOptions.InitEndPoint ?? this.InitEndPoint,
+                MessageEndPoint = initOptions.MessageEndPoint ?? MessageEndPoint,
+                InitEndPoint = initOptions.InitEndPoint ?? InitEndPoint,
             };
         }
     }

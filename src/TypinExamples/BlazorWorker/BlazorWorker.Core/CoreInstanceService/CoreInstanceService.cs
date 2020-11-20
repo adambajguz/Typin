@@ -46,7 +46,7 @@ namespace BlazorWorker.Core.CoreInstanceService
         public async Task<IInstanceHandle> CreateInstance(Type t, WorkerInitOptions options)
         {
             var id = ++sourceId;
-            if (!this.simpleInstanceServiceProxy.IsInitialized)
+            if (!simpleInstanceServiceProxy.IsInitialized)
             {
                 if (options == null)
                 {
@@ -58,13 +58,13 @@ namespace BlazorWorker.Core.CoreInstanceService
                 {
                     options.AddAssemblyOfType(t);
                 }
-                
-                await this.simpleInstanceServiceProxy.InitializeAsync(new WorkerInitOptions()
+
+                await simpleInstanceServiceProxy.InitializeAsync(new WorkerInitOptions()
                 {
                     InitEndPoint = $"[{typeof(TargetType).Assembly.GetName().Name}]{typeof(TargetType).FullName}:{nameof(TargetType.Init)}"
                 }.MergeWith(options));
             }
-            var initResult = await this.simpleInstanceServiceProxy.InitInstance(
+            var initResult = await simpleInstanceServiceProxy.InitInstance(
                 new InitInstanceRequest
                 {
                     Id = id,
@@ -73,8 +73,8 @@ namespace BlazorWorker.Core.CoreInstanceService
                 });
 
             if (!initResult.IsSuccess)
-            { 
-                throw new WorkerInstanceInitializeException(initResult.ExceptionMessage, initResult.FullExceptionString);  
+            {
+                throw new WorkerInstanceInitializeException(initResult.ExceptionMessage, initResult.FullExceptionString);
             }
 
             return new CoreInstanceHandle(async () => await OnDispose(id));
@@ -82,7 +82,7 @@ namespace BlazorWorker.Core.CoreInstanceService
 
         private async Task OnDispose(long id)
         {
-            var result = await this.simpleInstanceServiceProxy.DisposeInstance(
+            var result = await simpleInstanceServiceProxy.DisposeInstance(
                             new DisposeInstanceRequest() { InstanceId = id });
             if (result.IsSuccess)
             {

@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Compiler.Models
+﻿namespace TypinExamples.Common.Models
 {
     using System;
     using System.Text.Json.Serialization;

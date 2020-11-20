@@ -1,7 +1,5 @@
-﻿using BlazorWorker.WorkerCore.SimpleInstanceService;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorWorker.WorkerCore.SimpleInstanceService
 {
@@ -21,14 +19,14 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
 
         public Exception Exception { get; internal set; }
 
-        internal string Serialize() 
-        { 
+        internal string Serialize()
+        {
             return CSVSerializer.Serialize(Prefix,
-               this.CallId,
-               this.IsSuccess? 1 : 0,
-               CSVSerializer.EscapeString(this.ExceptionMessage),
-               CSVSerializer.EscapeString(this.FullExceptionString));
-            
+               CallId,
+               IsSuccess ? 1 : 0,
+               CSVSerializer.EscapeString(ExceptionMessage),
+               CSVSerializer.EscapeString(FullExceptionString));
+
         }
         public static bool CanDeserialize(string message)
         {
@@ -42,8 +40,8 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
             var parsers = new Queue<Action<string>>(
                 new Action<string>[] {
                     s => result.CallId = long.Parse(s),
-                    s => result.IsSuccess = s == "1", 
-                    s => result.ExceptionMessage = s, 
+                    s => result.IsSuccess = s == "1",
+                    s => result.ExceptionMessage = s,
                     s => result.FullExceptionString = s
             });
 

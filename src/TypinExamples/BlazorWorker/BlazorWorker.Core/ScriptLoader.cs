@@ -1,10 +1,9 @@
-﻿using Microsoft.JSInterop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 
 namespace BlazorWorker.Core
 {
@@ -17,7 +16,7 @@ namespace BlazorWorker.Core
 
         public ScriptLoader(IJSRuntime jSRuntime)
         {
-            this.jsRuntime = jSRuntime;
+            jsRuntime = jSRuntime;
         }
 
         public async Task InitScript()
@@ -28,7 +27,7 @@ namespace BlazorWorker.Core
             }
 
             string scriptContent;
-            var stream = this.GetType().Assembly.GetManifestResourceStream("BlazorWorker.Core.BlazorWorker.js");
+            var stream = GetType().Assembly.GetManifestResourceStream("BlazorWorker.Core.BlazorWorker.js");
             using (stream)
             {
                 using (var streamReader = new StreamReader(stream))

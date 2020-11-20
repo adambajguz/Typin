@@ -1,6 +1,5 @@
 ﻿namespace TypinExamples.TypinWeb.Configuration
 {
-    using Microsoft.Extensions.Logging;
     using Typin.Console;
     using TypinExamples.TypinWeb.Logging;
 

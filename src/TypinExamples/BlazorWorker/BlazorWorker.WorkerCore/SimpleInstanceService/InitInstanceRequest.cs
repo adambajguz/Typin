@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorWorker.WorkerCore.SimpleInstanceService
 {
@@ -36,10 +35,10 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
 
         public string Serialize()
         {
-            return CSVSerializer.Serialize(Prefix, 
-                CallId, 
-                Id, 
-                CSVSerializer.EscapeString(TypeName), 
+            return CSVSerializer.Serialize(Prefix,
+                CallId,
+                Id,
+                CSVSerializer.EscapeString(TypeName),
                 CSVSerializer.EscapeString(AssemblyName));
         }
     }

@@ -36,7 +36,7 @@ namespace BlazorWorker.WorkerBackgroundService
 
         private string GetMessageType(string message)
         {
-            return this.MessageSerializer.Deserialize<BaseMessage>(message).MessageType;
+            return MessageSerializer.Deserialize<BaseMessage>(message).MessageType;
         }
     }
 }

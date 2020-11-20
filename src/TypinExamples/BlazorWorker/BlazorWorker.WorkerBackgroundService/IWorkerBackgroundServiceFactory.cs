@@ -1,5 +1,5 @@
-﻿using BlazorWorker.Core;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using BlazorWorker.Core;
 
 namespace BlazorWorker.WorkerBackgroundService
 {

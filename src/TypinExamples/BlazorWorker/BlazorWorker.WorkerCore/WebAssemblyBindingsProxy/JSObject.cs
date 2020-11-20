@@ -18,8 +18,14 @@ namespace BlazorWorker.WorkerCore.WebAssemblyBindingsProxy
             _disposeMethodDelegate = Delegate.CreateDelegate(typeof(DisposeDelegate), target, disposeMethod) as DisposeDelegate;
         }
 
-        public object Invoke(string method, params object[] parameters) => _invokeMethodDelegate(method, parameters);
+        public object Invoke(string method, params object[] parameters)
+        {
+            return _invokeMethodDelegate(method, parameters);
+        }
 
-        public void Dispose() => _disposeMethodDelegate();
+        public void Dispose()
+        {
+            _disposeMethodDelegate();
+        }
     }
 }

@@ -1,14 +1,14 @@
-﻿using BlazorWorker.Core;
-using BlazorWorker.WorkerBackgroundService;
-using BlazorWorker.WorkerCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BlazorWorker.Core;
+using BlazorWorker.WorkerBackgroundService;
+using BlazorWorker.WorkerCore;
 
 namespace BlazorWorker.BackgroundServiceFactory
 {
-    internal class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
+    public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
     {
         private readonly IWorker worker;
         private readonly WebWorkerOptions options;
@@ -17,7 +17,7 @@ namespace BlazorWorker.BackgroundServiceFactory
         private readonly long instanceId;
         private readonly ISerializer messageSerializer;
         private readonly object expressionSerializer;
-        private MessageHandlerRegistry messageHandlerRegistry;
+        private readonly MessageHandlerRegistry messageHandlerRegistry;
         private TaskCompletionSource<bool> initTask;
         private TaskCompletionSource<bool> disposeTask;
         private TaskCompletionSource<bool> initWorkerTask;
@@ -26,7 +26,7 @@ namespace BlazorWorker.BackgroundServiceFactory
         private readonly Dictionary<long, TaskCompletionSource<MethodCallResult>> messageRegister
             = new Dictionary<long, TaskCompletionSource<MethodCallResult>>();
 
-        private Dictionary<long, EventHandle> eventRegister
+        private readonly Dictionary<long, EventHandle> eventRegister
             = new Dictionary<long, EventHandle>();
 
         public bool IsInitialized { get; private set; }
@@ -38,63 +38,63 @@ namespace BlazorWorker.BackgroundServiceFactory
             InitEndPoint = $"[{wim.Assembly.GetName().Name}]{wim.FullName}:{nameof(WorkerInstanceManager.Init)}";
         }
 
-        internal WorkerBackgroundServiceProxy(
+        public WorkerBackgroundServiceProxy(
             IWorker worker,
             WebWorkerOptions options)
         {
             this.worker = worker;
             this.options = options;
-            this.instanceId = ++idSource;
-            this.messageSerializer = this.options.MessageSerializer;
-            this.expressionSerializer = this.options.ExpressionSerializer;
+            instanceId = ++idSource;
+            messageSerializer = this.options.MessageSerializer;
+            expressionSerializer = this.options.ExpressionSerializer;
 
-            this.messageHandlerRegistry = new MessageHandlerRegistry(this.options.MessageSerializer);
-            this.messageHandlerRegistry.Add<InitInstanceComplete>(OnInitInstanceComplete);
-            this.messageHandlerRegistry.Add<InitWorkerComplete>(OnInitWorkerComplete);
-            this.messageHandlerRegistry.Add<DisposeInstanceComplete>(OnDisposeInstanceComplete);
-            this.messageHandlerRegistry.Add<EventRaised>(OnEventRaised);
-            this.messageHandlerRegistry.Add<MethodCallResult>(OnMethodCallResult);
+            messageHandlerRegistry = new MessageHandlerRegistry(this.options.MessageSerializer);
+            messageHandlerRegistry.Add<InitInstanceComplete>(OnInitInstanceComplete);
+            messageHandlerRegistry.Add<InitWorkerComplete>(OnInitWorkerComplete);
+            messageHandlerRegistry.Add<DisposeInstanceComplete>(OnDisposeInstanceComplete);
+            messageHandlerRegistry.Add<EventRaised>(OnEventRaised);
+            messageHandlerRegistry.Add<MethodCallResult>(OnMethodCallResult);
         }
 
         private void OnDisposeInstanceComplete(DisposeInstanceComplete message)
         {
             if (message.IsSuccess)
             {
-                this.disposeTask.SetResult(true);
-                this.IsDisposed = true;
+                disposeTask.SetResult(true);
+                IsDisposed = true;
             }
             else
             {
-                this.disposeTask.SetException(message.Exception);
+                disposeTask.SetException(message.Exception);
             }
         }
 
         private bool IsInfrastructureMessage(string message)
         {
-            return this.messageHandlerRegistry.HandlesMessage(message);
+            return messageHandlerRegistry.HandlesMessage(message);
         }
 
         public IWorkerMessageService GetWorkerMessageService()
         {
-            return this.worker;
+            return worker;
         }
 
         public async Task InitAsync(WorkerInitOptions workerInitOptions = null)
         {
             workerInitOptions = workerInitOptions ?? new WorkerInitOptions();
-            if (this.initTask != null)
+            if (initTask != null)
             {
                 await initTask.Task;
             }
 
-            if (this.IsInitialized)
+            if (IsInitialized)
             {
                 return;
             }
 
             initTask = new TaskCompletionSource<bool>();
 
-            if (!this.worker.IsInitialized)
+            if (!worker.IsInitialized)
             {
                 initWorkerTask = new TaskCompletionSource<bool>();
 
@@ -103,8 +103,9 @@ namespace BlazorWorker.BackgroundServiceFactory
                     workerInitOptions.AddAssemblyOf<T>();
                 }
 
-                await this.worker.InitAsync(new WorkerInitOptions {
-                    DependentAssemblyFilenames = new[] { 
+                await worker.InitAsync(new WorkerInitOptions
+                {
+                    DependentAssemblyFilenames = new[] {
                         $"{typeof(BaseMessage).Assembly.GetName().Name}.dll",
                         $"{typeof(WorkerInstanceManager).Assembly.GetName().Name}.dll",
                         $"{typeof(Newtonsoft.Json.JsonConvert).Assembly.GetName().Name}.dll",
@@ -129,43 +130,43 @@ namespace BlazorWorker.BackgroundServiceFactory
                     InitEndPoint = InitEndPoint
                 }.MergeWith(workerInitOptions));
 
-                this.worker.IncomingMessage += OnMessage;
+                worker.IncomingMessage += OnMessage;
                 await initWorkerTask.Task;
             }
 
-            var message = this.options.MessageSerializer.Serialize(
+            var message = options.MessageSerializer.Serialize(
                     new InitInstance()
                     {
-                        WorkerId = this.worker.Identifier, // TODO: This should not really be necessary?
+                        WorkerId = worker.Identifier, // TODO: This should not really be necessary?
                         InstanceId = instanceId,
                         AssemblyName = typeof(T).Assembly.FullName,
                         TypeName = typeof(T).FullName
                     });
-            Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {this.worker.Identifier} {message}");
+            Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {worker.Identifier} {message}");
 
-            await this.worker.PostMessageAsync(message);
+            await worker.PostMessageAsync(message);
             await initTask.Task;
         }
 
         private void OnMessage(object sender, string rawMessage)
         {
-            this.messageHandlerRegistry.HandleMessage(rawMessage);
+            messageHandlerRegistry.HandleMessage(rawMessage);
         }
 
         private void OnMethodCallResult(MethodCallResult message)
         {
-            if (!this.messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
+            if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
             {
                 return;
             }
 
-            taskCompletionSource.SetResult(message); 
-            this.messageRegister.Remove(message.CallId);
+            taskCompletionSource.SetResult(message);
+            messageRegister.Remove(message.CallId);
         }
 
         private void OnEventRaised(EventRaised message)
         {
-            if (!this.eventRegister.TryGetValue(message.EventHandleId, out var eventHandle))
+            if (!eventRegister.TryGetValue(message.EventHandleId, out var eventHandle))
             {
                 Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}: {nameof(EventRaised)}: Unknown event id {message.EventHandleId}");
                 return;
@@ -176,19 +177,19 @@ namespace BlazorWorker.BackgroundServiceFactory
 
         private void OnInitWorkerComplete(InitWorkerComplete message)
         {
-            this.initWorkerTask.SetResult(true);
+            initWorkerTask.SetResult(true);
         }
 
         private void OnInitInstanceComplete(InitInstanceComplete message)
         {
             if (message.IsSuccess)
             {
-                this.initTask.SetResult(true);
-                this.IsInitialized = true;
+                initTask.SetResult(true);
+                IsInitialized = true;
             }
             else
             {
-                this.initTask.SetException(message.Exception);
+                initTask.SetException(message.Exception);
             }
         }
 
@@ -225,27 +226,31 @@ namespace BlazorWorker.BackgroundServiceFactory
                 throw new ArgumentException($"Type '{typeof(T).FullName}' does not expose any event named '{eventName}'");
             }
 
-            if (!eventSignature.EventHandlerType.IsAssignableFrom(typeof(EventHandler<TResult>))){
+            if (!eventSignature.EventHandlerType.IsAssignableFrom(typeof(EventHandler<TResult>)))
+            {
                 throw new ArgumentException($"Event '{typeof(T).FullName}.{eventName}' can only be assigned an event listener of type {typeof(EventHandler<TResult>).FullName}");
             }
 
-            var handle = new EventHandle() { 
-                EventHandler = 
-                payload => {
-                    var typedPayload = this.messageSerializer.Deserialize<TResult>(payload);
-                    myHandler.Invoke(null, typedPayload); 
-                } 
+            var handle = new EventHandle()
+            {
+                EventHandler =
+                payload =>
+                {
+                    var typedPayload = messageSerializer.Deserialize<TResult>(payload);
+                    myHandler.Invoke(null, typedPayload);
+                }
             };
 
-            this.eventRegister.Add(handle.Id, handle);
-            var message = new RegisterEvent() {
+            eventRegister.Add(handle.Id, handle);
+            var message = new RegisterEvent()
+            {
                 EventName = eventName,
                 EventHandlerTypeArg = typeof(TResult).FullName,
                 EventHandleId = handle.Id,
-                InstanceId = this.instanceId
+                InstanceId = instanceId
             };
-            var serializedMessage = this.options.MessageSerializer.Serialize(message);
-            await this.worker.PostMessageAsync(serializedMessage);
+            var serializedMessage = options.MessageSerializer.Serialize(message);
+            await worker.PostMessageAsync(serializedMessage);
             return handle;
         }
 
@@ -260,8 +265,8 @@ namespace BlazorWorker.BackgroundServiceFactory
             {
                 EventHandleId = handle.Id
             };
-            var serializedMessage = this.options.MessageSerializer.Serialize(message);
-            await this.worker.PostMessageAsync(serializedMessage);
+            var serializedMessage = options.MessageSerializer.Serialize(message);
+            await worker.PostMessageAsync(serializedMessage);
         }
 
         private Task<TResult> InvokeAsyncInternal<TResult>(Expression action)
@@ -275,56 +280,56 @@ namespace BlazorWorker.BackgroundServiceFactory
             // However, when/if that happens, most of this project is obsolete anyway
             var id = ++messageRegisterIdSource;
             var taskCompletionSource = new TaskCompletionSource<MethodCallResult>();
-            this.messageRegister.Add(id, taskCompletionSource);
+            messageRegister.Add(id, taskCompletionSource);
 
-            var expression = this.options.ExpressionSerializer.Serialize(action);
+            var expression = options.ExpressionSerializer.Serialize(action);
             var methodCallParams = new MethodCallParams
             {
                 AwaitResult = invokeOptions.AwaitResult,
-                WorkerId = this.worker.Identifier,
+                WorkerId = worker.Identifier,
                 InstanceId = instanceId,
                 SerializedExpression = expression,
                 CallId = id
             };
 
-            var methodCall = this.options.MessageSerializer.Serialize(methodCallParams);
+            var methodCall = options.MessageSerializer.Serialize(methodCallParams);
 
-            await this.worker.PostMessageAsync(methodCall);
+            await worker.PostMessageAsync(methodCall);
 
             var returnMessage = await taskCompletionSource.Task;
             if (returnMessage.IsException)
             {
-                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}",  returnMessage.Exception);
+                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
             }
             if (string.IsNullOrEmpty(returnMessage.ResultPayload))
             {
                 return default;
             }
 
-            return this.options.MessageSerializer.Deserialize<TResult>(returnMessage.ResultPayload);
+            return options.MessageSerializer.Deserialize<TResult>(returnMessage.ResultPayload);
         }
 
         public async ValueTask DisposeAsync()
         {
-            if (this.disposeTask != null)
+            if (disposeTask != null)
             {
                 await disposeTask.Task;
             }
 
-            if (this.IsDisposed)
+            if (IsDisposed)
             {
                 return;
             }
 
             disposeTask = new TaskCompletionSource<bool>();
 
-            var message = this.options.MessageSerializer.Serialize(
+            var message = options.MessageSerializer.Serialize(
                    new DisposeInstance
                    {
-                        InstanceId = instanceId,
+                       InstanceId = instanceId,
                    });
 
-            await this.worker.PostMessageAsync(message);
+            await worker.PostMessageAsync(message);
 
             await disposeTask.Task;
         }

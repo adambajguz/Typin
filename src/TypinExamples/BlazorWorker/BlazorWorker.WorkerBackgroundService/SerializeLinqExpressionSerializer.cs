@@ -1,15 +1,15 @@
-﻿using Serialize.Linq.Serializers;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Serialize.Linq.Serializers;
 
 namespace BlazorWorker.WorkerBackgroundService
 {
     public class SerializeLinqExpressionSerializer : IExpressionSerializer
     {
         private readonly ExpressionSerializer serializer;
-        
+
         public SerializeLinqExpressionSerializer()
         {
-            this.serializer = new ExpressionSerializer(new JsonSerializer());
+            serializer = new ExpressionSerializer(new JsonSerializer());
         }
 
         public Expression Deserialize(string expressionString)

@@ -1,10 +1,7 @@
-﻿using BlazorWorker.Core;
-using BlazorWorker.WorkerBackgroundService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System;
 using System.Threading.Tasks;
+using BlazorWorker.Core;
+using BlazorWorker.WorkerBackgroundService;
 
 namespace BlazorWorker.BackgroundServiceFactory
 {

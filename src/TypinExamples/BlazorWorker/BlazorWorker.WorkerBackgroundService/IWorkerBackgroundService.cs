@@ -1,11 +1,11 @@
-﻿using BlazorWorker.WorkerCore;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BlazorWorker.WorkerCore;
 
 namespace BlazorWorker.WorkerBackgroundService
 {
-    public interface IWorkerBackgroundService<T>: IAsyncDisposable where T : class
+    public interface IWorkerBackgroundService<T> : IAsyncDisposable where T : class
     {
         /// <summary>
         /// Registers an event listener to the specified event.

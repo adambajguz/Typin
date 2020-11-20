@@ -7,6 +7,6 @@
             MessageType = nameof(UnRegisterEvent);
         }
 
-        public long EventHandleId { get; set;  }
+        public long EventHandleId { get; set; }
     }
 }

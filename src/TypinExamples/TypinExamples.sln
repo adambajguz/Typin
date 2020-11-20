@@ -86,6 +86,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.WorkerBackgrou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.WorkerCore", "BlazorWorker\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.csproj", "{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.Workers", "TypinExamples.Workers\TypinExamples.Workers.csproj", "{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -160,6 +162,10 @@ Global
 		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{2D554A65-AB68-436D-8887-244D5A5EB7F9} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
 		{7168D498-A07C-4E45-A4A9-0389A82CFE4A} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
 		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
+		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6} = {39059218-1969-4C8B-98CF-F06970670DCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF963C46-268A-4FA1-92F0-95392223295B}

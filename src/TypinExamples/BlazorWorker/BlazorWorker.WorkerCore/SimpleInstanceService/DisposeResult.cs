@@ -21,10 +21,10 @@ namespace BlazorWorker.WorkerCore.SimpleInstanceService
         internal string Serialize()
         {
             return CSVSerializer.Serialize(Prefix,
-               this.CallId,
-               (this.IsSuccess ? 1 : 0),
-               CSVSerializer.EscapeString(this.ExceptionMessage),
-               CSVSerializer.EscapeString(this.FullExceptionString));
+               CallId,
+               (IsSuccess ? 1 : 0),
+               CSVSerializer.EscapeString(ExceptionMessage),
+               CSVSerializer.EscapeString(FullExceptionString));
         }
 
         public static bool CanDeserialize(string message)

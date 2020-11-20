@@ -1,11 +1,9 @@
-﻿using BlazorWorker.WorkerBackgroundService;
-using BlazorWorker.WorkerCore;
-using BlazorWorker.WorkerCore.SimpleInstanceService;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using BlazorWorker.WorkerCore;
+using BlazorWorker.WorkerCore.SimpleInstanceService;
 
 namespace BlazorWorker.WorkerBackgroundService
 {
@@ -22,19 +20,20 @@ namespace BlazorWorker.WorkerBackgroundService
 
         public WorkerInstanceManager()
         {
-            this.serializer = new DefaultMessageSerializer();
-            this.options = new WebWorkerOptions();
-            this.simpleInstanceService = SimpleInstanceService.Instance;
+            serializer = new DefaultMessageSerializer();
+            options = new WebWorkerOptions();
+            simpleInstanceService = SimpleInstanceService.Instance;
 
-            this.messageHandlerRegistry = new MessageHandlerRegistry(this.serializer);
-            this.messageHandlerRegistry.Add<InitInstance>(InitInstance);
-            this.messageHandlerRegistry.Add<DisposeInstance>(DisposeInstance);
-            this.messageHandlerRegistry.Add<MethodCallParams>(HandleMethodCall);
-            this.messageHandlerRegistry.Add<RegisterEvent>(RegisterEvent);
-            this.messageHandlerRegistry.Add<UnRegisterEvent>(UnRegisterEvent);
+            messageHandlerRegistry = new MessageHandlerRegistry(serializer);
+            messageHandlerRegistry.Add<InitInstance>(InitInstance);
+            messageHandlerRegistry.Add<DisposeInstance>(DisposeInstance);
+            messageHandlerRegistry.Add<MethodCallParams>(HandleMethodCall);
+            messageHandlerRegistry.Add<RegisterEvent>(RegisterEvent);
+            messageHandlerRegistry.Add<UnRegisterEvent>(UnRegisterEvent);
         }
 
-        public static void Init() {
+        public static void Init()
+        {
             MessageService.Message += Instance.OnMessage;
             Instance.PostObject(new InitWorkerComplete());
 #if DEBUG
@@ -52,17 +51,17 @@ namespace BlazorWorker.WorkerBackgroundService
 
         internal void PostObject<T>(T obj)
         {
-            PostMessage(this.serializer.Serialize(obj));
+            PostMessage(serializer.Serialize(obj));
         }
 
         private bool IsInfrastructureMessage(string message)
         {
-            return this.messageHandlerRegistry.HandlesMessage(message);
+            return messageHandlerRegistry.HandlesMessage(message);
         }
 
         private void OnMessage(object sender, string message)
         {
-            this.messageHandlerRegistry.HandleMessage(message);
+            messageHandlerRegistry.HandleMessage(message);
         }
 
         private void HandleMethodCall(MethodCallParams methodCallMessage)
@@ -83,7 +82,8 @@ namespace BlazorWorker.WorkerBackgroundService
             {
                 Task.Run(async () =>
                     await MethodCall(methodCallMessage))
-                    .ContinueWith(t => { 
+                    .ContinueWith(t =>
+                    {
                         if (t.IsFaulted)
                         {
                             handleError(t.Exception);
@@ -94,7 +94,7 @@ namespace BlazorWorker.WorkerBackgroundService
                                 new MethodCallResult
                                 {
                                     CallId = methodCallMessage.CallId,
-                                    ResultPayload = this.serializer.Serialize(t.Result)
+                                    ResultPayload = serializer.Serialize(t.Result)
                                 }
                             );
                         }
@@ -108,7 +108,8 @@ namespace BlazorWorker.WorkerBackgroundService
 
         private void UnRegisterEvent(UnRegisterEvent unregisterEventMessage)
         {
-            if (!events.TryGetValue(unregisterEventMessage.EventHandleId, out var wrapper)) {
+            if (!events.TryGetValue(unregisterEventMessage.EventHandleId, out var wrapper))
+            {
                 return;
             }
 
@@ -125,9 +126,9 @@ namespace BlazorWorker.WorkerBackgroundService
             // TODO: This can be cached.
             var wrapperType = typeof(EventHandlerWrapper<>)
                 .MakeGenericType(Type.GetType(registerEventMessage.EventHandlerTypeArg));
-            
+
             var wrapper = (IEventWrapper)Activator.CreateInstance(wrapperType, this, registerEventMessage.InstanceId, registerEventMessage.EventHandleId);
-            var delegateMethod = Delegate.CreateDelegate(eventSignature.EventHandlerType, wrapper, nameof(EventHandlerWrapper<object>.OnEvent)); 
+            var delegateMethod = Delegate.CreateDelegate(eventSignature.EventHandlerType, wrapper, nameof(EventHandlerWrapper<object>.OnEvent));
             eventSignature.AddEventHandler(instance, delegateMethod);
             wrapper.Unregister = () => eventSignature.RemoveEventHandler(instance, delegateMethod);
             events.Add(wrapper.EventHandleId, wrapper);
@@ -141,11 +142,12 @@ namespace BlazorWorker.WorkerBackgroundService
                     Id = createInstanceInfo.InstanceId,
                     TypeName = createInstanceInfo.TypeName,
                     AssemblyName = createInstanceInfo.AssemblyName
-                }, IsInfrastructureMessage);            
-            
-            PostObject(new InitInstanceComplete() { 
-                CallId = createInstanceInfo.CallId, 
-                IsSuccess = initResult.IsSuccess, 
+                }, IsInfrastructureMessage);
+
+            PostObject(new InitInstanceComplete()
+            {
+                CallId = createInstanceInfo.CallId,
+                IsSuccess = initResult.IsSuccess,
                 Exception = initResult.Exception,
             });
         }
@@ -153,7 +155,8 @@ namespace BlazorWorker.WorkerBackgroundService
         public void DisposeInstance(DisposeInstance dispose)
         {
             var res = simpleInstanceService.DisposeInstance(
-                new DisposeInstanceRequest { 
+                new DisposeInstanceRequest
+                {
                     InstanceId = dispose.InstanceId,
                     CallId = dispose.CallId
                 });
@@ -169,16 +172,16 @@ namespace BlazorWorker.WorkerBackgroundService
         public async Task<object> MethodCall(MethodCallParams instanceMethodCallParams)
         {
             var instance = simpleInstanceService.instances[instanceMethodCallParams.InstanceId].Instance;
-            var lambda = this.options.ExpressionSerializer.Deserialize(instanceMethodCallParams.SerializedExpression) 
+            var lambda = options.ExpressionSerializer.Deserialize(instanceMethodCallParams.SerializedExpression)
                 as LambdaExpression;
             var dynamicDelegate = lambda.Compile();
             var result = dynamicDelegate.DynamicInvoke(instance);
-            
+
             if (!instanceMethodCallParams.AwaitResult)
             {
                 return result;
             }
-            
+
             var taskResult = result as Task;
             if (taskResult != null)
             {

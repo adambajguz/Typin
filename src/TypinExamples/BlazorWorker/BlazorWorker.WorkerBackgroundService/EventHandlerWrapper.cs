@@ -1,5 +1,4 @@
-﻿using BlazorWorker.WorkerBackgroundService;
-using System;
+﻿using System;
 
 namespace BlazorWorker.WorkerBackgroundService
 {
@@ -8,8 +7,8 @@ namespace BlazorWorker.WorkerBackgroundService
         private readonly WorkerInstanceManager wim;
 
         public EventHandlerWrapper(
-            WorkerInstanceManager wim, 
-            long instanceId, 
+            WorkerInstanceManager wim,
+            long instanceId,
             long eventHandleId)
         {
             this.wim = wim;

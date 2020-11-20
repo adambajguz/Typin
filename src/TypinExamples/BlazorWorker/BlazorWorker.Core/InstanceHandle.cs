@@ -1,14 +1,14 @@
-﻿using BlazorWorker.WorkerCore;
-using System;
+﻿using System;
+using BlazorWorker.WorkerCore;
 
 namespace BlazorWorker.Core
 {
     public class InstanceHandle : IDisposable
     {
         public InstanceHandle(
-            IWorkerMessageService messageService, 
-            Type serviceType, 
-            long identifier, 
+            IWorkerMessageService messageService,
+            Type serviceType,
+            long identifier,
             Action onDispose)
         {
             MessageService = messageService;

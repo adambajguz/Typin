@@ -13,6 +13,7 @@ namespace BlazorWorker.Core.CoreInstanceService
         Task<IInstanceHandle> CreateInstance<T>(WorkerInitOptions options);
     }
 
-    public interface IInstanceHandle : IAsyncDisposable {
+    public interface IInstanceHandle : IAsyncDisposable
+    {
     }
 }

@@ -1,0 +1,14 @@
+﻿<button @onclick="Click">Worker test</button>
+<p>@Result</p>
+
+@code {
+
+    [Inject] IMediator Mediator { get; init; } = default!;
+
+    private string Result = string.Empty;
+
+    async Task Click()
+    {
+        Result = await Mediator.Send(new TypinExamples.Core.Handlers.Commands.PingCommand { Value = 13181208 });
+    }
+}
