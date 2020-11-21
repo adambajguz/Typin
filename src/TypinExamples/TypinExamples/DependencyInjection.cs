@@ -8,9 +8,9 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using TypinExamples.Application.Services;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
-    using TypinExamples.Application.Services;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
 

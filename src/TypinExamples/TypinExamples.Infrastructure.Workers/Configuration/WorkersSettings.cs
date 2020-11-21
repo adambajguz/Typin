@@ -14,7 +14,8 @@
 
         /// <summary>
         /// Number of worker garbage collector passes before removing a worker from pool. Cannot be lower than 1.
+        /// Value at index zero is a default value.
         /// </summary>
-        public int WorkerWGCLifetime { get; init; } = 5;
+        public int[]? WorkerWGCLifetime { get; init; }
     }
 }

@@ -15,7 +15,6 @@
     using Newtonsoft.Json;
     using TypinExamples.Application.Services;
     using TypinExamples.Common.Models;
-    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Interfaces;
     using TypinExamples.Domain.Models;
     using TypinExamples.Infrastructure.Workers.Configuration;
@@ -51,6 +50,8 @@
 
         public async Task<WorkerResult> DispachAsync(WorkerMessage model)
         {
+            _logger.LogInformation("DispachAsync '{Id}' '{TargetType}'.", model.Id, model.TargetType);
+
             WorkerDescriptor? descriptor = model.WorkerId is long wid ? GetWorkerOrDefault(wid) : await GetWorkerDescriptor();
 
             if (descriptor is null)
@@ -84,7 +85,12 @@
 
         private async void OnIncomingMessageFromWorkerToMain(object? sender, string e)
         {
+            if (string.IsNullOrWhiteSpace(e))
+                return;
+
             WorkerMessage model = JsonConvert.DeserializeObject<WorkerMessage>(e);
+
+            _logger.LogInformation("OnIncomingMessageFromWorkerToMain '{Sender}' '{Id}' '{TargetType}'.", sender, model.Id, model.TargetType);
 
             if (model.TargetType is string targetType &&
                 model.Data is string data)
@@ -96,7 +102,9 @@
                         wi.WorkerId = model.WorkerId;
 
                     if (model.IsNotification)
+                    {
                         await _mediator.Publish(obj);
+                    }
                     else
                     {
                         object? x = await _mediator.Send(obj);
@@ -109,7 +117,8 @@
         #region Helpers
         private WorkerDescriptor? GetWorkerOrDefault(long id)
         {
-            return _workers.Where(x => x.Worker.Identifier == id).FirstOrDefault();
+            return _workers.Where(x => x.Worker.Identifier == id)
+                           .FirstOrDefault();
         }
 
         private async Task<WorkerDescriptor> GetWorkerDescriptor()
@@ -122,22 +131,21 @@
                 _assemblies ??= await GetAssembliesToLoad();
 
                 // Create worker.
-                IWorker w = await _workerFactory.CreateAsync();
+                IWorker worker = await _workerFactory.CreateAsync();
 
                 // Create service reference. For most scenarios, it's safe (and best) to keep this reference around somewhere to avoid the startup cost.
-                IWorkerBackgroundService<WorkerService> service = await w.CreateBackgroundServiceAsync<WorkerService>((cfg) =>
+                IWorkerBackgroundService<WorkerService> service = await worker.CreateBackgroundServiceAsync<WorkerService>((cfg) =>
                 {
                     cfg.AddAssemblies(_assemblies);
                 });
 
-                w.IncomingMessage += OnIncomingMessageFromWorkerToMain;
+                worker.IncomingMessage += OnIncomingMessageFromWorkerToMain;
 
                 descriptor = new WorkerDescriptor
                 {
-                    Worker = w,
+                    Worker = worker,
                     BackgroundService = service,
                     IsBusy = true,
-                    WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime
                 };
                 _workers.Add(descriptor);
 
@@ -150,11 +158,30 @@
                 _logger.LogInformation("Created a new worker '{WorkerDescriptor}'.", descriptor);
             }
 
-            _logger.LogInformation("Running task on worker '{WorkerDescriptor}'.", descriptor);
-            descriptor.WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime;
+            descriptor.WGCLifetime = GetLifetime();
             descriptor.IsBusy = true;
+            _logger.LogInformation("Running task on worker '{WorkerDescriptor}'.", descriptor);
 
             return descriptor;
+        }
+
+        private int GetLifetime()
+        {
+            const int FALLBACK = 8;
+
+            int count = _workers.Count;
+            int optionsCount = (_options?.WorkerWGCLifetime?.Length ?? 0);
+
+            if (optionsCount == 0)
+                return FALLBACK;
+
+            int tmp;
+            if (optionsCount > count)
+                tmp = _options!.WorkerWGCLifetime![count];
+            else
+                tmp = _options!.WorkerWGCLifetime![0];
+
+            return tmp < 1 ? FALLBACK : tmp;
         }
 
         private async Task<string[]?> GetAssembliesToLoad()
@@ -189,11 +216,15 @@
                                                                    .OrderBy(x => x.WGCLifetime);
 
             foreach (WorkerDescriptor worker in workers)
+            {
                 if (--worker.WGCLifetime < -1)
                     await worker.Worker.DisposeAsync();
+            }
 
             _workers.RemoveAll(x => x.WGCLifetime < -1);
-            _logger.LogInformation("WGC sweap '{Before}' -> '{After}'.", count, _workers.Count);
+
+            if (count != _workers.Count)
+                _logger.LogInformation("WGC sweap '{Before}' -> '{After}'.", count, _workers.Count);
         }
     }
 }

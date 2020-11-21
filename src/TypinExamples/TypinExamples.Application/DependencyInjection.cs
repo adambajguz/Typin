@@ -4,10 +4,9 @@
     using MediatR;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using TypinExamples.Application.Services;
-    using TypinExamples.Common.Extensions;
     using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Services;
+    using TypinExamples.Common.Extensions;
 
     public static class DependencyInjection
     {

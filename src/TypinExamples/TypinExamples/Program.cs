@@ -2,8 +2,8 @@ namespace TypinExamples
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-    using TypinExamples.Compiler.Services;
     using TypinExamples.Application;
+    using TypinExamples.Compiler.Services;
     using TypinExamples.Infrastructure.Workers;
 
     public static class Program

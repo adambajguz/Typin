@@ -46,8 +46,8 @@
 
         private async void OnIncomingMessageFromMainToWorker(object? sender, string e)
         {
-            Console.WriteLine($"{sender}, {e}");
-            await Dispatch(e);
+            if (!string.IsNullOrWhiteSpace(e))
+                await Dispatch(e);
         }
 
         public async Task<string> Dispatch(string data)

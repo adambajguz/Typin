@@ -13,7 +13,7 @@
         public bool IsBusy { get; internal set; }
 
         public bool IsDisposed => WGCLifetime <= 0;
-        public int WGCLifetime { get; internal set; }
+        public int WGCLifetime { get; internal set; } = int.MaxValue;
 
         public override string? ToString()
         {
