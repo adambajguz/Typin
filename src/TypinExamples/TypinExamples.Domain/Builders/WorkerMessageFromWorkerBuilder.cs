@@ -1,6 +1,8 @@
 ﻿namespace TypinExamples.Domain.Builders
 {
     using System;
+    using Newtonsoft.Json;
+    using TypinExamples.Domain.Events;
     using TypinExamples.Domain.Interfaces.Handlers.Core;
     using TypinExamples.Domain.Models;
 
@@ -14,31 +16,45 @@
         /// <summary>
         /// Call core command.
         /// </summary>
-        public WorkerMessageFromWorkerBuilder CallCommand<T>()
+        public WorkerMessageFromWorkerBuilder CallCommand<T>(T data)
             where T : ICoreRequest
         {
-            CommandType = typeof(T);
+            TargetType = typeof(T);
+            IsNotification = false;
+            WorkerId = data.WorkerId;
+            Data = data;
+
             return this;
         }
 
         /// <summary>
-        /// Call core command.
+        /// Handle exception on core site.
         /// </summary>
-        public WorkerMessageFromWorkerBuilder CallCommand<T>(T data)
-            where T : ICoreRequest
+        public WorkerMessageFromWorkerBuilder HandleException(long workerId, Exception ex)
         {
-            CommandType = typeof(T);
-            Data = data;
+            TargetType = typeof(ExceptionFromWorkerNotification);
+            Data = new ExceptionFromWorkerNotification
+            {
+                WorkerId = workerId,
+                Type = ex.GetType().AssemblyQualifiedName ?? string.Empty,
+                Message = ex.Message,
+                StackTrace = ex.StackTrace
+            };
+
             return this;
         }
 
         /// <summary>
         /// Send notification to core.
         /// </summary>
-        public WorkerMessageFromWorkerBuilder Notify<T>()
+        public WorkerMessageFromWorkerBuilder Notify<T>(T data)
             where T : ICoreNotification
         {
-            CommandType = typeof(T);
+            TargetType = typeof(T);
+            Data = data;
+            WorkerId = data.WorkerId ?? throw new ArgumentNullException("Cannot notify worker when worker id is null.");
+            IsNotification = true;
+
             return this;
         }
 
@@ -52,10 +68,12 @@
 
             return new WorkerMessageModel
             {
-                TargetCommandType = CommandType?.AssemblyQualifiedName,
-                TargetNotificationType = NotificationType?.AssemblyQualifiedName,
+                WorkerId = WorkerId,
+                TargetType = TargetType?.AssemblyQualifiedName,
+                IsNotification = IsNotification,
                 FromWorker = true,
-                Arguments = Arguments
+                Arguments = Arguments,
+                Data = JsonConvert.SerializeObject(Data)
             };
         }
     }

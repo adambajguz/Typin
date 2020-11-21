@@ -15,6 +15,7 @@
             });
 
             services.AddTransient<TimerService>();
+
             //services.AddTransient<WebExampleInvokerService>();
 
             return services;

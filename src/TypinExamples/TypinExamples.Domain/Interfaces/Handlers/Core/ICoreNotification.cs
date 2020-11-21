@@ -2,7 +2,7 @@
 {
     using MediatR;
 
-    public interface ICoreNotification : INotification
+    public interface ICoreNotification : INotification, IWorkerIdentifiable
     {
 
     }

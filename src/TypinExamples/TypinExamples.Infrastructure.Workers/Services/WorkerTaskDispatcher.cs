@@ -16,6 +16,7 @@
     using TypinExamples.Application.Services;
     using TypinExamples.Common.Models;
     using TypinExamples.Core.Services;
+    using TypinExamples.Domain.Interfaces;
     using TypinExamples.Domain.Models;
     using TypinExamples.Infrastructure.Workers.Configuration;
     using TypinExamples.Workers.Models;
@@ -24,7 +25,6 @@
     {
         private string[]? _assemblies;
         private readonly List<WorkerDescriptor> _workers = new();
-        private readonly Dictionary<Guid, WorkerDescriptor> _tasksLookup = new();
 
         private readonly ILogger _logger;
         private readonly IWorkerFactory _workerFactory;
@@ -48,41 +48,64 @@
             _timer = timer;
         }
 
-        public async Task<WorkerMessageModel> RunAsync(WorkerMessageModel model)
+        public async Task<WorkerMessageModel> DispachAsync(WorkerMessageModel model)
         {
-            WorkerDescriptor descriptor = await GetWorkerDescriptor();
-
-            _tasksLookup.Add(model.Id, descriptor);
-
-            string serializedModel = JsonConvert.SerializeObject(model);
-
-            string result = await descriptor.BackgroundService.RunAsync(s => s.Execute(serializedModel));
-
-            _tasksLookup.Remove(model.Id);
-            descriptor.IsInUse = false;
-
-            return JsonConvert.DeserializeObject<WorkerMessageModel>(result);
-        }
-
-        public WorkerDescriptor? GetWorkerOrDefault(Guid id)
-        {
-            _tasksLookup.TryGetValue(id, out WorkerDescriptor? workerDescriptor);
-
-            return workerDescriptor;
-        }
-
-        public async Task<bool> SendMessageAsync(Guid id, WorkerMessageModel model)
-        {
-            WorkerDescriptor? descriptor = GetWorkerOrDefault(id);
+            WorkerDescriptor? descriptor = model.WorkerId is long wid ? GetWorkerOrDefault(wid) : await GetWorkerDescriptor();
 
             if (descriptor is null)
-                return false;
+                descriptor = await GetWorkerDescriptor();
 
+            model.WorkerId = descriptor.Worker.Identifier;
             string serializedModel = JsonConvert.SerializeObject(model);
 
-            await descriptor.Worker.PostMessageAsync(serializedModel);
+            if (model.IsNotification)
+            {
+                await descriptor.Worker.PostMessageAsync(serializedModel);
+                descriptor.IsInUse = false;
 
-            return true;
+                return WorkerMessageModel.Empty;
+            }
+            else
+            {
+                string result = await descriptor.BackgroundService.RunAsync(s => s.Execute(serializedModel));
+                descriptor.IsInUse = false;
+
+                return JsonConvert.DeserializeObject<WorkerMessageModel>(result);
+            }
+        }
+
+        private async void OnIncomingMessageFromWorkerToMain(object? sender, string e)
+        {
+            WorkerMessageModel model = JsonConvert.DeserializeObject<WorkerMessageModel>(e);
+
+            if (model.TargetType is string targetType &&
+                model.Data is string data)
+            {
+                Type? type = Type.GetType(targetType);
+                if (type is Type t && JsonConvert.DeserializeObject(data, t) is object obj)
+                {
+                    if (obj is IWorkerIdentifiable wi)
+                    {
+                        wi.WorkerId = model.WorkerId;
+                    }
+
+                    if(model.IsNotification)
+                    {
+                        await _mediator.Publish(obj);
+                    }
+                    else
+                    {
+                        object? x = await _mediator.Send(obj);
+                        _logger.LogInformation("Finished command execution requested by worker '{Id}' with result '{Result}'.", model.WorkerId, x);
+                    }
+                }
+            }
+        }
+
+        #region Helpers
+        private WorkerDescriptor? GetWorkerOrDefault(long id)
+        {
+            return _workers.Where(x => x.Worker.Identifier == id).FirstOrDefault();
         }
 
         private async Task<WorkerDescriptor> GetWorkerDescriptor()
@@ -121,15 +144,10 @@
                 }
             }
 
+            descriptor.WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime;
             descriptor.IsInUse = true;
 
             return descriptor;
-        }
-
-        private void OnIncomingMessageFromWorkerToMain(object? sender, string e)
-        {
-            WorkerMessageModel model = JsonConvert.DeserializeObject<WorkerMessageModel>(e);
-
         }
 
         private async Task<string[]?> GetAssembliesToLoad()
@@ -141,6 +159,7 @@
 
             return assemblies;
         }
+        #endregion
 
         public async ValueTask DisposeAsync()
         {

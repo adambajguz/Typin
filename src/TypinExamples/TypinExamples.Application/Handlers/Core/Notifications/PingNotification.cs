@@ -7,7 +7,7 @@
 
     public class PingNotification : ICoreNotification
     {
-
+        public long? WorkerId { get; set; }
     }
 
     public class Pong1 : ICoreNotificationHandler<PingNotification>

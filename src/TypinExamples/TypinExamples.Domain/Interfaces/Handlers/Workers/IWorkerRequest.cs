@@ -3,7 +3,7 @@
     using MediatR;
     using TypinExamples.Domain.Models;
 
-    public interface IWorkerRequest : IRequest<WorkerMessageModel>
+    public interface IWorkerRequest : IRequest<WorkerMessageModel>, IWorkerIdentifiable
     {
 
     }

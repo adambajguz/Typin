@@ -7,7 +7,7 @@
 
     public class WorkerPingNotification : IWorkerNotification
     {
-
+        public long? WorkerId { get; set; }
     }
 
     public class WorkerPong1 : IWorkerNotificationHandler<WorkerPingNotification>

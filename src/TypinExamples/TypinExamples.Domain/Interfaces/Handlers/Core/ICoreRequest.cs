@@ -2,7 +2,7 @@
 {
     using MediatR;
 
-    public interface ICoreRequest : IBaseRequest
+    public interface ICoreRequest : IBaseRequest, IWorkerIdentifiable
     {
 
     }

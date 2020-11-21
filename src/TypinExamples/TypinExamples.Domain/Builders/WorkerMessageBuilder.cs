@@ -9,10 +9,11 @@
     {
         public bool WorkerMessageBuilt { get; protected set; }
 
-        protected Type? CommandType { get; set; }
-        protected Type? NotificationType { get; set; }
+        protected Type? TargetType { get; set; }
+        protected bool IsNotification { get; set; }
         protected Dictionary<string, object> Arguments { get; } = new();
-        protected object Data { get; set; }
+        protected object? Data { get; set; }
+        protected long? WorkerId { get; set; } = null;
 
         protected WorkerMessageBuilder()
         {

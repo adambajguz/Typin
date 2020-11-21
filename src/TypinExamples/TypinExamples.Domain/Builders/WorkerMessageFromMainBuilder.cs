@@ -1,6 +1,7 @@
 ﻿namespace TypinExamples.Domain.Builders
 {
     using System;
+    using Newtonsoft.Json;
     using TypinExamples.Domain.Interfaces.Handlers.Workers;
     using TypinExamples.Domain.Models;
 
@@ -14,31 +15,42 @@
         /// <summary>
         /// Call worker command.
         /// </summary>
-        public WorkerMessageFromMainBuilder CallCommand<T>()
+        public WorkerMessageFromMainBuilder CallCommand<T>(T data)
             where T : IWorkerRequest
         {
-            CommandType = typeof(T);
+            TargetType = typeof(T);
+            IsNotification = false;
+            WorkerId = null;
+            Data = data;
+
             return this;
         }
 
         /// <summary>
         /// Call worker command.
         /// </summary>
-        public WorkerMessageFromMainBuilder CallCommand<T>(T data)
+        public WorkerMessageFromMainBuilder CallCommand<T>(long workerId, T data)
             where T : IWorkerRequest
         {
-            CommandType = typeof(T);
+            TargetType = typeof(T);
+            IsNotification = false;
+            WorkerId = workerId;
             Data = data;
+
             return this;
         }
 
         /// <summary>
         /// Send notification to worker.
         /// </summary>
-        public WorkerMessageFromMainBuilder Notify<T>()
+        public WorkerMessageFromMainBuilder Notify<T>(long workerId, T data)
             where T : IWorkerNotification
         {
-            CommandType = typeof(T);
+            TargetType = typeof(T);
+            IsNotification = true;
+            WorkerId = workerId;
+            Data = data;
+
             return this;
         }
 
@@ -52,9 +64,11 @@
 
             return new WorkerMessageModel
             {
-                TargetCommandType = CommandType?.AssemblyQualifiedName,
-                TargetNotificationType = NotificationType?.AssemblyQualifiedName,
-                Arguments = Arguments
+                WorkerId = WorkerId,
+                TargetType = TargetType?.AssemblyQualifiedName,
+                IsNotification = IsNotification,
+                Arguments = Arguments,
+                Data = JsonConvert.SerializeObject(Data)
             };
         }
     }
