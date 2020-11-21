@@ -14,5 +14,10 @@
 
         public bool IsDisposed => WGCLifetime <= 0;
         public int WGCLifetime { get; internal set; }
+
+        public override string? ToString()
+        {
+            return $"(Id: {Worker?.Identifier ?? -1}, WGCLifetime: {WGCLifetime}, {(IsReady ? "Ready" : "Busy or disposed")}, {(IsBusy ? "Busy" : "Idling")})";
+        }
     }
 }

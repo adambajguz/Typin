@@ -146,8 +146,11 @@
                     _timer.Elapsed += WorkersGarbageCollector;
                     _timer.Set(_options.WGCInterval < 100 ? 100 : _options.WGCInterval, true);
                 }
+
+                _logger.LogInformation("Created a new worker '{WorkerDescriptor}'.", descriptor);
             }
 
+            _logger.LogInformation("Running task on worker '{WorkerDescriptor}'.", descriptor);
             descriptor.WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime;
             descriptor.IsBusy = true;
 
