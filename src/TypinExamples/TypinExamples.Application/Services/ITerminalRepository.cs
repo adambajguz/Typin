@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core.Services
+﻿namespace TypinExamples.Application.Services
 {
     using TypinExamples.TypinWeb.Console;
 

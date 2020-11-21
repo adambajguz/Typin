@@ -10,7 +10,7 @@
     using Microsoft.Extensions.Logging;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
 

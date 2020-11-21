@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Workers.Services
+﻿namespace TypinExamples.Infrastructure.Workers.WorkerServices
 {
     using System;
     using System.Net.Http;
@@ -7,12 +7,13 @@
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using TypinExamples.Core;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application;
+    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces;
     using TypinExamples.Domain.Models;
     using TypinExamples.Infrastructure.Workers.Behaviors;
+    using TypinExamples.Infrastructure.Workers.Extensions;
 
     public sealed class WorkerService : IDisposable
     {
@@ -37,8 +38,8 @@
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehavior<,>))
                     .AddSingleton<ICoreMessageDispatcher, CoreMessageDispatcher>()
-                    .AddSingleton<HttpClient>(_httpClient)
-                    .AddSingleton<IWorkerMessageService>(_messageService);
+                    .AddSingleton(_httpClient)
+                    .AddSingleton(_messageService);
 
             return services.BuildServiceProvider();
         }
@@ -71,9 +72,7 @@
                     if (type is Type t && JsonConvert.DeserializeObject(data, t) is object obj)
                     {
                         if (obj is IWorkerIdentifiable wi)
-                        {
                             wi.WorkerId = model.WorkerId;
-                        }
 
                         if (model.IsNotification)
                         {

@@ -7,7 +7,7 @@ namespace TypinExamples.Shared.Components
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.TypinWeb.Console;
     using TypinExamples.TypinWeb.Logging;
 

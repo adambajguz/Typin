@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core
+﻿namespace TypinExamples.Application
 {
     using System.Reflection;
     using MediatR;

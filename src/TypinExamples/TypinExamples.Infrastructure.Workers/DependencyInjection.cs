@@ -1,12 +1,12 @@
-﻿namespace TypinExamples.Workers
+﻿namespace TypinExamples.Infrastructure.Workers
 {
     using BlazorWorker.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Common.Extensions;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Infrastructure.Workers.Configuration;
-    using TypinExamples.Workers.Services;
+    using TypinExamples.Infrastructure.Workers.Services;
 
     public static class DependencyInjection
     {

@@ -3,7 +3,7 @@ namespace TypinExamples.Services.Terminal
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.TypinWeb.Console;
 
     public class TerminalRepository : ITerminalRepository

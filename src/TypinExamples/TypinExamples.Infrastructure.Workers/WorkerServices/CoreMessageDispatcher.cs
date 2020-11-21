@@ -1,9 +1,9 @@
-﻿namespace TypinExamples.Workers.Services
+﻿namespace TypinExamples.Infrastructure.Workers.WorkerServices
 {
     using System.Threading.Tasks;
     using BlazorWorker.WorkerCore;
     using Newtonsoft.Json;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Models;
 
     public class CoreMessageDispatcher : ICoreMessageDispatcher

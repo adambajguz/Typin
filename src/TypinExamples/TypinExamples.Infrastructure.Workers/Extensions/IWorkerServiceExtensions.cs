@@ -1,8 +1,8 @@
-﻿namespace TypinExamples.Domain.Extensions
+﻿namespace TypinExamples.Infrastructure.Workers.Extensions
 {
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Builders;
-    using TypinExamples.Workers.Services;
+    using TypinExamples.Infrastructure.Workers.WorkerServices;
 
     public static class IWorkerServiceExtensions
     {

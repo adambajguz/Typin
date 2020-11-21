@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core.Services
+﻿namespace TypinExamples.Application.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Typin.Console;
-    using TypinExamples.Core.Configuration;
+    using TypinExamples.Application.Configuration;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Logging;
 

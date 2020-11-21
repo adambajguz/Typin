@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Workers.Services
+﻿namespace TypinExamples.Infrastructure.Workers.Services
 {
     using System;
     using System.Collections.Generic;
@@ -15,11 +15,12 @@
     using Newtonsoft.Json;
     using TypinExamples.Application.Services;
     using TypinExamples.Common.Models;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Interfaces;
     using TypinExamples.Domain.Models;
     using TypinExamples.Infrastructure.Workers.Configuration;
-    using TypinExamples.Workers.Models;
+    using TypinExamples.Infrastructure.Workers.Models;
+    using TypinExamples.Infrastructure.Workers.WorkerServices;
 
     public class WorkerMessageDispatcher : IWorkerMessageDispatcher
     {
@@ -53,9 +54,7 @@
             WorkerDescriptor? descriptor = model.WorkerId is long wid ? GetWorkerOrDefault(wid) : await GetWorkerDescriptor();
 
             if (descriptor is null)
-            {
                 descriptor = await GetWorkerDescriptor();
-            }
 
             model.WorkerId = descriptor.Worker.Identifier;
             string serializedModel = JsonConvert.SerializeObject(model);
@@ -94,14 +93,10 @@
                 if (type is Type t && JsonConvert.DeserializeObject(data, t) is object obj)
                 {
                     if (obj is IWorkerIdentifiable wi)
-                    {
                         wi.WorkerId = model.WorkerId;
-                    }
 
                     if (model.IsNotification)
-                    {
                         await _mediator.Publish(obj);
-                    }
                     else
                     {
                         object? x = await _mediator.Send(obj);
@@ -173,9 +168,7 @@
         public async ValueTask DisposeAsync()
         {
             foreach (WorkerDescriptor worker in _workers)
-            {
                 await worker.Worker.DisposeAsync();
-            }
 
             _workers.Clear();
         }
@@ -193,12 +186,8 @@
                                                                    .OrderBy(x => x.WGCLifetime);
 
             foreach (WorkerDescriptor worker in workers)
-            {
                 if (--worker.WGCLifetime < -1)
-                {
                     await worker.Worker.DisposeAsync();
-                }
-            }
 
             _workers.RemoveAll(x => x.WGCLifetime < -1);
             _logger.LogInformation("WGC sweap '{Before}' -> '{After}'.", count, _workers.Count);

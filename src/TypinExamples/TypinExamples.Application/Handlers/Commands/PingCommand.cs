@@ -4,7 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Services;
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces.Handlers.Core;
     using TypinExamples.Domain.Interfaces.Handlers.Workers;

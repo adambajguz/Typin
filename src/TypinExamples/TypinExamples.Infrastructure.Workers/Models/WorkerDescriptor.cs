@@ -1,8 +1,8 @@
-﻿namespace TypinExamples.Workers.Models
+﻿namespace TypinExamples.Infrastructure.Workers.Models
 {
     using BlazorWorker.Core;
     using BlazorWorker.WorkerBackgroundService;
-    using TypinExamples.Workers.Services;
+    using TypinExamples.Infrastructure.Workers.WorkerServices;
 
     public class WorkerDescriptor
     {

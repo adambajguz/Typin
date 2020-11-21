@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core
+﻿namespace TypinExamples.Application
 {
     using System.Reflection;
     using MediatR;
@@ -6,8 +6,8 @@
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Services;
     using TypinExamples.Common.Extensions;
-    using TypinExamples.Core.Configuration;
-    using TypinExamples.Core.Services;
+    using TypinExamples.Application.Configuration;
+    using TypinExamples.Application.Services;
 
     public static class DependencyInjection
     {

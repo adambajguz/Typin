@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core.Services
+﻿namespace TypinExamples.Application.Services
 {
     using System;
     using System.Threading.Tasks;
