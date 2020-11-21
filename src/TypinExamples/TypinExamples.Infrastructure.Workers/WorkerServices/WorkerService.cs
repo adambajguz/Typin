@@ -36,7 +36,7 @@
             services.ConfigureWorkerCoreServices();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehavior<,>))
-                    .AddSingleton<ICoreTaskDispatcher, CoreTaskDispatcher>()
+                    .AddSingleton<ICoreMessageDispatcher, CoreMessageDispatcher>()
                     .AddSingleton<HttpClient>(_httpClient)
                     .AddSingleton<IWorkerMessageService>(_messageService);
 
@@ -45,33 +45,24 @@
 
         private async void OnIncomingMessageFromMainToWorker(object? sender, string e)
         {
-            WorkerMessageModel model = JsonConvert.DeserializeObject<WorkerMessageModel>(e);
-            IMediator mediator = _provider.GetRequiredService<IMediator>();
-
-            await Dispatch(model, mediator);
+            Console.WriteLine($"{sender}, {e}");
+            await Dispatch(e);
         }
 
-        public async Task<string> Execute(string data)
+        public async Task<string> Dispatch(string data)
         {
-            Console.WriteLine(data);
-            WorkerMessageModel deserialized = JsonConvert.DeserializeObject<WorkerMessageModel>(data);
-
-            WorkerMessageModel result = await Execute(deserialized);
+            WorkerMessage deserialized = JsonConvert.DeserializeObject<WorkerMessage>(data);
+            WorkerResult result = await Dispatch(deserialized);
 
             return JsonConvert.SerializeObject(result);
         }
 
-        public async Task<WorkerMessageModel> Execute(WorkerMessageModel model)
-        {
-            IMediator mediator = _provider.GetRequiredService<IMediator>();
-
-            return await Dispatch(model, mediator);
-        }
-
-        private async Task<WorkerMessageModel> Dispatch(WorkerMessageModel model, IMediator mediator)
+        private async Task<WorkerResult> Dispatch(WorkerMessage model)
         {
             try
             {
+                IMediator mediator = _provider.GetRequiredService<IMediator>();
+
                 if (model.TargetType is string targetType &&
                     model.Data is string data)
                 {
@@ -87,24 +78,32 @@
                         if (model.IsNotification)
                         {
                             await mediator.Publish(obj);
+
+                            return WorkerResult.CreateWorkerConfirmation(model.Id, model.WorkerId ?? -1);
                         }
                         else
                         {
                             object? x = await mediator.Send(obj);
 
-                            return x as WorkerMessageModel ?? WorkerMessageModel.Empty;
+                            return x as WorkerResult ?? throw new ApplicationException("Worker command handled by mediator returned invalid return type.");
                         }
                     }
                 }
+
+                throw new ApplicationException("Worker was not able to dispach a message.");
             }
             catch (Exception ex)
             {
-                return this.CreateMessageBuilder()
-                           .HandleException(model.WorkerId ?? -1, ex)
-                           .Build();
-            }
+                ICoreMessageDispatcher coreTaskDispatcher = _provider.GetRequiredService<ICoreMessageDispatcher>();
 
-            return WorkerMessageModel.Empty;
+                WorkerMessage exceptionMessage = this.CreateMessageBuilder()
+                                                     .HandleException(model.WorkerId ?? -1, ex)
+                                                     .Build();
+
+                await coreTaskDispatcher.DispatchAsync(exceptionMessage);
+
+                return WorkerResult.CreateWorkerException(model.Id, model.WorkerId ?? -1, exceptionMessage);
+            }
         }
 
         public void Dispose()

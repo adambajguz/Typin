@@ -6,6 +6,6 @@
     {
         bool WorkerMessageBuilt { get; }
 
-        WorkerMessageModel Build();
+        WorkerMessage Build();
     }
 }

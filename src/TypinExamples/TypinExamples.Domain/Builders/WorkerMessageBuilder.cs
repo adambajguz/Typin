@@ -44,6 +44,6 @@
         /// <summary>
         /// Builds message.
         /// </summary>
-        public abstract WorkerMessageModel Build();
+        public abstract WorkerMessage Build();
     }
 }

@@ -6,7 +6,7 @@
 
     public static class IWorkerServiceExtensions
     {
-        public static WorkerMessageFromMainBuilder CreateMessageBuilder(this IWorkerTaskDispatcher _)
+        public static WorkerMessageFromMainBuilder CreateMessageBuilder(this IWorkerMessageDispatcher _)
         {
             return WorkerMessageBuilder<WorkerMessageFromMainBuilder>.CreateFromMain();
         }

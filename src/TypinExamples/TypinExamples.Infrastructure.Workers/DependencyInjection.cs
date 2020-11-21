@@ -16,7 +16,7 @@
 
             services.AddConfiguration<WorkersSettings>(configuration);
 
-            services.AddScoped<IWorkerTaskDispatcher, WorkerTaskDispatcher>();
+            services.AddScoped<IWorkerMessageDispatcher, WorkerMessageDispatcher>();
 
             return services;
         }

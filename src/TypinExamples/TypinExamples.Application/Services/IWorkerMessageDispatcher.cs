@@ -4,8 +4,8 @@
     using System.Threading.Tasks;
     using TypinExamples.Domain.Models;
 
-    public interface IWorkerTaskDispatcher : IAsyncDisposable
+    public interface IWorkerMessageDispatcher : IAsyncDisposable
     {
-        Task<WorkerMessageModel> DispachAsync(WorkerMessageModel model);
+        Task<WorkerResult> DispachAsync(WorkerMessage model);
     }
 }

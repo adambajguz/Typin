@@ -55,14 +55,14 @@
         }
 
         /// <inheritdoc/>
-        public override WorkerMessageModel Build()
+        public override WorkerMessage Build()
         {
             if (WorkerMessageBuilt)
                 throw new InvalidOperationException("Build can only be called once.");
 
             WorkerMessageBuilt = true;
 
-            return new WorkerMessageModel
+            return new WorkerMessage
             {
                 WorkerId = WorkerId,
                 TargetType = TargetType?.AssemblyQualifiedName,

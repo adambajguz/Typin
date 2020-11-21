@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public sealed class WorkerMessageModel : IEquatable<WorkerMessageModel?>
+    public sealed class WorkerMessage : IEquatable<WorkerMessage?>
     {
-        public static WorkerMessageModel Empty { get; } = new WorkerMessageModel
+        public static WorkerMessage Empty { get; } = new WorkerMessage
         {
             Id = Guid.Empty,
             CreatedOn = DateTime.MinValue
@@ -36,17 +36,17 @@
         [JsonProperty("args")]
         public Dictionary<string, object> Arguments { get; internal init; } = new();
 
-        internal WorkerMessageModel()
+        internal WorkerMessage()
         {
 
         }
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as WorkerMessageModel);
+            return Equals(obj as WorkerMessage);
         }
 
-        public bool Equals(WorkerMessageModel? other)
+        public bool Equals(WorkerMessage? other)
         {
             return other != null &&
                    Id.Equals(other.Id) &&

@@ -33,7 +33,7 @@
             _timer = null;
         }
 
-        private void NotifyTimerElapsed(Object source, ElapsedEventArgs e)
+        private void NotifyTimerElapsed(object source, ElapsedEventArgs e)
         {
             Elapsed?.Invoke();
             if (_timer?.AutoReset == false)

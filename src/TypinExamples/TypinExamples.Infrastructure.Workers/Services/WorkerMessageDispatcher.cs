@@ -21,7 +21,7 @@
     using TypinExamples.Infrastructure.Workers.Configuration;
     using TypinExamples.Workers.Models;
 
-    public class WorkerTaskDispatcher : IWorkerTaskDispatcher
+    public class WorkerMessageDispatcher : IWorkerMessageDispatcher
     {
         private string[]? _assemblies;
         private readonly List<WorkerDescriptor> _workers = new();
@@ -33,7 +33,7 @@
         private readonly WorkersSettings _options;
         private readonly TimerService _timer;
 
-        public WorkerTaskDispatcher(ILogger<WorkerTaskDispatcher> logger,
+        public WorkerMessageDispatcher(ILogger<WorkerMessageDispatcher> logger,
                                     IWorkerFactory workerFactory,
                                     HttpClient client,
                                     IMediator mediator,
@@ -48,12 +48,14 @@
             _timer = timer;
         }
 
-        public async Task<WorkerMessageModel> DispachAsync(WorkerMessageModel model)
+        public async Task<WorkerResult> DispachAsync(WorkerMessage model)
         {
             WorkerDescriptor? descriptor = model.WorkerId is long wid ? GetWorkerOrDefault(wid) : await GetWorkerDescriptor();
 
             if (descriptor is null)
+            {
                 descriptor = await GetWorkerDescriptor();
+            }
 
             model.WorkerId = descriptor.Worker.Identifier;
             string serializedModel = JsonConvert.SerializeObject(model);
@@ -63,20 +65,27 @@
                 await descriptor.Worker.PostMessageAsync(serializedModel);
                 descriptor.IsInUse = false;
 
-                return WorkerMessageModel.Empty;
+                return new WorkerResult
+                {
+                    MessageId = model.Id,
+                    WorkerId = model.WorkerId,
+                    FromWorker = true
+                };
             }
             else
             {
-                string result = await descriptor.BackgroundService.RunAsync(s => s.Execute(serializedModel));
+                string result = await descriptor.BackgroundService.RunAsync(s => s.Dispatch(serializedModel));
                 descriptor.IsInUse = false;
 
-                return JsonConvert.DeserializeObject<WorkerMessageModel>(result);
+                WorkerResult workerMessage = JsonConvert.DeserializeObject<WorkerResult>(result);
+
+                return workerMessage;
             }
         }
 
         private async void OnIncomingMessageFromWorkerToMain(object? sender, string e)
         {
-            WorkerMessageModel model = JsonConvert.DeserializeObject<WorkerMessageModel>(e);
+            WorkerMessage model = JsonConvert.DeserializeObject<WorkerMessage>(e);
 
             if (model.TargetType is string targetType &&
                 model.Data is string data)
@@ -89,7 +98,7 @@
                         wi.WorkerId = model.WorkerId;
                     }
 
-                    if(model.IsNotification)
+                    if (model.IsNotification)
                     {
                         await _mediator.Publish(obj);
                     }

@@ -22,7 +22,7 @@
             var response = await next();
             Trace.WriteLine("After");
 
-            if (response is WorkerMessageModel message)
+            if (response is WorkerMessage message)
             {
 
             }

@@ -18,20 +18,20 @@
 
         public class PingHandler : ICoreRequestHandler<PingCommand, string>
         {
-            private readonly IWorkerTaskDispatcher _taskDispatcher;
+            private readonly IWorkerMessageDispatcher _taskDispatcher;
 
-            public PingHandler(IWorkerTaskDispatcher taskDispatcher)
+            public PingHandler(IWorkerMessageDispatcher taskDispatcher)
             {
                 _taskDispatcher = taskDispatcher;
             }
 
             public async Task<string> Handle(PingCommand request, CancellationToken cancellationToken)
             {
-                WorkerMessageModel message = this.CreateMessageBuilder()
+                WorkerMessage message = this.CreateMessageBuilder()
                                                  .CallCommand(request)
                                                  .Build();
 
-                WorkerMessageModel result = await _taskDispatcher.DispachAsync(message);
+                WorkerMessage result = await _taskDispatcher.DispachAsync(message);
 
                 return JsonConvert.SerializeObject(result);
             }
@@ -44,9 +44,9 @@
 
             }
 
-            public Task<WorkerMessageModel> Handle(PingCommand request, CancellationToken cancellationToken)
+            public Task<WorkerMessage> Handle(PingCommand request, CancellationToken cancellationToken)
             {
-                WorkerMessageModel message = this.CreateMessageBuilder()
+                WorkerMessage message = this.CreateMessageBuilder()
                                                  .CallCommand<PingCommand>(request)
                                                  .AddArgument("Result", $"Processed by WorkerPingCommand {request.Value}")
                                                  .Build();
