@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core.Handlers.Core.Commands
+﻿namespace TypinExamples.Application.Handlers.Commands
 {
     using System;
     using System.Threading;
@@ -28,10 +28,10 @@
             public async Task<string> Handle(PingCommand request, CancellationToken cancellationToken)
             {
                 WorkerMessage message = this.CreateMessageBuilder()
-                                                 .CallCommand(request)
-                                                 .Build();
+                                            .CallCommand(request)
+                                            .Build();
 
-                WorkerMessage result = await _taskDispatcher.DispachAsync(message);
+                WorkerResult result = await _taskDispatcher.DispachAsync(message);
 
                 return JsonConvert.SerializeObject(result);
             }
@@ -44,13 +44,8 @@
 
             }
 
-            public Task<WorkerMessage> Handle(PingCommand request, CancellationToken cancellationToken)
+            public Task<WorkerResult> Handle(PingCommand request, CancellationToken cancellationToken)
             {
-                WorkerMessage message = this.CreateMessageBuilder()
-                                                 .CallCommand<PingCommand>(request)
-                                                 .AddArgument("Result", $"Processed by WorkerPingCommand {request.Value}")
-                                                 .Build();
-
                 var wait = DateTime.UtcNow.AddSeconds(5);
 
                 while (DateTime.UtcNow < wait)
@@ -58,7 +53,7 @@
 
                 }
 
-                return Task.FromResult(message);
+                return Task.FromResult(new WorkerResult { Data = $"Processed by WorkerPingHandler {request.Value}" });
             }
         }
     }

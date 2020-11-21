@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Core.Handlers.Workers.Notifications
+﻿namespace TypinExamples.Application.Handlers.Notifications.Workers
 {
     using System.Diagnostics;
     using System.Threading;

@@ -34,11 +34,11 @@
         private readonly TimerService _timer;
 
         public WorkerMessageDispatcher(ILogger<WorkerMessageDispatcher> logger,
-                                    IWorkerFactory workerFactory,
-                                    HttpClient client,
-                                    IMediator mediator,
-                                    IOptions<WorkersSettings> options,
-                                    TimerService timer)
+                                       IWorkerFactory workerFactory,
+                                       HttpClient client,
+                                       IMediator mediator,
+                                       IOptions<WorkersSettings> options,
+                                       TimerService timer)
         {
             _logger = logger;
             _workerFactory = workerFactory;
@@ -63,7 +63,7 @@
             if (model.IsNotification)
             {
                 await descriptor.Worker.PostMessageAsync(serializedModel);
-                descriptor.IsInUse = false;
+                descriptor.IsBusy = false;
 
                 return new WorkerResult
                 {
@@ -75,7 +75,7 @@
             else
             {
                 string result = await descriptor.BackgroundService.RunAsync(s => s.Dispatch(serializedModel));
-                descriptor.IsInUse = false;
+                descriptor.IsBusy = false;
 
                 WorkerResult workerMessage = JsonConvert.DeserializeObject<WorkerResult>(result);
 
@@ -120,7 +120,7 @@
         private async Task<WorkerDescriptor> GetWorkerDescriptor()
         {
             WorkerDescriptor? descriptor = _workers.OrderByDescending(x => x.WGCLifetime)
-                                                   .FirstOrDefault(x => x.IsIdling);
+                                                   .FirstOrDefault(x => x.IsReady);
 
             if (descriptor is null)
             {
@@ -141,7 +141,7 @@
                 {
                     Worker = w,
                     BackgroundService = service,
-                    IsInUse = true,
+                    IsBusy = true,
                     WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime
                 };
                 _workers.Add(descriptor);
@@ -154,7 +154,7 @@
             }
 
             descriptor.WGCLifetime = _options.WorkerWGCLifetime < 1 ? 1 : _options.WorkerWGCLifetime;
-            descriptor.IsInUse = true;
+            descriptor.IsBusy = true;
 
             return descriptor;
         }
@@ -164,7 +164,7 @@
             BlazorBoot? response = await _client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
-            _logger.LogInformation("Fetched assmeblies list.");
+            _logger.LogInformation("Fetched assemblies list.");
 
             return assemblies;
         }
@@ -189,7 +189,7 @@
                 return;
             }
 
-            IOrderedEnumerable<WorkerDescriptor> workers = _workers.Where(x => !x.IsInUse)
+            IOrderedEnumerable<WorkerDescriptor> workers = _workers.Where(x => !x.IsBusy)
                                                                    .OrderBy(x => x.WGCLifetime);
 
             foreach (WorkerDescriptor worker in workers)
