@@ -3,8 +3,6 @@
     using BlazorWorker.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using TypinExamples.Application.Services;
-    using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Application.Services.Workers;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Infrastructure.TypinWeb.Services;

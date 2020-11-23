@@ -1,7 +1,5 @@
 ﻿namespace TypinExamples.Application
 {
-    using System.Reflection;
-    using MediatR;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Configuration;

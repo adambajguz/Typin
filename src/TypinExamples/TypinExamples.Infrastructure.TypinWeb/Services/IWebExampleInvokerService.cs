@@ -1,10 +1,10 @@
 ﻿namespace TypinExamples.Infrastructure.TypinWeb.Services
 {
-    using TypinExamples.Application.Services.TypinWeb;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Console;
     using TypinExamples.Application.Configuration;
+    using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Infrastructure.TypinWeb.Configuration;
 
     public interface IWebExampleInvokerService

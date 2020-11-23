@@ -18,7 +18,8 @@
                 Key = null,
                 Name = "<dynamic>",
                 IsNew = true,
-                ProgramClass = "TypinExamples.DynamicCode.WebProgram, TypinExamples.DynamicCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+                ProgramClass = "TypinExamples.DynamicCode.Program, TypinExamples.DynamicCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+                WebProgramClass = "TypinExamples.DynamicCode.WebProgram, TypinExamples.DynamicCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
                 Description = "User implemented example.",
                 QuickStart = string.Empty
             };

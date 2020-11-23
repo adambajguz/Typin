@@ -7,7 +7,6 @@
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using TypinExamples.Application;
     using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces;

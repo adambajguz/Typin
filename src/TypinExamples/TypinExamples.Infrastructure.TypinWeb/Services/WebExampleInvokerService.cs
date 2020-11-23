@@ -50,7 +50,6 @@
         {
 
             ExampleDescriptor? descriptor = Options.Examples?.Where(x => x.Key == key ||
-                                                                         (x.WebProgramClass?.Contains(key ?? string.Empty) ?? false) ||
                                                                          (x.Name?.Contains(key ?? string.Empty) ?? false))
                                                              .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
 
