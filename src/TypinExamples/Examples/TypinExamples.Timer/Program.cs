@@ -16,6 +16,7 @@
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
                                                     .AddCommand<PipelineCommand>()
                                                     .AddCommand<ServicesCommand>()
+                                                    .AddDirectivesFromThisAssembly()
                                                     .AddDirective<PreviewDirective>()
                                                     .UseMiddleware<ExecutionTimingMiddleware>()
                                                     .ConfigureServices((services) => services.AddSingleton<IPerformanceLogsRepository, PerformanceLogsRepository>())
