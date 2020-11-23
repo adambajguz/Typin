@@ -5,9 +5,9 @@
     using Typin;
     using Typin.Directives;
     using Typin.Modes;
+    using TypinExamples.Infrastructure.TypinWeb.Commands;
     using TypinExamples.Timer.Middleware;
     using TypinExamples.Timer.Repositories;
-    using TypinExamples.TypinWeb.Commands;
 
     public static class Program
     {

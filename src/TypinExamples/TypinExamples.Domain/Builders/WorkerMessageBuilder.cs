@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.Workers;
 
     public abstract class WorkerMessageBuilder<TBuilder> : IWorkerMessageBuilder
         where TBuilder : class, IWorkerMessageBuilder

@@ -1,6 +1,6 @@
 ﻿namespace TypinExamples.Domain.Builders
 {
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.Workers;
 
     public interface IWorkerMessageBuilder
     {

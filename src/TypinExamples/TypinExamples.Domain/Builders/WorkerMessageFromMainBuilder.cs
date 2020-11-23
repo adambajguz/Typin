@@ -3,7 +3,7 @@
     using System;
     using Newtonsoft.Json;
     using TypinExamples.Domain.Interfaces.Handlers.Workers;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.Workers;
 
     public sealed class WorkerMessageFromMainBuilder : WorkerMessageBuilder<WorkerMessageFromMainBuilder>
     {

@@ -19,7 +19,6 @@
                 typeof(DependencyInjection).GetTypeInfo().Assembly,
             });
 
-            services.AddTransient<WebExampleInvokerService>();
             services.AddTransient<TimerService>();
 
             return services;

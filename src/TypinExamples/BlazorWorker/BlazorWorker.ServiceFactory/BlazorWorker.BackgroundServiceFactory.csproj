@@ -49,10 +49,6 @@
 
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>BlazorWorker.BackgroundServiceFactory.xml</DocumentationFile>
-  </PropertyGroup>
-
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />

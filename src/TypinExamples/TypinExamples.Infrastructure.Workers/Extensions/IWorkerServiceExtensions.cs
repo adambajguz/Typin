@@ -1,6 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.Workers.Extensions
 {
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Builders;
     using TypinExamples.Infrastructure.Workers.WorkerServices;
 

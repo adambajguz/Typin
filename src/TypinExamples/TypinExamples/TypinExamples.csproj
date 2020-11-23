@@ -49,8 +49,13 @@
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Infrastructure.Compiler\TypinExamples.Infrastructure.Compiler.csproj" />
     <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
-    <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
+    <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
     <ProjectReference Include="..\TypinExamples.Infrastructure.Workers\TypinExamples.Infrastructure.Workers.csproj" />
+    <!--<ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />-->
   </ItemGroup>
 
 </Project>

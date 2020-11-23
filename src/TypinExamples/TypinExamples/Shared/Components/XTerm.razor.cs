@@ -8,8 +8,7 @@ namespace TypinExamples.Shared.Components
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using TypinExamples.Application.Services;
-    using TypinExamples.TypinWeb.Console;
-    using TypinExamples.TypinWeb.Logging;
+    using TypinExamples.Application.Services.TypinWeb;
 
     public sealed partial class XTerm : ComponentBase, IWebTerminal
     {

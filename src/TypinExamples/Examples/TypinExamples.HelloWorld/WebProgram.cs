@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Directives;
-    using TypinExamples.TypinWeb.Configuration;
+    using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
     public static class WebProgram

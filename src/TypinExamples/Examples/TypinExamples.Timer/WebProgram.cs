@@ -6,10 +6,10 @@
     using Typin;
     using Typin.Directives;
     using Typin.Modes;
+    using TypinExamples.Infrastructure.TypinWeb.Commands;
+    using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.Timer.Middleware;
     using TypinExamples.Timer.Repositories;
-    using TypinExamples.TypinWeb.Commands;
-    using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
     public static class WebProgram

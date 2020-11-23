@@ -4,7 +4,7 @@
     using Newtonsoft.Json;
     using TypinExamples.Domain.Events;
     using TypinExamples.Domain.Interfaces.Handlers.Core;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.Workers;
 
     public sealed class WorkerMessageFromWorkerBuilder : WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>
     {

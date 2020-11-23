@@ -3,8 +3,8 @@
     using System.Threading.Tasks;
     using BlazorWorker.WorkerCore;
     using Newtonsoft.Json;
-    using TypinExamples.Application.Services;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Application.Services.Workers;
+    using TypinExamples.Domain.Models.Workers;
 
     public class CoreMessageDispatcher : ICoreMessageDispatcher
     {

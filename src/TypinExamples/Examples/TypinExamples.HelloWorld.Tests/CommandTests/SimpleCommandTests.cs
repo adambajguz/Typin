@@ -3,7 +3,6 @@ namespace TypinExamples.HelloWorld.Tests.CommandTests
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin;
-    using Typin.Console;
     using TypinExamples.ExamplesTests.Common.Extensions;
     using TypinExamples.HelloWorld.Commands;
     using Xunit;

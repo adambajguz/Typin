@@ -12,7 +12,7 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.Extensions.Logging;
-    using TypinExamples.Common.Models;
+    using TypinExamples.Domain.Models.BlazorBoot;
 
     public class RoslynCompilerService
     {
@@ -31,7 +31,7 @@
             async Task InitializeInternal()
             {
                 Logger.LogInformation("Initializing compiler");
-                BlazorBoot? response = await client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+                BlazorBootModel? response = await client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
 
                 HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 

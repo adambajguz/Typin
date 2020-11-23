@@ -14,9 +14,10 @@
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using TypinExamples.Application.Services;
-    using TypinExamples.Common.Models;
+    using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Interfaces;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.BlazorBoot;
+    using TypinExamples.Domain.Models.Workers;
     using TypinExamples.Infrastructure.Workers.Configuration;
     using TypinExamples.Infrastructure.Workers.Models;
     using TypinExamples.Infrastructure.Workers.WorkerServices;
@@ -186,7 +187,7 @@
 
         private async Task<string[]?> GetAssembliesToLoad()
         {
-            BlazorBoot? response = await _client.GetFromJsonAsync<BlazorBoot>("_framework/blazor.boot.json");
+            BlazorBootModel? response = await _client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
             _logger.LogInformation("Fetched assemblies list.");

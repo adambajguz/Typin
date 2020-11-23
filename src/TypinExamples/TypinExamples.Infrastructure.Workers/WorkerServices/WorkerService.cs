@@ -8,11 +8,10 @@
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using TypinExamples.Application;
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces;
-    using TypinExamples.Domain.Models;
-    using TypinExamples.Infrastructure.Workers.Behaviors;
+    using TypinExamples.Domain.Models.Workers;
     using TypinExamples.Infrastructure.Workers.Extensions;
 
     public sealed class WorkerService : IDisposable

@@ -9,10 +9,6 @@
     <Product>BlazorWorker</Product>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>BlazorWorker.WorkerCore.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="LinkerConfig.xml">
       <LogicalName>$(MSBuildProjectName).xml</LogicalName>

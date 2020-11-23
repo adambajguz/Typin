@@ -7,4 +7,10 @@
     {
 
     }
+
+    public interface ICoreRequestHandler<in TRequest> : IRequestHandler<TRequest>
+        where TRequest : ICoreRequest<Unit>
+    {
+
+    }
 }

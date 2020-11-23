@@ -4,11 +4,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces.Handlers.Core;
     using TypinExamples.Domain.Interfaces.Handlers.Workers;
-    using TypinExamples.Domain.Models;
+    using TypinExamples.Domain.Models.Workers;
 
     public class PingCommand : ICoreRequest<string>, IWorkerRequest
     {

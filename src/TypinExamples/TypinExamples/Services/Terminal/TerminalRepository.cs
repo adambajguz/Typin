@@ -4,7 +4,7 @@ namespace TypinExamples.Services.Terminal
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
     using TypinExamples.Application.Services;
-    using TypinExamples.TypinWeb.Console;
+    using TypinExamples.Application.Services.TypinWeb;
 
     public class TerminalRepository : ITerminalRepository
     {
