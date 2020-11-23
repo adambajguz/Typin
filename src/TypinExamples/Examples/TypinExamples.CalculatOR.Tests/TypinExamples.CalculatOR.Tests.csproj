@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
     <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
+    <ProjectReference Include="..\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
   </ItemGroup>
 
 </Project>
