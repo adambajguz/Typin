@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using Microsoft.Extensions.Logging;
+    using TypinExamples.Domain.Models.TypinLogging;
 
     /// <summary>
     /// A base logger provider class.

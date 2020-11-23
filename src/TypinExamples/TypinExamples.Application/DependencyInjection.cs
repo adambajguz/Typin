@@ -10,14 +10,9 @@
 
     public static class DependencyInjection
     {
-        public static IServiceCollection ConfigureCoreServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddConfiguration<ExamplesSettings>(configuration);
-
-            services.AddMediatR(new Assembly[]
-            {
-                typeof(DependencyInjection).GetTypeInfo().Assembly,
-            });
 
             services.AddTransient<TimerService>();
 

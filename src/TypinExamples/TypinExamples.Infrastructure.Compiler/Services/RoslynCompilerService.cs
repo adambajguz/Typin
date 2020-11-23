@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Compiler
+﻿namespace TypinExamples.Infrastructure.Compiler.Services
 {
     using System;
     using System.Collections.Generic;
@@ -12,9 +12,10 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.Extensions.Logging;
+    using TypinExamples.Application.Services.Compiler;
     using TypinExamples.Domain.Models.BlazorBoot;
 
-    public class RoslynCompilerService
+    public class RoslynCompilerService : IRoslynCompilerService
     {
         private Task? InitializationTask { get; set; }
         private List<MetadataReference>? References { get; set; }
@@ -37,12 +38,8 @@
 
                 List<MetadataReference> references = new List<MetadataReference>(assemblies.Length);
                 foreach (HttpResponseMessage asm in assemblies)
-                {
                     using (Stream task = await asm.Content.ReadAsStreamAsync())
-                    {
                         references.Add(MetadataReference.CreateFromStream(task));
-                    }
-                }
 
                 References = references;
                 Logger.LogInformation("Finished compiler initilization");
@@ -54,13 +51,9 @@
         public Task WhenReady(Func<Task> action)
         {
             if (InitializationTask.Status != TaskStatus.RanToCompletion)
-            {
                 return InitializationTask.ContinueWith(x => action());
-            }
             else
-            {
                 return action();
-            }
         }
 
         public (bool success, Assembly? asm) LoadSource(string source)
@@ -74,7 +67,6 @@
 
             bool error = false;
             foreach (Diagnostic diag in diagnostics)
-            {
                 switch (diag.Severity)
                 {
                     case DiagnosticSeverity.Info:
@@ -88,12 +80,9 @@
                         Console.WriteLine(diag.ToString());
                         break;
                 }
-            }
 
             if (error)
-            {
                 return (false, null);
-            }
 
             using (var outputAssembly = new MemoryStream())
             {

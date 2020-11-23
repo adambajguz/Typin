@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Application.Services
+﻿namespace TypinExamples.Infrastructure.TypinWeb.Services
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,10 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Typin.Console;
     using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Infrastructure.TypinWeb.Configuration;
 
     public class WebExampleInvokerService : IWebExampleInvokerService
     {
@@ -84,9 +86,7 @@
 
             int? exitCode = task == null ? null : await task;
             if (exitCode is null)
-            {
                 _logger.LogError($"Failed to run {descriptor}.");
-            }
 
             return exitCode;
         }

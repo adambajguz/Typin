@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Application
+﻿namespace TypinExamples.Infrastructure.TypinWeb
 {
     using System.Reflection;
     using MediatR;
@@ -15,8 +15,6 @@
             });
 
             services.AddTransient<TimerService>();
-
-            //services.AddTransient<WebExampleInvokerService>();
 
             return services;
         }

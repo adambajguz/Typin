@@ -8,7 +8,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
-    using TypinExamples.Compiler;
+    using TypinExamples.Infrastructure.Compiler.Services;
     using TypinExamples.Services;
 
     public partial class Editor

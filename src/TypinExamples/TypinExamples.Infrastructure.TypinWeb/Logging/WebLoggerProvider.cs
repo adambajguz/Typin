@@ -4,6 +4,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Domain.Models.TypinLogging;
     using TypinExamples.Infrastructure.TypinWeb.Logging.Base;
 
     /// <summary>

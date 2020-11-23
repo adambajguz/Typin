@@ -12,7 +12,7 @@
 
     public static class DependencyInjection
     {
-        public static IServiceCollection ConfigureWorkersLayer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureInfrastructureWorkerServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddWorkerFactory();
 

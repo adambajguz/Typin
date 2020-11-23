@@ -12,6 +12,7 @@
     using TypinExamples.Domain.Extensions;
     using TypinExamples.Domain.Interfaces;
     using TypinExamples.Domain.Models.Workers;
+    using TypinExamples.Infrastructure.TypinWeb;
     using TypinExamples.Infrastructure.Workers.Extensions;
 
     public sealed class WorkerService : IDisposable
@@ -35,8 +36,7 @@
 
             services.ConfigureWorkerCoreServices();
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehavior<,>))
-                    .AddSingleton<ICoreMessageDispatcher, CoreMessageDispatcher>()
+            services.AddSingleton<ICoreMessageDispatcher, CoreMessageDispatcher>()
                     .AddSingleton(_httpClient)
                     .AddSingleton(_messageService);
 

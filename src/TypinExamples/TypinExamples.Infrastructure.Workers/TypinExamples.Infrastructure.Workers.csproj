@@ -19,6 +19,7 @@
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
     <ProjectReference Include="..\TypinExamples.Domain\TypinExamples.Domain.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
   </ItemGroup>
 
 </Project>
