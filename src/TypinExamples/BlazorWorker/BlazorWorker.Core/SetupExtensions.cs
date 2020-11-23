@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using Microsoft.Extensions.DependencyInjection;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public static class SetupExtensions
     {
         /// <summary>
@@ -15,4 +16,5 @@ namespace BlazorWorker.Core
             return services;
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

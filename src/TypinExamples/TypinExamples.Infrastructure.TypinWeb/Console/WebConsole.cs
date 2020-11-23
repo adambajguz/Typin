@@ -4,6 +4,8 @@
     using System.Threading;
     using Typin.Console;
     using Typin.Console.IO;
+    using TypinExamples.Application.Services;
+    using TypinExamples.Infrastructure.TypinWeb.Console.IO;
 
     public sealed class WebConsole : IConsole
     {

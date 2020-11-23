@@ -1,9 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using BlazorWorker.WorkerCore;
-using Microsoft.JSInterop;
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System;
+    using System.Threading.Tasks;
+    using BlazorWorker.WorkerCore;
+    using Microsoft.JSInterop;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     [DependencyHint(typeof(MessageService))]
     public class WorkerProxy : IWorker
     {
@@ -198,4 +200,5 @@ namespace BlazorWorker.Core
 
         public long Identifier { get; }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

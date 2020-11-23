@@ -3,7 +3,7 @@
     using System;
     using System.Timers;
 
-    public class TimerService : IDisposable
+    public sealed class TimerService : IDisposable
     {
         private Timer? _timer = new Timer();
 

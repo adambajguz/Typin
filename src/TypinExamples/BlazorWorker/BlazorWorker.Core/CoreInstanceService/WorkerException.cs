@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace BlazorWorker.Core.CoreInstanceService
+﻿namespace BlazorWorker.Core.CoreInstanceService
 {
+    using System;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public abstract class WorkerException : Exception
     {
         public WorkerException(string message, string fullMessage) : base(message)
@@ -16,4 +17,5 @@ namespace BlazorWorker.Core.CoreInstanceService
             return $"{base.ToString()}{Environment.NewLine} --> Worker full exception: {FullMessage}";
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

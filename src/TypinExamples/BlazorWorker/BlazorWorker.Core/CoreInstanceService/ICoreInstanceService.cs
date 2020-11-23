@@ -1,8 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace BlazorWorker.Core.CoreInstanceService
+﻿namespace BlazorWorker.Core.CoreInstanceService
 {
+    using System;
+    using System.Threading.Tasks;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public interface ICoreInstanceService
     {
         Task<IInstanceHandle> CreateInstance(Type type);
@@ -16,4 +17,5 @@ namespace BlazorWorker.Core.CoreInstanceService
     public interface IInstanceHandle : IAsyncDisposable
     {
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

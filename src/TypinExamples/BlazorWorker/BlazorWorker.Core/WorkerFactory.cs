@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.JSInterop;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System.Threading.Tasks;
+    using Microsoft.JSInterop;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class WorkerFactory : IWorkerFactory
     {
         private readonly IJSRuntime jsRuntime;
@@ -21,4 +22,5 @@ namespace BlazorWorker.Core
             return worker;
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

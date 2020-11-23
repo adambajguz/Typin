@@ -42,7 +42,7 @@
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-      <BuildOutputInPackage Include="..\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.xml" />
+      <!--<BuildOutputInPackage Include="..\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.xml" />-->
     </ItemGroup>
   </Target>
 

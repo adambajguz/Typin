@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BlazorWorker.WorkerCore.SimpleInstanceService;
-
-namespace BlazorWorker.Core.SimpleInstanceService
+﻿namespace BlazorWorker.Core.SimpleInstanceService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using BlazorWorker.WorkerCore.SimpleInstanceService;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class SimpleInstanceServiceProxy : ISimpleInstanceService
     {
         private readonly IWorker worker;
@@ -87,4 +88,5 @@ namespace BlazorWorker.Core.SimpleInstanceService
             return await res.Task;
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

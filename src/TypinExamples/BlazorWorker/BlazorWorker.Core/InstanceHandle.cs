@@ -1,9 +1,10 @@
-﻿using System;
-using BlazorWorker.WorkerCore;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
-    public class InstanceHandle : IDisposable
+    using System;
+    using BlazorWorker.WorkerCore;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+    public sealed class InstanceHandle : IDisposable
     {
         public InstanceHandle(
             IWorkerMessageService messageService,
@@ -28,4 +29,5 @@ namespace BlazorWorker.Core
             OnDispose?.Invoke();
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.Logging;
+    using TypinExamples.Domain.Models.TypinLogging;
 
     /// <summary>
     /// Represents an object that handles log information.

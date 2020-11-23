@@ -32,7 +32,7 @@
             async Task InitializeInternal()
             {
                 Logger.LogInformation("Initializing compiler");
-                BlazorBootModel? response = await client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
+                BlazorBootModel response = await client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json") ?? throw new ApplicationException("Failed to fetch '_framework/blazor.boot.json'.");
 
                 HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 
@@ -58,6 +58,9 @@
 
         public (bool success, Assembly? asm) LoadSource(string source)
         {
+            if (References is null)
+                throw new ApplicationException("References are uninitialized.");
+
             CSharpCompilation compilation = CSharpCompilation.Create("DynamicCode")
                                                              .WithOptions(new CSharpCompilationOptions(OutputKind.ConsoleApplication))
                                                              .AddReferences(References)

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.JSInterop;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.JSInterop;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class ScriptLoader
     {
         private static readonly IReadOnlyDictionary<string, string> escapeScriptTextReplacements =
@@ -62,4 +63,5 @@ namespace BlazorWorker.Core
             await jsRuntime.InvokeVoidAsync("eval", bootStrapScript);
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
