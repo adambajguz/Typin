@@ -7,6 +7,7 @@
         public bool IsNew { get; init; }
         public string[]? Modes { get; init; }
         public string? ProgramClass { get; init; }
+        public string? WebProgramClass { get; init; }
         public string? Description { get; init; }
         public string? QuickStart { get; init; }
 
@@ -25,7 +26,7 @@
 
         public override string? ToString()
         {
-            return $"<'{Key}', '{Name}', '{ProgramClass}'>";
+            return $"('{Key}', '{Name}', '{ProgramClass}', '{WebProgramClass}')";
         }
     }
 }

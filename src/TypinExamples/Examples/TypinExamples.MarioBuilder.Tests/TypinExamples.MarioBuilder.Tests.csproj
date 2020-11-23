@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
-    <ProjectReference Include="..\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
   </ItemGroup>
 
 </Project>

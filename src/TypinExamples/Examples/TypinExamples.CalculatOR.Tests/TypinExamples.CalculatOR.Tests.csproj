@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="GitHubActionsTestLogger" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -30,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
   </ItemGroup>
 

@@ -5,7 +5,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("not", Description = "Performs a logical 'NOT' operation on a number.")]
     public class NotCommand : ICommand

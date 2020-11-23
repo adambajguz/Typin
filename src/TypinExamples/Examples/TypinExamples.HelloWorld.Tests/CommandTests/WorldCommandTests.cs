@@ -1,28 +1,31 @@
 ﻿namespace TypinExamples.HelloWorld.Tests.CommandTests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin;
-    using Typin.Console;
+    using TypinExamples.ExamplesTests.Common.Extensions;
     using TypinExamples.HelloWorld.Commands;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class WorldCommandTests
     {
-        [Fact]
-        public async Task Should_run()
-        {
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+        private readonly ITestOutputHelper _output;
 
-            var app = new CliApplicationBuilder()
-                .AddCommand<WorldCommand>()
-                .UseConsole(console)
-                .Build();
+        public WorldCommandTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
+        [Fact]
+        public async Task ShouldRun()
+        {
+            //Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommandsFrom(typeof(WorldCommand).Assembly);
 
             // Act
-            int exitCode = await app.RunAsync(Array.Empty<string>(), new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().Be(0);

@@ -50,7 +50,7 @@
         {
 
             ExampleDescriptor? descriptor = Options.Examples?.Where(x => x.Key == key ||
-                                                                         (x.ProgramClass?.Contains(key ?? string.Empty) ?? false) ||
+                                                                         (x.WebProgramClass?.Contains(key ?? string.Empty) ?? false) ||
                                                                          (x.Name?.Contains(key ?? string.Empty) ?? false))
                                                              .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
 
@@ -75,13 +75,13 @@
                 return null;
             }
 
-            if (string.IsNullOrWhiteSpace(descriptor?.ProgramClass))
+            if (string.IsNullOrWhiteSpace(descriptor?.WebProgramClass))
             {
                 _logger.LogError($"Invalid example descriptor '{descriptor}'.");
                 return null;
             }
 
-            Type? type = Type.GetType(descriptor.ProgramClass);
+            Type? type = Type.GetType(descriptor.WebProgramClass);
             Task<int>? task = type?.GetMethod("WebMain")?.Invoke(null, BuildWebProgramMainArgs(commandLine, environmentVariables)) as Task<int>;
 
             int? exitCode = task == null ? null : await task;
