@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("lsh", Description = "Performs a logic left shift by 'n' bits.")]
     public class ShiftLeftCommand : ICommand

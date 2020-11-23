@@ -5,7 +5,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 

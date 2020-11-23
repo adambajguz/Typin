@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("nor", Description = "Performs a logical 'NOR' operation on two or more numbers.")]
     public class NorCommand : ICommand

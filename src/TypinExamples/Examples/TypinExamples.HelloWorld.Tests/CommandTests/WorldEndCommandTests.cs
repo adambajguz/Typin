@@ -5,11 +5,20 @@
     using FluentAssertions;
     using Typin;
     using Typin.Console;
+    using TypinExamples.ExamplesTests.Common.Extensions;
     using TypinExamples.HelloWorld.Commands;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class WorldEndCommandTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public WorldEndCommandTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private const string COMMAND_NAME = "world end";
 
         [Theory]
@@ -23,17 +32,14 @@
         [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "true")]
         [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "false", "-f", "false")]
         [InlineData(COMMAND_NAME, "05 /11/2020 07:22:16", "--CONFIRM", "true", "-f", "true")]
-        public async Task Should_run(params string[] args)
+        public async Task ShouldRun(params string[] args)
         {
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
-
-            var app = new CliApplicationBuilder()
-                .AddCommand<WorldEndCommand>()
-                .UseConsole(console)
-                .Build();
+            //Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WorldEndCommand>();
 
             // Act
-            int exitCode = await app.RunAsync(args, new Dictionary<string, string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
             exitCode.Should().Be(0);

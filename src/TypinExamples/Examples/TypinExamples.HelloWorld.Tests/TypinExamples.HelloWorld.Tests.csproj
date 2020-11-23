@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
   </ItemGroup>
 
