@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace TypinExamples.DEVConsole
+﻿namespace TypinExamples.DEVConsole
 {
+    using System;
+
     public sealed class Configuration
     {
         public ExamplesSettings? ExamplesSettings { get; init; }

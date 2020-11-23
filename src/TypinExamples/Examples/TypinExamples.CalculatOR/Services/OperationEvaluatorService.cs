@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.CalculatOR.Utils
+﻿namespace TypinExamples.CalculatOR.Services
 {
     using System;
     using System.Collections.Generic;
@@ -27,13 +27,13 @@
         {
             operationSymbol = string.Concat(" ", operationSymbol.Trim());
 
-            BigInteger result = a.Value;
+            var result = a.Value;
             int pad = printSteps ? CalculateMaxDigitsLength(a, b, @base) : 0;
 
             if (printSteps)
                 await _console.Output.WriteLineAsync($"{new string(' ', operationSymbol.Length)} {result.ToString(@base ?? a.Base).PadLeft(pad)}");
 
-            foreach (Number x in b)
+            foreach (var x in b)
             {
                 result = operation.Invoke(result, x.Value);
 

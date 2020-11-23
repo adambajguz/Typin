@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("or", Description = "Performs a logical 'OR' operation on two or more numbers.")]
     public class OrCommand : ICommand

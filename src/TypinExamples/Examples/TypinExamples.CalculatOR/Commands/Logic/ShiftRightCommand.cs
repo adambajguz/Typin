@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("rsh", Description = "Performs a logic right shift by 'n' bits.")]
     public class ShiftRightCommand : ICommand

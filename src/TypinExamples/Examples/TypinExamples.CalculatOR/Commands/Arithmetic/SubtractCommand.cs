@@ -6,7 +6,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using TypinExamples.CalculatOR.Domain;
-    using TypinExamples.CalculatOR.Utils;
+    using TypinExamples.CalculatOR.Services;
 
     [Command("subtract", Description = "Subtracts tow or more numbers.")]
     public class SubtractCommand : ICommand
