@@ -13,7 +13,12 @@
     {
         public long? WorkerId { get; set; }
 
-        public int Value { get; init; }
+        public string? TerminalId { get; init; }
+
+        public string? Key { get; init; }
+        public string? Args { get; init; }
+        public string? ProgramClass { get; init; }
+        public string? WebProgramClass { get; init; }
 
         public class RunExampleHandler : ICoreRequestHandler<RunExampleCommand, string>
         {

@@ -8,11 +8,6 @@
     {
         public static IServiceCollection ConfigureInfrastructureTypinWebServices(this IServiceCollection services)
         {
-            services.AddMediatR(new Assembly[]
-            {
-                typeof(DependencyInjection).GetTypeInfo().Assembly,
-                typeof(Application.DependencyInjection).GetTypeInfo().Assembly
-            });
 
             return services;
         }

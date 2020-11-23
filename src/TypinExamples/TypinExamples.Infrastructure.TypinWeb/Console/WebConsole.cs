@@ -2,14 +2,20 @@
 {
     using System;
     using System.Threading;
+    using MediatR;
     using Typin.Console;
     using Typin.Console.IO;
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Handlers.Commands.Terminal;
+    using TypinExamples.Application.Services.Workers;
+    using TypinExamples.Domain.Builders;
+    using TypinExamples.Domain.Models.Workers;
     using TypinExamples.Infrastructure.TypinWeb.Console.IO;
 
     public sealed class WebConsole : IConsole
     {
-        private readonly IWebTerminal _webTerminal;
+        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+        private readonly string _terminalId;
+
         private readonly CancellationToken _cancellationToken;
 
         private ConsoleColor _foregroundColor = ConsoleColor.White;
@@ -81,27 +87,35 @@
             set => throw new NotImplementedException();
         }
 
-        public WebConsole(IWebTerminal webTerminal, CancellationToken cancellationToken = default)
+        public WebConsole(ICoreMessageDispatcher coreMessageDispatcher, string terminalId, CancellationToken cancellationToken = default)
         {
+            _coreMessageDispatcher = coreMessageDispatcher;
+            _terminalId = terminalId;
             _cancellationToken = cancellationToken;
-            _webTerminal = webTerminal;
 
-            Input = new StandardStreamReader(new WebTerminalReader(webTerminal), false, this);
+            Input = new StandardStreamReader(new WebTerminalReader(coreMessageDispatcher, terminalId), false, this);
 
-            Output = new StandardStreamWriter(new WebTerminalWriter(webTerminal), false, this)
+            Output = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
             {
                 AutoFlush = true
             };
 
-            Error = new StandardStreamWriter(new WebTerminalWriter(webTerminal), false, this)
+            Error = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
             {
                 AutoFlush = true
             };
         }
 
-        public async void Clear()
+        public void Clear()
         {
-            await _webTerminal.ClearAsync();
+            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
+                                .CallCommand(new ClearCommand
+                                {
+                                    TerminalId = _terminalId,
+                                })
+                                .Build();
+
+            _coreMessageDispatcher.DispatchAsync(message).Wait(10);
         }
 
         public CancellationToken GetCancellationToken()

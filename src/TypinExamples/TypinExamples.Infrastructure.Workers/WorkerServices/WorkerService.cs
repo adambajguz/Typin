@@ -80,6 +80,7 @@
                         }
                         else
                         {
+                            Console.WriteLine("x");
                             object? x = await mediator.Send(obj);
 
                             return x as WorkerResult ?? throw new ApplicationException("Worker command handled by mediator returned invalid return type.");

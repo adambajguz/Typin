@@ -17,8 +17,7 @@
 
             services.AddConfiguration<WorkersSettings>(configuration);
 
-            services.AddScoped<IWorkerMessageDispatcher, WorkerMessageDispatcher>()
-                    .AddTransient<IWebExampleInvokerService, WebExampleInvokerService>();
+            services.AddScoped<IWorkerMessageDispatcher, WorkerMessageDispatcher>();
 
             return services;
         }

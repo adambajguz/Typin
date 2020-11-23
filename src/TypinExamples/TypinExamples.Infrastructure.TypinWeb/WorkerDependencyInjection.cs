@@ -4,6 +4,7 @@
     using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Services;
+    using TypinExamples.Infrastructure.TypinWeb.Services;
 
     public static class WorkerDependencyInjection
     {
@@ -14,7 +15,8 @@
                 typeof(DependencyInjection).GetTypeInfo().Assembly,
             });
 
-            services.AddTransient<TimerService>();
+            services.AddTransient<TimerService>()
+                    .AddTransient<IWebExampleInvokerService, WebExampleInvokerService>();
 
             return services;
         }

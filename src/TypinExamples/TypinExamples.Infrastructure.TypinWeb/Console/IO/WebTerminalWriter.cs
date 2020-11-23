@@ -5,12 +5,18 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TypinExamples.Application.Services;
+    using MediatR;
+    using TypinExamples.Application.Handlers.Commands.Terminal;
+    using TypinExamples.Application.Services.Workers;
+    using TypinExamples.Domain.Builders;
+    using TypinExamples.Domain.Models.Workers;
 
     public class WebTerminalWriter : Stream
     {
+        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+
         private readonly StringBuilder _buffer = new StringBuilder();
-        private readonly IWebTerminal _webTerminal;
+        private readonly string _terminalId;
 
         /// <inheritdoc/>
         public override bool CanRead => false;
@@ -31,9 +37,10 @@
             set => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
         }
 
-        public WebTerminalWriter(IWebTerminal webTerminal)
+        public WebTerminalWriter(ICoreMessageDispatcher coreMessageDispatcher, string terminalId)
         {
-            _webTerminal = webTerminal;
+            _coreMessageDispatcher = coreMessageDispatcher;
+            _terminalId = terminalId;
         }
 
         /// <inheritdoc/>
@@ -42,7 +49,15 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            _webTerminal.WriteAsync(text).Wait(10);
+            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
+                                         .CallCommand(new WriteCommand
+                                         {
+                                             TerminalId = _terminalId,
+                                             Value = text
+                                         })
+                                         .Build();
+
+            _coreMessageDispatcher.DispatchAsync(message).Wait(10);
         }
 
         /// <inheritdoc/>
@@ -51,7 +66,15 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            await _webTerminal.WriteAsync(text);
+            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
+                             .CallCommand(new WriteCommand
+                             {
+                                 TerminalId = _terminalId,
+                                 Value = text
+                             })
+                             .Build();
+
+            await _coreMessageDispatcher.DispatchAsync(message);
         }
 
         /// <inheritdoc/>

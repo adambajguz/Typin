@@ -5,12 +5,15 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TypinExamples.Application.Services;
+    using MediatR;
+    using TypinExamples.Application.Services.Workers;
 
     public class WebTerminalReader : Stream
     {
+        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+
         private readonly StringBuilder _buffer = new StringBuilder();
-        private readonly IWebTerminal _webTerminal;
+        private readonly string _terminalId;
 
         /// <inheritdoc/>
         public override bool CanRead => true;
@@ -31,9 +34,10 @@
             set => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
         }
 
-        public WebTerminalReader(IWebTerminal webTerminal)
+        public WebTerminalReader(ICoreMessageDispatcher coreMessageDispatcher, string terminalId)
         {
-            _webTerminal = webTerminal;
+            _coreMessageDispatcher = coreMessageDispatcher;
+            _terminalId = terminalId;
         }
 
         /// <inheritdoc/>

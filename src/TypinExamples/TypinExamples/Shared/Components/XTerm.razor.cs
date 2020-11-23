@@ -3,13 +3,17 @@ namespace TypinExamples.Shared.Components
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
+    using MediatR;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.JSInterop;
+    using TypinExamples.Application.Configuration;
+    using TypinExamples.Application.Handlers.Commands;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
-    using TypinExamples.Infrastructure.TypinWeb.Console;
     using TypinExamples.Infrastructure.TypinWeb.Services;
 
     public sealed partial class XTerm : ComponentBase, IWebTerminal
@@ -32,10 +36,11 @@ namespace TypinExamples.Shared.Components
         [Parameter]
         public IWebLoggerDestination? LoggerDestination { get; init; }
 
-        [Inject] public IWebExampleInvokerService ExampleInvoker { get; init; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
         [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
+        [Inject] private IMediator Mediator { get; init; } = default!;
+        [Inject] private IOptions<ExamplesSettings> Options { get; init; } = default!;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -43,17 +48,25 @@ namespace TypinExamples.Shared.Components
             {
                 await JSRuntime.InvokeVoidAsync($"{MODULE_NAME}.initialize", Id);
                 Logger.LogDebug("Initialized a new XTerm terminal ({Id})", Id);
-                TerminalRepository.RegisterTerminal(this);
 
-                WebConsole webConsole = new WebConsole(this);
-                ExampleInvoker.AttachConsole(webConsole);
-                ExampleInvoker.AttachLogger(LoggerDestination);
+                TerminalRepository.RegisterTerminal(this);
             }
         }
 
         public async Task RunExample(string args)
         {
-            await ExampleInvoker.Run(ExampleKey, args);
+            ExampleDescriptor descriptor = Options.Value.Examples?.Where(x => x.Key == ExampleKey ||
+                                                                               (x.Name?.Contains(ExampleKey ?? string.Empty) ?? false))
+                                                                  .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
+
+            await Mediator.Send<string>(new RunExampleCommand
+            {
+                Key = ExampleKey,
+                Args = args,
+                TerminalId = Id,
+                ProgramClass = descriptor.ProgramClass,
+                WebProgramClass = descriptor.WebProgramClass
+            });
         }
 
         public async Task ResetAsync()
