@@ -9,6 +9,8 @@ namespace TypinExamples.Shared.Components
     using Microsoft.JSInterop;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Infrastructure.TypinWeb.Console;
+    using TypinExamples.Infrastructure.TypinWeb.Services;
 
     public sealed partial class XTerm : ComponentBase, IWebTerminal
     {
@@ -30,7 +32,7 @@ namespace TypinExamples.Shared.Components
         [Parameter]
         public IWebLoggerDestination? LoggerDestination { get; init; }
 
-        [Inject] public WebExampleInvokerService ExampleInvoker { get; init; } = default!;
+        [Inject] public IWebExampleInvokerService ExampleInvoker { get; init; } = default!;
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ILogger<XTerm> Logger { get; init; } = default!;
         [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
