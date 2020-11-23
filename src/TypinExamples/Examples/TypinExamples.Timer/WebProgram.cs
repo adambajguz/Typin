@@ -6,6 +6,7 @@
     using Typin.Directives;
     using Typin.Modes;
     using TypinExamples.Timer.Middleware;
+    using TypinExamples.TypinWeb.Commands;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
@@ -14,6 +15,8 @@
         public static async Task<int> WebMain(WebCliConfiguration configuration, string commandLine, IReadOnlyDictionary<string, string> environmentVariables)
         {
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
+                                                    .AddCommand<PipelineCommand>()
+                                                    .AddCommand<ServicesCommand>()
                                                     .AddDirective<PreviewDirective>()
                                                     .UseMiddleware<ExecutionTimingMiddleware>()
                                                     .UseInteractiveMode()
