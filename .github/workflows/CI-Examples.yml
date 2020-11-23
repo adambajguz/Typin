@@ -50,4 +50,4 @@ jobs:
                ./src/TypinExamples/Examples/TypinExamples.CalculatOR.Tests/bin/Release/Coverage.xml,
                ./src/TypinExamples/Examples/TypinExamples.Timer.Tests/bin/Release/Coverage.xml,
                ./src/TypinExamples/Examples/TypinExamples.InteractiveQuery.Tests/bin/Release/Coverage.xml,
-               ./src/TypinExamples/Examples/TypinExamples.MarioBuilder.Tests/bin/Release/Coverage.xml,
+               ./src/TypinExamples/Examples/TypinExamples.MarioBuilder.Tests/bin/Release/Coverage.xml
