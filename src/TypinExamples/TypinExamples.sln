@@ -17,9 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{F043DFD0-93B6-40DB-86DB-FA4262DC44F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{46E71547-5D59-4AB1-AE38-A847B43F0331}"
-	ProjectSection(SolutionItems) = preProject
-		Examples\TypinExamples.Timer\WebProgram.cs = Examples\TypinExamples.Timer\WebProgram.cs
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{477B3EB6-F657-4681-B093-D5A2666A54E4}"
 EndProject
@@ -82,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Timer.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.MarioBuilder.Tests", "Examples\TypinExamples.MarioBuilder.Tests\TypinExamples.MarioBuilder.Tests.csproj", "{FD13154D-C666-4DDC-B6FA-EB6E74956A12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.InteractiveQuery.Tests", "Examples\TypinExamples.InteractiveQuery.Tests\TypinExamples.InteractiveQuery.Tests.csproj", "{787AB97F-CD09-4EC4-8373-6FFB845FAFED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.InteractiveQuery.Tests", "Examples\TypinExamples.InteractiveQuery.Tests\TypinExamples.InteractiveQuery.Tests.csproj", "{787AB97F-CD09-4EC4-8373-6FFB845FAFED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

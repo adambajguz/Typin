@@ -2,10 +2,12 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
     using Typin.Modes;
     using TypinExamples.Timer.Middleware;
+    using TypinExamples.Timer.Repositories;
     using TypinExamples.TypinWeb.Commands;
     using TypinExamples.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
@@ -19,6 +21,7 @@
                                                     .AddCommand<ServicesCommand>()
                                                     .AddDirective<PreviewDirective>()
                                                     .UseMiddleware<ExecutionTimingMiddleware>()
+                                                    .ConfigureServices((services) => services.AddSingleton<IPerformanceLogsRepository, PerformanceLogsRepository>())
                                                     .UseInteractiveMode()
                                                     .UseWebExample(configuration)
                                                     .Build()

@@ -16,6 +16,7 @@
     },
     "Run: Timer": {
       "commandName": "Project",
+      "commandLineArgs": "[interactive]",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.Timer.Program"
       }
