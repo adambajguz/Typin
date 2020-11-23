@@ -46,4 +46,8 @@ jobs:
       uses: codecov/codecov-action@v1.0.14
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./src/TypinExamples/Examples/TypinExamples.HelloWorld.Tests/bin/Release/Coverage.xml
+        files: ./src/TypinExamples/Examples/TypinExamples.HelloWorld.Tests/bin/Release/Coverage.xml,
+               ./src/TypinExamples/Examples/TypinExamples.CalculatOR.Tests/bin/Release/Coverage.xml,
+               ./src/TypinExamples/Examples/TypinExamples.Timer.Tests/bin/Release/Coverage.xml,
+               ./src/TypinExamples/Examples/TypinExamples.InteractiveQuery.Tests/bin/Release/Coverage.xml,
+               ./src/TypinExamples/Examples/TypinExamples.MarioBuilder.Tests/bin/Release/Coverage.xml
