@@ -2,7 +2,6 @@
 {
     using System;
     using System.Threading;
-    using MediatR;
     using Typin.Console;
     using Typin.Console.IO;
     using TypinExamples.Application.Handlers.Commands.Terminal;

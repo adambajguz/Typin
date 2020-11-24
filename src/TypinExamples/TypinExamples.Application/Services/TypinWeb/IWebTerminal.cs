@@ -1,12 +1,15 @@
 ﻿namespace TypinExamples.Application.Services
 {
-    using System;
     using System.Threading.Tasks;
 
-    public interface IWebTerminal : IAsyncDisposable
+    public interface IWebTerminal
     {
-        string Id { get; }
-        bool IsDisposed { get; }
+        public string Id { get; }
+
+        Task InitializeXtermAsync();
+        Task DisposeXtermAsync();
+
+        Task RunExample(string args);
 
         Task ResetAsync();
         Task ClearAsync();
@@ -21,7 +24,5 @@
         Task ScrollToBottomAsync();
         Task ScrollToTopAsync();
         Task ScrollToLineAsync(int lineNumber);
-
-        Task RunExample(string args);
     }
 }

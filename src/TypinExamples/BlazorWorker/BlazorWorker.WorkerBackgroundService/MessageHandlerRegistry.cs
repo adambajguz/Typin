@@ -19,7 +19,12 @@ namespace BlazorWorker.WorkerBackgroundService
 
         public bool HandleMessage(string message)
         {
-            if (base.TryGetValue(GetMessageType(message), out var handler))
+            string key = GetMessageType(message);
+
+            if (key is null)
+                return true;
+
+            if (base.TryGetValue(key, out var handler))
             {
                 handler(message);
                 return true;

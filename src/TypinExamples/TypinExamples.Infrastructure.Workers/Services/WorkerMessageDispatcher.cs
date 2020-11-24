@@ -91,8 +91,6 @@
 
             WorkerMessage model = JsonConvert.DeserializeObject<WorkerMessage>(e);
 
-            _logger.LogInformation("OnIncomingMessageFromWorkerToMain '{Sender}' '{Id}' '{TargetType}'.", sender, model.Id, model.TargetType);
-
             if (model.TargetType is string targetType &&
                 model.Data is string data)
             {
@@ -109,7 +107,6 @@
                     else
                     {
                         object? x = await _mediator.Send(obj);
-                        _logger.LogInformation("Finished command execution requested by worker '{Id}' with result '{Result}'.", model.WorkerId, x);
                     }
                 }
             }

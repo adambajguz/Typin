@@ -5,7 +5,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Services.Workers;
     using TypinExamples.Common.Extensions;
-    using TypinExamples.Infrastructure.TypinWeb.Services;
     using TypinExamples.Infrastructure.Workers.Configuration;
     using TypinExamples.Infrastructure.Workers.Services;
 

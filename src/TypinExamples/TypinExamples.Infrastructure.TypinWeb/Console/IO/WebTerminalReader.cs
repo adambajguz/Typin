@@ -5,7 +5,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using MediatR;
     using TypinExamples.Application.Services.Workers;
 
     public class WebTerminalReader : Stream

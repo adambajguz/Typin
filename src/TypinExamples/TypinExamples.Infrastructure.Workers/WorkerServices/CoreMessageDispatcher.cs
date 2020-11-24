@@ -1,6 +1,5 @@
 ﻿namespace TypinExamples.Infrastructure.Workers.WorkerServices
 {
-    using System;
     using System.Threading.Tasks;
     using BlazorWorker.WorkerCore;
     using Newtonsoft.Json;
@@ -19,8 +18,7 @@
         public async Task DispatchAsync(WorkerMessage model)
         {
             string serializedModel = JsonConvert.SerializeObject(model);
-            Console.WriteLine("y");
-            Console.WriteLine(serializedModel);
+
             await _workerMessageService.PostMessageAsync(serializedModel);
         }
     }
