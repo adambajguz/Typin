@@ -5,7 +5,7 @@
     using Typin;
     using Typin.Directives;
     using Typin.Modes;
-    using TypinExamples.TypinWeb.Configuration;
+    using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
     public static class WenProgram

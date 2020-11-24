@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
+    <ProjectReference Include="..\..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
   </ItemGroup>
 
 </Project>

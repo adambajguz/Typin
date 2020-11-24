@@ -2,8 +2,10 @@ namespace TypinExamples
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-    using TypinExamples.Compiler.Services;
-    using TypinExamples.Core;
+    using TypinExamples.Application;
+    using TypinExamples.Infrastructure.Compiler;
+    using TypinExamples.Infrastructure.TypinWeb;
+    using TypinExamples.Infrastructure.Workers;
 
     public static class Program
     {
@@ -16,8 +18,10 @@ namespace TypinExamples
             builder.RootComponents.Add<App>("app");
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
-                            .ConfigureCoreServices(configuration)
-                            .ConfigureCompilerServices();
+                            .ConfigureApplicationServices(configuration)
+                            .ConfigureInfrastructureWorkerServices(configuration)
+                            .ConfigureInfrastructureTypinWebServices()
+                            .ConfigureInfrastructureCompilerServices();
 
             await builder.Build().RunAsync();
         }

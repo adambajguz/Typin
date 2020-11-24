@@ -5,7 +5,7 @@
     using Typin;
     using Typin.Directives;
     using TypinExamples.CalculatOR.Services;
-    using TypinExamples.TypinWeb.Commands;
+    using TypinExamples.Infrastructure.TypinWeb.Commands;
 
     public static class Program
     {

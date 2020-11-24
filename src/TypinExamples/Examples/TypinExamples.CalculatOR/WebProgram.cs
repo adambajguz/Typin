@@ -6,8 +6,8 @@
     using Typin;
     using Typin.Directives;
     using TypinExamples.CalculatOR.Services;
-    using TypinExamples.TypinWeb.Commands;
-    using TypinExamples.TypinWeb.Configuration;
+    using TypinExamples.Infrastructure.TypinWeb.Commands;
+    using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
     public static class WebProgram

@@ -13,13 +13,7 @@
 
   <PropertyGroup>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
-    <!--<DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>-->
-    <!--<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>-->
   </PropertyGroup>
-
-  <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-  </PropertyGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Logging" Version="1.1.1" />
@@ -47,9 +41,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
-    <ProjectReference Include="..\TypinExamples.Compiler\TypinExamples.Compiler.csproj" />
-    <ProjectReference Include="..\TypinExamples.Core\TypinExamples.Core.csproj" />
-    <ProjectReference Include="..\TypinExamples.TypinWeb\TypinExamples.TypinWeb.csproj" />
+    <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.Compiler\TypinExamples.Infrastructure.Compiler.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.Workers\TypinExamples.Infrastructure.Workers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
   </ItemGroup>
 
 </Project>

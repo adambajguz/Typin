@@ -34,15 +34,15 @@ namespace TypinExamples.CalculatOR.Tests.CommandTests.Arithmetic
         [InlineData("subtract 20 2 3 4 5", "6")]
         [InlineData("subtract 20 10 20", "-10")]
         [InlineData("subtract 1 2 3 4 5 -b BIN", "0b11110011")]
-        
+
         [InlineData("multiply 10 2", "20")]
         [InlineData("multiply 0x92 10", "0xBB4")]
         [InlineData("multiply 0x91 0b10", "0xF22")]
         [InlineData("multiply 0b11 0b10", "0b0110")]
         [InlineData("multiply 20 2 3 4 5", "2400")]
         [InlineData("multiply 20 10 20", "4000")]
-        [InlineData("multiply 1 2 3 4 5 -b BIN", "0b01111000")]   
-        
+        [InlineData("multiply 1 2 3 4 5 -b BIN", "0b01111000")]
+
         [InlineData("divide 10 2", "5")]
         [InlineData("divide 0x92 10", "0xF5")]
         [InlineData("divide 0x91 0b10", "0xC9")]

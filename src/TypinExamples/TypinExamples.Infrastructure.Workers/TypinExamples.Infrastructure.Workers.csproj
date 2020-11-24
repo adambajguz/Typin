@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorWorker\BlazorWorker.ServiceFactory\BlazorWorker.BackgroundServiceFactory.csproj" />
+    <ProjectReference Include="..\BlazorWorker\BlazorWorker.WorkerBackgroundService\BlazorWorker.WorkerBackgroundService.csproj" />
+    <ProjectReference Include="..\BlazorWorker\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.csproj" />
+    <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
+    <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
+    <ProjectReference Include="..\TypinExamples.Domain\TypinExamples.Domain.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
+  </ItemGroup>
+
+</Project>
