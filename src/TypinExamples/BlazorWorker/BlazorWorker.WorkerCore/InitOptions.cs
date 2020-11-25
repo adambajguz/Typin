@@ -43,7 +43,6 @@
 
         public WorkerInitOptions MergeWith(WorkerInitOptions initOptions)
         {
-
             return new WorkerInitOptions
             {
                 CallbackMethod = initOptions.CallbackMethod ?? CallbackMethod,

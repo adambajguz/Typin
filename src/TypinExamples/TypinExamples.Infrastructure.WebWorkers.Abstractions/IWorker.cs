@@ -10,7 +10,7 @@
 
         long Identifier { get; }
 
-        Task InitAsync(WorkerInitOptions initOptions);
+        Task InitAsync(string initEndpoint);
 
         Task<int> RunAsync();
     }

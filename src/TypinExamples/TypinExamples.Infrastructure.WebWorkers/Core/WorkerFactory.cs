@@ -37,6 +37,18 @@
             BlazorBootModel? response = await _httpClient.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
+            //if (assemblies is not null)
+            //{
+            //    Dictionary<string, byte[]> dlls = new();
+            //    foreach (var assembly in assemblies)
+            //    {
+            //        var dll = await _httpClient.GetByteArrayAsync($"_framework/{assembly}");
+            //        dlls.Add(assembly, dll);
+            //    }
+
+            //    _dlls = dlls;
+            //}
+
             return assemblies;
         }
     }

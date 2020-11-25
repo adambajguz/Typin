@@ -9,6 +9,8 @@
 
     public class ScriptLoader
     {
+        private const string JS_FILE = "BlazorWebWorker.js";
+
         private static readonly IReadOnlyDictionary<string, string> escapeScriptTextReplacements =
             new Dictionary<string, string> { { @"\", @"\\" }, { "\r", @"\r" }, { "\n", @"\n" }, { "'", @"\'" }, { "\"", @"\""" } };
 
@@ -25,8 +27,8 @@
                 return;
 
             string scriptContent;
-            string assemblyName = typeof(ScriptLoader).Assembly.GetName().Name ?? throw new InvalidOperationException("Unable to initialize BlazorWorker.js");
-            var stream = GetType().Assembly.GetManifestResourceStream($"{assemblyName}.BlazorWorker.js");
+            string assemblyName = typeof(ScriptLoader).Assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
+            var stream = GetType().Assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}");
             using (stream)
             using (var streamReader = new StreamReader(stream))
                 scriptContent = await streamReader.ReadToEndAsync();
@@ -40,18 +42,22 @@
 
                 // Fail after 3s not to block and hide any other possible error
                 if (loaderLoopBreaker > 25)
-                    throw new InvalidOperationException("Unable to initialize BlazorWorker.js");
+                    throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
             }
         }
+
         private async Task<bool> IsLoaded()
         {
             return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", "BlazorWorker");
         }
+
         private async Task ExecuteRawScriptAsync(string scriptContent)
         {
             scriptContent = escapeScriptTextReplacements.Aggregate(scriptContent, (r, pair) => r.Replace(pair.Key, pair.Value));
-            var blob = $"URL.createObjectURL(new Blob([\"{scriptContent}\"],{{ \"type\": \"text/javascript\"}}))";
-            var bootStrapScript = $"(function(){{var d = document; var s = d.createElement('script'); s.async=false; s.src={blob}; d.head.appendChild(s); d.head.removeChild(s);}})();";
+
+            string blob = $"URL.createObjectURL(new Blob([\"{scriptContent}\"],{{ \"type\": \"text/javascript\"}}))";
+            string bootStrapScript = $"(function(){{var d = document; var s = d.createElement('script'); s.async=false; s.src={blob}; d.head.appendChild(s); d.head.removeChild(s);}})();";
+
             await jsRuntime.InvokeVoidAsync("eval", bootStrapScript);
         }
     }

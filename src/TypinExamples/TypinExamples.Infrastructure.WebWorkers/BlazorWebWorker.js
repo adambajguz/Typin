@@ -15,6 +15,7 @@
         const onReady = () => {
             const messageHandler =
                 Module.mono_bind_static_method(initConf.MessageEndPoint);
+
             // Future messages goes directly to the message handler
             self.onmessage = msg => {
                 messageHandler(msg.data);
@@ -93,12 +94,13 @@
             mono_string_get_utf8 = Module.cwrap('mono_wasm_string_get_utf8', 'number', ['number']);
 
             MONO.loaded_files = [];
-            var baseUrl = `${initConf.appRoot}/${initConf.deploy_prefix}`;
+            const baseUrl = `${initConf.appRoot}/${initConf.deploy_prefix}`;
             initConf.DependentAssemblyFilenames.forEach(url => {
 
                 const runDependencyId = `blazor:${url}`;
                 addRunDependency(runDependencyId);
-                asyncLoad(baseUrl+'/'+ url).then(
+
+                asyncLoad(baseUrl + '/' + url).then(
                     data => {
                         const heapAddress = Module._malloc(data.length);
                         const heapMemory = new Uint8Array(Module.HEAPU8.buffer, heapAddress, data.length);
@@ -139,14 +141,14 @@
             .then(blazorboot => {
                 let dotnetjsfilename = '';
                 const runttimeSection = blazorboot.resources.runtime;
-                for (var p in runttimeSection) {
+                for (let p in runttimeSection) {
                     if (Object.prototype.hasOwnProperty.call(runttimeSection, p) && p.endsWith('.js')) {
                         dotnetjsfilename = p;
                     }
                 }
 
                 if (dotnetjsfilename === '') {
-                    throw 'BlazorWorker: Unable to locate dotnetjs file in blazor boot config.';
+                    throw 'BlazorWebWorker: Unable to locate dotnetjs file in blazor boot config.';
                 }
 
                 self.importScripts(`${initConf.appRoot}/${initConf.wasmRoot}/${dotnetjsfilename}`);
@@ -162,6 +164,8 @@
             appRoot = appRoot.substr(0, appRoot.length - 1);
         }
 
+        console.log("WASM_WORKER_DEBUG: " + initOptions.debug);
+
         const initConf = {
             appRoot: appRoot,
             DependentAssemblyFilenames: initOptions.dependentAssemblyFilenames,
@@ -170,7 +174,7 @@
             InitEndPoint: initOptions.initEndPoint,
             wasmRoot: "_framework",
             blazorBoot: "_framework/blazor.boot.json",
-            debug: initOptions.debug
+            debug: initOptions.debug,
         };
 
         // Initialize worker
@@ -183,7 +187,7 @@
 
         worker.onmessage = function (ev) {
             if (initOptions.debug) {
-                console.debug(`BlazorWorker.js:worker[${id}]->blazor`, initOptions.callbackMethod, ev.data);
+                console.debug(`BlazorWebWorker: worker[${id}]->blazor`, initOptions.callbackMethod, ev.data);
             }
             callbackInstance.invokeMethod(initOptions.callbackMethod, ev.data);
         };

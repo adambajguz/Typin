@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="BlazorWorker.js" />
+    <None Remove="BlazorWebWorker.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="BlazorWorker.js" />
+    <EmbeddedResource Include="BlazorWebWorker.js" />
   </ItemGroup>
 
   <ItemGroup>

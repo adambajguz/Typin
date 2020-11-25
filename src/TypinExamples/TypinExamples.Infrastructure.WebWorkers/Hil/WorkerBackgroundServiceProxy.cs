@@ -86,34 +86,7 @@
             {
                 initWorkerTask = new TaskCompletionSource<bool>();
 
-                if (workerInitOptions.UseConventionalServiceAssembly)
-                    workerInitOptions.AddAssemblyOf<T>();
-
-                await worker.InitAsync(new WorkerInitOptions
-                {
-                    DependentAssemblyFilenames = new[] {
-                        $"{typeof(BaseMessage).Assembly.GetName().Name}.dll",
-                        $"{typeof(WorkerInstanceManager).Assembly.GetName().Name}.dll",
-                        $"{typeof(Newtonsoft.Json.JsonConvert).Assembly.GetName().Name}.dll",
-                        $"{typeof(IWorkerMessageService).Assembly.GetName().Name}.dll",
-                        $"{typeof(System.Reflection.Assembly).Assembly.GetName().Name}.dll",
-                        "System.Xml.dll",
-                        "Serialize.Linq.dll",
-                        "System.dll",
-                        "System.Buffers.dll",
-                        "System.Data.dll",
-                        "System.Core.dll",
-                        "System.Memory.dll",
-                        "System.Numerics.dll",
-                        "System.Numerics.Vectors.dll",
-                        "System.Runtime.CompilerServices.Unsafe.dll",
-                        "System.Runtime.Serialization.dll",
-                        "System.Threading.Tasks.Extensions.dll",
-                        "System.Xml.ReaderWriter.dll",
-                        "System.Text.RegularExpressions.dll"
-                    },
-                    InitEndPoint = InitEndPoint
-                }.MergeWith(workerInitOptions));
+                await worker.InitAsync(InitEndPoint);
 
                 worker.IncomingMessage += OnMessage;
                 await initWorkerTask.Task;
