@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+
     public class InitInstanceComplete : BaseMessage
     {
         public InitInstanceComplete()

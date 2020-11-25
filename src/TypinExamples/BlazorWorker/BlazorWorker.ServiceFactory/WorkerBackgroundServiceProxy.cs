@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using BlazorWorker.Core;
-using BlazorWorker.WorkerBackgroundService;
-using BlazorWorker.WorkerCore;
-
-namespace BlazorWorker.BackgroundServiceFactory
+﻿namespace BlazorWorker.BackgroundServiceFactory
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using BlazorWorker.Core;
+    using BlazorWorker.WorkerBackgroundService;
+    using BlazorWorker.WorkerCore;
+
     public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
     {
         private readonly IWorker worker;
@@ -81,7 +81,7 @@ namespace BlazorWorker.BackgroundServiceFactory
 
         public async Task InitAsync(WorkerInitOptions workerInitOptions = null)
         {
-            workerInitOptions = workerInitOptions ?? new WorkerInitOptions();
+            workerInitOptions ??= new WorkerInitOptions();
             if (initTask != null)
             {
                 await initTask.Task;

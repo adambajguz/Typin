@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+    using System.Collections.Generic;
+
     public class MessageHandlerRegistry : Dictionary<string, Action<string>>
     {
         public MessageHandlerRegistry(ISerializer messageSerializer)

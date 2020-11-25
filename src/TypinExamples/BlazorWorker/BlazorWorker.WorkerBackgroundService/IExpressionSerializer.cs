@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System.Linq.Expressions;
+
     public interface IExpressionSerializer
     {
         string Serialize(Expression expr);

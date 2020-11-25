@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using BlazorWorker.WorkerCore;
-using BlazorWorker.WorkerCore.SimpleInstanceService;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using BlazorWorker.WorkerCore;
+    using BlazorWorker.WorkerCore.SimpleInstanceService;
+
     public partial class WorkerInstanceManager
     {
         public readonly Dictionary<long, IEventWrapper> events =

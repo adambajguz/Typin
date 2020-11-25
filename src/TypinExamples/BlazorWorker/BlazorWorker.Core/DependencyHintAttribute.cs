@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System;
+    using System.Linq;
+
     internal class DependencyHintAttribute : Attribute
     {
         public DependencyHintAttribute(Type dependsOn, params Type[] dependsOnList)

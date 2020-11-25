@@ -1,0 +1,220 @@
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
+
+    public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
+    {
+        private readonly IWorker worker;
+        private readonly WebWorkerOptions options;
+        private static readonly string InitEndPoint;
+        private static long idSource;
+        private readonly long instanceId;
+        private readonly ISerializer messageSerializer;
+        private readonly MessageHandlerRegistry messageHandlerRegistry;
+        private TaskCompletionSource<bool> initTask;
+        private TaskCompletionSource<bool> disposeTask;
+        private TaskCompletionSource<bool> initWorkerTask;
+
+        // This doesnt really need to be static but easier to debug if messages have application-wide unique ids
+        private static long messageRegisterIdSource;
+        private readonly Dictionary<long, TaskCompletionSource<MethodCallResult>> messageRegister
+            = new Dictionary<long, TaskCompletionSource<MethodCallResult>>();
+
+        public bool IsInitialized { get; private set; }
+        public bool IsDisposed { get; private set; }
+
+        static WorkerBackgroundServiceProxy()
+        {
+            var wim = typeof(WorkerInstanceManager);
+            InitEndPoint = $"[{wim.Assembly.GetName().Name}]{wim.FullName}:{nameof(WorkerInstanceManager.Init)}";
+        }
+
+        public WorkerBackgroundServiceProxy(
+            IWorker worker,
+            WebWorkerOptions options)
+        {
+            this.worker = worker;
+            this.options = options;
+            instanceId = ++idSource;
+            messageSerializer = this.options.MessageSerializer;
+
+            messageHandlerRegistry = new MessageHandlerRegistry(this.options.MessageSerializer);
+            messageHandlerRegistry.Add<InitInstanceComplete>(OnInitInstanceComplete);
+            messageHandlerRegistry.Add<InitWorkerComplete>(OnInitWorkerComplete);
+            messageHandlerRegistry.Add<DisposeInstanceComplete>(OnDisposeInstanceComplete);
+            messageHandlerRegistry.Add<MethodCallResult>(OnMethodCallResult);
+        }
+
+        private void OnDisposeInstanceComplete(DisposeInstanceComplete message)
+        {
+            if (message.IsSuccess)
+            {
+                disposeTask.SetResult(true);
+                IsDisposed = true;
+            }
+            else
+                disposeTask.SetException(message.Exception);
+        }
+
+        private bool IsInfrastructureMessage(string message)
+        {
+            return messageHandlerRegistry.HandlesMessage(message);
+        }
+
+        public IWorkerMessageService GetWorkerMessageService()
+        {
+            return worker;
+        }
+
+        public async Task InitAsync(WorkerInitOptions workerInitOptions = null)
+        {
+            workerInitOptions ??= new WorkerInitOptions();
+            if (initTask != null)
+                await initTask.Task;
+
+            if (IsInitialized)
+                return;
+
+            initTask = new TaskCompletionSource<bool>();
+
+            if (!worker.IsInitialized)
+            {
+                initWorkerTask = new TaskCompletionSource<bool>();
+
+                if (workerInitOptions.UseConventionalServiceAssembly)
+                    workerInitOptions.AddAssemblyOf<T>();
+
+                await worker.InitAsync(new WorkerInitOptions
+                {
+                    DependentAssemblyFilenames = new[] {
+                        $"{typeof(BaseMessage).Assembly.GetName().Name}.dll",
+                        $"{typeof(WorkerInstanceManager).Assembly.GetName().Name}.dll",
+                        $"{typeof(Newtonsoft.Json.JsonConvert).Assembly.GetName().Name}.dll",
+                        $"{typeof(IWorkerMessageService).Assembly.GetName().Name}.dll",
+                        $"{typeof(System.Reflection.Assembly).Assembly.GetName().Name}.dll",
+                        "System.Xml.dll",
+                        "Serialize.Linq.dll",
+                        "System.dll",
+                        "System.Buffers.dll",
+                        "System.Data.dll",
+                        "System.Core.dll",
+                        "System.Memory.dll",
+                        "System.Numerics.dll",
+                        "System.Numerics.Vectors.dll",
+                        "System.Runtime.CompilerServices.Unsafe.dll",
+                        "System.Runtime.Serialization.dll",
+                        "System.Threading.Tasks.Extensions.dll",
+                        "System.Xml.ReaderWriter.dll",
+                        "System.Text.RegularExpressions.dll"
+                    },
+                    InitEndPoint = InitEndPoint
+                }.MergeWith(workerInitOptions));
+
+                worker.IncomingMessage += OnMessage;
+                await initWorkerTask.Task;
+            }
+
+            var message = options.MessageSerializer.Serialize(
+                    new InitInstance()
+                    {
+                        WorkerId = worker.Identifier, // TODO: This should not really be necessary?
+                        InstanceId = instanceId,
+                        AssemblyName = typeof(T).Assembly.FullName,
+                        TypeName = typeof(T).FullName
+                    });
+            Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {worker.Identifier} {message}");
+
+            await worker.PostMessageAsync(message);
+            await initTask.Task;
+        }
+
+        private void OnMessage(object sender, string rawMessage)
+        {
+            messageHandlerRegistry.HandleMessage(rawMessage);
+        }
+
+        private void OnMethodCallResult(MethodCallResult message)
+        {
+            if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
+                return;
+
+            taskCompletionSource.SetResult(message);
+            messageRegister.Remove(message.CallId);
+        }
+
+        private void OnInitWorkerComplete(InitWorkerComplete message)
+        {
+            initWorkerTask.SetResult(true);
+        }
+
+        private void OnInitInstanceComplete(InitInstanceComplete message)
+        {
+            if (message.IsSuccess)
+            {
+                initTask.SetResult(true);
+                IsInitialized = true;
+            }
+            else
+                initTask.SetException(message.Exception);
+        }
+
+        public async Task<int> RunAsync()
+        {
+            return await InvokeAsyncInternal();
+        }
+
+        private async Task<int> InvokeAsyncInternal()
+        {
+            // If Blazor ever gets multithreaded this would need to be locked for race conditions
+            // However, when/if that happens, most of this project is obsolete anyway
+            var id = ++messageRegisterIdSource;
+            var taskCompletionSource = new TaskCompletionSource<MethodCallResult>();
+            messageRegister.Add(id, taskCompletionSource);
+
+            var methodCallParams = new MethodCallParams
+            {
+                WorkerId = worker.Identifier,
+                InstanceId = instanceId,
+                ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type."),
+                CallId = id
+            };
+
+            var methodCall = options.MessageSerializer.Serialize(methodCallParams);
+
+            await worker.PostMessageAsync(methodCall);
+
+            var returnMessage = await taskCompletionSource.Task;
+            if (returnMessage.IsException)
+                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+            if (string.IsNullOrEmpty(returnMessage.ResultPayload))
+                return default;
+
+            return options.MessageSerializer.Deserialize<int>(returnMessage.ResultPayload);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (disposeTask != null)
+                await disposeTask.Task;
+
+            if (IsDisposed)
+                return;
+
+            disposeTask = new TaskCompletionSource<bool>();
+
+            var message = options.MessageSerializer.Serialize(
+                   new DisposeInstance
+                   {
+                       InstanceId = instanceId,
+                   });
+
+            await worker.PostMessageAsync(message);
+
+            await disposeTask.Task;
+        }
+    }
+}

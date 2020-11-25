@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System;
+    using System.Linq;
+
     /// <summary>
     /// Options for initializing the worker.
     /// </summary>
@@ -13,7 +13,7 @@ namespace BlazorWorker.Core
         /// </summary>
         public WorkerInitOptions()
         {
-            DependentAssemblyFilenames = new string[] { };
+            DependentAssemblyFilenames = Array.Empty<string>();
         }
 
         /// <summary>

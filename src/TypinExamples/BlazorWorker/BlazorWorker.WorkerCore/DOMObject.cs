@@ -1,8 +1,8 @@
-﻿using System;
-using BlazorWorker.WorkerCore.WebAssemblyBindingsProxy;
-
-namespace BlazorWorker.WorkerCore
+﻿namespace BlazorWorker.WorkerCore
 {
+    using System;
+    using BlazorWorker.WorkerCore.WebAssemblyBindingsProxy;
+
     // Serves as a wrapper around a JSObject.
     internal class DOMObject : IDisposable
     {

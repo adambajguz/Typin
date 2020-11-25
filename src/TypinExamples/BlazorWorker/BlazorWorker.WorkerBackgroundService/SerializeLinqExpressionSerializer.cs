@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
-using Serialize.Linq.Serializers;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System.Linq.Expressions;
+    using Serialize.Linq.Serializers;
+
     public class SerializeLinqExpressionSerializer : IExpressionSerializer
     {
         private readonly ExpressionSerializer serializer;

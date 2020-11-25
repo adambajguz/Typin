@@ -1,0 +1,18 @@
+﻿<button @onclick="Click">Worker test</button>
+<p>@Result</p>
+
+@code {
+
+    [Inject] TypinExamples.Infrastructure.WebWorkers.Abstractions.IWorkerFactory WorkerFactory { get; init; } = default!;
+
+    private string Result = string.Empty;
+
+    async Task Click()
+    {
+        // Create worker.
+        var worker = await WorkerFactory.CreateAsync<WebWorkerSubProgram>();
+        int exitCode = await worker.RunAsync();
+
+        Result = exitCode.ToString();
+    }
+}
