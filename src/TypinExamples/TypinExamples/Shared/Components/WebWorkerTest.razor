@@ -16,7 +16,7 @@
         // Create worker.
         var worker = await WorkerFactory.CreateAsync<WebWorkerSubProgram>();
         int exitCode = await worker.RunAsync();
-
+        await worker.DisposeAsync();
         Result = exitCode.ToString();
     }
 
@@ -25,7 +25,8 @@
         // Create worker.
         var worker = await WorkerFactory.CreateAsync<WebWorkerSubProgram>();
         int exitCode = await worker.RunAsync();
+        await worker.DisposeAsync();
 
-        Result = exitCode.ToString();
+        Result2 = exitCode.ToString();
     }
 }

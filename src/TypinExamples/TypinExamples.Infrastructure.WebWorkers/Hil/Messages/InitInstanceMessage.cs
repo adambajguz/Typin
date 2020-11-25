@@ -1,10 +1,12 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
-    public class InitInstance : BaseMessage
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
+
+    public class InitInstanceMessage : BaseMessage
     {
-        public InitInstance()
+        public InitInstanceMessage()
         {
-            MessageType = nameof(InitInstance);
+            MessageType = nameof(InitInstanceMessage);
         }
 
         public long WorkerId { get; set; }

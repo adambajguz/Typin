@@ -1,12 +1,13 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
 
-    public class DisposeInstanceComplete : BaseMessage
+    public class DisposeInstanceCompleteMessage : BaseMessage
     {
-        public DisposeInstanceComplete()
+        public DisposeInstanceCompleteMessage()
         {
-            MessageType = nameof(DisposeInstanceComplete);
+            MessageType = nameof(DisposeInstanceCompleteMessage);
         }
 
         public long CallId { get; set; }

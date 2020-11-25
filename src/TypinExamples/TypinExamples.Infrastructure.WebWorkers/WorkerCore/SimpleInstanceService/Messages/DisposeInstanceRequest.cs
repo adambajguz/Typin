@@ -1,7 +1,7 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService
+﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService.Messages
 {
-    using System;
-    using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService;
 
     public class DisposeInstanceRequest
     {
@@ -19,22 +19,14 @@
 
         public static DisposeInstanceRequest Deserialize(string message)
         {
-            var result = new DisposeInstanceRequest();
-            var parsers = new Queue<Action<string>>(
-                new Action<string>[]
-                {
-                    s => result.CallId = long.Parse(s),
-                    s => result.InstanceId = long.Parse(s)
-                });
-
-            CSVSerializer.Deserialize(Prefix, message, parsers);
+            var result = JsonConvert.DeserializeObject<DisposeInstanceRequest>(message);
 
             return result;
         }
 
         public string Serialize()
         {
-            return CSVSerializer.Serialize(Prefix, CallId, InstanceId);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

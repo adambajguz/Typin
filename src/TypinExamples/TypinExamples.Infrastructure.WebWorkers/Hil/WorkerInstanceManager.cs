@@ -1,11 +1,11 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService.Messages;
 
     public partial class WorkerInstanceManager
     {
@@ -22,15 +22,15 @@
             simpleInstanceService = SimpleInstanceService.Instance;
 
             messageHandlerRegistry = new MessageHandlerRegistry(serializer);
-            messageHandlerRegistry.Add<InitInstance>(InitInstance);
-            messageHandlerRegistry.Add<DisposeInstance>(DisposeInstance);
-            messageHandlerRegistry.Add<MethodCallParams>(HandleMethodCall);
+            messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
+            messageHandlerRegistry.Add<DisposeInstanceMessage>(DisposeInstance);
+            messageHandlerRegistry.Add<MethodCallParamsMessage>(HandleMethodCall);
         }
 
         public static void Init()
         {
             MessageService.Message += Instance.OnMessage;
-            Instance.PostObject(new InitWorkerComplete());
+            Instance.PostObject(new InitWorkerCompleteMessage());
 #if DEBUG
             Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.Init(): Done.");
 #endif
@@ -59,13 +59,13 @@
             messageHandlerRegistry.HandleMessage(message);
         }
 
-        private void HandleMethodCall(MethodCallParams methodCallMessage)
+        private void HandleMethodCall(MethodCallParamsMessage methodCallMessage)
         {
 
             void handleError(Exception e)
             {
                 PostObject(
-                new MethodCallResult()
+                new MethodCallResultMessage()
                 {
                     CallId = methodCallMessage.CallId,
                     IsException = true,
@@ -83,7 +83,7 @@
                             handleError(t.Exception);
                         else
                             PostObject(
-                                new MethodCallResult
+                                new MethodCallResultMessage
                                 {
                                     CallId = methodCallMessage.CallId,
                                     ResultPayload = serializer.Serialize(t.Result)
@@ -97,7 +97,7 @@
             }
         }
 
-        public void InitInstance(InitInstance createInstanceInfo)
+        public void InitInstance(InitInstanceMessage createInstanceInfo)
         {
             var initResult = simpleInstanceService.InitInstance(
                 new InitInstanceRequest
@@ -107,7 +107,7 @@
                     AssemblyName = createInstanceInfo.AssemblyName
                 }, IsInfrastructureMessage);
 
-            PostObject(new InitInstanceComplete()
+            PostObject(new InitInstanceCompleteMessage()
             {
                 CallId = createInstanceInfo.CallId,
                 IsSuccess = initResult.IsSuccess,
@@ -115,7 +115,7 @@
             });
         }
 
-        public void DisposeInstance(DisposeInstance dispose)
+        public void DisposeInstance(DisposeInstanceMessage dispose)
         {
             var res = simpleInstanceService.DisposeInstance(
                 new DisposeInstanceRequest
@@ -124,7 +124,7 @@
                     CallId = dispose.CallId
                 });
 
-            PostObject(new DisposeInstanceComplete
+            PostObject(new DisposeInstanceCompleteMessage
             {
                 CallId = res.CallId,
                 IsSuccess = res.IsSuccess,
@@ -132,7 +132,7 @@
             });
         }
 
-        public async Task<object> MethodCall(MethodCallParams instanceMethodCallParams)
+        public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
         {
             IWebWorkerEntryPoint? instance = (IWebWorkerEntryPoint)simpleInstanceService.instances[instanceMethodCallParams.InstanceId].Instance;
 

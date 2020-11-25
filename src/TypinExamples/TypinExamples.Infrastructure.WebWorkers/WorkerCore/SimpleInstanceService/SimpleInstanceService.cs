@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService.Messages;
 
     public class SimpleInstanceService
     {
@@ -134,8 +135,6 @@
                     InstanceId = request.InstanceId,
                     IsSuccess = false,
                     Exception = e,
-                    ExceptionMessage = e.Message,
-                    FullExceptionString = e.ToString()
                 };
             }
         }
@@ -213,8 +212,6 @@
                 return new InitInstanceResult
                 {
                     CallId = callId,
-                    ExceptionMessage = e.Message,
-                    FullExceptionString = e.ToString(),
                     Exception = e,
                     IsSuccess = false
                 };

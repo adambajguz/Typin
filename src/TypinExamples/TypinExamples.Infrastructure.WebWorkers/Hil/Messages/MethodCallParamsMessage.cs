@@ -1,10 +1,12 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
-    public class MethodCallParams : BaseMessage
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
+
+    public class MethodCallParamsMessage : BaseMessage
     {
-        public MethodCallParams()
+        public MethodCallParamsMessage()
         {
-            MessageType = nameof(MethodCallParams);
+            MessageType = nameof(MethodCallParamsMessage);
         }
 
         public long InstanceId { get; set; }

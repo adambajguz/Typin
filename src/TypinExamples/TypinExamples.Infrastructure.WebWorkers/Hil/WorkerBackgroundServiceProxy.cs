@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
@@ -21,8 +22,8 @@
 
         // This doesnt really need to be static but easier to debug if messages have application-wide unique ids
         private static long messageRegisterIdSource;
-        private readonly Dictionary<long, TaskCompletionSource<MethodCallResult>> messageRegister
-            = new Dictionary<long, TaskCompletionSource<MethodCallResult>>();
+        private readonly Dictionary<long, TaskCompletionSource<MethodCallResultMessage>> messageRegister
+            = new Dictionary<long, TaskCompletionSource<MethodCallResultMessage>>();
 
         public bool IsInitialized { get; private set; }
         public bool IsDisposed { get; private set; }
@@ -43,13 +44,13 @@
             messageSerializer = this.options.MessageSerializer;
 
             messageHandlerRegistry = new MessageHandlerRegistry(this.options.MessageSerializer);
-            messageHandlerRegistry.Add<InitInstanceComplete>(OnInitInstanceComplete);
-            messageHandlerRegistry.Add<InitWorkerComplete>(OnInitWorkerComplete);
-            messageHandlerRegistry.Add<DisposeInstanceComplete>(OnDisposeInstanceComplete);
-            messageHandlerRegistry.Add<MethodCallResult>(OnMethodCallResult);
+            messageHandlerRegistry.Add<InitInstanceCompleteMessage>(OnInitInstanceComplete);
+            messageHandlerRegistry.Add<InitWorkerCompleteMessage>(OnInitWorkerComplete);
+            messageHandlerRegistry.Add<DisposeInstanceCompleteMessage>(OnDisposeInstanceComplete);
+            messageHandlerRegistry.Add<MethodCallResultMessage>(OnMethodCallResult);
         }
 
-        private void OnDisposeInstanceComplete(DisposeInstanceComplete message)
+        private void OnDisposeInstanceComplete(DisposeInstanceCompleteMessage message)
         {
             if (message.IsSuccess)
             {
@@ -119,7 +120,7 @@
             }
 
             var message = options.MessageSerializer.Serialize(
-                    new InitInstance()
+                    new InitInstanceMessage()
                     {
                         WorkerId = worker.Identifier, // TODO: This should not really be necessary?
                         InstanceId = instanceId,
@@ -137,7 +138,7 @@
             messageHandlerRegistry.HandleMessage(rawMessage);
         }
 
-        private void OnMethodCallResult(MethodCallResult message)
+        private void OnMethodCallResult(MethodCallResultMessage message)
         {
             if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
                 return;
@@ -146,12 +147,12 @@
             messageRegister.Remove(message.CallId);
         }
 
-        private void OnInitWorkerComplete(InitWorkerComplete message)
+        private void OnInitWorkerComplete(InitWorkerCompleteMessage message)
         {
             initWorkerTask.SetResult(true);
         }
 
-        private void OnInitInstanceComplete(InitInstanceComplete message)
+        private void OnInitInstanceComplete(InitInstanceCompleteMessage message)
         {
             if (message.IsSuccess)
             {
@@ -172,10 +173,10 @@
             // If Blazor ever gets multithreaded this would need to be locked for race conditions
             // However, when/if that happens, most of this project is obsolete anyway
             var id = ++messageRegisterIdSource;
-            var taskCompletionSource = new TaskCompletionSource<MethodCallResult>();
+            var taskCompletionSource = new TaskCompletionSource<MethodCallResultMessage>();
             messageRegister.Add(id, taskCompletionSource);
 
-            var methodCallParams = new MethodCallParams
+            var methodCallParams = new MethodCallParamsMessage
             {
                 WorkerId = worker.Identifier,
                 InstanceId = instanceId,
@@ -207,7 +208,7 @@
             disposeTask = new TaskCompletionSource<bool>();
 
             var message = options.MessageSerializer.Serialize(
-                   new DisposeInstance
+                   new DisposeInstanceMessage
                    {
                        InstanceId = instanceId,
                    });

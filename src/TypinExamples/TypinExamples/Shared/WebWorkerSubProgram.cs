@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.Shared
 {
+    using System;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
@@ -7,7 +8,7 @@
     {
         public Task<int> Main()
         {
-            return Task.FromResult(893428489);
+            return Task.FromResult(new Random().Next());
         }
     }
 }

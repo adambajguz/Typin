@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService.Messages;
 
     public class SimpleInstanceServiceProxy : ISimpleInstanceService
     {

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
 
     public class MessageHandlerRegistry : Dictionary<string, Action<string>>
     {
