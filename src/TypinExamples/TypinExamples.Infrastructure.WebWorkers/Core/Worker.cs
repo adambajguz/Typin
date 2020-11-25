@@ -7,26 +7,26 @@
     using TypinExamples.Infrastructure.WebWorkers.Hil;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
-    public class WorkerProxy<T> : IWorker
+    public class Worker<T> : IWorker
         where T : class, IWebWorkerEntryPoint
     {
         private string[] _assemblies;
+        private static long idSource;
 
         private readonly IJSRuntime _jsRuntime;
         private readonly ScriptLoader _scriptLoader;
-        private static long idSource;
         private bool isDisposed = false;
         private static readonly string messageMethod;
 
         public event EventHandler<string> IncomingMessage;
         public bool IsInitialized { get; private set; }
-        static WorkerProxy()
+        static Worker()
         {
             var messageServiceType = typeof(MessageService);
             messageMethod = $"[{messageServiceType.Assembly.GetName().Name}]{messageServiceType.FullName}:{nameof(MessageService.OnMessage)}";
         }
 
-        public WorkerProxy(IJSRuntime jsRuntime, string[] assemblies)
+        public Worker(IJSRuntime jsRuntime, string[] assemblies)
         {
             _assemblies = assemblies;
             this._jsRuntime = jsRuntime;
@@ -47,13 +47,24 @@
         {
             // Create service reference. For most scenarios, it's safe (and best) to keep this
             // reference around somewhere to avoid the startup cost.
-            var service = await this.CreateBackgroundServiceAsync<T>();
+            var service = await CreateBackgroundServiceAsync<T>();
 
             // Reference that live outside of the current scope should not be passed into the expression.
             // To circumvent this, create a scope-local variable like this, and pass the local variable.
             int exitCode = await service.RunAsync();
 
             return exitCode;
+        }
+
+        public async Task<IWorkerBackgroundService<T>> CreateBackgroundServiceAsync<T>(WorkerInitOptions workerInitOptions = null) where T : class, IWebWorkerEntryPoint
+        {
+            var proxy = new WorkerBackgroundServiceProxy<T>(this, new WebWorkerOptions());
+
+            if (workerInitOptions == null)
+                workerInitOptions = new WorkerInitOptions().AddAssemblyOf<T>();
+
+            await proxy.InitAsync(workerInitOptions);
+            return proxy;
         }
 
         public async Task InitAsync(WorkerInitOptions initOptions)

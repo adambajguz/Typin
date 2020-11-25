@@ -13,6 +13,7 @@
         public static IServiceCollection AddWebWorkers(this IServiceCollection services)
         {
             services.AddScoped<IWorkerFactory, WorkerFactory>();
+
             return services;
         }
     }

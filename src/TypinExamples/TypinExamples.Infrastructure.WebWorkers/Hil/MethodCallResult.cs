@@ -1,4 +1,6 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+﻿using System;
+
+namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     public class MethodCallResult : BaseMessage
     {
@@ -11,7 +13,7 @@
 
         public bool IsException { get; set; }
 
-        public System.Exception Exception { get; set; }
+        public Exception Exception { get; set; }
 
         public long CallId { get; set; }
     }

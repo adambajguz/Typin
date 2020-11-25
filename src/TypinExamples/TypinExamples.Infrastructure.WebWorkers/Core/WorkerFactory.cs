@@ -27,7 +27,7 @@
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            var worker = new WorkerProxy<T>(jsRuntime, _assemblies);
+            Worker<T> worker = new Worker<T>(jsRuntime, _assemblies);
             //await worker.InitAsync(initOptions);
             return worker;
         }
