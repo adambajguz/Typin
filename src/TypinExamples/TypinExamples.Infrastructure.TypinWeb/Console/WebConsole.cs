@@ -5,6 +5,7 @@
     using Typin.Console;
     using Typin.Console.IO;
     using TypinExamples.Application.Handlers.Commands.Terminal;
+    using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.Workers;
     using TypinExamples.Domain.Builders;
     using TypinExamples.Domain.Models.Workers;
@@ -12,6 +13,8 @@
 
     public sealed class WebConsole : IConsole
     {
+        private readonly TimerService _flushTimer = new TimerService();
+
         private readonly ICoreMessageDispatcher _coreMessageDispatcher;
         private readonly string _terminalId;
 
@@ -96,13 +99,23 @@
 
             Output = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
             {
-                AutoFlush = true
+                AutoFlush = false
             };
 
             Error = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
             {
-                AutoFlush = true
+                AutoFlush = false
             };
+
+            _flushTimer.Elapsed += FlushTimerElapsed;
+            _flushTimer.Set(50, true);
+        }
+
+        private void FlushTimerElapsed()
+        {
+            Console.WriteLine("Flush");
+            Output.FlushAsync().Wait(25);
+            Error.FlushAsync().Wait(25);
         }
 
         public void Clear()
@@ -145,6 +158,8 @@
 
         public void Dispose()
         {
+            _flushTimer.Dispose();
+
             Input.Dispose();
             Output.Dispose();
             Error.Dispose();

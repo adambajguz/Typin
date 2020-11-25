@@ -23,7 +23,7 @@
 
         public async Task<WorkerResult> Handle(RunExampleCommand request, CancellationToken cancellationToken)
         {
-            WebConsole webConsole = new WebConsole(_coreMessageDispatcher, request.TerminalId);
+            using WebConsole webConsole = new WebConsole(_coreMessageDispatcher, request.TerminalId);
             _exampleInvoker.AttachConsole(webConsole);
             //_exampleInvoker.AttachLogger(LoggerDestination);
 
