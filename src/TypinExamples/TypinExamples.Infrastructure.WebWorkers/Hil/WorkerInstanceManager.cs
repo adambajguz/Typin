@@ -87,7 +87,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                                 new MethodCallResultMessage
                                 {
                                     CallId = methodCallMessage.CallId,
-                                    ResultPayload = _serializer.Serialize(t.Result)
+                                    ExitCode = t.Result
                                 }
                             );
                     });
@@ -143,7 +143,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
+        public async Task<int> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
         {
             _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
 

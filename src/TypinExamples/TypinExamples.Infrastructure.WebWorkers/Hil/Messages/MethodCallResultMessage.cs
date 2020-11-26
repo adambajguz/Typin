@@ -4,7 +4,7 @@
 
     public class MethodCallResultMessage : BaseMessage
     {
-        public string ResultPayload { get; init; }
+        public int ExitCode { get; init; }
         public long CallId { get; init; }
     }
 }

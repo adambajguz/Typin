@@ -165,10 +165,7 @@
             if (returnMessage.Exception is not null)
                 throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
 
-            if (string.IsNullOrEmpty(returnMessage.ResultPayload))
-                return default;
-
-            return _serializer.Deserialize<int>(returnMessage.ResultPayload);
+            return returnMessage.ExitCode;
         }
 
         public async ValueTask DisposeAsync()
