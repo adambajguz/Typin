@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
     using System.Threading.Tasks;
@@ -8,16 +8,15 @@
     public partial class WorkerInstanceManager
     {
         public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
-        internal readonly ISerializer serializer;
-        private readonly WebWorkerOptions options;
         private readonly MessageHandlerRegistry messageHandlerRegistry;
 
-        public WorkerInstanceManager()
-        {
-            serializer = new DefaultMessageSerializer();
-            options = new WebWorkerOptions();
+        private readonly ISerializer _serializer;
 
-            messageHandlerRegistry = new MessageHandlerRegistry(serializer);
+        public WorkerInstanceManager(ISerializer? serializer = null)
+        {
+            _serializer = serializer?? new DefaultMessageSerializer();
+
+            messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
             messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
             messageHandlerRegistry.Add<DisposeInstanceMessage>(DisposeInstance);
             messageHandlerRegistry.Add<MethodCallParamsMessage>(HandleMethodCall);
@@ -42,7 +41,7 @@
 
         internal void PostObject<T>(T obj)
         {
-            PostMessage(serializer.Serialize(obj));
+            PostMessage(_serializer.Serialize(obj));
         }
 
         private void OnMessage(object sender, string message)
@@ -76,7 +75,7 @@
                             new MethodCallResultMessage
                             {
                                 CallId = methodCallMessage.CallId,
-                                ResultPayload = serializer.Serialize(t.Result)
+                                ResultPayload = _serializer.Serialize(t.Result)
                             }
                         );
                 });
@@ -87,7 +86,7 @@
             }
         }
 
-        private IWebWorkerEntryPoint _instance;
+        private IWebWorkerEntryPoint? _instance;
 
         public void InitInstance(InitInstanceMessage createInstanceInfo)
         {

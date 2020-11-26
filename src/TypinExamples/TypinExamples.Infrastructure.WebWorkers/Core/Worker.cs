@@ -59,7 +59,7 @@
 
         private async Task<IWorkerBackgroundService<T>> CreateBackgroundServiceAsync()
         {
-            var proxy = new WorkerBackgroundServiceProxy<T>(this, new WebWorkerOptions());
+            var proxy = new WorkerBackgroundServiceProxy<T>(this, null);
 
             await proxy.InitAsync();
             return proxy;

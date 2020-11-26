@@ -9,11 +9,10 @@
     public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
     {
         private readonly IWorker worker;
-        private readonly WebWorkerOptions options;
         private static readonly string InitEndPoint;
         private static long idSource;
         private readonly long instanceId;
-        private readonly ISerializer messageSerializer;
+        private readonly ISerializer _serializer;
         private readonly MessageHandlerRegistry messageHandlerRegistry;
         private TaskCompletionSource<bool> initTask;
         private TaskCompletionSource<bool> disposeTask;
@@ -33,16 +32,13 @@
             InitEndPoint = $"[{wim.Assembly.GetName().Name}]{wim.FullName}:{nameof(WorkerInstanceManager.Init)}";
         }
 
-        public WorkerBackgroundServiceProxy(
-            IWorker worker,
-            WebWorkerOptions options)
+        public WorkerBackgroundServiceProxy(IWorker worker, ISerializer? serializer = null)
         {
             this.worker = worker;
-            this.options = options;
             instanceId = ++idSource;
-            messageSerializer = this.options.MessageSerializer;
+            _serializer = serializer ??= new DefaultMessageSerializer(); ;
 
-            messageHandlerRegistry = new MessageHandlerRegistry(this.options.MessageSerializer);
+            messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
             messageHandlerRegistry.Add<InitInstanceCompleteMessage>(OnInitInstanceComplete);
             messageHandlerRegistry.Add<InitWorkerCompleteMessage>(OnInitWorkerComplete);
             messageHandlerRegistry.Add<DisposeInstanceCompleteMessage>(OnDisposeInstanceComplete);
@@ -91,7 +87,7 @@
                 await initWorkerTask.Task;
             }
 
-            var message = options.MessageSerializer.Serialize(
+            var message = _serializer.Serialize(
                     new InitInstanceMessage()
                     {
                         WorkerId = worker.Identifier, // TODO: This should not really be necessary?
@@ -157,7 +153,7 @@
                 CallId = id
             };
 
-            var methodCall = options.MessageSerializer.Serialize(methodCallParams);
+            var methodCall = _serializer.Serialize(methodCallParams);
 
             await worker.PostMessageAsync(methodCall);
 
@@ -169,7 +165,7 @@
             if (string.IsNullOrEmpty(returnMessage.ResultPayload))
                 return default;
 
-            return options.MessageSerializer.Deserialize<int>(returnMessage.ResultPayload);
+            return _serializer.Deserialize<int>(returnMessage.ResultPayload);
         }
 
         public async ValueTask DisposeAsync()
@@ -182,7 +178,7 @@
 
             disposeTask = new TaskCompletionSource<bool>();
 
-            var message = options.MessageSerializer.Serialize(
+            var message = _serializer.Serialize(
                    new DisposeInstanceMessage
                    {
                        InstanceId = instanceId,

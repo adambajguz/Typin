@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
 
@@ -28,11 +29,12 @@
                 return;
 
             string scriptContent;
-            string assemblyName = typeof(ScriptLoader).Assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
+            Assembly assembly = typeof(ScriptLoader).Assembly;
+            string assemblyName = assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
 
-            using (Stream stream = GetType().Assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}"))
+            using (Stream stream = assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}") ?? throw new InvalidOperationException($"Unable to get {JS_FILE}"))
             {
-                using (var streamReader = new StreamReader(stream))
+                using (StreamReader streamReader = new StreamReader(stream))
                     scriptContent = await streamReader.ReadToEndAsync();
             }
 
