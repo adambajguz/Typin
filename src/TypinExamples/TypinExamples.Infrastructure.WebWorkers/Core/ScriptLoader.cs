@@ -9,6 +9,7 @@
 
     public class ScriptLoader
     {
+        public const string ModuleName = "BlazorWebWorker";
         private const string JS_FILE = "BlazorWebWorker.js";
 
         private static readonly IReadOnlyDictionary<string, string> escapeScriptTextReplacements =
@@ -36,6 +37,7 @@
             }
 
             await ExecuteRawScriptAsync(scriptContent);
+
             int loaderLoopBreaker = 0;
             while (!await IsLoaded())
             {
@@ -50,7 +52,7 @@
 
         private async Task<bool> IsLoaded()
         {
-            return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", "BlazorWorker");
+            return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", ModuleName);
         }
 
         private async Task ExecuteRawScriptAsync(string scriptContent)

@@ -1,4 +1,4 @@
-﻿window.BlazorWorker = function () {
+﻿window.BlazorWebWorker = function () {
 
     const workers = {};
     const disposeWorker = function (workerId) {

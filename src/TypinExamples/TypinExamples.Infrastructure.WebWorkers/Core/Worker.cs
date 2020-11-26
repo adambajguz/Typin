@@ -40,7 +40,7 @@
         {
             if (!isDisposed)
             {
-                await _jsRuntime.InvokeVoidAsync("BlazorWorker.disposeWorker", Identifier);
+                await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.disposeWorker", Identifier);
                 isDisposed = true;
             }
         }
@@ -71,7 +71,7 @@
             await _scriptLoader.InitScript();
 
             await _jsRuntime.InvokeVoidAsync(
-                "BlazorWorker.initWorker",
+                $"{ScriptLoader.ModuleName}.initWorker",
                 Identifier,
                 DotNetObjectReference.Create(this),
                 new WorkerInitOptions
@@ -91,7 +91,7 @@
 
         public async Task PostMessageAsync(string message)
         {
-            await _jsRuntime.InvokeVoidAsync("BlazorWorker.postMessage", Identifier, message);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.postMessage", Identifier, message);
         }
 
         public long Identifier { get; }
