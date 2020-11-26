@@ -4,8 +4,6 @@
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService.Messages;
 
     public partial class WorkerInstanceManager
     {
@@ -13,13 +11,11 @@
         internal readonly ISerializer serializer;
         private readonly WebWorkerOptions options;
         private readonly MessageHandlerRegistry messageHandlerRegistry;
-        private readonly SimpleInstanceService simpleInstanceService;
 
         public WorkerInstanceManager()
         {
             serializer = new DefaultMessageSerializer();
             options = new WebWorkerOptions();
-            simpleInstanceService = SimpleInstanceService.Instance;
 
             messageHandlerRegistry = new MessageHandlerRegistry(serializer);
             messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
@@ -49,11 +45,6 @@
             PostMessage(serializer.Serialize(obj));
         }
 
-        private bool IsInfrastructureMessage(string message)
-        {
-            return messageHandlerRegistry.HandlesMessage(message);
-        }
-
         private void OnMessage(object sender, string message)
         {
             messageHandlerRegistry.HandleMessage(message);
@@ -61,14 +52,12 @@
 
         private void HandleMethodCall(MethodCallParamsMessage methodCallMessage)
         {
-
             void handleError(Exception e)
             {
                 PostObject(
                 new MethodCallResultMessage()
                 {
                     CallId = methodCallMessage.CallId,
-                    IsException = true,
                     Exception = e
                 });
             }
@@ -76,20 +65,21 @@
             try
             {
                 Task.Run(async () =>
-                    await MethodCall(methodCallMessage))
-                    .ContinueWith(t =>
-                    {
-                        if (t.IsFaulted)
-                            handleError(t.Exception);
-                        else
-                            PostObject(
-                                new MethodCallResultMessage
-                                {
-                                    CallId = methodCallMessage.CallId,
-                                    ResultPayload = serializer.Serialize(t.Result)
-                                }
-                            );
-                    });
+                {
+                    return await MethodCall(methodCallMessage);
+                }).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                        handleError(t.Exception);
+                    else
+                        PostObject(
+                            new MethodCallResultMessage
+                            {
+                                CallId = methodCallMessage.CallId,
+                                ResultPayload = serializer.Serialize(t.Result)
+                            }
+                        );
+                });
             }
             catch (Exception e)
             {
@@ -97,60 +87,44 @@
             }
         }
 
+        private IWebWorkerEntryPoint _instance;
+
         public void InitInstance(InitInstanceMessage createInstanceInfo)
         {
-            var initResult = simpleInstanceService.InitInstance(
-                new InitInstanceRequest
-                {
-                    Id = createInstanceInfo.InstanceId,
-                    TypeName = createInstanceInfo.TypeName,
-                    AssemblyName = createInstanceInfo.AssemblyName
-                }, IsInfrastructureMessage);
+            Type? type = Type.GetType(createInstanceInfo.Type);
+
+            _instance = Activator.CreateInstance(type) as IWebWorkerEntryPoint;
 
             PostObject(new InitInstanceCompleteMessage()
             {
                 CallId = createInstanceInfo.CallId,
-                IsSuccess = initResult.IsSuccess,
-                Exception = initResult.Exception,
+                IsSuccess = _instance is not null,
+                Exception = null,
             });
         }
 
-        public void DisposeInstance(DisposeInstanceMessage dispose)
+        public async void DisposeInstance(DisposeInstanceMessage dispose)
         {
-            var res = simpleInstanceService.DisposeInstance(
-                new DisposeInstanceRequest
-                {
-                    InstanceId = dispose.InstanceId,
-                    CallId = dispose.CallId
-                });
+            if(_instance is IDisposable d)
+            {
+                d.Dispose();
+            }
+            else if(_instance is IAsyncDisposable ad)
+            {
+                await ad.DisposeAsync();
+            }
 
             PostObject(new DisposeInstanceCompleteMessage
             {
-                CallId = res.CallId,
-                IsSuccess = res.IsSuccess,
-                Exception = res.Exception
+                CallId = dispose.CallId,
+                IsSuccess = true,
+                Exception =null
             });
         }
 
         public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
         {
-            IWebWorkerEntryPoint? instance = (IWebWorkerEntryPoint)simpleInstanceService.instances[instanceMethodCallParams.InstanceId].Instance;
-
-            return await instance.Main();
-        }
-
-        public static async Task<int?> RunExample(string programClass)
-        {
-            Type? type = Type.GetType(programClass);
-
-            Task<int>? task = type?.GetMethod("Main")?.Invoke(null, null) as Task<int>;
-
-            if (task is null)
-                return null;
-
-            int? exitCode = await task;
-
-            return exitCode;
+            return await _instance.Main();
         }
     }
 }

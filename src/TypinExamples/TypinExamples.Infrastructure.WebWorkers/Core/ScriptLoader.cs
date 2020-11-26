@@ -28,13 +28,15 @@
 
             string scriptContent;
             string assemblyName = typeof(ScriptLoader).Assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
-            var stream = GetType().Assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}");
-            using (stream)
-            using (var streamReader = new StreamReader(stream))
-                scriptContent = await streamReader.ReadToEndAsync();
+
+            using (Stream stream = GetType().Assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}"))
+            {
+                using (var streamReader = new StreamReader(stream))
+                    scriptContent = await streamReader.ReadToEndAsync();
+            }
 
             await ExecuteRawScriptAsync(scriptContent);
-            var loaderLoopBreaker = 0;
+            int loaderLoopBreaker = 0;
             while (!await IsLoaded())
             {
                 loaderLoopBreaker++;

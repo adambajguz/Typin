@@ -5,15 +5,13 @@
 
     public class InitInstanceCompleteMessage : BaseMessage
     {
+        public long CallId { get; init; }
+        public bool IsSuccess { get; init; }
+        public Exception? Exception { get; init; }
+
         public InitInstanceCompleteMessage()
         {
             MessageType = nameof(InitInstanceCompleteMessage);
         }
-
-        public long CallId { get; set; }
-
-        public bool IsSuccess { get; set; }
-
-        public Exception Exception { get; set; }
     }
 }

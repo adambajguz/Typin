@@ -5,17 +5,13 @@
 
     public class MethodCallResultMessage : BaseMessage
     {
+        public string ResultPayload { get; init; }
+        public long CallId { get; init; }
+        public Exception? Exception { get; init; }
+
         public MethodCallResultMessage()
         {
             MessageType = nameof(MethodCallResultMessage);
         }
-
-        public string ResultPayload { get; set; }
-
-        public bool IsException { get; set; }
-
-        public Exception Exception { get; set; }
-
-        public long CallId { get; set; }
     }
 }

@@ -5,15 +5,13 @@
 
     public class DisposeInstanceCompleteMessage : BaseMessage
     {
+        public long CallId { get; init; }
+        public bool IsSuccess { get; init; }
+        public Exception? Exception { get; init; }
+
         public DisposeInstanceCompleteMessage()
         {
             MessageType = nameof(DisposeInstanceCompleteMessage);
         }
-
-        public long CallId { get; set; }
-
-        public bool IsSuccess { get; set; }
-
-        public Exception Exception { get; set; }
     }
 }

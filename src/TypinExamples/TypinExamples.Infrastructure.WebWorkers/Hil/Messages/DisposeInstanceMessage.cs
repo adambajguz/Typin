@@ -4,13 +4,12 @@
 
     public class DisposeInstanceMessage : BaseMessage
     {
+        public long InstanceId { get; init; }
+        public long CallId { get; init; }
+
         public DisposeInstanceMessage()
         {
             MessageType = nameof(DisposeInstanceMessage);
         }
-
-        public long InstanceId { get; set; }
-
-        public long CallId { get; set; }
     }
 }

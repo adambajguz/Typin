@@ -98,7 +98,8 @@
                         WorkerId = worker.Identifier, // TODO: This should not really be necessary?
                         InstanceId = instanceId,
                         AssemblyName = typeof(T).Assembly.FullName,
-                        TypeName = typeof(T).FullName
+                        TypeName = typeof(T).Name,
+                        Type = typeof(T).AssemblyQualifiedName
                     });
             Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {worker.Identifier} {message}");
 
@@ -162,8 +163,10 @@
             await worker.PostMessageAsync(methodCall);
 
             var returnMessage = await taskCompletionSource.Task;
-            if (returnMessage.IsException)
+
+            if (returnMessage.Exception is not null)
                 throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+
             if (string.IsNullOrEmpty(returnMessage.ResultPayload))
                 return default;
 

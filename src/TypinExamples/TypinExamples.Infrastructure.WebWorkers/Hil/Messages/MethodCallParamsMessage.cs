@@ -4,14 +4,14 @@
 
     public class MethodCallParamsMessage : BaseMessage
     {
+        public long InstanceId { get; init; }
+        public string ProgramClass { get; init; }
+        public long WorkerId { get; init; }
+        public long CallId { get; init; }
+
         public MethodCallParamsMessage()
         {
             MessageType = nameof(MethodCallParamsMessage);
         }
-
-        public long InstanceId { get; set; }
-        public string ProgramClass { get; set; }
-        public long WorkerId { get; set; }
-        public long CallId { get; set; }
     }
 }
