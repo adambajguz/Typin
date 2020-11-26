@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
 
     public class MessageHandlerRegistry : Dictionary<string, Action<string>>
@@ -38,11 +39,6 @@
         {
             var key = GetMessageType(message);
             return ContainsKey(key);
-        }
-
-        private string GetMessageType(string message)
-        {
-            return MessageSerializer.Deserialize<BaseMessage>(message).MessageType;
         }
     }
 }

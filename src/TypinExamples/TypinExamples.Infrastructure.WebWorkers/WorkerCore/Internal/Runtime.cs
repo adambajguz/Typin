@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.WebAssemblyBindingsProxy
+﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal
 {
     using System.Reflection;
 

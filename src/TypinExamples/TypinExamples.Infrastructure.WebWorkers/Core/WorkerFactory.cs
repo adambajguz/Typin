@@ -8,9 +8,11 @@
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.BlazorBoot;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
 
     public class WorkerFactory : IWorkerFactory
     {
+        private WorkerIdProvider IdProvider { get; } = new();
         private string[]? _assemblies;
 
         private readonly IJSRuntime jsRuntime;
@@ -22,19 +24,19 @@
             _httpClient = httpClient;
         }
 
-        public async Task<IWorker> CreateAsync<T>()//WorkerInitOptions initOptions)
-            where T : class, IWebWorkerEntryPoint
+        public async Task<IWorker> CreateAsync<T>()
+            where T : class, IWorkerStartup, new()
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            Worker<T> worker = new Worker<T>(jsRuntime, _assemblies);
-            //await worker.InitAsync(initOptions);
+            Worker<T> worker = new Worker<T>(IdProvider.Next(), jsRuntime, _assemblies);
+
             return worker;
         }
 
         private async Task<string[]?> GetAssembliesToLoad()
         {
-            BlazorBootModel? response = await _httpClient.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
+            BlazorBootModel? response = await _httpClient.GetFromJsonAsync<BlazorBootModel>(BlazorBootModel.FilePath);
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
             //if (assemblies is not null)

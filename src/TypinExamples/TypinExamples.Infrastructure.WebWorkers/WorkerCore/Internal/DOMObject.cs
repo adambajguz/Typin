@@ -1,7 +1,6 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
+﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal
 {
     using System;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.WebAssemblyBindingsProxy;
 
     // Serves as a wrapper around a JSObject.
     internal class DOMObject : IDisposable
@@ -15,7 +14,9 @@
         }
 
         public DOMObject(string globalName) : this(new JSObject(Runtime.GetGlobalObject(globalName)))
-        { }
+        {
+
+        }
 
         public object Invoke(string method, params object[] args)
         {

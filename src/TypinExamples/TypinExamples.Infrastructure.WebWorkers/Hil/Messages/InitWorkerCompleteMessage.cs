@@ -4,9 +4,6 @@
 
     public class InitWorkerCompleteMessage : BaseMessage
     {
-        public InitWorkerCompleteMessage()
-        {
-            MessageType = nameof(InitWorkerCompleteMessage);
-        }
+
     }
 }

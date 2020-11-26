@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    public interface IWebWorkerEntryPoint
+    public interface IWorkerProgram
     {
         Task<int> Main();
     }

@@ -14,7 +14,7 @@
     async Task Click()
     {
         // Create worker.
-        var worker = await WorkerFactory.CreateAsync<WebWorkerSubProgram>();
+        var worker = await WorkerFactory.CreateAsync<WebWorkerStartup>();
         int exitCode = await worker.RunAsync();
         await worker.DisposeAsync();
         Result = exitCode.ToString();
@@ -23,7 +23,7 @@
     async Task Click2()
     {
         // Create worker.
-        var worker = await WorkerFactory.CreateAsync<WebWorkerSubProgram>();
+        var worker = await WorkerFactory.CreateAsync<WebWorkerStartup>();
         int exitCode = await worker.RunAsync();
         await worker.DisposeAsync();
 

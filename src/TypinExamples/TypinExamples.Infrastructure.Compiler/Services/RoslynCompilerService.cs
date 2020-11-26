@@ -32,7 +32,7 @@
             async Task InitializeInternal()
             {
                 Logger.LogInformation("Initializing compiler");
-                BlazorBootModel response = await client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json") ?? throw new ApplicationException("Failed to fetch '_framework/blazor.boot.json'.");
+                BlazorBootModel response = await client.GetFromJsonAsync<BlazorBootModel>(BlazorBootModel.FilePath) ?? throw new ApplicationException("Failed to fetch '_framework/blazor.boot.json'.");
 
                 HttpResponseMessage[] assemblies = await Task.WhenAll(response.Resources.Assembly.Keys.Select(x => client.GetAsync("_framework/" + x)));
 

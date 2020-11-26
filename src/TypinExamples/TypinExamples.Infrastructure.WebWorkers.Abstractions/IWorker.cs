@@ -2,13 +2,12 @@
 {
     using System;
     using System.Threading.Tasks;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public interface IWorker : IWorkerMessageService, IAsyncDisposable
     {
-        bool IsInitialized { get; }
+        ulong Id { get; }
 
-        long Identifier { get; }
+        bool IsInitialized { get; }
 
         Task InitAsync(string initEndpoint);
 

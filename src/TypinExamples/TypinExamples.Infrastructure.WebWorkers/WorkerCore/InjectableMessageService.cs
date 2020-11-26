@@ -1,26 +1,18 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.SimpleInstanceService
+﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
     using System.Threading.Tasks;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public delegate bool IsInfrastructureMessage(string message);
     public class InjectableMessageService : IWorkerMessageService, IDisposable
     {
-        private readonly IsInfrastructureMessage isInfrastructureMessage;
-
-        public InjectableMessageService(IsInfrastructureMessage isInfrastructureMessage)
+        public InjectableMessageService()
         {
             MessageService.Message += OnIncomingMessage;
-            this.isInfrastructureMessage = isInfrastructureMessage;
         }
 
         private void OnIncomingMessage(object sender, string rawMessage)
         {
-            if (isInfrastructureMessage(rawMessage))
-                // Prevents Infrastructure messages from propagating downwards
-                return;
-
             IncomingMessage?.Invoke(sender, rawMessage);
         }
 

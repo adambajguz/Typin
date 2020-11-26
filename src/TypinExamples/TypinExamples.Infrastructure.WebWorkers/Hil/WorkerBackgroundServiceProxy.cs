@@ -4,9 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
-    public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
+    public class WorkerBackgroundServiceProxy<T> where T : class
     {
         private readonly IWorker worker;
         private static readonly string InitEndPoint;
@@ -36,7 +35,7 @@
         {
             this.worker = worker;
             instanceId = ++idSource;
-            _serializer = serializer ??= new DefaultMessageSerializer(); ;
+            _serializer = serializer ??= new DefaultSerializer(); ;
 
             messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
             messageHandlerRegistry.Add<InitInstanceCompleteMessage>(OnInitInstanceComplete);
@@ -56,19 +55,8 @@
                 disposeTask.SetException(message.Exception);
         }
 
-        private bool IsInfrastructureMessage(string message)
+        public async Task InitAsync()
         {
-            return messageHandlerRegistry.HandlesMessage(message);
-        }
-
-        public IWorkerMessageService GetWorkerMessageService()
-        {
-            return worker;
-        }
-
-        public async Task InitAsync(WorkerInitOptions workerInitOptions = null)
-        {
-            workerInitOptions ??= new WorkerInitOptions();
             if (initTask != null)
                 await initTask.Task;
 
@@ -90,13 +78,11 @@
             var message = _serializer.Serialize(
                     new InitInstanceMessage()
                     {
-                        WorkerId = worker.Identifier, // TODO: This should not really be necessary?
+                        WorkerId = worker.Id, // TODO: This should not really be necessary?
                         InstanceId = instanceId,
-                        AssemblyName = typeof(T).Assembly.FullName,
-                        TypeName = typeof(T).Name,
-                        Type = typeof(T).AssemblyQualifiedName
+                        StartupType = typeof(T).AssemblyQualifiedName
                     });
-            Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {worker.Identifier} {message}");
+            Console.WriteLine($"{nameof(WorkerBackgroundServiceProxy<T>)}.InitAsync(): {worker.Id} {message}");
 
             await worker.PostMessageAsync(message);
             await initTask.Task;
@@ -147,7 +133,7 @@
 
             var methodCallParams = new MethodCallParamsMessage
             {
-                WorkerId = worker.Identifier,
+                WorkerId = worker.Id,
                 InstanceId = instanceId,
                 ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type."),
                 CallId = id

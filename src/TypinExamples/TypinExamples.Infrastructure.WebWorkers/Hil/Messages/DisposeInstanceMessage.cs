@@ -6,10 +6,5 @@
     {
         public long InstanceId { get; init; }
         public long CallId { get; init; }
-
-        public DisposeInstanceMessage()
-        {
-            MessageType = nameof(DisposeInstanceMessage);
-        }
     }
 }

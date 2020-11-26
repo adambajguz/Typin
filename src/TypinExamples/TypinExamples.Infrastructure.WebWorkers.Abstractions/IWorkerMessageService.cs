@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Abstractions
 {
     using System;
     using System.Threading.Tasks;

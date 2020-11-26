@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Core
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
 
-    public class ScriptLoader
+    internal class ScriptLoader
     {
         public const string ModuleName = "BlazorWebWorker";
         private const string JS_FILE = "BlazorWebWorker.js";
@@ -33,10 +33,8 @@
             string assemblyName = assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
 
             using (Stream stream = assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}") ?? throw new InvalidOperationException($"Unable to get {JS_FILE}"))
-            {
-                using (StreamReader streamReader = new StreamReader(stream))
-                    scriptContent = await streamReader.ReadToEndAsync();
-            }
+            using (StreamReader streamReader = new StreamReader(stream))
+                scriptContent = await streamReader.ReadToEndAsync();
 
             await ExecuteRawScriptAsync(scriptContent);
 

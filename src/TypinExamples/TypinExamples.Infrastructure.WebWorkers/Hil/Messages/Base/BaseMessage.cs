@@ -1,7 +1,9 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base
 {
-    public class BaseMessage
+    using System;
+
+    public abstract class BaseMessage
     {
-        public string MessageType { get; set; }
+        public Exception? Exception { get; init; }
     }
 }

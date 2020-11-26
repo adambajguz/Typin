@@ -2,19 +2,23 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
-    public partial class WorkerInstanceManager
+    public class WorkerInstanceManager
     {
         public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
         private readonly MessageHandlerRegistry messageHandlerRegistry;
 
         private readonly ISerializer _serializer;
 
+        private ServiceProvider? ServiceProvider { get; set; }
+
         public WorkerInstanceManager(ISerializer? serializer = null)
         {
-            _serializer = serializer?? new DefaultMessageSerializer();
+            _serializer = serializer?? new DefaultSerializer();
 
             messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
             messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
@@ -86,32 +90,35 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        private IWebWorkerEntryPoint? _instance;
-
         public void InitInstance(InitInstanceMessage createInstanceInfo)
         {
-            Type? type = Type.GetType(createInstanceInfo.Type);
+            Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
+            IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
 
-            _instance = Activator.CreateInstance(type) as IWebWorkerEntryPoint;
+            ServiceCollection serviceCollection = new ServiceCollection();
+
+            WorkerConfigurationBuilder configurationBuilder = new();
+            startup.Configure(configurationBuilder);
+
+            WorkerConfiguration? configuration =  configurationBuilder.Build();
+            startup.ConfigureServices(serviceCollection);
+            serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint);
+
+            startup.ConfigureServices(serviceCollection);
+
+            ServiceProvider = serviceCollection.BuildServiceProvider();
 
             PostObject(new InitInstanceCompleteMessage()
             {
                 CallId = createInstanceInfo.CallId,
-                IsSuccess = _instance is not null,
+                IsSuccess = startup is not null,
                 Exception = null,
             });
         }
 
-        public async void DisposeInstance(DisposeInstanceMessage dispose)
+        public void DisposeInstance(DisposeInstanceMessage dispose)
         {
-            if (_instance is IDisposable d)
-            {
-                d.Dispose();
-            }
-            else if (_instance is IAsyncDisposable ad)
-            {
-                await ad.DisposeAsync();
-            }
+            ServiceProvider?.Dispose();
 
             PostObject(new DisposeInstanceCompleteMessage
             {
@@ -123,7 +130,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 
         public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
         {
-            return await _instance.Main();
+            _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
+
+            return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main();
         }
     }
 }

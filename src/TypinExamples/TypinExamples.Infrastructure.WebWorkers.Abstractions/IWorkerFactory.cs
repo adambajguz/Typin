@@ -4,7 +4,7 @@
 
     public interface IWorkerFactory
     {
-        Task<IWorker> CreateAsync<T>()
-            where T : class, IWebWorkerEntryPoint;
+        Task<IWorker> CreateAsync<TStartup>()
+            where TStartup : class, IWorkerStartup, new();
     }
 }
