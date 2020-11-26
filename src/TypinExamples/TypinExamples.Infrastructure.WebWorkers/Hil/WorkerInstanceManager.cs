@@ -105,11 +105,11 @@
 
         public async void DisposeInstance(DisposeInstanceMessage dispose)
         {
-            if(_instance is IDisposable d)
+            if (_instance is IDisposable d)
             {
                 d.Dispose();
             }
-            else if(_instance is IAsyncDisposable ad)
+            else if (_instance is IAsyncDisposable ad)
             {
                 await ad.DisposeAsync();
             }
@@ -118,7 +118,7 @@
             {
                 CallId = dispose.CallId,
                 IsSuccess = true,
-                Exception =null
+                Exception = null
             });
         }
 

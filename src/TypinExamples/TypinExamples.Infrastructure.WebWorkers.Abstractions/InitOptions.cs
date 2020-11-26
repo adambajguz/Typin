@@ -1,8 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Abstractions
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Options for initializing the worker.

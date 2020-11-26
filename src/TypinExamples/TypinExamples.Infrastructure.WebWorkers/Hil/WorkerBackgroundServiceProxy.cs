@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
-    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public class WorkerBackgroundServiceProxy<T> : IWorkerBackgroundService<T> where T : class
