@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [Serializable]
     public class InitWorkerInstanceException : Exception
     {

@@ -7,13 +7,13 @@
 
         public ISerializer MessageSerializer
         {
-            get => messageSerializer ?? (messageSerializer = new DefaultMessageSerializer());
+            get => messageSerializer ??= new DefaultMessageSerializer();
             set => messageSerializer = value;
         }
 
         public IExpressionSerializer ExpressionSerializer
         {
-            get => expressionSerializer ?? (expressionSerializer = new SerializeLinqExpressionSerializer());
+            get => expressionSerializer ??= new SerializeLinqExpressionSerializer();
             set => expressionSerializer = value;
         }
     }

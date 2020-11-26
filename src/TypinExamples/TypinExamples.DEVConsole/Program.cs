@@ -33,7 +33,7 @@
             return descriptor;
         }
 
-        public static int? RunExample(ExampleDescriptor? descriptor)
+        public static async Task<int?> RunExample(ExampleDescriptor? descriptor)
         {
             if (string.IsNullOrWhiteSpace(descriptor?.ProgramClass))
                 return null;
@@ -41,19 +41,23 @@
             Type? type = Type.GetType(descriptor.ProgramClass);
 
             Task<int>? task = type?.GetMethod("Main")?.Invoke(null, null) as Task<int>;
-            int? exitCode = task?.GetAwaiter().GetResult();
+
+            if (task is null)
+                return null;
+
+            int? exitCode = await task;
 
             return exitCode;
         }
 
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "May be needed for examples.")]
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             string target = Environment.GetEnvironmentVariable(ENV_VAR) ?? string.Empty;
             Trace.WriteLine($"TypinExamples.DEVConsole: Starting '{target}' example...");
 
             ExampleDescriptor? descriptor = LoadConfiguration(target);
-            int? exitCode = RunExample(descriptor);
+            int? exitCode = await RunExample(descriptor);
 
             if (exitCode is null)
             {

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+
     public interface IEventWrapper
     {
         long InstanceId { get; }

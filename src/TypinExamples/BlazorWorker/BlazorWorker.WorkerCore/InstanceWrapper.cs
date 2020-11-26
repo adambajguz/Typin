@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerCore
+﻿namespace BlazorWorker.WorkerCore
 {
-    public class InstanceWrapper : IDisposable
+    using System;
+
+    public sealed class InstanceWrapper : IDisposable
     {
         public object Instance { get; set; }
         public IDisposable Services { get; set; }

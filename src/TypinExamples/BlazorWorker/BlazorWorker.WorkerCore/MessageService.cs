@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerCore
+﻿namespace BlazorWorker.WorkerCore
 {
+    using System;
+
     /// <summary>
     /// Simple static message service that runs in the worker thread.
     /// </summary>

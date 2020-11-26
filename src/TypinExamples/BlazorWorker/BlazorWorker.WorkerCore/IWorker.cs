@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using BlazorWorker.WorkerCore;
-
-namespace BlazorWorker.Core
+﻿namespace BlazorWorker.Core
 {
+    using System;
+    using System.Threading.Tasks;
+    using BlazorWorker.WorkerCore;
 
     public interface IWorker : IWorkerMessageService, IAsyncDisposable
     {

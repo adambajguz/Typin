@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using BlazorWorker.WorkerCore;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using BlazorWorker.WorkerCore;
+
     public interface IWorkerBackgroundService<T> : IAsyncDisposable where T : class
     {
         /// <summary>

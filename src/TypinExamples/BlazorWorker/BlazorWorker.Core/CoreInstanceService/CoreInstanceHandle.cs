@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace BlazorWorker.Core.CoreInstanceService
+﻿namespace BlazorWorker.Core.CoreInstanceService
 {
+    using System;
+    using System.Threading.Tasks;
+
     internal class CoreInstanceHandle : IInstanceHandle
     {
         private readonly Func<Task> onDispose;

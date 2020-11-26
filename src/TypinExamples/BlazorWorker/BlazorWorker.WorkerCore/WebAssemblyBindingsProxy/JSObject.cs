@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerCore.WebAssemblyBindingsProxy
+﻿namespace BlazorWorker.WorkerCore.WebAssemblyBindingsProxy
 {
+    using System;
+
     internal class JSObject : IDisposable
     {
         public delegate object InvokeDelegate(string method, params object[] parameters);

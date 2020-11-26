@@ -11,6 +11,7 @@
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
+    using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
 
@@ -20,6 +21,8 @@
         {
             services.AddOptions();
             services.AddStorage();
+
+            services.AddWebWorkers();
 
             services.AddLogging(builder => builder.AddBrowserConsole()
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));

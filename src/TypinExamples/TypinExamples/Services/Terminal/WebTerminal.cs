@@ -47,6 +47,14 @@
             });
         }
 
+        public async Task RunExample()
+        {
+            await _mediator.Send<string>(new FlushCommand
+            {
+                TerminalId = Id,
+            });
+        }
+
         public async Task ResetAsync()
         {
             await _jsRuntime.InvokeVoidAsync($"{JS_MODULE_NAME}.reset", Id);

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using System;
+
     public class EventHandlerWrapper<T> : IEventWrapper
     {
         private readonly WorkerInstanceManager wim;

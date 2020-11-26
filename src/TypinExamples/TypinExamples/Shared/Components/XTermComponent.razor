@@ -1,3 +1,15 @@
 <div>
     <div id="@Id" data-example-key="@ExampleKey" @attributes="InputAttributes"></div>
+
+    <button @onclick="Click">Worker test</button>
+    <p>@Result</p>
 </div>
+
+@code {
+    private string Result = string.Empty;
+
+    async Task Click()
+    {
+        Result = await Mediator.Send<string>(new FlushCommand { TerminalId = Id });
+    }
+}

@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace BlazorWorker.WorkerBackgroundService
+﻿namespace BlazorWorker.WorkerBackgroundService
 {
+    using Newtonsoft.Json;
+
     public class DefaultMessageSerializer : ISerializer
     {
         public T Deserialize<T>(string objStr)

@@ -1,5 +1,5 @@
 ﻿window.BlazorWorker = function () {
-    
+
     const workers = {};
     const disposeWorker = function (workerId) {
 
@@ -58,10 +58,10 @@
                 xhr.send(undefined);
             });
         }
-        
+
         var config = {};
         var Module = {};
-        
+
         const wasmBinaryFile = `${initConf.appRoot}/${initConf.wasmRoot}/dotnet.wasm`;
         const suppressMessages = ['DEBUGGING ENABLED'];
         const appBinDirName = 'appBinDir';
@@ -93,9 +93,9 @@
             mono_string_get_utf8 = Module.cwrap('mono_wasm_string_get_utf8', 'number', ['number']);
 
             MONO.loaded_files = [];
-            var baseUrl = `${initConf.appRoot}/${initConf.deploy_prefix}`;
+            const baseUrl = `${initConf.appRoot}/${initConf.deploy_prefix}`;
             initConf.DependentAssemblyFilenames.forEach(url => {
-                
+
                 const runDependencyId = `blazor:${url}`;
                 addRunDependency(runDependencyId);
                 asyncLoad(baseUrl+'/'+ url).then(
@@ -129,17 +129,17 @@
         });
 
         config.file_list = [];
-        
+
         global = globalThis;
         self.Module = Module;
 
-        //TODO: This call could/should be session cached. But will the built-in blazor fetch service worker override 
+        //TODO: This call could/should be session cached. But will the built-in blazor fetch service worker override
         // (PWA et al) do this already if configured ?
         asyncLoad(`${initConf.appRoot}/${initConf.blazorBoot}`, 'json')
             .then(blazorboot => {
                 let dotnetjsfilename = '';
                 const runttimeSection = blazorboot.resources.runtime;
-                for (var p in runttimeSection) {
+                for (let p in runttimeSection) {
                     if (Object.prototype.hasOwnProperty.call(runttimeSection, p) && p.endsWith('.js')) {
                         dotnetjsfilename = p;
                     }
@@ -150,11 +150,11 @@
                 }
 
                 self.importScripts(`${initConf.appRoot}/${initConf.wasmRoot}/${dotnetjsfilename}`);
-            
+
             }, errorInfo => onError(errorInfo));
     };
 
-    const inlineWorker = `self.onmessage = ${workerDef}()`; 
+    const inlineWorker = `self.onmessage = ${workerDef}()`;
 
     const initWorker = function (id, callbackInstance, initOptions) {
         let appRoot = (document.getElementsByTagName('base')[0] || { href: window.location.origin }).href || "";

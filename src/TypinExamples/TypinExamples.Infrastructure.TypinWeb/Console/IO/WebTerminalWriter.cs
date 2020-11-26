@@ -45,6 +45,9 @@
         /// <inheritdoc/>
         public override void Flush()
         {
+            if (_buffer.Length == 0)
+                return;
+
             string text = _buffer.ToString();
             _buffer.Clear();
 
@@ -62,6 +65,9 @@
         /// <inheritdoc/>
         public override async Task FlushAsync(CancellationToken cancellationToken)
         {
+            if (_buffer.Length == 0)
+                return;
+
             string text = _buffer.ToString();
             _buffer.Clear();
 
@@ -101,6 +107,16 @@
             text = text.Replace(Environment.NewLine, "\r\n");
 
             _buffer.Append(text);
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            string text = Encoding.UTF8.GetString(buffer, offset, count);
+            text = text.Replace(Environment.NewLine, "\r\n");
+
+            _buffer.Append(text);
+
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
