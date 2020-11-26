@@ -13,6 +13,7 @@
     {
         private readonly string[] _assemblies;
 
+        private readonly ISerializer _serializer;
         private readonly IJSRuntime _jsRuntime;
         private readonly ScriptLoader _scriptLoader;
         private bool isDisposed = false;
@@ -35,6 +36,8 @@
             _assemblies = assemblies;
             _jsRuntime = jsRuntime;
             _scriptLoader = new ScriptLoader(_jsRuntime);
+
+            _serializer = new DefaultSerializer();
         }
 
         public async ValueTask DisposeAsync()

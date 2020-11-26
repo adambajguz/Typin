@@ -1,29 +1,30 @@
 namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Core;
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public class WorkerInstanceManager
     {
         public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
-        private readonly MessageHandlerRegistry messageHandlerRegistry;
 
         private readonly ISerializer _serializer;
 
         private ServiceProvider? ServiceProvider { get; set; }
+        private readonly Dictionary<Type, Action<BaseMessage>> _messageHandlerRegistry = new();
 
         public WorkerInstanceManager(ISerializer? serializer = null)
         {
-            _serializer = serializer?? new DefaultSerializer();
+            _serializer = serializer ?? new DefaultSerializer();
 
-            messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
-            messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
-            messageHandlerRegistry.Add<DisposeInstanceMessage>(DisposeInstance);
-            messageHandlerRegistry.Add<MethodCallParamsMessage>(HandleMethodCall);
+            _messageHandlerRegistry.Add(typeof(InitInstanceMessage), InitInstance);
+            _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
+            _messageHandlerRegistry.Add(typeof(MethodCallParamsMessage), HandleMethodCall);
         }
 
         public static void Init()
@@ -48,84 +49,98 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             PostMessage(_serializer.Serialize(obj));
         }
 
-        private void OnMessage(object sender, string message)
+        private void OnMessage(object sender, string rawMessage)
         {
-            messageHandlerRegistry.HandleMessage(message);
+            BaseMessage message = _serializer.Deserialize<BaseMessage>(rawMessage);
+
+            if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
+            {
+                value.Invoke(message);
+            }
         }
 
-        private void HandleMethodCall(MethodCallParamsMessage methodCallMessage)
+        private void HandleMethodCall(BaseMessage message)
         {
-            void handleError(Exception e)
+            if (message is MethodCallParamsMessage methodCallMessage)
             {
-                PostObject(
-                new MethodCallResultMessage()
+                void handleError(Exception e)
                 {
-                    CallId = methodCallMessage.CallId,
-                    Exception = e
+                    PostObject(
+                    new MethodCallResultMessage()
+                    {
+                        CallId = methodCallMessage.CallId,
+                        Exception = e
+                    });
+                }
+
+                try
+                {
+                    Task.Run(async () =>
+                    {
+                        return await MethodCall(methodCallMessage);
+                    }).ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                            handleError(t.Exception);
+                        else
+                            PostObject(
+                                new MethodCallResultMessage
+                                {
+                                    CallId = methodCallMessage.CallId,
+                                    ResultPayload = _serializer.Serialize(t.Result)
+                                }
+                            );
+                    });
+                }
+                catch (Exception e)
+                {
+                    handleError(e);
+                }
+            }
+        }
+
+        public void InitInstance(BaseMessage message)
+        {
+            if (message is InitInstanceMessage createInstanceInfo)
+            {
+                Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
+                IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
+
+                ServiceCollection serviceCollection = new ServiceCollection();
+
+                WorkerConfigurationBuilder configurationBuilder = new();
+                startup.Configure(configurationBuilder);
+
+                WorkerConfiguration? configuration = configurationBuilder.Build();
+                startup.ConfigureServices(serviceCollection);
+                serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint);
+
+                startup.ConfigureServices(serviceCollection);
+
+                ServiceProvider = serviceCollection.BuildServiceProvider();
+
+                PostObject(new InitInstanceCompleteMessage()
+                {
+                    CallId = createInstanceInfo.CallId,
+                    IsSuccess = startup is not null,
+                    Exception = null,
                 });
             }
+        }
 
-            try
+        public void DisposeInstance(BaseMessage message)
+        {
+            if (message is DisposeInstanceMessage dispose)
             {
-                Task.Run(async () =>
+                ServiceProvider?.Dispose();
+
+                PostObject(new DisposeInstanceCompleteMessage
                 {
-                    return await MethodCall(methodCallMessage);
-                }).ContinueWith(t =>
-                {
-                    if (t.IsFaulted)
-                        handleError(t.Exception);
-                    else
-                        PostObject(
-                            new MethodCallResultMessage
-                            {
-                                CallId = methodCallMessage.CallId,
-                                ResultPayload = _serializer.Serialize(t.Result)
-                            }
-                        );
+                    CallId = dispose.CallId,
+                    IsSuccess = true,
+                    Exception = null
                 });
             }
-            catch (Exception e)
-            {
-                handleError(e);
-            }
-        }
-
-        public void InitInstance(InitInstanceMessage createInstanceInfo)
-        {
-            Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
-            IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
-
-            ServiceCollection serviceCollection = new ServiceCollection();
-
-            WorkerConfigurationBuilder configurationBuilder = new();
-            startup.Configure(configurationBuilder);
-
-            WorkerConfiguration? configuration =  configurationBuilder.Build();
-            startup.ConfigureServices(serviceCollection);
-            serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint);
-
-            startup.ConfigureServices(serviceCollection);
-
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-
-            PostObject(new InitInstanceCompleteMessage()
-            {
-                CallId = createInstanceInfo.CallId,
-                IsSuccess = startup is not null,
-                Exception = null,
-            });
-        }
-
-        public void DisposeInstance(DisposeInstanceMessage dispose)
-        {
-            ServiceProvider?.Dispose();
-
-            PostObject(new DisposeInstanceCompleteMessage
-            {
-                CallId = dispose.CallId,
-                IsSuccess = true,
-                Exception = null
-            });
         }
 
         public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)

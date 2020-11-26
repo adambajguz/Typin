@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
 
     public class WorkerBackgroundServiceProxy<T> where T : class
     {
@@ -12,7 +13,7 @@
         private static long idSource;
         private readonly long instanceId;
         private readonly ISerializer _serializer;
-        private readonly MessageHandlerRegistry messageHandlerRegistry;
+        private readonly Dictionary<Type, Action<BaseMessage>> _messageHandlerRegistry = new();
         private TaskCompletionSource<bool> initTask;
         private TaskCompletionSource<bool> disposeTask;
         private TaskCompletionSource<bool> initWorkerTask;
@@ -35,24 +36,26 @@
         {
             this.worker = worker;
             instanceId = ++idSource;
-            _serializer = serializer ??= new DefaultSerializer(); ;
+            _serializer = serializer ??= new DefaultSerializer();
 
-            messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
-            messageHandlerRegistry.Add<InitInstanceCompleteMessage>(OnInitInstanceComplete);
-            messageHandlerRegistry.Add<InitWorkerCompleteMessage>(OnInitWorkerComplete);
-            messageHandlerRegistry.Add<DisposeInstanceCompleteMessage>(OnDisposeInstanceComplete);
-            messageHandlerRegistry.Add<MethodCallResultMessage>(OnMethodCallResult);
+            _messageHandlerRegistry.Add(typeof(InitInstanceCompleteMessage), OnInitInstanceComplete);
+            _messageHandlerRegistry.Add(typeof(InitWorkerCompleteMessage), OnInitWorkerComplete);
+            _messageHandlerRegistry.Add(typeof(DisposeInstanceCompleteMessage), OnDisposeInstanceComplete);
+            _messageHandlerRegistry.Add(typeof(MethodCallResultMessage), OnMethodCallResult);
         }
 
-        private void OnDisposeInstanceComplete(DisposeInstanceCompleteMessage message)
+        private void OnDisposeInstanceComplete(BaseMessage message)
         {
-            if (message.IsSuccess)
+            if (message is DisposeInstanceCompleteMessage m)
             {
-                disposeTask.SetResult(true);
-                IsDisposed = true;
+                if (m.IsSuccess)
+                {
+                    disposeTask.SetResult(true);
+                    IsDisposed = true;
+                }
+                else
+                    disposeTask.SetException(m.Exception);
             }
-            else
-                disposeTask.SetException(message.Exception);
         }
 
         public async Task InitAsync()
@@ -90,32 +93,46 @@
 
         private void OnMessage(object sender, string rawMessage)
         {
-            messageHandlerRegistry.HandleMessage(rawMessage);
-        }
+            BaseMessage message = _serializer.Deserialize<BaseMessage>(rawMessage);
 
-        private void OnMethodCallResult(MethodCallResultMessage message)
-        {
-            if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
-                return;
-
-            taskCompletionSource.SetResult(message);
-            messageRegister.Remove(message.CallId);
-        }
-
-        private void OnInitWorkerComplete(InitWorkerCompleteMessage message)
-        {
-            initWorkerTask.SetResult(true);
-        }
-
-        private void OnInitInstanceComplete(InitInstanceCompleteMessage message)
-        {
-            if (message.IsSuccess)
+            if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
             {
-                initTask.SetResult(true);
-                IsInitialized = true;
+                value.Invoke(message);
             }
-            else
-                initTask.SetException(message.Exception);
+        }
+
+        private void OnMethodCallResult(BaseMessage message)
+        {
+            if (message is MethodCallResultMessage m)
+            {
+                if (!messageRegister.TryGetValue(m.CallId, out var taskCompletionSource))
+                    return;
+
+                taskCompletionSource.SetResult(m);
+                messageRegister.Remove(m.CallId);
+            }
+        }
+
+        private void OnInitWorkerComplete(BaseMessage message)
+        {
+            if (message is InitWorkerCompleteMessage m)
+            {
+                initWorkerTask.SetResult(true);
+            }
+        }
+
+        private void OnInitInstanceComplete(BaseMessage message)
+        {
+            if (message is InitInstanceCompleteMessage m)
+            {
+                if (m.IsSuccess)
+                {
+                    initTask.SetResult(true);
+                    IsInitialized = true;
+                }
+                else
+                    initTask.SetException(m.Exception);
+            }
         }
 
         public async Task<int> RunAsync()

@@ -13,8 +13,7 @@
     const workerDef = function () {
         const initConf = JSON.parse('$initConf$');
         const onReady = () => {
-            const messageHandler =
-                Module.mono_bind_static_method(initConf.MessageEndPoint);
+            const messageHandler = Module.mono_bind_static_method(initConf.MessageEndPoint);
 
             // Future messages goes directly to the message handler
             self.onmessage = msg => {
