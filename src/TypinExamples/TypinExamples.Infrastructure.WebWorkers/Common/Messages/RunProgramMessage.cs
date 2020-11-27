@@ -1,14 +1,14 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messages
 {
     using System;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public class StartupResultMessage : IMessage
+    public class RunProgramMessage : IMessage
     {
         public ulong WorkerId { get; init; }
         public ulong CallId { get; init; }
         public Exception? Exception { get; init; }
 
-        public bool IsSuccess { get; init; }
+        public string? ProgramClass { get; init; }
     }
 }

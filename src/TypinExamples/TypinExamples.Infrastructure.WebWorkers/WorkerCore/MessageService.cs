@@ -1,7 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal.JS;
 
     /// <summary>
     /// Simple static message service that runs in the worker thread.

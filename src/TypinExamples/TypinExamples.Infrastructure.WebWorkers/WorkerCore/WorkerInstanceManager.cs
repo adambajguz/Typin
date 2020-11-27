@@ -1,4 +1,4 @@
-namespace TypinExamples.Infrastructure.WebWorkers.Hil
+namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
     using System.Collections.Generic;
@@ -7,9 +7,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
-    using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
+    using TypinExamples.Infrastructure.WebWorkers.Common;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
 
     public class WorkerInstanceManager
     {
@@ -28,14 +28,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             _serializer = serializer ?? new DefaultSerializer();
             MessageService.Message += OnMessage;
 
-            _messageHandlerRegistry.Add(typeof(StartupMessage), InitInstance);
             _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
             _messageHandlerRegistry.Add(typeof(CancelMessage), HandleCancel);
-            _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleMethodCall);
-
-            PostMessage(new InitWorkerResultMessage());
+            _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleRunProgram);
         }
 
+        #region Messages
         public void PostMessage<TMessage>(TMessage message)
             where TMessage : IMessage
         {
@@ -49,12 +47,54 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
             if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
-            {
                 value.Invoke(message);
+        }
+        #endregion
+
+        public void Start(string? startupType)
+        {
+            if (string.IsNullOrWhiteSpace(startupType))
+                throw new ArgumentException($"'{nameof(startupType)}' cannot be null or whitespace", nameof(startupType));
+
+            //Create startup class
+            Type type = Type.GetType(startupType) ?? throw new InvalidOperationException("Invalid startup class type.");
+            IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
+
+            //Build configuration and service collection
+            WorkerConfigurationBuilder configurationBuilder = new();
+            startup.Configure(configurationBuilder);
+
+            WorkerConfiguration configuration = configurationBuilder.Build();
+
+            ServiceCollection serviceCollection = new ServiceCollection();
+            startup.ConfigureServices(serviceCollection);
+
+            serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.ProgramType)
+                             .AddTransient<IWorkerMessageService, InjectableMessageService>()
+                             .AddSingleton(configuration)
+                             .AddSingleton(new WorkerIdAccessor(Id))
+                             .AddScoped<HttpClient>();
+
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+            PostMessage(new InitWorkerResultMessage());
+        }
+
+        public void HandleCancel(IMessage message)
+        {
+            if (message is CancelMessage cancel)
+            {
+                _cancellationTokenSource.Cancel();
+
+                PostMessage(new CancelResultMessage
+                {
+                    WorkerId = cancel.WorkerId,
+                    CallId = cancel.CallId,
+                });
             }
         }
 
-        private void HandleMethodCall(IMessage message)
+        private void HandleRunProgram(IMessage message)
         {
             if (message is RunProgramMessage methodCallMessage)
             {
@@ -72,11 +112,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                 {
                     Task.Run(async () =>
                     {
-                        return await MethodCall(methodCallMessage);
+                        _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
+
+                        return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main(_cancellationTokenSource.Token);
                     }).ContinueWith(t =>
                     {
                         if (t.IsFaulted)
-                            handleError(t.Exception);
+                            handleError(t.Exception!);
                         else
                             PostMessage(new RunProgramResultMessage
                             {
@@ -90,38 +132,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                 {
                     handleError(e);
                 }
-            }
-        }
-
-        public void InitInstance(IMessage message)
-        {
-            if (message is StartupMessage createInstanceInfo)
-            {
-                Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
-                IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
-
-                ServiceCollection serviceCollection = new ServiceCollection();
-
-                WorkerConfigurationBuilder configurationBuilder = new();
-                startup.Configure(configurationBuilder);
-
-                WorkerConfiguration? configuration = configurationBuilder.Build();
-                startup.ConfigureServices(serviceCollection);
-                serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint)
-                                 .AddTransient<IWorkerMessageService, InjectableMessageService>()
-                                 .AddScoped<HttpClient>();
-
-                startup.ConfigureServices(serviceCollection);
-
-                ServiceProvider = serviceCollection.BuildServiceProvider();
-
-                PostMessage(new StartupResultMessage()
-                {
-                    WorkerId = createInstanceInfo.WorkerId,
-                    CallId = createInstanceInfo.CallId,
-                    IsSuccess = startup is not null,
-                    Exception = null,
-                });
             }
         }
 
@@ -140,28 +150,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                     IsSuccess = true,
                     Exception = null
                 });
+
+                MessageService.Message -= OnMessage;
             }
-        }
-
-        public void HandleCancel(IMessage message)
-        {
-            if (message is CancelMessage cancel)
-            {
-                _cancellationTokenSource.Cancel();
-
-                PostMessage(new CancelResultMessage
-                {
-                    WorkerId = cancel.WorkerId,
-                    CallId = cancel.CallId,
-                });
-            }
-        }
-
-        public async Task<int> MethodCall(RunProgramMessage instanceMethodCallParams)
-        {
-            _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
-
-            return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main(_cancellationTokenSource.Token);
         }
     }
 }

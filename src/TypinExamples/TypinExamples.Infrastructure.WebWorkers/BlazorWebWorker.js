@@ -1,8 +1,8 @@
 ﻿window.BlazorWebWorker = function () {
 
     const workers = {};
-    const disposeWorker = function (workerId) {
 
+    const disposeWorker = function (workerId) {
         const worker = workers[workerId];
         if (worker && worker.terminate) {
             worker.terminate();
@@ -32,7 +32,7 @@
             }
 
             try {
-                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId]);
+                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId, initConf.StartupType]);
             } catch (e) {
                 console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: Init method ${initConf.InitEndpoint} thrown an error.`, e);
                 throw e;
@@ -180,6 +180,7 @@
             WorkerId: id,
             MessageEndpoint: initOptions.messageEndpoint,
             InitEndpoint: initOptions.initEndpoint,
+            StartupType: initOptions.startupType,
             wasmRoot: "_framework",
             blazorBoot: "_framework/blazor.boot.json",
             debug: initOptions.debug,
@@ -190,13 +191,14 @@
         const renderedInlineWorker = inlineWorker.replace('$initConf$', renderedConfig);
         window.URL = window.URL || window.webkitURL;
         const blob = new Blob([renderedInlineWorker], { type: 'application/javascript' });
-        const worker = new Worker(URL.createObjectURL(blob));
+        const worker = new Worker(URL.createObjectURL(blob), { name: `[WASM-WORKER] ${initConf.WorkerId}` });
         workers[id] = worker;
 
         worker.onmessage = function (ev) {
             if (initOptions.debug) {
                 console.debug(`[WASM-WORKER] worker[${id}]->blazor`, initOptions.callbackMethod, ev.data);
             }
+
             callbackInstance.invokeMethod(initOptions.callbackMethod, ev.data);
         };
     };

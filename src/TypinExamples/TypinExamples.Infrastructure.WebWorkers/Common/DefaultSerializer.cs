@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common
 {
     using Newtonsoft.Json;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
@@ -11,7 +11,10 @@
         {
             _settings = new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                PreserveReferencesHandling = PreserveReferencesHandling.All,
+                MissingMemberHandling = MissingMemberHandling.Error,
+                ObjectCreationHandling = ObjectCreationHandling.Replace
             };
         }
 

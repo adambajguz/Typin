@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common
 {
     using System;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;

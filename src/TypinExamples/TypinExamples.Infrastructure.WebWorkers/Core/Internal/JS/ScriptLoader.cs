@@ -1,16 +1,17 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
 
     internal class ScriptLoader
     {
-        public const string ModuleName = "BlazorWebWorker";
+        public const string MODULE_NAME = "BlazorWebWorker";
         private const string JS_FILE = "BlazorWebWorker.js";
 
         private static readonly IReadOnlyDictionary<string, string> escapeScriptTextReplacements =
@@ -28,41 +29,47 @@
             if (await IsLoaded())
                 return;
 
-            string scriptContent;
             Assembly assembly = typeof(ScriptLoader).Assembly;
-            string assemblyName = assembly.GetName().Name ?? throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
+            string assemblyName = assembly.GetName().Name ?? throw new NullReferenceException($"Unable to initialize {JS_FILE}");
 
             using (Stream stream = assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}") ?? throw new InvalidOperationException($"Unable to get {JS_FILE}"))
             using (StreamReader streamReader = new StreamReader(stream))
-                scriptContent = await streamReader.ReadToEndAsync();
+            {
+                string scriptContent = await streamReader.ReadToEndAsync();
 
-            await ExecuteRawScriptAsync(scriptContent);
+                await ExecuteRawScriptAsync(scriptContent);
+            }
 
-            int loaderLoopBreaker = 0;
+            DateTimeOffset startedOn = DateTimeOffset.UtcNow;
+            DateTimeOffset shouldFinishOn = startedOn.AddSeconds(4);
             while (!await IsLoaded())
             {
-                loaderLoopBreaker++;
                 await Task.Delay(100);
 
-                // Fail after 3s not to block and hide any other possible error
-                if (loaderLoopBreaker > 25)
-                    throw new InvalidOperationException($"Unable to initialize {JS_FILE}");
+                // Fail after 4s not to block and hide any other possible error
+                if (DateTimeOffset.UtcNow > shouldFinishOn)
+                    throw new InvalidOperationException($"Unable to initialize {JS_FILE}. Operation started on {startedOn} and was expected to finish {shouldFinishOn}.");
             }
         }
 
         private async Task<bool> IsLoaded()
         {
-            return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", ModuleName);
+            return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", MODULE_NAME);
         }
 
         private async Task ExecuteRawScriptAsync(string scriptContent)
         {
             scriptContent = escapeScriptTextReplacements.Aggregate(scriptContent, (r, pair) => r.Replace(pair.Key, pair.Value));
 
-            string blob = $"URL.createObjectURL(new Blob([\"{scriptContent}\"],{{ \"type\": \"text/javascript\"}}))";
-            string bootStrapScript = $"(function(){{var d = document; var s = d.createElement('script'); s.async=false; s.src={blob}; d.head.appendChild(s); d.head.removeChild(s);}})();";
+            StringBuilder builder = new();
+            builder.Append("(function(){var d = document; var s = d.createElement('script'); s.async=false; s.src=");
+            builder.Append("URL.createObjectURL(new Blob([\"");
+            builder.Append(scriptContent);
+            builder.Append("\"],{ \"type\": \"text/javascript\"})); d.head.appendChild(s); d.head.removeChild(s);})();");
 
-            await jsRuntime.InvokeVoidAsync("eval", bootStrapScript);
+            string script = builder.ToString();
+
+            await jsRuntime.InvokeVoidAsync("eval", script);
         }
     }
 }
