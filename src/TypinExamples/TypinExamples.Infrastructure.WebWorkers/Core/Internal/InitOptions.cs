@@ -1,11 +1,11 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Abstractions
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal
 {
     using System;
 
     /// <summary>
     /// Options for initializing the worker.
     /// </summary>
-    public class WorkerInitOptions
+    internal class WorkerInitOptions
     {
         /// <summary>
         /// Specifies a list of assembly files names (dlls) that should be loaded when initializing the worker.

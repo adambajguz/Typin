@@ -1,4 +1,4 @@
-namespace TypinExamples.Infrastructure.WebWorkers.Hil
+namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
     using System.Collections.Generic;
@@ -8,8 +8,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.Common;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
 
     public class WorkerInstanceManager
     {
@@ -47,9 +47,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
             if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
-            {
                 value.Invoke(message);
-            }
         }
         #endregion
 
@@ -120,18 +118,14 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                     }).ContinueWith(t =>
                     {
                         if (t.IsFaulted)
-                        {
                             handleError(t.Exception!);
-                        }
                         else
-                        {
                             PostMessage(new RunProgramResultMessage
                             {
                                 WorkerId = methodCallMessage.WorkerId,
                                 CallId = methodCallMessage.CallId,
                                 ExitCode = t.Result
                             });
-                        }
                     });
                 }
                 catch (Exception e)

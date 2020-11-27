@@ -5,9 +5,10 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
-    using TypinExamples.Infrastructure.WebWorkers.Hil;
+    using TypinExamples.Infrastructure.WebWorkers.Common;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
 
