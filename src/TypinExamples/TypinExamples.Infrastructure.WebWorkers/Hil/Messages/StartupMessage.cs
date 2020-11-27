@@ -3,7 +3,7 @@
     using System;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public class InitInstanceMessage : IMessage
+    public class StartupMessage : IMessage
     {
         public ulong WorkerId { get; init; }
         public ulong CallId { get; init; }

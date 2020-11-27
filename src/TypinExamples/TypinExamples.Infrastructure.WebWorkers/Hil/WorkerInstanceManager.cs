@@ -8,35 +8,32 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Core;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public class WorkerInstanceManager
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-        public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
-
         private readonly ISerializer _serializer;
 
         private ServiceProvider? ServiceProvider { get; set; }
         private readonly Dictionary<Type, Action<IMessage>> _messageHandlerRegistry = new();
 
-        public WorkerInstanceManager(ISerializer? serializer = null)
-        {
-            _serializer = serializer ?? new DefaultSerializer();
+        public ulong Id { get; }
 
-            _messageHandlerRegistry.Add(typeof(InitInstanceMessage), InitInstance);
+        public WorkerInstanceManager(ulong id, ISerializer? serializer = null)
+        {
+            Id = id;
+
+            _serializer = serializer ?? new DefaultSerializer();
+            MessageService.Message += OnMessage;
+
+            _messageHandlerRegistry.Add(typeof(StartupMessage), InitInstance);
             _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
             _messageHandlerRegistry.Add(typeof(CancelMessage), HandleCancel);
             _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleMethodCall);
-        }
 
-        public static void Init()
-        {
-            MessageService.Message += Instance.OnMessage;
-            Instance.PostMessage(new InitWorkerResultMessage());
-#if DEBUG
-            Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.Init(): Done.");
-#endif
+            PostMessage(new InitWorkerResultMessage());
         }
 
         public void PostMessage<TMessage>(TMessage message)
@@ -98,7 +95,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 
         public void InitInstance(IMessage message)
         {
-            if (message is InitInstanceMessage createInstanceInfo)
+            if (message is StartupMessage createInstanceInfo)
             {
                 Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
                 IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
@@ -118,7 +115,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 
                 ServiceProvider = serviceCollection.BuildServiceProvider();
 
-                PostMessage(new InitInstanceResultMessage()
+                PostMessage(new StartupResultMessage()
                 {
                     WorkerId = createInstanceInfo.WorkerId,
                     CallId = createInstanceInfo.CallId,
