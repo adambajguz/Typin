@@ -13,7 +13,7 @@
 
     public sealed class WorkerFactory : IWorkerFactory
     {
-        private readonly WorkerIdProvider _idProvider = new();
+        private readonly IdProvider _idProvider = new();
         private readonly Dictionary<ulong, IWorker> _workers = new();
         private string[]? _assemblies;
 
@@ -32,6 +32,7 @@
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
             Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _assemblies);
+            await worker.InitAsync();
             _workers.Add(worker.Id, worker);
 
             return worker;

@@ -12,11 +12,6 @@
 
         public static event EventHandler<string> Message;
 
-        static MessageService()
-        {
-
-        }
-
         public static void OnMessage(string message)
         {
             Message?.Invoke(null, message);

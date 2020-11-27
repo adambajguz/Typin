@@ -1,33 +1,34 @@
-﻿<button @onclick="Click">Worker test</button>
+﻿<button @onclick="Click">Run</button>
 <p>@Result</p>
 
-<button @onclick="Click2">Worker test</button>
+<button @onclick="Click2">Cancel</button>
 <p>@Result2</p>
 
 @code {
 
-    [Inject] TypinExamples.Infrastructure.WebWorkers.Abstractions.IWorkerFactory WorkerFactory { get; init; } = default!;
+        [Inject] TypinExamples.Infrastructure.WebWorkers.Abstractions.IWorkerFactory WorkerFactory { get; init; } = default!;
 
     private string Result = string.Empty;
     private string Result2 = string.Empty;
 
+    TypinExamples.Infrastructure.WebWorkers.Abstractions.IWorker? Worker { get; set; }
+
     async Task Click()
     {
         // Create worker.
-        var worker = await WorkerFactory.CreateAsync<WebWorkerStartup>();
-        int exitCode = await worker.RunAsync();
+        Worker = await WorkerFactory.CreateAsync<WebWorkerStartup>();
+        int exitCode = await Worker.RunAsync();
         Result = exitCode.ToString();
         StateHasChanged();
-        await worker.DisposeAsync();
+        await Worker.DisposeAsync();
     }
 
     async Task Click2()
     {
         // Create worker.
-        var worker = await WorkerFactory.CreateAsync<WebWorkerStartup>();
-        int exitCode = await worker.RunAsync();
-        Result2 = exitCode.ToString();
-        StateHasChanged();
-        await worker.DisposeAsync();
+        if (Worker is not null)
+        {
+            await Worker.CancelAsync();
+        }
     }
 }

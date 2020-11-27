@@ -11,5 +11,7 @@
         bool IsDisposed { get; }
 
         Task<int> RunAsync();
+        Task CancelAsync();
+        Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data);
     }
 }

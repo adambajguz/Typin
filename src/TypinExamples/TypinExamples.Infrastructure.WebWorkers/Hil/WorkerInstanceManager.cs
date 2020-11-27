@@ -2,21 +2,23 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Core;
-    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     public class WorkerInstanceManager
     {
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
         public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
 
         private readonly ISerializer _serializer;
 
         private ServiceProvider? ServiceProvider { get; set; }
-        private readonly Dictionary<Type, Action<BaseMessage>> _messageHandlerRegistry = new();
+        private readonly Dictionary<Type, Action<IMessage>> _messageHandlerRegistry = new();
 
         public WorkerInstanceManager(ISerializer? serializer = null)
         {
@@ -24,29 +26,30 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 
             _messageHandlerRegistry.Add(typeof(InitInstanceMessage), InitInstance);
             _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
-            _messageHandlerRegistry.Add(typeof(MethodCallParamsMessage), HandleMethodCall);
+            _messageHandlerRegistry.Add(typeof(CancelMessage), HandleCancel);
+            _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleMethodCall);
         }
 
         public static void Init()
         {
             MessageService.Message += Instance.OnMessage;
-            Instance.PostMessage(new InitWorkerCompleteMessage());
+            Instance.PostMessage(new InitWorkerResultMessage());
 #if DEBUG
             Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.Init(): Done.");
 #endif
         }
 
         public void PostMessage<TMessage>(TMessage message)
-            where TMessage : BaseMessage
+            where TMessage : IMessage
         {
             string? serialized = _serializer.Serialize(message);
 
             MessageService.PostMessage(serialized);
         }
 
-        private void OnMessage(object sender, string rawMessage)
+        private void OnMessage(object? sender, string rawMessage)
         {
-            BaseMessage message = _serializer.Deserialize<BaseMessage>(rawMessage);
+            IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
             if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
             {
@@ -54,14 +57,15 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        private void HandleMethodCall(BaseMessage message)
+        private void HandleMethodCall(IMessage message)
         {
-            if (message is MethodCallParamsMessage methodCallMessage)
+            if (message is RunProgramMessage methodCallMessage)
             {
                 void handleError(Exception e)
                 {
-                    PostMessage(new MethodCallResultMessage()
+                    PostMessage(new RunProgramResultMessage()
                     {
+                        WorkerId = methodCallMessage.WorkerId,
                         CallId = methodCallMessage.CallId,
                         Exception = e
                     });
@@ -77,8 +81,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                         if (t.IsFaulted)
                             handleError(t.Exception);
                         else
-                            PostMessage(new MethodCallResultMessage
+                            PostMessage(new RunProgramResultMessage
                             {
+                                WorkerId = methodCallMessage.WorkerId,
                                 CallId = methodCallMessage.CallId,
                                 ExitCode = t.Result
                             });
@@ -91,7 +96,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        public void InitInstance(BaseMessage message)
+        public void InitInstance(IMessage message)
         {
             if (message is InitInstanceMessage createInstanceInfo)
             {
@@ -105,15 +110,17 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
 
                 WorkerConfiguration? configuration = configurationBuilder.Build();
                 startup.ConfigureServices(serviceCollection);
-                serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint);
-                serviceCollection.AddTransient<IWorkerMessageService, InjectableMessageService>();
+                serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint)
+                                 .AddTransient<IWorkerMessageService, InjectableMessageService>()
+                                 .AddScoped<HttpClient>();
 
                 startup.ConfigureServices(serviceCollection);
 
                 ServiceProvider = serviceCollection.BuildServiceProvider();
 
-                PostMessage(new InitInstanceCompleteMessage()
+                PostMessage(new InitInstanceResultMessage()
                 {
+                    WorkerId = createInstanceInfo.WorkerId,
                     CallId = createInstanceInfo.CallId,
                     IsSuccess = startup is not null,
                     Exception = null,
@@ -121,14 +128,17 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        public void DisposeInstance(BaseMessage message)
+        public void DisposeInstance(IMessage message)
         {
             if (message is DisposeInstanceMessage dispose)
             {
+                _cancellationTokenSource.Cancel();
                 ServiceProvider?.Dispose();
+                _cancellationTokenSource.Dispose();
 
-                PostMessage(new DisposeInstanceCompleteMessage
+                PostMessage(new DisposeInstanceResultMessage
                 {
+                    WorkerId = dispose.WorkerId,
                     CallId = dispose.CallId,
                     IsSuccess = true,
                     Exception = null
@@ -136,11 +146,25 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             }
         }
 
-        public async Task<int> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
+        public void HandleCancel(IMessage message)
+        {
+            if (message is CancelMessage cancel)
+            {
+                _cancellationTokenSource.Cancel();
+
+                PostMessage(new CancelResultMessage
+                {
+                    WorkerId = cancel.WorkerId,
+                    CallId = cancel.CallId,
+                });
+            }
+        }
+
+        public async Task<int> MethodCall(RunProgramMessage instanceMethodCallParams)
         {
             _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
 
-            return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main();
+            return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main(_cancellationTokenSource.Token);
         }
     }
 }

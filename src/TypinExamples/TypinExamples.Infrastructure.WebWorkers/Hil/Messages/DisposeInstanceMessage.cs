@@ -1,9 +1,12 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
-    using TypinExamples.Infrastructure.WebWorkers.Hil.Messages.Base;
+    using System;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public class DisposeInstanceMessage : BaseMessage
+    public class DisposeInstanceMessage : IMessage
     {
-
+        public ulong WorkerId { get; init; }
+        public ulong CallId { get; init; }
+        public Exception? Exception { get; init; }
     }
 }

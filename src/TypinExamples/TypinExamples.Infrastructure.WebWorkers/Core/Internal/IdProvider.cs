@@ -1,10 +1,10 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal
 {
-    internal sealed class WorkerIdProvider
+    internal sealed class IdProvider
     {
         private ulong _id;
 
-        public WorkerIdProvider()
+        public IdProvider()
         {
 
         }

@@ -2,7 +2,7 @@
 {
     public interface IWorkerConfigurationBuilder
     {
-        IWorkerConfigurationBuilder UseProgram<T>(bool asDefault = true)
-            where T : class, IWorkerProgram;
+        IWorkerConfigurationBuilder UseProgram<TProgram>(bool asDefault = true)
+            where TProgram : class, IWorkerProgram;
     }
 }
