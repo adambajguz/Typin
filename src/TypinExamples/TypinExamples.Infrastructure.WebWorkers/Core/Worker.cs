@@ -6,6 +6,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
     using TypinExamples.Infrastructure.WebWorkers.Hil;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
@@ -37,8 +38,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             _serializer = new DefaultSerializer();
         }
 
+        #region Messages
         [JSInvokable]
-        public async Task OnMessage(string rawMessage)
+        public void OnMessage(string rawMessage)
         {
 #if DEBUG
             Console.WriteLine($"{nameof(Worker<T>)}.{nameof(OnMessage)}: {rawMessage}");
@@ -64,10 +66,10 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             Console.WriteLine($"{nameof(Worker<T>)}.{nameof(PostMessageAsync)}: {serialized}");
 #endif
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.postMessage", Id, serialized);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", Id, serialized);
         }
 
-        private async Task<TResultMessage> InternalCall<TMessage, TResultMessage>(Func<WorkerCallContext, TMessage> action)
+        private async Task<TResultMessage> PostMessageAsync<TMessage, TResultMessage>(Func<WorkerCallContext, TMessage> action)
             where TMessage : class, IMessage
             where TResultMessage : notnull, IMessage
         {
@@ -87,6 +89,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             return returnMessage;
         }
+        #endregion
 
         public async Task InitAsync()
         {
@@ -96,12 +99,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             await _scriptLoader.InitScript();
 
             var ms = typeof(MessageService);
-            var wp = typeof(WorkerProgram);
+            var wp = typeof(WorkerEntryPoint);
 
             var taskCompletionSource = new TaskCompletionSource<object>();
             messageRegister.Add(_idProvider.Next(), taskCompletionSource);
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.initWorker",
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.initWorker",
                                              Id,
                                              DotNetObjectReference.Create(this),
                                              new WorkerInitOptions
@@ -109,7 +112,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                                                  DependentAssemblyFilenames = _assemblies,
                                                  CallbackMethod = nameof(OnMessage),
                                                  MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(MessageService.OnMessage)}",
-                                                 InitEndpoint = $"[{wp.Assembly.GetName().Name}]{wp.FullName}:{nameof(WorkerProgram.Main)}",
+                                                 InitEndpoint = $"[{wp.Assembly.GetName().Name}]{wp.FullName}:{nameof(WorkerEntryPoint.Init)}",
+                                                 StartupType = typeof(T).AssemblyQualifiedName,
                                                  Debug = false
                                              });
 
@@ -118,22 +122,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                 throw new InvalidOperationException($"Failed to init worker with id {Id}.");
             }
 
-            var result = await InternalCall<StartupMessage, StartupResultMessage>((context) =>
-            {
-                return new StartupMessage
-                {
-                    WorkerId = context.WorkerId,
-                    CallId = context.CallId,
-                    StartupType = typeof(T).AssemblyQualifiedName
-                };
-            });
-
             IsInitialized = true;
         }
 
         public async Task<int> RunAsync()
         {
-            var result = await InternalCall<RunProgramMessage, RunProgramResultMessage>((context) =>
+            var result = await PostMessageAsync<RunProgramMessage, RunProgramResultMessage>((context) =>
             {
                 return new RunProgramMessage
                 {
@@ -151,7 +145,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task CancelAsync()
         {
-            var result = await InternalCall<CancelMessage, CancelResultMessage>((context) =>
+            var result = await PostMessageAsync<CancelMessage, CancelResultMessage>((context) =>
             {
                 return new CancelMessage
                 {
@@ -166,7 +160,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data)
         {
-            var result = await InternalCall<CallMessage<TRequest>, CallResultMessage<TResponse>>((context) =>
+            var result = await PostMessageAsync<CallMessage<TRequest>, CallResultMessage<TResponse>>((context) =>
             {
                 return new CallMessage<TRequest>
                 {
@@ -188,7 +182,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             if (IsDisposed)
                 return;
 
-            var result = await InternalCall<DisposeInstanceMessage, DisposeInstanceResultMessage>((context) =>
+            var result = await PostMessageAsync<DisposeInstanceMessage, DisposeInstanceResultMessage>((context) =>
             {
                 return new DisposeInstanceMessage
                 {
@@ -197,7 +191,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                 };
             });
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.disposeWorker", Id);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
             IsDisposed = true;
         }
     }

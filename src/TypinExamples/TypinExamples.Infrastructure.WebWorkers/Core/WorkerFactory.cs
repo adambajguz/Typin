@@ -7,6 +7,7 @@
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
+    using Newtonsoft.Json;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.BlazorBoot;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
@@ -58,7 +59,8 @@
             //        dlls.Add(assembly, dll);
             //    }
 
-            //    _dlls = dlls;
+            //    var serialized = JsonConvert.SerializeObject(dlls);
+            //    int count = serialized.Length;
             //}
 
             return assemblies;
