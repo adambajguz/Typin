@@ -184,7 +184,7 @@
 
         private async Task<string[]?> GetAssembliesToLoad()
         {
-            BlazorBootModel? response = await _client.GetFromJsonAsync<BlazorBootModel>("_framework/blazor.boot.json");
+            BlazorBootModel? response = await _client.GetFromJsonAsync<BlazorBootModel>(BlazorBootModel.FilePath);
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
             _logger.LogInformation("Fetched assemblies list.");

@@ -3,7 +3,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public static class SetupExtensions
+    public static class ServiceCollectionExtensions
     {
         /// <summary>
         /// Adds <see cref="IWorkerFactory"/> as a singleton service

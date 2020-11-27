@@ -1,129 +1,167 @@
 namespace TypinExamples.Infrastructure.WebWorkers.Hil
 {
     using System;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Core;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
-    public partial class WorkerInstanceManager
+    public class WorkerInstanceManager
     {
-        public static readonly WorkerInstanceManager Instance = new WorkerInstanceManager();
-        private readonly MessageHandlerRegistry messageHandlerRegistry;
-
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly ISerializer _serializer;
 
-        public WorkerInstanceManager(ISerializer? serializer = null)
-        {
-            _serializer = serializer?? new DefaultMessageSerializer();
+        private ServiceProvider? ServiceProvider { get; set; }
+        private readonly Dictionary<Type, Action<IMessage>> _messageHandlerRegistry = new();
 
-            messageHandlerRegistry = new MessageHandlerRegistry(_serializer);
-            messageHandlerRegistry.Add<InitInstanceMessage>(InitInstance);
-            messageHandlerRegistry.Add<DisposeInstanceMessage>(DisposeInstance);
-            messageHandlerRegistry.Add<MethodCallParamsMessage>(HandleMethodCall);
+        public ulong Id { get; }
+
+        public WorkerInstanceManager(ulong id, ISerializer? serializer = null)
+        {
+            Id = id;
+
+            _serializer = serializer ?? new DefaultSerializer();
+            MessageService.Message += OnMessage;
+
+            _messageHandlerRegistry.Add(typeof(StartupMessage), InitInstance);
+            _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
+            _messageHandlerRegistry.Add(typeof(CancelMessage), HandleCancel);
+            _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleMethodCall);
+
+            PostMessage(new InitWorkerResultMessage());
         }
 
-        public static void Init()
+        public void PostMessage<TMessage>(TMessage message)
+            where TMessage : IMessage
         {
-            MessageService.Message += Instance.OnMessage;
-            Instance.PostObject(new InitWorkerCompleteMessage());
-#if DEBUG
-            Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.Init(): Done.");
-#endif
+            string? serialized = _serializer.Serialize(message);
+
+            MessageService.PostMessage(serialized);
         }
 
-        public void PostMessage(string message)
+        private void OnMessage(object? sender, string rawMessage)
         {
-#if DEBUG
-            Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.PostMessage(): {message}.");
-#endif
-            MessageService.PostMessage(message);
-        }
+            IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
-        internal void PostObject<T>(T obj)
-        {
-            PostMessage(_serializer.Serialize(obj));
-        }
-
-        private void OnMessage(object sender, string message)
-        {
-            messageHandlerRegistry.HandleMessage(message);
-        }
-
-        private void HandleMethodCall(MethodCallParamsMessage methodCallMessage)
-        {
-            void handleError(Exception e)
+            if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
             {
-                PostObject(
-                new MethodCallResultMessage()
-                {
-                    CallId = methodCallMessage.CallId,
-                    Exception = e
-                });
+                value.Invoke(message);
             }
+        }
 
-            try
+        private void HandleMethodCall(IMessage message)
+        {
+            if (message is RunProgramMessage methodCallMessage)
             {
-                Task.Run(async () =>
+                void handleError(Exception e)
                 {
-                    return await MethodCall(methodCallMessage);
-                }).ContinueWith(t =>
+                    PostMessage(new RunProgramResultMessage()
+                    {
+                        WorkerId = methodCallMessage.WorkerId,
+                        CallId = methodCallMessage.CallId,
+                        Exception = e
+                    });
+                }
+
+                try
                 {
-                    if (t.IsFaulted)
-                        handleError(t.Exception);
-                    else
-                        PostObject(
-                            new MethodCallResultMessage
+                    Task.Run(async () =>
+                    {
+                        return await MethodCall(methodCallMessage);
+                    }).ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                            handleError(t.Exception);
+                        else
+                            PostMessage(new RunProgramResultMessage
                             {
+                                WorkerId = methodCallMessage.WorkerId,
                                 CallId = methodCallMessage.CallId,
-                                ResultPayload = _serializer.Serialize(t.Result)
-                            }
-                        );
+                                ExitCode = t.Result
+                            });
+                    });
+                }
+                catch (Exception e)
+                {
+                    handleError(e);
+                }
+            }
+        }
+
+        public void InitInstance(IMessage message)
+        {
+            if (message is StartupMessage createInstanceInfo)
+            {
+                Type type = Type.GetType(createInstanceInfo.StartupType) ?? throw new InvalidOperationException("Invalid startup class type.");
+                IWorkerStartup startup = Activator.CreateInstance(type) as IWorkerStartup ?? throw new InvalidOperationException("Invalid startup class.");
+
+                ServiceCollection serviceCollection = new ServiceCollection();
+
+                WorkerConfigurationBuilder configurationBuilder = new();
+                startup.Configure(configurationBuilder);
+
+                WorkerConfiguration? configuration = configurationBuilder.Build();
+                startup.ConfigureServices(serviceCollection);
+                serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint)
+                                 .AddTransient<IWorkerMessageService, InjectableMessageService>()
+                                 .AddScoped<HttpClient>();
+
+                startup.ConfigureServices(serviceCollection);
+
+                ServiceProvider = serviceCollection.BuildServiceProvider();
+
+                PostMessage(new StartupResultMessage()
+                {
+                    WorkerId = createInstanceInfo.WorkerId,
+                    CallId = createInstanceInfo.CallId,
+                    IsSuccess = startup is not null,
+                    Exception = null,
                 });
             }
-            catch (Exception e)
+        }
+
+        public void DisposeInstance(IMessage message)
+        {
+            if (message is DisposeInstanceMessage dispose)
             {
-                handleError(e);
+                _cancellationTokenSource.Cancel();
+                ServiceProvider?.Dispose();
+                _cancellationTokenSource.Dispose();
+
+                PostMessage(new DisposeInstanceResultMessage
+                {
+                    WorkerId = dispose.WorkerId,
+                    CallId = dispose.CallId,
+                    IsSuccess = true,
+                    Exception = null
+                });
             }
         }
 
-        private IWebWorkerEntryPoint? _instance;
-
-        public void InitInstance(InitInstanceMessage createInstanceInfo)
+        public void HandleCancel(IMessage message)
         {
-            Type? type = Type.GetType(createInstanceInfo.Type);
-
-            _instance = Activator.CreateInstance(type) as IWebWorkerEntryPoint;
-
-            PostObject(new InitInstanceCompleteMessage()
+            if (message is CancelMessage cancel)
             {
-                CallId = createInstanceInfo.CallId,
-                IsSuccess = _instance is not null,
-                Exception = null,
-            });
+                _cancellationTokenSource.Cancel();
+
+                PostMessage(new CancelResultMessage
+                {
+                    WorkerId = cancel.WorkerId,
+                    CallId = cancel.CallId,
+                });
+            }
         }
 
-        public async void DisposeInstance(DisposeInstanceMessage dispose)
+        public async Task<int> MethodCall(RunProgramMessage instanceMethodCallParams)
         {
-            if (_instance is IDisposable d)
-            {
-                d.Dispose();
-            }
-            else if (_instance is IAsyncDisposable ad)
-            {
-                await ad.DisposeAsync();
-            }
+            _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
 
-            PostObject(new DisposeInstanceCompleteMessage
-            {
-                CallId = dispose.CallId,
-                IsSuccess = true,
-                Exception = null
-            });
-        }
-
-        public async Task<object> MethodCall(MethodCallParamsMessage instanceMethodCallParams)
-        {
-            return await _instance.Main();
+            return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main(_cancellationTokenSource.Token);
         }
     }
 }

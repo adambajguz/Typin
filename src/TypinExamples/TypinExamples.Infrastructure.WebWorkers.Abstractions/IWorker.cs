@@ -2,16 +2,16 @@
 {
     using System;
     using System.Threading.Tasks;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
-    public interface IWorker : IWorkerMessageService, IAsyncDisposable
+    public interface IWorker : IAsyncDisposable
     {
+        ulong Id { get; }
+
         bool IsInitialized { get; }
-
-        long Identifier { get; }
-
-        Task InitAsync(string initEndpoint);
+        bool IsDisposed { get; }
 
         Task<int> RunAsync();
+        Task CancelAsync();
+        Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data);
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
 
     /// <summary>
     /// Simple static message service that runs in the worker thread.
@@ -10,10 +11,6 @@
         private static readonly DOMObject self = new DOMObject("self");
 
         public static event EventHandler<string> Message;
-
-        static MessageService()
-        {
-        }
 
         public static void OnMessage(string message)
         {
@@ -25,6 +22,9 @@
 
         public static void PostMessage(string message)
         {
+#if DEBUG
+            Console.WriteLine($"{nameof(MessageService)}.{nameof(PostMessage)}: {message}");
+#endif
             self.Invoke("postMessage", message);
         }
 

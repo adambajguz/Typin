@@ -5,6 +5,8 @@
 
     public class BlazorBootModel
     {
+        public const string FilePath = "_framework/blazor.boot.json";
+
         [JsonPropertyName("cacheBootResources")]
         public bool CacheBootResources { get; init; }
 

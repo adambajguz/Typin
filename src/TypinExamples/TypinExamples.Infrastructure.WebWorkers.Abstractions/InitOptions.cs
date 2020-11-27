@@ -15,12 +15,12 @@
         /// <summary>
         /// Mono-wasm-annotated endpoint for sending messages to the worker. Experts only.
         /// </summary>
-        public string? MessageEndPoint { get; init; }
+        public string? MessageEndpoint { get; init; }
 
         /// <summary>
         /// Mono-wasm-annotated endpoint for instanciating the worker. Experts only.
         /// </summary>
-        public string? InitEndPoint { get; init; }
+        public string? InitEndpoint { get; init; }
 
         /// <summary>
         /// Unique blazor identifier for handling callbacks. As referenced by JSInvokableAttribute. Experts only.
