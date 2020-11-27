@@ -3,13 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
-    public interface IWorker : IWorkerMessageService, IAsyncDisposable
+    public interface IWorker : IAsyncDisposable
     {
         ulong Id { get; }
 
         bool IsInitialized { get; }
-
-        Task InitAsync(string initEndpoint);
+        bool IsDisposed { get; }
 
         Task<int> RunAsync();
     }

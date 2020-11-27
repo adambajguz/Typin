@@ -5,6 +5,5 @@
     public class MethodCallResultMessage : BaseMessage
     {
         public int ExitCode { get; init; }
-        public long CallId { get; init; }
     }
 }

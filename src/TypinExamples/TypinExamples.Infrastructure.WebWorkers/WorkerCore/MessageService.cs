@@ -27,6 +27,9 @@
 
         public static void PostMessage(string message)
         {
+#if DEBUG
+            Console.WriteLine($"{nameof(MessageService)}.{nameof(PostMessage)}: {message}");
+#endif
             self.Invoke("postMessage", message);
         }
 

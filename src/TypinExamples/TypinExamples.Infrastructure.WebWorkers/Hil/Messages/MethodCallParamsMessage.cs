@@ -5,8 +5,6 @@
     public class MethodCallParamsMessage : BaseMessage
     {
         public ulong WorkerId { get; init; }
-        public long InstanceId { get; init; }
         public string? ProgramClass { get; init; }
-        public long CallId { get; init; }
     }
 }

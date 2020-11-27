@@ -1,6 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Core
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Json;
@@ -10,17 +11,18 @@
     using TypinExamples.Infrastructure.WebWorkers.BlazorBoot;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
 
-    public class WorkerFactory : IWorkerFactory
+    public sealed class WorkerFactory : IWorkerFactory
     {
-        private WorkerIdProvider IdProvider { get; } = new();
+        private readonly WorkerIdProvider _idProvider = new();
+        private readonly Dictionary<ulong, IWorker> _workers = new();
         private string[]? _assemblies;
 
-        private readonly IJSRuntime jsRuntime;
+        private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
 
         public WorkerFactory(IJSRuntime jsRuntime, HttpClient httpClient)
         {
-            this.jsRuntime = jsRuntime;
+            _jsRuntime = jsRuntime;
             _httpClient = httpClient;
         }
 
@@ -29,9 +31,16 @@
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            Worker<T> worker = new Worker<T>(IdProvider.Next(), jsRuntime, _assemblies);
+            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _assemblies);
+            _workers.Add(worker.Id, worker);
 
             return worker;
+        }
+
+        public IWorker? GetWorkerOrDefault(ulong id)
+        {
+            _workers.TryGetValue(id, out IWorker? value);
+            return value;
         }
 
         private async Task<string[]?> GetAssembliesToLoad()
@@ -52,6 +61,12 @@
             //}
 
             return assemblies;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var worker in _workers)
+                await worker.Value.DisposeAsync();
         }
     }
 }

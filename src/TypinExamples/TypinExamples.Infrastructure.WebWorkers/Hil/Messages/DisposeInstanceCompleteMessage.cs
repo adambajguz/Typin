@@ -4,7 +4,6 @@
 
     public class DisposeInstanceCompleteMessage : BaseMessage
     {
-        public long CallId { get; init; }
         public bool IsSuccess { get; init; }
     }
 }

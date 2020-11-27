@@ -4,7 +4,6 @@
 
     public class DisposeInstanceMessage : BaseMessage
     {
-        public long InstanceId { get; init; }
-        public long CallId { get; init; }
+
     }
 }

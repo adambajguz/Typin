@@ -4,6 +4,7 @@
 
     public abstract class BaseMessage
     {
+        public ulong CallId { get; init; }
         public Exception? Exception { get; init; }
     }
 }

@@ -30,23 +30,18 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
         public static void Init()
         {
             MessageService.Message += Instance.OnMessage;
-            Instance.PostObject(new InitWorkerCompleteMessage());
+            Instance.PostMessage(new InitWorkerCompleteMessage());
 #if DEBUG
             Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.Init(): Done.");
 #endif
         }
 
-        public void PostMessage(string message)
+        public void PostMessage<TMessage>(TMessage message)
+            where TMessage : BaseMessage
         {
-#if DEBUG
-            Console.WriteLine($"BlazorWorker.WorkerBackgroundService.{nameof(WorkerInstanceManager)}.PostMessage(): {message}.");
-#endif
-            MessageService.PostMessage(message);
-        }
+            string? serialized = _serializer.Serialize(message);
 
-        internal void PostObject<T>(T obj)
-        {
-            PostMessage(_serializer.Serialize(obj));
+            MessageService.PostMessage(serialized);
         }
 
         private void OnMessage(object sender, string rawMessage)
@@ -65,8 +60,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             {
                 void handleError(Exception e)
                 {
-                    PostObject(
-                    new MethodCallResultMessage()
+                    PostMessage(new MethodCallResultMessage()
                     {
                         CallId = methodCallMessage.CallId,
                         Exception = e
@@ -83,13 +77,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                         if (t.IsFaulted)
                             handleError(t.Exception);
                         else
-                            PostObject(
-                                new MethodCallResultMessage
-                                {
-                                    CallId = methodCallMessage.CallId,
-                                    ExitCode = t.Result
-                                }
-                            );
+                            PostMessage(new MethodCallResultMessage
+                            {
+                                CallId = methodCallMessage.CallId,
+                                ExitCode = t.Result
+                            });
                     });
                 }
                 catch (Exception e)
@@ -114,12 +106,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
                 WorkerConfiguration? configuration = configurationBuilder.Build();
                 startup.ConfigureServices(serviceCollection);
                 serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.DefaultEntryPoint);
+                serviceCollection.AddTransient<IWorkerMessageService, InjectableMessageService>();
 
                 startup.ConfigureServices(serviceCollection);
 
                 ServiceProvider = serviceCollection.BuildServiceProvider();
 
-                PostObject(new InitInstanceCompleteMessage()
+                PostMessage(new InitInstanceCompleteMessage()
                 {
                     CallId = createInstanceInfo.CallId,
                     IsSuccess = startup is not null,
@@ -134,7 +127,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Hil
             {
                 ServiceProvider?.Dispose();
 
-                PostObject(new DisposeInstanceCompleteMessage
+                PostMessage(new DisposeInstanceCompleteMessage
                 {
                     CallId = dispose.CallId,
                     IsSuccess = true,
