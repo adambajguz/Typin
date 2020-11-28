@@ -5,10 +5,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
-    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
-    using TypinExamples.Infrastructure.WebWorkers.Common;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
 
@@ -48,11 +49,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 #endif
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
-            if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
-                throw new InvalidOperationException($"Invalid message with call id {message.CallId} from {message.WorkerId}.");
+            if (!messageRegister.TryGetValue(message.Id, out var taskCompletionSource))
+                throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.WorkerId}.");
 
             taskCompletionSource.SetResult(message);
-            messageRegister.Remove(message.CallId);
+            messageRegister.Remove(message.Id);
 
             if (message.Exception is not null)
                 taskCompletionSource.SetException(message.Exception);
@@ -118,7 +119,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                                                  Debug = false
                                              });
 
-            if (await taskCompletionSource.Task is not InitWorkerResultMessage iwrm)
+            if (await taskCompletionSource.Task is not Message<Init.ResultPayload> iwrm)
             {
                 throw new InvalidOperationException($"Failed to init worker with id {Id}.");
             }
@@ -161,21 +162,21 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data)
         {
-            var result = await PostMessageAsync<CallMessage<TRequest>, CallResultMessage<TResponse>>((context) =>
+            var result = await PostMessageAsync<CallPayload<TRequest>, CallResultMessage<TResponse>>((context) =>
             {
-                return new CallMessage<TRequest>
+                return new CallPayload<TRequest>
                 {
                     WorkerId = context.WorkerId,
                     CallId = context.CallId,
                     ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type."),
-                    Data = data
+                    Payload = data
                 };
             });
 
             if (result.Exception is not null)
                 throw new AggregateException($"Worker exception: {result.Exception.Message}", result.Exception);
 
-            return result.Data;
+            return result.Payload;
         }
 
         public async ValueTask DisposeAsync()

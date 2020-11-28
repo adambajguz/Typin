@@ -1,7 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal
 {
     using System;
-    using TypinExamples.Infrastructure.WebWorkers.Common;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     internal static class WorkerEntryPoint

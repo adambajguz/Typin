@@ -7,9 +7,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
-    using TypinExamples.Infrastructure.WebWorkers.Common;
-    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
 
     public class WorkerInstanceManager
     {
@@ -146,7 +146,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                 PostMessage(new DisposeInstanceResultMessage
                 {
                     WorkerId = dispose.WorkerId,
-                    CallId = dispose.CallId,
+                    Id = dispose.CallId,
                     IsSuccess = true,
                     Exception = null
                 });

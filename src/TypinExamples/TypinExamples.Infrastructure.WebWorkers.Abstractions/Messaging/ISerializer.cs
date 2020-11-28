@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Abstractions
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging
 {
     public interface ISerializer
     {

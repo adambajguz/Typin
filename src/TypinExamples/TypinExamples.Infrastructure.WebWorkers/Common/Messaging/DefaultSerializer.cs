@@ -1,7 +1,7 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Common
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messaging
 {
     using Newtonsoft.Json;
-    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
 
     public class DefaultSerializer : ISerializer
     {
