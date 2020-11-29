@@ -9,15 +9,19 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
 
     public class WorkerInstanceManager
     {
+        private readonly IdProvider _idProvider = new();
+
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly ISerializer _serializer;
 
         private ServiceProvider? ServiceProvider { get; set; }
         private readonly Dictionary<Type, Action<IMessage>> _messageHandlerRegistry = new();
+        private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         public ulong Id { get; }
 
@@ -28,18 +32,43 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             _serializer = serializer ?? new DefaultSerializer();
             MessageService.Message += OnMessage;
 
-            _messageHandlerRegistry.Add(typeof(DisposeInstanceMessage), DisposeInstance);
-            _messageHandlerRegistry.Add(typeof(CancelMessage), HandleCancel);
-            _messageHandlerRegistry.Add(typeof(RunProgramMessage), HandleRunProgram);
+            _messageHandlerRegistry.Add(typeof(Message<Dispose.Payload>), DisposeInstance);
+            _messageHandlerRegistry.Add(typeof(Message<Cancel.Payload>), HandleCancel);
+            _messageHandlerRegistry.Add(typeof(Message<RunProgram.Payload>), HandleRunProgram);
         }
 
-        #region Messages
+        #region Messaging
         public void PostMessage<TMessage>(TMessage message)
             where TMessage : IMessage
         {
             string? serialized = _serializer.Serialize(message);
 
             MessageService.PostMessage(serialized);
+        }
+
+        private async Task<TResultPayload?> PostMessageAsync<TPayload, TResultPayload>(TPayload payload)
+        {
+            var callId = _idProvider.Next();
+
+            var taskCompletionSource = new TaskCompletionSource<object>();
+            messageRegister.Add(callId, taskCompletionSource);
+
+            Message<TPayload> message = new()
+            {
+                Id = callId,
+                WorkerId = Id,
+                Payload = payload
+            };
+
+            PostMessage(message);
+
+            if (await taskCompletionSource.Task is not Message<TResultPayload> returnMessage)
+                throw new InvalidOperationException("Invalid message.");
+
+            if (returnMessage.Exception is not null)
+                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+
+            return returnMessage.Payload;
         }
 
         private void OnMessage(object? sender, string rawMessage)
@@ -77,33 +106,40 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
-            PostMessage(new InitWorkerResultMessage());
+            PostMessage(new Message<Init.ResultPayload>
+            {
+                Id = 0,
+                WorkerId = Id,
+                Payload = new Init.ResultPayload()
+            });
         }
 
         public void HandleCancel(IMessage message)
         {
-            if (message is CancelMessage cancel)
+            if (message is Message<Cancel.Payload> cancel)
             {
                 _cancellationTokenSource.Cancel();
 
-                PostMessage(new CancelResultMessage
+                PostMessage(new Message<Cancel.ResultPayload>
                 {
-                    WorkerId = cancel.WorkerId,
-                    CallId = cancel.CallId,
+                    Id = 2,
+                    WorkerId = Id,
+                    Payload = new Cancel.ResultPayload()
                 });
             }
         }
 
         private void HandleRunProgram(IMessage message)
         {
-            if (message is RunProgramMessage methodCallMessage)
+            if (message is Message<RunProgram.Payload> methodCallMessage)
             {
                 void handleError(Exception e)
                 {
-                    PostMessage(new RunProgramResultMessage()
+                    PostMessage(new Message<RunProgram.ResultPayload>
                     {
-                        WorkerId = methodCallMessage.WorkerId,
-                        CallId = methodCallMessage.CallId,
+                        Id = 1,
+                        WorkerId = Id,
+                        Payload = new RunProgram.ResultPayload { },
                         Exception = e
                     });
                 }
@@ -120,12 +156,19 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                         if (t.IsFaulted)
                             handleError(t.Exception!);
                         else
-                            PostMessage(new RunProgramResultMessage
+                        {
+                            int ec = t.Result;
+
+                            PostMessage(new Message<RunProgram.ResultPayload>
                             {
-                                WorkerId = methodCallMessage.WorkerId,
-                                CallId = methodCallMessage.CallId,
-                                ExitCode = t.Result
+                                Id = 1,
+                                WorkerId = Id,
+                                Payload = new RunProgram.ResultPayload
+                                {
+                                    ExitCode = ec
+                                },
                             });
+                        }
                     });
                 }
                 catch (Exception e)
@@ -137,18 +180,20 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 
         public void DisposeInstance(IMessage message)
         {
-            if (message is DisposeInstanceMessage dispose)
+            if (message is Message<Dispose.Payload> dispose)
             {
                 _cancellationTokenSource.Cancel();
                 ServiceProvider?.Dispose();
                 _cancellationTokenSource.Dispose();
 
-                PostMessage(new DisposeInstanceResultMessage
+                PostMessage(new Message<Dispose.ResultPayload>
                 {
-                    WorkerId = dispose.WorkerId,
-                    Id = dispose.CallId,
-                    IsSuccess = true,
-                    Exception = null
+                    Id = 2,
+                    WorkerId = Id,
+                    Payload = new Dispose.ResultPayload
+                    {
+                        IsSuccess = true,
+                    },
                 });
 
                 MessageService.Message -= OnMessage;
