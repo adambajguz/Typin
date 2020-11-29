@@ -49,14 +49,17 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 #endif
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
-            if (!messageRegister.TryGetValue(message.Id, out var taskCompletionSource))
-                throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.WorkerId}.");
+            if (message.IsResult)
+            {
+                if (!messageRegister.TryGetValue(message.Id, out var taskCompletionSource))
+                    throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.WorkerId}.");
 
-            taskCompletionSource.SetResult(message);
-            messageRegister.Remove(message.Id);
+                taskCompletionSource.SetResult(message);
+                messageRegister.Remove(message.Id);
 
-            if (message.Exception is not null)
-                taskCompletionSource.SetException(message.Exception);
+                if (message.Exception is not null)
+                    taskCompletionSource.SetException(message.Exception);
+            }
         }
 
         private async Task PostMessageAsync<TMessage>(TMessage message)

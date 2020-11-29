@@ -3,9 +3,13 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IMessageHandler<in TRequest, TResponse>
-        where TRequest : IMessage<TResponse>
+    public interface IMessageHandler<in TRequest>
     {
-        Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
+        ValueTask HandleAsync(TRequest request, CancellationToken cancellationToken);
+    }
+
+    public interface IMessageHandler<in TRequest, TResponse>
+    {
+        ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
     }
 }

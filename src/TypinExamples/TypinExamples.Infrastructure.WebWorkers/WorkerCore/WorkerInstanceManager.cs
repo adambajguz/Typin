@@ -6,21 +6,27 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging;
 
-    public class WorkerInstanceManager
+    public class WorkerInstanceManager :
+        IMessageHandler<Dispose.Payload, Dispose.ResultPayload>,
+        IMessageHandler<RunProgram.Payload, RunProgram.ResultPayload>,
+        IMessageHandler<Cancel.Payload, Cancel.ResultPayload>
     {
         private readonly IdProvider _idProvider = new();
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly ISerializer _serializer;
 
-        private ServiceProvider? ServiceProvider { get; set; }
-        private readonly Dictionary<Type, Action<IMessage>> _messageHandlerRegistry = new();
+        private ServiceProvider? _serviceProvider;
+        private WorkerConfiguration? _configuration;
+
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         public ulong Id { get; }
@@ -31,10 +37,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 
             _serializer = serializer ?? new DefaultSerializer();
             MessageService.Message += OnMessage;
-
-            _messageHandlerRegistry.Add(typeof(Message<Dispose.Payload>), DisposeInstance);
-            _messageHandlerRegistry.Add(typeof(Message<Cancel.Payload>), HandleCancel);
-            _messageHandlerRegistry.Add(typeof(Message<RunProgram.Payload>), HandleRunProgram);
         }
 
         #region Messaging
@@ -71,12 +73,36 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             return returnMessage.Payload;
         }
 
-        private void OnMessage(object? sender, string rawMessage)
+        private async void OnMessage(object? sender, string rawMessage)
         {
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
-            if (_messageHandlerRegistry.TryGetValue(message.GetType(), out var value))
-                value.Invoke(message);
+            _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
+            _ = _configuration ?? throw new InvalidOperationException("Worker not initialized.");
+
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                Type messageType = message.GetType();
+                MessageMapping mappings = _configuration.MessageMappings[messageType];
+
+                //Type wrapperType = typeof(MessageHandlerWrapper<,>).MakeGenericType(mappings.PayloadType, mappings.ResultPayloadType);
+                object service = scope.ServiceProvider.GetRequiredService(mappings.HandlerWrapperType);
+
+                if (service is IMessageHandlerWrapper wrapper)
+                {
+                    IMessage result = await wrapper.Handle(message, _cancellationTokenSource.Token);
+
+                    PostMessage(result);
+                }
+                else if(service is INoResultMessageHandlerWrapper noResultWrapper)
+                {
+                    await noResultWrapper.Handle(message, _cancellationTokenSource.Token);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
+                }
+            }
         }
         #endregion
 
@@ -94,110 +120,73 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             startup.Configure(configurationBuilder);
 
             WorkerConfiguration configuration = configurationBuilder.Build();
+            _configuration = configuration;
 
             ServiceCollection serviceCollection = new ServiceCollection();
             startup.ConfigureServices(serviceCollection);
 
             serviceCollection.AddTransient(typeof(IWorkerProgram), configuration.ProgramType)
+                             .AddTransient(typeof(MessageHandlerWrapper<,>))
                              .AddTransient<IWorkerMessageService, InjectableMessageService>()
+                             .AddSingleton<IMessageHandler<Dispose.Payload, Dispose.ResultPayload>>(this)
+                             .AddSingleton<IMessageHandler<RunProgram.Payload, RunProgram.ResultPayload>>(this)
+                             .AddSingleton<IMessageHandler<Cancel.Payload, Cancel.ResultPayload>>(this)
                              .AddSingleton(configuration)
                              .AddSingleton(new WorkerIdAccessor(Id))
                              .AddScoped<HttpClient>();
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+            foreach (MessageMapping mapping in configuration.MessageMappings.Values)
+            {
+                serviceCollection.TryAddTransient(mapping.HandlerInterfaceType, mapping.HandlerType);
+            }
+
+            _serviceProvider = serviceCollection.BuildServiceProvider();
 
             PostMessage(new Message<Init.ResultPayload>
             {
                 Id = 0,
                 WorkerId = Id,
+                FromWorker = true,
+                IsResult = true,
                 Payload = new Init.ResultPayload()
             });
         }
 
-        public void HandleCancel(IMessage message)
+        public ValueTask<Dispose.ResultPayload> HandleAsync(Dispose.Payload request, CancellationToken cancellationToken)
         {
-            if (message is Message<Cancel.Payload> cancel)
-            {
-                _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Cancel();
+            _serviceProvider?.Dispose();
+            _cancellationTokenSource.Dispose();
+            MessageService.Message -= OnMessage;
 
-                PostMessage(new Message<Cancel.ResultPayload>
+            return ValueTask.FromResult(new Dispose.ResultPayload
+            {
+                IsSuccess = true,
+            });
+        }
+
+        public async ValueTask<RunProgram.ResultPayload> HandleAsync(RunProgram.Payload request, CancellationToken cancellationToken)
+        {
+            _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
+
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                IWorkerProgram workerProgram = scope.ServiceProvider.GetRequiredService<IWorkerProgram>();
+                int exitCode = await workerProgram.Main(cancellationToken);
+                Console.WriteLine("44444444444444444   " + exitCode.ToString());
+
+                return new RunProgram.ResultPayload
                 {
-                    Id = 2,
-                    WorkerId = Id,
-                    Payload = new Cancel.ResultPayload()
-                });
+                    ExitCode = exitCode
+                };
             }
         }
 
-        private void HandleRunProgram(IMessage message)
+        public ValueTask<Cancel.ResultPayload> HandleAsync(Cancel.Payload request, CancellationToken cancellationToken)
         {
-            if (message is Message<RunProgram.Payload> methodCallMessage)
-            {
-                void handleError(Exception e)
-                {
-                    PostMessage(new Message<RunProgram.ResultPayload>
-                    {
-                        Id = 1,
-                        WorkerId = Id,
-                        Payload = new RunProgram.ResultPayload { },
-                        Exception = e
-                    });
-                }
+            _cancellationTokenSource.Cancel();
 
-                try
-                {
-                    Task.Run(async () =>
-                    {
-                        _ = ServiceProvider ?? throw new InvalidOperationException("Worker not initialized.");
-
-                        return await ServiceProvider.GetRequiredService<IWorkerProgram>().Main(_cancellationTokenSource.Token);
-                    }).ContinueWith(t =>
-                    {
-                        if (t.IsFaulted)
-                            handleError(t.Exception!);
-                        else
-                        {
-                            int ec = t.Result;
-
-                            PostMessage(new Message<RunProgram.ResultPayload>
-                            {
-                                Id = 1,
-                                WorkerId = Id,
-                                Payload = new RunProgram.ResultPayload
-                                {
-                                    ExitCode = ec
-                                },
-                            });
-                        }
-                    });
-                }
-                catch (Exception e)
-                {
-                    handleError(e);
-                }
-            }
-        }
-
-        public void DisposeInstance(IMessage message)
-        {
-            if (message is Message<Dispose.Payload> dispose)
-            {
-                _cancellationTokenSource.Cancel();
-                ServiceProvider?.Dispose();
-                _cancellationTokenSource.Dispose();
-
-                PostMessage(new Message<Dispose.ResultPayload>
-                {
-                    Id = 2,
-                    WorkerId = Id,
-                    Payload = new Dispose.ResultPayload
-                    {
-                        IsSuccess = true,
-                    },
-                });
-
-                MessageService.Message -= OnMessage;
-            }
+            return ValueTask.FromResult(new Cancel.ResultPayload());
         }
     }
 }

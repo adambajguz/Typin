@@ -29,7 +29,6 @@
             }
 
             return new Random().Next();
-            //return Task.FromResult(new Random().Next());
         }
     }
 }
