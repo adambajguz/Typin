@@ -5,10 +5,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
-    using TypinExamples.Infrastructure.WebWorkers.Common.Messages;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
-    using TypinExamples.Infrastructure.WebWorkers.Common;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
 
@@ -39,7 +40,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             _serializer = new DefaultSerializer();
         }
 
-        #region Messages
+        #region Messaging
         [JSInvokable]
         public void OnMessage(string rawMessage)
         {
@@ -48,47 +49,50 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 #endif
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
-            if (!messageRegister.TryGetValue(message.CallId, out var taskCompletionSource))
-                throw new InvalidOperationException($"Invalid message with call id {message.CallId} from {message.WorkerId}.");
+            if (message.IsResult)
+            {
+                if (!messageRegister.TryGetValue(message.Id, out var taskCompletionSource))
+                    throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.WorkerId}.");
 
-            taskCompletionSource.SetResult(message);
-            messageRegister.Remove(message.CallId);
+                taskCompletionSource.SetResult(message);
+                messageRegister.Remove(message.Id);
 
-            if (message.Exception is not null)
-                taskCompletionSource.SetException(message.Exception);
+                if (message.Exception is not null)
+                    taskCompletionSource.SetException(message.Exception);
+            }
         }
 
-        public async Task PostMessageAsync<TMessage>(TMessage message)
+        private async Task PostMessageAsync<TMessage>(TMessage message)
             where TMessage : IMessage
         {
             string? serialized = _serializer.Serialize(message);
 
-#if DEBUG
-            Console.WriteLine($"{nameof(Worker<T>)}.{nameof(PostMessageAsync)}: {serialized}");
-#endif
-
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", Id, serialized);
         }
 
-        private async Task<TResultMessage> PostMessageAsync<TMessage, TResultMessage>(Func<WorkerCallContext, TMessage> action)
-            where TMessage : class, IMessage
-            where TResultMessage : notnull, IMessage
+        private async Task<TResultPayload?> PostMessageAsync<TPayload, TResultPayload>(TPayload payload)
         {
             var callId = _idProvider.Next();
 
             var taskCompletionSource = new TaskCompletionSource<object>();
             messageRegister.Add(callId, taskCompletionSource);
 
-            IMessage message = action.Invoke(new WorkerCallContext { WorkerId = Id, CallId = callId });
+            Message<TPayload> message = new()
+            {
+                Id = callId,
+                WorkerId = Id,
+                Payload = payload
+            };
+
             await PostMessageAsync(message);
 
-            if (await taskCompletionSource.Task is not TResultMessage returnMessage)
+            if (await taskCompletionSource.Task is not Message<TResultPayload> returnMessage)
                 throw new InvalidOperationException("Invalid message.");
 
             if (returnMessage.Exception is not null)
                 throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
 
-            return returnMessage;
+            return returnMessage.Payload;
         }
         #endregion
 
@@ -118,7 +122,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                                                  Debug = false
                                              });
 
-            if (await taskCompletionSource.Task is not InitWorkerResultMessage iwrm)
+            if (await taskCompletionSource.Task is not Message<Init.ResultPayload> iwrm)
             {
                 throw new InvalidOperationException($"Failed to init worker with id {Id}.");
             }
@@ -128,54 +132,24 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task<int> RunAsync()
         {
-            var result = await PostMessageAsync<RunProgramMessage, RunProgramResultMessage>((context) =>
+            var result = await PostMessageAsync<RunProgram.Payload, RunProgram.ResultPayload>(new RunProgram.Payload
             {
-                return new RunProgramMessage
-                {
-                    WorkerId = context.WorkerId,
-                    CallId = context.CallId,
-                    ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type.")
-                };
+                ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type.")
             });
-
-            if (result.Exception is not null)
-                throw new AggregateException($"Worker exception: {result.Exception.Message}", result.Exception);
 
             return result.ExitCode;
         }
 
         public async Task CancelAsync()
         {
-            var result = await PostMessageAsync<CancelMessage, CancelResultMessage>((context) =>
-            {
-                return new CancelMessage
-                {
-                    WorkerId = context.WorkerId,
-                    CallId = context.CallId
-                };
-            });
-
-            if (result.Exception is not null)
-                throw new AggregateException($"Worker exception: {result.Exception.Message}", result.Exception);
+            var result = await PostMessageAsync<Cancel.Payload, Cancel.ResultPayload>(new Cancel.Payload());
         }
 
         public async Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data)
         {
-            var result = await PostMessageAsync<CallMessage<TRequest>, CallResultMessage<TResponse>>((context) =>
-            {
-                return new CallMessage<TRequest>
-                {
-                    WorkerId = context.WorkerId,
-                    CallId = context.CallId,
-                    ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type."),
-                    Data = data
-                };
-            });
+            var result = await PostMessageAsync<TRequest, TResponse>(data);
 
-            if (result.Exception is not null)
-                throw new AggregateException($"Worker exception: {result.Exception.Message}", result.Exception);
-
-            return result.Data;
+            return result;
         }
 
         public async ValueTask DisposeAsync()
@@ -183,14 +157,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             if (IsDisposed)
                 return;
 
-            var result = await PostMessageAsync<DisposeInstanceMessage, DisposeInstanceResultMessage>((context) =>
-            {
-                return new DisposeInstanceMessage
-                {
-                    WorkerId = context.WorkerId,
-                    CallId = context.CallId
-                };
-            });
+            var result = await PostMessageAsync<Dispose.Payload, Dispose.ResultPayload>(new Dispose.Payload());
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
             IsDisposed = true;
