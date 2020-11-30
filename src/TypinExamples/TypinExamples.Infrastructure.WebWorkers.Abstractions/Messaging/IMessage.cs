@@ -5,15 +5,11 @@
     public interface IMessage
     {
         ulong Id { get; init; }
-        ulong WorkerId { get; init; }
-        bool FromWorker { get; init; }
-        bool IsResult { get; init; }
+        ulong? WorkerId { get; init; }
+        ulong? TargetWorkerId { get; init; }
+        public DateTimeOffset Timestamp { get; }
+        MessageTypes Type { get; init; }
 
         Exception? Exception { get; init; }
-    }
-
-    public interface IMessage<TResponse> : IMessage
-    {
-        TResponse? Payload { get; init; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal.JS
 {
     using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///  Serves as a wrapper around a JSObject.
@@ -22,6 +23,11 @@
         public object Invoke(string method, params object[] args)
         {
             return ManagedJSObject.Invoke(method, args);
+        }
+
+        public async Task<object> InvokeAsync(string method, params object[] args)
+        {
+            return await Task.Run(() => ManagedJSObject.Invoke(method, args));
         }
 
         public void Dispose()
