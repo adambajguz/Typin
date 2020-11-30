@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
@@ -13,6 +14,7 @@
     {
         private event EventHandler<string> _callbacks;
         private readonly IJSRuntime _jsRuntime;
+        private readonly ILogger _logger;
 
         public event EventHandler<string> Callbacks
         {
@@ -20,26 +22,23 @@
             remove => _callbacks -= value;
         }
 
-        public MainThreadMessagingProvider(IJSRuntime jsRuntime)
+        public MainThreadMessagingProvider(IJSRuntime jsRuntime, ILogger<MainThreadMessagingProvider> logger)
         {
             _jsRuntime = jsRuntime;
+            _logger = logger;
         }
 
         [JSInvokable]
         public void OnMessage(string rawMessage)
         {
-#if DEBUG
-            Console.WriteLine($"{nameof(MainThreadMessagingProvider)}.{nameof(OnMessage)}({rawMessage})");
-#endif
+            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(OnMessage), rawMessage);
 
             _callbacks?.Invoke(this, rawMessage);
         }
 
         public async Task PostAsync(ulong? id, string rawMessage)
         {
-#if DEBUG
-            Console.WriteLine($"{nameof(MainThreadMessagingProvider)}.{nameof(PostAsync)}({id}, {rawMessage})");
-#endif
+            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
 
             if (id is null)
                 throw new ArgumentNullException(nameof(id));

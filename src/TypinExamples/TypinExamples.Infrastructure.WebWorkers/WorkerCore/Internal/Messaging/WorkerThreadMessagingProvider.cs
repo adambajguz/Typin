@@ -33,7 +33,7 @@
             Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({id}, {rawMessage})");
 #endif
 
-            //    throw new ArgumentException("Id must be not null. Cross-worker communication is not supported.", nameof(id));
+            //throw new ArgumentException("Id must be not null. Cross-worker communication is not supported.", nameof(id));
 
             _self.Invoke("postMessage", rawMessage);
 
