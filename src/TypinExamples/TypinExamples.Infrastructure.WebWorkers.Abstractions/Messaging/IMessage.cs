@@ -5,7 +5,8 @@
     public interface IMessage
     {
         ulong Id { get; init; }
-        ulong WorkerId { get; init; }
+        ulong? WorkerId { get; init; }
+        ulong? TargetWorkerId { get; init; }
         public DateTimeOffset Timestamp { get; }
         MessageTypes Type { get; init; }
 

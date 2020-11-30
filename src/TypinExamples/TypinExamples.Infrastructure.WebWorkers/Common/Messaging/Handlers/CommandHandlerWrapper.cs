@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers
 {
     using System;
     using System.Diagnostics;
@@ -31,7 +31,8 @@
             var timer = new Stopwatch();
             timer.Start();
 
-            MessageTypes messageFrom = (message.Type.HasFlags(MessageTypes.FromMain) ? MessageTypes.FromWorker : MessageTypes.FromMain);
+            bool isFromMain = message.Type.HasFlags(MessageTypes.FromMain);
+            MessageTypes messageFrom = isFromMain ? MessageTypes.FromWorker : MessageTypes.FromMain;
 
             try
             {
@@ -43,7 +44,8 @@
                 return new Message<TResponse>
                 {
                     Id = message.Id,
-                    WorkerId = message.WorkerId,
+                    WorkerId = isFromMain ? message.TargetWorkerId : null,
+                    TargetWorkerId = isFromMain ? null : message.TargetWorkerId,
                     Type = messageFrom | MessageTypes.Result,
                     Payload = response,
                 };
@@ -55,7 +57,8 @@
                 return new Message<TResponse>
                 {
                     Id = message.Id,
-                    WorkerId = message.WorkerId,
+                    WorkerId = isFromMain ? message.TargetWorkerId : null,
+                    TargetWorkerId = isFromMain ? null : message.TargetWorkerId,
                     Type = messageFrom | MessageTypes.Result | MessageTypes.Exception,
                     Exception = ex
                 };

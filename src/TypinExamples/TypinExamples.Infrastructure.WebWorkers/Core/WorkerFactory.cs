@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.BlazorBoot;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
 
@@ -19,11 +20,13 @@
 
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
+        private readonly IMessagingProvider _messagingProvider;
 
-        public WorkerFactory(IJSRuntime jsRuntime, HttpClient httpClient)
+        public WorkerFactory(IJSRuntime jsRuntime, HttpClient httpClient, IMessagingProvider messagingProvider)
         {
             _jsRuntime = jsRuntime;
             _httpClient = httpClient;
+            _messagingProvider = messagingProvider;
         }
 
         public async Task<IWorker> CreateAsync<T>()
@@ -31,7 +34,7 @@
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _assemblies);
+            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _messagingProvider, _assemblies);
             await worker.InitAsync();
             _workers.Add(worker.Id, worker);
 

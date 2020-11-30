@@ -12,8 +12,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
-    using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal.Messaging;
 
     public sealed class Worker<T> : IWorker
         where T : class, IWorkerStartup, new()
@@ -23,6 +24,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         private readonly ISerializer _serializer;
         private readonly IJSRuntime _jsRuntime;
+        private readonly IMessagingProvider _messagingProvider;
         private readonly ScriptLoader _scriptLoader;
 
         public ulong Id { get; }
@@ -31,12 +33,16 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
-        public Worker(ulong id, IJSRuntime jsRuntime, string[] assemblies)
+        public Worker(ulong id, IJSRuntime jsRuntime, IMessagingProvider messagingProvider, string[] assemblies)
         {
             Id = id;
 
             _assemblies = assemblies;
             _jsRuntime = jsRuntime;
+
+            _messagingProvider = messagingProvider;
+            _messagingProvider.Callbacks += OnMessage;
+
             _scriptLoader = new ScriptLoader(_jsRuntime);
 
             _serializer = new DefaultSerializer();
@@ -46,11 +52,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         private async Task PostMessageAsync<TPayload>(Message<TPayload> message)
         {
             string? serialized = _serializer.Serialize(message);
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", Id, serialized);
+
+            await _messagingProvider.PostAsync(Id, serialized);
         }
 
-        [JSInvokable]
-        public void OnMessage(string rawMessage)
+        public void OnMessage(object sender, string rawMessage)
         {
 #if DEBUG
             Console.WriteLine($"{nameof(Worker<T>)}.{nameof(OnMessage)}: {rawMessage}");
@@ -60,7 +66,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             if (message.Type.HasFlags(MessageTypes.Result))
             {
                 if (!messageRegister.TryGetValue(message.Id, out var taskCompletionSource))
-                    throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.WorkerId}.");
+                    throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
 
                 taskCompletionSource.SetResult(message);
                 messageRegister.Remove(message.Id);
@@ -72,12 +78,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task NotifyAsync<TPayload>(TPayload payload)
         {
-            var callId = _idProvider.Next();
+            ulong callId = _idProvider.Next();
 
             Message<TPayload> message = new()
             {
                 Id = callId,
-                WorkerId = Id,
+                TargetWorkerId = Id,
                 Type = MessageTypes.FromMain | MessageTypes.Call,
                 Payload = payload
             };
@@ -100,7 +106,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             Message<TPayload> message = new()
             {
                 Id = callId,
-                WorkerId = Id,
+                TargetWorkerId = Id,
                 Type = MessageTypes.FromMain | MessageTypes.Call,
                 Payload = payload
             };
@@ -124,7 +130,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             await _scriptLoader.InitScript();
 
-            var ms = typeof(MessageService);
+            var ms = typeof(WorkerThreadMessagingProvider);
             var wp = typeof(WorkerEntryPoint);
 
             var taskCompletionSource = new TaskCompletionSource<object>();
@@ -132,12 +138,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.initWorker",
                                              Id,
-                                             DotNetObjectReference.Create(this),
+                                             DotNetObjectReference.Create((MainThreadMessagingProvider)_messagingProvider),
                                              new WorkerInitOptions
                                              {
                                                  DependentAssemblyFilenames = _assemblies,
-                                                 CallbackMethod = nameof(OnMessage),
-                                                 MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(MessageService.OnMessage)}",
+                                                 CallbackMethod = nameof(MainThreadMessagingProvider.OnMessage),
+                                                 MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(WorkerThreadMessagingProvider.__OnMessage)}",
                                                  InitEndpoint = $"[{wp.Assembly.GetName().Name}]{wp.FullName}:{nameof(WorkerEntryPoint.Init)}",
                                                  StartupType = typeof(T).AssemblyQualifiedName,
                                                  Debug = false
@@ -172,6 +178,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                 return;
 
             await CallCommandAsync(new DisposePayload());
+
+            _messagingProvider.Callbacks -= OnMessage;
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
             IsDisposed = true;

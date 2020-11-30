@@ -5,7 +5,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
-    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
     internal class WorkerConfigurationBuilder : IWorkerConfigurationBuilder

@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;

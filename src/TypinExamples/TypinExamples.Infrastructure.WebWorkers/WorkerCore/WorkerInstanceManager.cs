@@ -1,7 +1,6 @@
 namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
@@ -12,24 +11,20 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
     using TypinExamples.Infrastructure.WebWorkers.Common.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
-    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal.Messaging;
 
     public class WorkerInstanceManager :
         ICommandHandler<RunProgramPayload, ProgramFinishedPayload>,
         ICommandHandler<CancelPayload>,
         ICommandHandler<DisposePayload>
     {
-        private readonly IdProvider _idProvider = new();
-
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly ISerializer _serializer;
 
         private ServiceProvider? _serviceProvider;
-        private WorkerConfiguration? _configuration;
-
-        private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         public ulong Id { get; }
 
@@ -38,7 +33,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             Id = id;
 
             _serializer = serializer ?? new DefaultSerializer();
-            MessageService.Message += OnMessage;
         }
 
         internal static void ConfigureCoreHandlers(IWorkerConfigurationBuilder builder)
@@ -47,54 +41,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             builder.RegisterCommandHandler<CancelPayload, WorkerInstanceManager>();
             builder.RegisterCommandHandler<DisposePayload, WorkerInstanceManager>();
         }
-
-        #region Messaging
-        private void PostMessage(IMessage message)
-        {
-            string? serialized = _serializer.Serialize(message);
-
-            MessageService.PostMessage(serialized);
-        }
-
-        private async void OnMessage(object? sender, string rawMessage)
-        {
-            try
-            {
-                IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
-
-                _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
-                _ = _configuration ?? throw new InvalidOperationException("Worker not initialized.");
-
-                using (IServiceScope scope = _serviceProvider.CreateScope())
-                {
-                    Type messageType = message.GetType();
-                    MessageMapping mappings = _configuration.MessageMappings[messageType];
-
-                    //Type wrapperType = typeof(MessageHandlerWrapper<,>).MakeGenericType(mappings.PayloadType, mappings.ResultPayloadType);
-                    object service = scope.ServiceProvider.GetRequiredService(mappings.HandlerWrapperType);
-
-                    if (service is ICommandHandlerWrapper command)
-                    {
-                        IMessage result = await command.Handle(message, _cancellationTokenSource.Token);
-
-                        PostMessage(result);
-                    }
-                    else if (service is INotificationHandlerWrapper notification)
-                    {
-                        await notification.Handle(message, _cancellationTokenSource.Token);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
-        #endregion
 
         public void Start(string? startupType)
         {
@@ -110,7 +56,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             startup.Configure(configurationBuilder);
 
             WorkerConfiguration configuration = configurationBuilder.Build();
-            _configuration = configuration;
 
             //Build DI container
             ServiceCollection serviceCollection = new ServiceCollection();
@@ -120,12 +65,15 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                              .AddTransient(typeof(NotificationHandlerWrapper<>))
                              .AddTransient(typeof(CommandHandlerWrapper<>))
                              .AddTransient(typeof(CommandHandlerWrapper<,>))
-                             .AddTransient<IWorkerMessageService, InjectableMessageService>()
                              .AddSingleton<ICommandHandler<RunProgramPayload, ProgramFinishedPayload>>(this)
                              .AddSingleton<ICommandHandler<CancelPayload>>(this)
                              .AddSingleton<ICommandHandler<DisposePayload>>(this)
+                             .AddSingleton(_serializer)
                              .AddSingleton(configuration)
+                             .AddSingleton<IMessagingProvider, WorkerThreadMessagingProvider>()
+                             .AddSingleton<IMessagingService, MessagingService>()
                              .AddSingleton(new WorkerIdAccessor(Id))
+                             .AddSingleton(new WorkerCancellationTokenAccessor(_cancellationTokenSource.Token))
                              .AddScoped<HttpClient>();
 
             Type[] corePayloads = new[] { typeof(RunProgramPayload), typeof(CancelPayload), typeof(DisposePayload) };
@@ -141,10 +89,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             _serviceProvider = serviceCollection.BuildServiceProvider();
 
             //Confirm initialization
-            PostMessage(new Message<InitializedPayload>
+            IMessagingService messaging = _serviceProvider.GetRequiredService<IMessagingService>();
+
+            messaging.PostMessage(new Message<InitializedPayload>
             {
                 Id = 0,
                 WorkerId = Id,
+                TargetWorkerId = null,
                 Type = MessageTypes.FromWorker | MessageTypes.Result,
                 Payload = new InitializedPayload()
             });
@@ -182,7 +133,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             _cancellationTokenSource.Cancel();
             _serviceProvider?.Dispose();
             _cancellationTokenSource.Dispose();
-            MessageService.Message -= OnMessage;
 
             return CommandFinished.Task;
         }

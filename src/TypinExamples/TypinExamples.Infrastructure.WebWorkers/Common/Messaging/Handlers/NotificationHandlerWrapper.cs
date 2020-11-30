@@ -1,10 +1,9 @@
-﻿namespace TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging
+﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
-    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
 
     internal class NotificationHandlerWrapper<TRequest> : INotificationHandlerWrapper
     {

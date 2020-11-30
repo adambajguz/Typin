@@ -8,12 +8,10 @@
 
     public class WebWorkerProgram : IWorkerProgram
     {
-        private readonly IWorkerMessageService _messageService;
         private readonly HttpClient _httpClient;
 
-        public WebWorkerProgram(IWorkerMessageService messageService, HttpClient httpClient)
+        public WebWorkerProgram(HttpClient httpClient)
         {
-            _messageService = messageService;
             _httpClient = httpClient;
         }
 
