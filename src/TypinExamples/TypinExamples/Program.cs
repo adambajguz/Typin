@@ -50,7 +50,7 @@ namespace TypinExamples
             }
 
             Log.Logger = loggerConfiguration.CreateLogger();
-            Log.Logger.Information("Initializing {Program}...", typeof(Program).FullName);
+            Log.Logger.Information("Initializing {Program}", typeof(Program).FullName);
         }
     }
 }
