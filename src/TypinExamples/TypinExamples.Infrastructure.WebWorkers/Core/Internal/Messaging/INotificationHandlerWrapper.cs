@@ -4,12 +4,7 @@
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
 
-    internal interface IMessageHandlerWrapper
-    {
-        Task<IMessage> Handle(IMessage message, CancellationToken cancellationToken);
-    }
-
-    internal interface INoResultMessageHandlerWrapper
+    internal interface INotificationHandlerWrapper
     {
         Task Handle(IMessage message, CancellationToken cancellationToken);
     }

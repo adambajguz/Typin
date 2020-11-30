@@ -12,6 +12,9 @@
 
         Task<int> RunAsync();
         Task CancelAsync();
-        Task<TResponse> CallAsync<TRequest, TResponse>(TRequest data);
+
+        Task NotifyAsync<TPayload>(TPayload payload);
+        Task CallCommandAsync<TPayload>(TPayload payload);
+        Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(TPayload payload);
     }
 }
