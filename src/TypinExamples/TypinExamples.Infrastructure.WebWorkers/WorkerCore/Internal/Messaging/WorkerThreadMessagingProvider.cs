@@ -33,8 +33,7 @@
             Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({id}, {rawMessage})");
 #endif
 
-            //if (id is not null)
-            //    throw new ArgumentException("Id must be null. Cross-worker communication is not supported.", nameof(id));
+            //    throw new ArgumentException("Id must be not null. Cross-worker communication is not supported.", nameof(id));
 
             _self.Invoke("postMessage", rawMessage);
 
@@ -43,10 +42,10 @@
 
         public void OnMessage(string rawMessage)
         {
-            __OnMessage(rawMessage);
+            InternalOnMessage(rawMessage);
         }
 
-        internal static void __OnMessage(string rawMessage)
+        internal static void InternalOnMessage(string rawMessage)
         {
 #if DEBUG
             Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(OnMessage)}({rawMessage})");
@@ -57,7 +56,8 @@
 
         public void Dispose()
         {
-            _self.Dispose();
+            //TODO: dispose
+            //_self.Dispose();
         }
     }
 }

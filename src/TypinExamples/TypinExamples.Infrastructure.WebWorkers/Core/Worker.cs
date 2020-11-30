@@ -143,7 +143,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                                              {
                                                  DependentAssemblyFilenames = _assemblies,
                                                  CallbackMethod = nameof(MainThreadMessagingProvider.OnMessage),
-                                                 MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(WorkerThreadMessagingProvider.__OnMessage)}",
+                                                 MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(WorkerThreadMessagingProvider.InternalOnMessage)}",
                                                  InitEndpoint = $"[{wp.Assembly.GetName().Name}]{wp.FullName}:{nameof(WorkerEntryPoint.Init)}",
                                                  StartupType = typeof(T).AssemblyQualifiedName,
                                                  Debug = false
