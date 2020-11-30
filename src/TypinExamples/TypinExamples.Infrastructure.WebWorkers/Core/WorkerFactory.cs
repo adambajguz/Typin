@@ -6,6 +6,7 @@
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
@@ -20,13 +21,21 @@
 
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
+        private readonly IMessagingService _messagingService;
         private readonly IMessagingProvider _messagingProvider;
+        private readonly ILogger _logger;
 
-        public WorkerFactory(IJSRuntime jsRuntime, HttpClient httpClient, IMessagingProvider messagingProvider)
+        public WorkerFactory(IJSRuntime jsRuntime,
+                             HttpClient httpClient,
+                             IMessagingService messagingService,
+                             IMessagingProvider messagingProvider,
+                             ILogger<WorkerFactory> logger)
         {
             _jsRuntime = jsRuntime;
             _httpClient = httpClient;
+            _messagingService = messagingService;
             _messagingProvider = messagingProvider;
+            _logger = logger;
         }
 
         public async Task<IWorker> CreateAsync<T>()
@@ -34,9 +43,11 @@
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _messagingProvider, _assemblies);
+            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _messagingService, _messagingProvider, _assemblies);
             await worker.InitAsync();
             _workers.Add(worker.Id, worker);
+
+            _logger.LogInformation("Created worker {Id}", worker.Id);
 
             return worker;
         }
@@ -44,6 +55,7 @@
         public IWorker? GetWorkerOrDefault(ulong id)
         {
             _workers.TryGetValue(id, out IWorker? value);
+
             return value;
         }
 
@@ -51,6 +63,8 @@
         {
             BlazorBootModel? response = await _httpClient.GetFromJsonAsync<BlazorBootModel>(BlazorBootModel.FilePath);
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
+
+            _logger.LogInformation("Fetched assemblies list.");
 
             //if (assemblies is not null)
             //{

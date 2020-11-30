@@ -5,6 +5,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore;
 
@@ -33,7 +34,7 @@
         public IWorkerConfigurationBuilder RegisterNotificationHandler<TPayload, THandler>()
             where THandler : INotificationHandler<TPayload>
         {
-            Type messageType = typeof(Common.Messaging.Message<TPayload>);
+            Type messageType = typeof(Message<TPayload>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,
@@ -48,7 +49,7 @@
         public IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler>()
             where THandler : ICommandHandler<TPayload>
         {
-            Type messageType = typeof(Common.Messaging.Message<TPayload>);
+            Type messageType = typeof(Message<TPayload>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,
@@ -64,7 +65,7 @@
         public IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler, TResultPayload>()
             where THandler : ICommandHandler<TPayload, TResultPayload>
         {
-            Type messageType = typeof(Common.Messaging.Message<TPayload>);
+            Type messageType = typeof(Message<TPayload>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,

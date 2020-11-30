@@ -15,7 +15,7 @@
         const onReady = () => {
 
             if (!initConf.InitEndpoint || !initConf.MessageEndpoint) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: either InitEndpoint ${initConf.InitEndpoint} or MessageEndpoint ${initConf.MessageEndpoint} is invalid.`);
+                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId} (${initConf.InitCallId}): either InitEndpoint ${initConf.InitEndpoint} or MessageEndpoint ${initConf.MessageEndpoint} is invalid.`);
                 return;
             }
 
@@ -27,14 +27,14 @@
                     messageHandler(msg.data);
                 };
             } catch (e) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: Message endpoint init ${initConf.MessageEndpoint} thrown an error.`, e);
+                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId} (${initConf.InitCallId}): Message endpoint init ${initConf.MessageEndpoint} thrown an error.`, e);
                 throw e;
             }
 
             try {
-                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId, initConf.StartupType]);
+                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId, initConf.InitCallId, initConf.StartupType]);
             } catch (e) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: Init method ${initConf.InitEndpoint} thrown an error.`, e);
+                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId} (${initConf.InitCallId}): Init method ${initConf.InitEndpoint} thrown an error.`, e);
                 throw e;
             }
         };
@@ -180,6 +180,7 @@
             WorkerId: id,
             MessageEndpoint: initOptions.messageEndpoint,
             InitEndpoint: initOptions.initEndpoint,
+            InitCallId: initOptions.initCallId,
             StartupType: initOptions.startupType,
             wasmRoot: "_framework",
             blazorBoot: "_framework/blazor.boot.json",

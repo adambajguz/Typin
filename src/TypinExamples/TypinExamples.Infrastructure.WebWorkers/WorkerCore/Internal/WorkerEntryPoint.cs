@@ -8,13 +8,13 @@
     {
         private static WorkerInstanceManager? _workerInstance;
 
-        public static void Init(ulong workerId, string? startupType)
+        public static void Init(ulong workerId, ulong initCallId, string? startupType)
         {
 #if DEBUG
             Console.WriteLine($"{nameof(WorkerEntryPoint)}.Main({workerId}, {startupType})");
 #endif
 
-            _workerInstance = new(workerId, new DefaultSerializer());
+            _workerInstance = new(workerId, initCallId, new DefaultSerializer());
             _workerInstance.Start(startupType);
 
 #if DEBUG

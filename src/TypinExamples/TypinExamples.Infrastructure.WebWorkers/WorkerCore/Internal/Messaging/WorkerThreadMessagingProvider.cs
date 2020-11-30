@@ -27,19 +27,6 @@
 
         }
 
-        public Task PostAsync(ulong? id, string rawMessage)
-        {
-#if DEBUG
-            Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({id}, {rawMessage})");
-#endif
-
-            //throw new ArgumentException("Id must be not null. Cross-worker communication is not supported.", nameof(id));
-
-            _self.Invoke("postMessage", rawMessage);
-
-            return Task.CompletedTask;
-        }
-
         public void OnMessage(string rawMessage)
         {
             InternalOnMessage(rawMessage);
@@ -52,6 +39,19 @@
 #endif
 
             _callbacks?.Invoke(null, rawMessage);
+        }
+
+        public Task PostAsync(ulong? workerId, string rawMessage)
+        {
+#if DEBUG
+            Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({workerId}, {rawMessage})");
+#endif
+            if (workerId is not null)
+                throw new ArgumentException("Id must be not null. Cross-worker communication is not supported.", nameof(workerId));
+
+            _self.Invoke("postMessage", rawMessage);
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

@@ -31,19 +31,19 @@
         [JSInvokable]
         public void OnMessage(string rawMessage)
         {
-            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(OnMessage), rawMessage);
+            _logger.LogDebug("{Class}->{Method} {Message}", nameof(MainThreadMessagingProvider), nameof(OnMessage), rawMessage);
 
             _callbacks?.Invoke(this, rawMessage);
         }
 
-        public async Task PostAsync(ulong? id, string rawMessage)
+        public async Task PostAsync(ulong? workerId, string rawMessage)
         {
-            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
+            _logger.LogDebug("{Class}->{Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
 
-            if (id is null)
-                throw new ArgumentNullException(nameof(id));
+            if (workerId is null)
+                throw new ArgumentNullException(nameof(workerId));
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", id, rawMessage);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", workerId, rawMessage);
         }
 
         public void Dispose()

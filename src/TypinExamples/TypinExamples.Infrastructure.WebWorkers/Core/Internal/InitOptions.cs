@@ -28,6 +28,11 @@
         public string? InitEndpoint { get; init; }
 
         /// <summary>
+        /// Initialize message id.
+        /// </summary>
+        public ulong InitCallId { get; init; }
+
+        /// <summary>
         /// Mono-wasm-annotated endpoint for instanciating the worker. Experts only.
         /// </summary>
         public string? StartupType { get; init; }
