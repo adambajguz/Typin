@@ -17,6 +17,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
     public sealed class Worker<T> : IWorker
         where T : class, IWorkerStartup, new()
     {
+        private readonly Action _disposeCallback;
         private readonly string[] _assemblies;
 
         private readonly ISerializer _serializer;
@@ -29,10 +30,16 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         public bool IsDisposed { get; private set; }
         public bool IsInitialized { get; private set; }
 
-        public Worker(ulong id, IJSRuntime jsRuntime, IMessagingService messagingService, IMessagingProvider messagingProvider, string[] assemblies)
+        public Worker(ulong id,
+                      Action disposeCallback,
+                      IJSRuntime jsRuntime,
+                      IMessagingService messagingService,
+                      IMessagingProvider messagingProvider,
+                      string[] assemblies)
         {
             Id = id;
 
+            _disposeCallback = disposeCallback;
             _assemblies = assemblies;
             _jsRuntime = jsRuntime;
             _messagingService = messagingService;
@@ -106,6 +113,11 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             await CallCommandAsync(new CancelPayload());
         }
 
+        public async Task CancelAsync(TimeSpan delay)
+        {
+            await CallCommandAsync(new CancelPayload { Delay = delay });
+        }
+
         public async ValueTask DisposeAsync()
         {
             if (IsDisposed)
@@ -115,6 +127,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
             IsDisposed = true;
+
+            _disposeCallback();
         }
     }
 }

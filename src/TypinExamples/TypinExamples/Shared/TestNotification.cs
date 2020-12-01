@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
 
     public class TestNotification
@@ -11,18 +12,10 @@
 
         public class Handler : INotificationHandler<TestNotification>
         {
-            private readonly IMessagingService _messaging;
-
-            public Handler(IMessagingService messagingService)
+            public async ValueTask HandleAsync(TestNotification request, IWorker worker, CancellationToken cancellationToken)
             {
-                _messaging = messagingService;
-            }
-
-            public ValueTask HandleAsync(TestNotification request, CancellationToken cancellationToken)
-            {
+                await worker.NotifyAsync(new WorkerTestNotification { Value = "123notification" });
                 Console.WriteLine(request.Value);
-
-                return default;
             }
         }
     }

@@ -11,10 +11,7 @@
     internal sealed class WorkerThreadMessagingProvider : IMessagingProvider
     {
         private static readonly DOMObject _self = new DOMObject("self");
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        private static event EventHandler<string> _callbacks;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        private static event EventHandler<string> _callbacks = default!;
 
         public event EventHandler<string> Callbacks
         {
@@ -56,6 +53,7 @@
 
         public void Dispose()
         {
+            _callbacks = default!;
             //TODO: dispose
             //_self.Dispose();
         }

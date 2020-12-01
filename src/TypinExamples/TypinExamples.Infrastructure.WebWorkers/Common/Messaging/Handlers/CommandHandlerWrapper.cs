@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Extensions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
@@ -25,7 +26,7 @@
             _handler = handler;
         }
 
-        public async Task<IMessage> Handle(IMessage message, CancellationToken cancellationToken)
+        public async Task<IMessage> Handle(IMessage message, IWorker worker, CancellationToken cancellationToken)
         {
             bool isFromMain = message.Type.HasFlags(MessageTypes.FromMain);
             bool isCommand = message.Type.HasFlags(MessageTypes.Command);
@@ -38,7 +39,7 @@
                     throw new InvalidOperationException("Cannot handle message that is not a command call.");
 
                 Message<TRequest>? casted = message as Message<TRequest>;
-                TResponse response = await _handler.HandleAsync(casted.Payload, cancellationToken);
+                TResponse response = await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
 
                 return new Message<TResponse>
                 {

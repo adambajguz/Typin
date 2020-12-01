@@ -12,7 +12,7 @@
     /// </summary>
     internal sealed class MainThreadMessagingProvider : IMessagingProvider
     {
-        private event EventHandler<string> _callbacks;
+        private event EventHandler<string> _callbacks = default!;
         private readonly IJSRuntime _jsRuntime;
         private readonly ILogger _logger;
 
@@ -31,14 +31,14 @@
         [JSInvokable]
         public void OnMessage(string rawMessage)
         {
-            _logger.LogDebug("{Class}->{Method} {Message}", nameof(MainThreadMessagingProvider), nameof(OnMessage), rawMessage);
+            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(OnMessage), rawMessage);
 
             _callbacks?.Invoke(this, rawMessage);
         }
 
         public async Task PostAsync(ulong? workerId, string rawMessage)
         {
-            _logger.LogDebug("{Class}->{Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
+            _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
 
             if (workerId is null)
                 throw new ArgumentNullException(nameof(workerId));
@@ -48,7 +48,7 @@
 
         public void Dispose()
         {
-
+            _callbacks = default!;
         }
     }
 }

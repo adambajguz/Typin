@@ -11,6 +11,6 @@
 
     public interface ICommandHandler<in TRequest, TResponse>
     {
-        ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
+        ValueTask<TResponse> HandleAsync(TRequest request, IWorker worker, CancellationToken cancellationToken);
     }
 }

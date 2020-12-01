@@ -5,6 +5,9 @@
 
     public interface IWorkerFactory : IAsyncDisposable
     {
+        IWorker? GetWorkerOrDefault(ulong id);
+        Task<bool> TryDisposeWorker(ulong id);
+
         Task<IWorker> CreateAsync<TStartup>()
             where TStartup : class, IWorkerStartup, new();
     }

@@ -12,6 +12,7 @@
 
         Task<int> RunAsync();
         Task CancelAsync();
+        Task CancelAsync(TimeSpan delay);
 
         Task NotifyAsync<TPayload>(TPayload payload);
         Task CallCommandAsync<TPayload>(TPayload payload);

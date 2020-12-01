@@ -18,15 +18,18 @@
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         private readonly ISerializer _serializer;
+        private readonly IWorkerFactory _workerFactory;
         private readonly CancellationToken _cancellationToken;
         private readonly IMessagingProvider _messagingProvider;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public MainMessagingService(ISerializer serializer,
+                                    IWorkerFactory workerFactory,
                                     IMessagingProvider messagingProvider,
                                     IServiceScopeFactory serviceScopeFactory)
         {
             _serializer = serializer;
+            _workerFactory = workerFactory;
             _cancellationToken = CancellationToken.None;
             _messagingProvider = messagingProvider;
             _serviceScopeFactory = serviceScopeFactory;
@@ -70,8 +73,10 @@
                 if (message.Exception is not null)
                     taskCompletionSource.SetException(message.Exception);
             }
-            else if (message.Type.HasFlags(MessageTypes.Call))
+            else if (message.WorkerId is not null && message.Type.HasFlags(MessageTypes.Call))
             {
+                IWorker worker = _workerFactory.GetWorkerOrDefault((ulong)message.WorkerId) ?? throw new InvalidOperationException($"Unknown worker {message.WorkerId}");
+
                 using (IServiceScope scope = _serviceScopeFactory.CreateScope())
                 {
                     Type messageType = message.GetType();
@@ -82,12 +87,14 @@
 
                     if (message.Type.HasFlags(MessageTypes.Command) && service is ICommandHandlerWrapper command)
                     {
-                        IMessage result = await command.Handle(message, _cancellationToken);
+                        IMessage result = await command.Handle(message, worker, _cancellationToken);
 
                         await PostAsync(result.TargetWorkerId, result);
                     }
                     else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
-                        await notification.Handle(message, _cancellationToken);
+                    {
+                        await notification.Handle(message, worker, _cancellationToken);
+                    }
                     else
                         throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
                 }
@@ -96,6 +103,8 @@
             {
                 throw message.Exception ?? throw new NullReferenceException(message.ToString());
             }
+            else
+                throw new InvalidOperationException($"Unknown message type {message.Type}");
         }
 
         public async Task NotifyAsync<TPayload>(ulong? workerId, TPayload payload)

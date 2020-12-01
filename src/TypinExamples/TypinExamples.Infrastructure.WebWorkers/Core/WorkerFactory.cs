@@ -43,7 +43,13 @@
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
 
-            Worker<T> worker = new Worker<T>(_idProvider.Next(), _jsRuntime, _messagingService, _messagingProvider, _assemblies);
+            ulong workerId = _idProvider.Next();
+            Worker<T> worker = new Worker<T>(workerId,
+                                             () => DisposeCallback(workerId),
+                                             _jsRuntime,
+                                             _messagingService,
+                                             _messagingProvider,
+                                             _assemblies);
             await worker.InitAsync();
             _workers.Add(worker.Id, worker);
 
@@ -59,8 +65,37 @@
             return value;
         }
 
+        public async Task<bool> TryDisposeWorker(ulong id)
+        {
+            if (!_workers.TryGetValue(id, out IWorker? value))
+                return false;
+
+            await value.DisposeAsync();
+
+            return true;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var worker in _workers)
+                await worker.Value.DisposeAsync();
+
+            _workers.Clear();
+        }
+
+        #region Helpers
+        private void DisposeCallback(ulong id)
+        {
+            if (_workers.Remove(id))
+            {
+                _logger.LogInformation("Removed worker {Id}", id);
+            }
+        }
+
         private async Task<string[]?> GetAssembliesToLoad()
         {
+            _logger.LogInformation("Fetching assemblies list.");
+
             BlazorBootModel? response = await _httpClient.GetFromJsonAsync<BlazorBootModel>(BlazorBootModel.FilePath);
             string[]? assemblies = response?.Resources.Assembly.Keys.ToArray();
 
@@ -74,18 +109,13 @@
             //        var dll = await _httpClient.GetByteArrayAsync($"_framework/{assembly}");
             //        dlls.Add(assembly, dll);
             //    }
-
+            //
             //    var serialized = JsonConvert.SerializeObject(dlls);
             //    int count = serialized.Length;
             //}
 
             return assemblies;
         }
-
-        public async ValueTask DisposeAsync()
-        {
-            foreach (var worker in _workers)
-                await worker.Value.DisposeAsync();
-        }
+        #endregion
     }
 }

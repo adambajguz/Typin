@@ -19,6 +19,7 @@
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         private readonly ISerializer _serializer;
+        private readonly IWorker _worker;
         private readonly WorkerConfiguration _configuration;
         private readonly WorkerIdAccessor _workerIdAccessor;
         private readonly CancellationToken _cancellationToken;
@@ -26,6 +27,7 @@
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public WorkerMessagingService(ISerializer serializer,
+                                      IWorker worker,
                                       WorkerConfiguration configuration,
                                       WorkerIdAccessor workerIdAccessor,
                                       WorkerCancellationTokenAccessor cancellationTokenAccessor,
@@ -33,6 +35,7 @@
                                       IServiceScopeFactory serviceScopeFactory)
         {
             _serializer = serializer;
+            _worker = worker;
             _configuration = configuration;
             _workerIdAccessor = workerIdAccessor;
             _cancellationToken = cancellationTokenAccessor.Token;
@@ -93,12 +96,12 @@
 
                         if (message.Type.HasFlags(MessageTypes.Command) && service is ICommandHandlerWrapper command)
                         {
-                            IMessage result = await command.Handle(message, _cancellationToken);
+                            IMessage result = await command.Handle(message, _worker, _cancellationToken);
 
                             await PostAsync(result.TargetWorkerId, result);
                         }
                         else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
-                            await notification.Handle(message, _cancellationToken);
+                            await notification.Handle(message, _worker, _cancellationToken);
                         else
                             throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
                     }
@@ -107,6 +110,8 @@
                 {
                     Console.WriteLine(message.Exception?.ToString());
                 }
+                else
+                    Console.WriteLine($"Unknown message type {message.Type}");
             }
             catch (Exception ex)
             {
