@@ -16,23 +16,25 @@
     public sealed class WorkerFactory : IWorkerFactory
     {
         private readonly IdProvider _idProvider = new();
-        private readonly Dictionary<ulong, IWorker> _workers = new();
         private string[]? _assemblies;
 
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
+        private readonly IWorkerManager _workerManager;
         private readonly IMessagingService _messagingService;
         private readonly IMessagingProvider _messagingProvider;
         private readonly ILogger _logger;
 
         public WorkerFactory(IJSRuntime jsRuntime,
                              HttpClient httpClient,
+                             IWorkerManager workerManager,
                              IMessagingService messagingService,
                              IMessagingProvider messagingProvider,
                              ILogger<WorkerFactory> logger)
         {
             _jsRuntime = jsRuntime;
             _httpClient = httpClient;
+            _workerManager = workerManager;
             _messagingService = messagingService;
             _messagingProvider = messagingProvider;
             _logger = logger;
@@ -51,42 +53,17 @@
                                              _messagingProvider,
                                              _assemblies);
             await worker.InitAsync();
-            _workers.Add(worker.Id, worker);
+            _workerManager.AddWorker(worker);
 
             _logger.LogInformation("Created worker {Id}", worker.Id);
 
             return worker;
         }
 
-        public IWorker? GetWorkerOrDefault(ulong id)
-        {
-            _workers.TryGetValue(id, out IWorker? value);
-
-            return value;
-        }
-
-        public async Task<bool> TryDisposeWorker(ulong id)
-        {
-            if (!_workers.TryGetValue(id, out IWorker? value))
-                return false;
-
-            await value.DisposeAsync();
-
-            return true;
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            foreach (var worker in _workers)
-                await worker.Value.DisposeAsync();
-
-            _workers.Clear();
-        }
-
         #region Helpers
         private void DisposeCallback(ulong id)
         {
-            if (_workers.Remove(id))
+            if (_workerManager.RemoveWorker(id))
             {
                 _logger.LogInformation("Removed worker {Id}", id);
             }

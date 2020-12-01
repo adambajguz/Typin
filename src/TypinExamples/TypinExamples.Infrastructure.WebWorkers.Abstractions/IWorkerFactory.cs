@@ -3,11 +3,8 @@
     using System;
     using System.Threading.Tasks;
 
-    public interface IWorkerFactory : IAsyncDisposable
+    public interface IWorkerFactory
     {
-        IWorker? GetWorkerOrDefault(ulong id);
-        Task<bool> TryDisposeWorker(ulong id);
-
         Task<IWorker> CreateAsync<TStartup>()
             where TStartup : class, IWorkerStartup, new();
     }

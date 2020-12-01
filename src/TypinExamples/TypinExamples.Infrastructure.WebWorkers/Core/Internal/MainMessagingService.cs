@@ -18,18 +18,18 @@
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
 
         private readonly ISerializer _serializer;
-        private readonly IWorkerFactory _workerFactory;
+        private readonly IWorkerManager _workerManager;
         private readonly CancellationToken _cancellationToken;
         private readonly IMessagingProvider _messagingProvider;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public MainMessagingService(ISerializer serializer,
-                                    IWorkerFactory workerFactory,
+                                    IWorkerManager workerManager,
                                     IMessagingProvider messagingProvider,
                                     IServiceScopeFactory serviceScopeFactory)
         {
             _serializer = serializer;
-            _workerFactory = workerFactory;
+            _workerManager = workerManager;
             _cancellationToken = CancellationToken.None;
             _messagingProvider = messagingProvider;
             _serviceScopeFactory = serviceScopeFactory;
@@ -75,7 +75,7 @@
             }
             else if (message.WorkerId is not null && message.Type.HasFlags(MessageTypes.Call))
             {
-                IWorker worker = _workerFactory.GetWorkerOrDefault((ulong)message.WorkerId) ?? throw new InvalidOperationException($"Unknown worker {message.WorkerId}");
+                IWorker worker = _workerManager.GetWorkerOrDefault((ulong)message.WorkerId) ?? throw new InvalidOperationException($"Unknown worker {message.WorkerId}");
 
                 using (IServiceScope scope = _serviceScopeFactory.CreateScope())
                 {

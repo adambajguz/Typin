@@ -21,6 +21,7 @@
         public static IServiceCollection AddWebWorkers(this IServiceCollection services)
         {
             services.AddScoped<IWorkerFactory, WorkerFactory>()
+                    .AddScoped<IWorkerManager, WorkerManager>()
                     .AddScoped<ISerializer, DefaultSerializer>()
                     .AddSingleton(new WorkerIdAccessor())
                     .AddTransient(typeof(NotificationHandlerWrapper<>))
