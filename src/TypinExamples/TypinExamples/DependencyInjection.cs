@@ -2,18 +2,19 @@
 {
     using System;
     using System.Net.Http;
-    using Blazor.Extensions.Logging;
     using Blazor.Extensions.Storage;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Serilog;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
     using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
+    using TypinExamples.Shared;
 
     public static class DependencyInjection
     {
@@ -22,9 +23,11 @@
             services.AddOptions();
             services.AddStorage();
 
-            services.AddWebWorkers();
+            services.AddWebWorkers()
+                    .RegisterCommandHandler<TestCommand, TestCommand.Handler>()
+                    .RegisterNotificationHandler<TestNotification, TestNotification.Handler>();
 
-            services.AddLogging(builder => builder.AddBrowserConsole()
+            services.AddLogging(builder => builder.AddSerilog(dispose: true)
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
 
             services.AddConfiguration<ApplicationSettings>(configuration)

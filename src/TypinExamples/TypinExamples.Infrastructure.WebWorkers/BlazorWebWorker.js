@@ -15,7 +15,7 @@
         const onReady = () => {
 
             if (!initConf.InitEndpoint || !initConf.MessageEndpoint) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: either InitEndpoint ${initConf.InitEndpoint} or MessageEndpoint ${initConf.MessageEndpoint} is invalid.`);
+                console.error(`[WASM-WORKER ${initConf.WorkerId}] Init failed for call ${initConf.InitCallId}: either InitEndpoint ${initConf.InitEndpoint} or MessageEndpoint ${initConf.MessageEndpoint} is invalid.`);
                 return;
             }
 
@@ -27,14 +27,14 @@
                     messageHandler(msg.data);
                 };
             } catch (e) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: Message endpoint init ${initConf.MessageEndpoint} thrown an error.`, e);
+                console.error(`[WASM-WORKER ${initConf.WorkerId}] Init failed for call ${initConf.InitCallId}: Message endpoint init ${initConf.MessageEndpoint} thrown an error.`, e);
                 throw e;
             }
 
             try {
-                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId, initConf.StartupType]);
+                Module.mono_call_static_method(initConf.InitEndpoint, [initConf.WorkerId, initConf.InitCallId, initConf.StartupType]);
             } catch (e) {
-                console.error(`[WASM-WORKER] Init failed for worker ${initConf.WorkerId}: Init method ${initConf.InitEndpoint} thrown an error.`, e);
+                console.error(`[WASM-WORKER ${initConf.WorkerId}] Init failed for call ${initConf.InitCallId}: Init method ${initConf.InitEndpoint} thrown an error.`, e);
                 throw e;
             }
         };
@@ -73,10 +73,10 @@
         const suppressMessages = ['DEBUGGING ENABLED'];
         const appBinDirName = 'appBinDir';
 
-        Module.print = line => (suppressMessages.indexOf(line) < 0 && console.log(`[WASM-WORKER] ${line}`));
+        Module.print = line => (suppressMessages.indexOf(line) < 0 && console.log(`[WASM-WORKER ${initConf.WorkerId}] ${line}`));
 
         Module.printErr = line => {
-            console.error(`[WASM-WORKER] Error: ${line}`);
+            console.error(`[WASM-WORKER ${initConf.WorkerId}] Error: ${line}`);
             showErrorNotification();
         };
         Module.preRun = [];
@@ -154,7 +154,7 @@
                 }
 
                 if (dotnetjsfilename === '') {
-                    throw '[WASM-WORKER] Unable to locate dotnetjs file in blazor boot config.';
+                    throw `[WASM-WORKER ${initConf.WorkerId}] Unable to locate dotnetjs file in blazor boot config.`;
                 }
 
                 self.importScripts(`${initConf.appRoot}/${initConf.wasmRoot}/${dotnetjsfilename}`);
@@ -171,7 +171,7 @@
         }
 
         if (initOptions.debug)
-            console.log(`[WASM-WORKER] Worker with id ${initOptions.WorkerId} is in debug mode.`);
+            console.log(`[WASM-WORKER ${initConf.WorkerId}] Worker with id ${initOptions.WorkerId} is in debug mode.`);
 
         const initConf = {
             appRoot: appRoot,
@@ -180,6 +180,7 @@
             WorkerId: id,
             MessageEndpoint: initOptions.messageEndpoint,
             InitEndpoint: initOptions.initEndpoint,
+            InitCallId: initOptions.initCallId,
             StartupType: initOptions.startupType,
             wasmRoot: "_framework",
             blazorBoot: "_framework/blazor.boot.json",
@@ -191,12 +192,12 @@
         const renderedInlineWorker = inlineWorker.replace('$initConf$', renderedConfig);
         window.URL = window.URL || window.webkitURL;
         const blob = new Blob([renderedInlineWorker], { type: 'application/javascript' });
-        const worker = new Worker(URL.createObjectURL(blob), { name: `[WASM-WORKER] ${initConf.WorkerId}` });
+        const worker = new Worker(URL.createObjectURL(blob), { name: `[WASM-WORKER ${initConf.WorkerId}]` });
         workers[id] = worker;
 
         worker.onmessage = function (ev) {
             if (initOptions.debug) {
-                console.debug(`[WASM-WORKER] worker[${id}]->blazor`, initOptions.callbackMethod, ev.data);
+                console.debug(`[WASM-WORKER ${initConf.WorkerId}] worker->blazor`, initOptions.callbackMethod, ev.data);
             }
 
             callbackInstance.invokeMethod(initOptions.callbackMethod, ev.data);

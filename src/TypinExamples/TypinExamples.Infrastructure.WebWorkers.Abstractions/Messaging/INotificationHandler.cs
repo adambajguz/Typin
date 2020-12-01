@@ -5,6 +5,6 @@
 
     public interface INotificationHandler<in TRequest>
     {
-        ValueTask HandleAsync(TRequest request, CancellationToken cancellationToken);
+        ValueTask HandleAsync(TRequest request, IWorker worker, CancellationToken cancellationToken);
     }
 }

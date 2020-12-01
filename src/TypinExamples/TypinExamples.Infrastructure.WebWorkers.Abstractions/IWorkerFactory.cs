@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
-    public interface IWorkerFactory : IAsyncDisposable
+    public interface IWorkerFactory
     {
         Task<IWorker> CreateAsync<TStartup>()
             where TStartup : class, IWorkerStartup, new();

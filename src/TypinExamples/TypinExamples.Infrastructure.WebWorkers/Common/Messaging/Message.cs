@@ -20,6 +20,7 @@
 
         }
 
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as Message<TRequest>);
@@ -34,6 +35,16 @@
                    Type == other.Type &&
                    EqualityComparer<Exception?>.Default.Equals(Exception, other.Exception) &&
                    EqualityComparer<TRequest?>.Default.Equals(Payload, other.Payload);
+        }
+
+        public static bool operator ==(Message<TRequest>? left, Message<TRequest>? right)
+        {
+            return EqualityComparer<Message<TRequest>>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Message<TRequest>? left, Message<TRequest>? right)
+        {
+            return !(left == right);
         }
 
         public override int GetHashCode()
