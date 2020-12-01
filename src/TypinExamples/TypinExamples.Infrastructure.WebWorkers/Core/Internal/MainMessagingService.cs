@@ -21,18 +21,18 @@
         private readonly IWorkerManager _workerManager;
         private readonly CancellationToken _cancellationToken;
         private readonly IMessagingProvider _messagingProvider;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IServiceProvider _serviceProvider;
 
         public MainMessagingService(ISerializer serializer,
                                     IWorkerManager workerManager,
                                     IMessagingProvider messagingProvider,
-                                    IServiceScopeFactory serviceScopeFactory)
+                                    IServiceProvider serviceProvider)
         {
             _serializer = serializer;
             _workerManager = workerManager;
             _cancellationToken = CancellationToken.None;
             _messagingProvider = messagingProvider;
-            _serviceScopeFactory = serviceScopeFactory;
+            _serviceProvider = serviceProvider;
 
             _messagingProvider.Callbacks += OnMessage;
         }
@@ -60,7 +60,7 @@
             if (message.TargetWorkerId != null)
                 throw new InvalidOperationException($"Message '{message}' is not for this worker.");
 
-            _ = _serviceScopeFactory ?? throw new InvalidOperationException("Worker not initialized.");
+            _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
 
             if (message.Type.HasFlags(MessageTypes.Result))
             {
@@ -77,27 +77,24 @@
             {
                 IWorker worker = _workerManager.GetWorkerOrDefault((ulong)message.WorkerId) ?? throw new InvalidOperationException($"Unknown worker {message.WorkerId}");
 
-                using (IServiceScope scope = _serviceScopeFactory.CreateScope())
+                Type messageType = message.GetType();
+                MessageMapping mappings = MainConfiguration.MessageMappings[messageType];
+
+                //Type wrapperType = typeof(MessageHandlerWrapper<,>).MakeGenericType(mappings.PayloadType, mappings.ResultPayloadType);
+                object service = _serviceProvider.GetRequiredService(mappings.HandlerWrapperType);
+
+                if (message.Type.HasFlags(MessageTypes.Command) && service is ICommandHandlerWrapper command)
                 {
-                    Type messageType = message.GetType();
-                    MessageMapping mappings = MainConfiguration.MessageMappings[messageType];
+                    IMessage result = await command.Handle(message, worker, _cancellationToken);
 
-                    //Type wrapperType = typeof(MessageHandlerWrapper<,>).MakeGenericType(mappings.PayloadType, mappings.ResultPayloadType);
-                    object service = scope.ServiceProvider.GetRequiredService(mappings.HandlerWrapperType);
-
-                    if (message.Type.HasFlags(MessageTypes.Command) && service is ICommandHandlerWrapper command)
-                    {
-                        IMessage result = await command.Handle(message, worker, _cancellationToken);
-
-                        await PostAsync(result.TargetWorkerId, result);
-                    }
-                    else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
-                    {
-                        await notification.Handle(message, worker, _cancellationToken);
-                    }
-                    else
-                        throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
+                    await PostAsync(result.TargetWorkerId, result);
                 }
+                else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
+                {
+                    await notification.Handle(message, worker, _cancellationToken);
+                }
+                else
+                    throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
             }
             else if (message.Type.HasFlags(MessageTypes.Exception))
             {
