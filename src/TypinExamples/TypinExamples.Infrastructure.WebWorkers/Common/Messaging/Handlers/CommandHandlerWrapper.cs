@@ -1,7 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers
 {
     using System;
-    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Extensions;
@@ -28,37 +27,35 @@
 
         public async Task<IMessage> Handle(IMessage message, CancellationToken cancellationToken)
         {
-            var timer = new Stopwatch();
-            timer.Start();
-
             bool isFromMain = message.Type.HasFlags(MessageTypes.FromMain);
+            bool isCommand = message.Type.HasFlags(MessageTypes.Command);
+
             MessageTypes messageFrom = isFromMain ? MessageTypes.FromWorker : MessageTypes.FromMain;
 
             try
             {
+                if (!isCommand)
+                    throw new InvalidOperationException("Cannot handle message that is not a command call.");
+
                 Message<TRequest>? casted = message as Message<TRequest>;
                 TResponse response = await _handler.HandleAsync(casted.Payload, cancellationToken);
-
-                timer.Stop();
 
                 return new Message<TResponse>
                 {
                     Id = message.Id,
-                    WorkerId = isFromMain ? message.TargetWorkerId : null,
-                    TargetWorkerId = isFromMain ? null : message.TargetWorkerId,
-                    Type = messageFrom | MessageTypes.Result,
+                    WorkerId = message.TargetWorkerId,
+                    TargetWorkerId = message.WorkerId,
+                    Type = messageFrom | MessageTypes.Command | MessageTypes.Result,
                     Payload = response,
                 };
             }
             catch (Exception ex)
             {
-                timer.Stop();
-
                 return new Message<TResponse>
                 {
                     Id = message.Id,
-                    WorkerId = isFromMain ? message.TargetWorkerId : null,
-                    TargetWorkerId = isFromMain ? null : message.TargetWorkerId,
+                    WorkerId = message.TargetWorkerId,
+                    TargetWorkerId = message.WorkerId,
                     Type = messageFrom | MessageTypes.Result | MessageTypes.Exception,
                     Exception = ex
                 };

@@ -22,6 +22,10 @@
         {
             services.AddScoped<IWorkerFactory, WorkerFactory>()
                     .AddScoped<ISerializer, DefaultSerializer>()
+                    .AddSingleton(new WorkerIdAccessor())
+                    .AddTransient(typeof(NotificationHandlerWrapper<>))
+                    .AddTransient(typeof(CommandHandlerWrapper<>))
+                    .AddTransient(typeof(CommandHandlerWrapper<,>))
                     .AddScoped<IMessagingProvider, MainThreadMessagingProvider>()
                     .AddScoped<IMessagingService, MainMessagingService>();
 

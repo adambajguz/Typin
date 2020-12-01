@@ -91,17 +91,21 @@
                         //Type wrapperType = typeof(MessageHandlerWrapper<,>).MakeGenericType(mappings.PayloadType, mappings.ResultPayloadType);
                         object service = scope.ServiceProvider.GetRequiredService(mappings.HandlerWrapperType);
 
-                        if (service is ICommandHandlerWrapper command)
+                        if (message.Type.HasFlags(MessageTypes.Command) && service is ICommandHandlerWrapper command)
                         {
                             IMessage result = await command.Handle(message, _cancellationToken);
 
                             await PostAsync(result.TargetWorkerId, result);
                         }
-                        else if (service is INotificationHandlerWrapper notification)
+                        else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
                             await notification.Handle(message, _cancellationToken);
                         else
                             throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
                     }
+                }
+                else if (message.Type.HasFlags(MessageTypes.Exception))
+                {
+                    Console.WriteLine(message.Exception?.ToString());
                 }
             }
             catch (Exception ex)
@@ -117,8 +121,9 @@
             Message<TPayload> message = new()
             {
                 Id = callId,
+                WorkerId = _workerIdAccessor.Id,
                 TargetWorkerId = workerId,
-                Type = MessageTypes.FromMain | MessageTypes.Call,
+                Type = MessageTypes.FromWorker | MessageTypes.CallNotification,
                 Payload = payload
             };
 
@@ -137,8 +142,9 @@
             Message<TPayload> message = new()
             {
                 Id = callId,
+                WorkerId = _workerIdAccessor.Id,
                 TargetWorkerId = workerId,
-                Type = MessageTypes.FromMain | MessageTypes.Call,
+                Type = MessageTypes.FromWorker | MessageTypes.CallCommand,
                 Payload = payload
             };
 

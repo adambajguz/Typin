@@ -7,7 +7,9 @@
     {
         public void Configure(IWorkerConfigurationBuilder builder)
         {
-            builder.UseProgram<WebWorkerProgram>();
+            builder.UseProgram<WebWorkerProgram>()
+                   .RegisterCommandHandler<WorkerTestCommand, WorkerTestCommand.Handler>()
+                   .RegisterNotificationHandler<WorkerTestNotification, WorkerTestNotification.Handler>();
         }
 
         public void ConfigureServices(IServiceCollection services)

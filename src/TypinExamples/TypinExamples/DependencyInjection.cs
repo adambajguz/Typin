@@ -14,6 +14,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
+    using TypinExamples.Shared;
 
     public static class DependencyInjection
     {
@@ -22,7 +23,9 @@
             services.AddOptions();
             services.AddStorage();
 
-            services.AddWebWorkers();
+            services.AddWebWorkers()
+                    .RegisterCommandHandler<TestCommand, TestCommand.Handler>()
+                    .RegisterNotificationHandler<TestNotification, TestNotification.Handler>();
 
             services.AddLogging(builder => builder.AddSerilog(dispose: true)
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
