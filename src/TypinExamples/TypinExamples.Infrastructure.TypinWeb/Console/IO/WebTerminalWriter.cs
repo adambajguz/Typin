@@ -6,9 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using TypinExamples.Application.Handlers.Commands.Terminal;
-    using TypinExamples.Application.Services.Workers;
-    using TypinExamples.Domain.Builders;
-    using TypinExamples.Domain.Models.Workers;
 
     public class WebTerminalWriter : Stream
     {

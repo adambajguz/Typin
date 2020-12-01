@@ -1,7 +1,5 @@
 ﻿namespace TypinExamples.Application
 {
-    using System.Reflection;
-    using MediatR;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Configuration;
@@ -13,11 +11,6 @@
         public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddConfiguration<ExamplesSettings>(configuration);
-
-            services.AddMediatR(new Assembly[]
-            {
-                typeof(DependencyInjection).GetTypeInfo().Assembly,
-            });
 
             services.AddTransient<TimerService>();
 

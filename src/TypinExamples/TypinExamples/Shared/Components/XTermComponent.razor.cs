@@ -5,7 +5,6 @@ namespace TypinExamples.Shared.Components
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Options;
     using Microsoft.JSInterop;

@@ -2,19 +2,15 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using MediatR;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
-    using TypinExamples.Domain.Interfaces.Handlers.Core;
 
-    public class ClearCommand : ICoreRequest<Unit>
+    public class ClearCommand
     {
-        public long? WorkerId { get; set; }
-
         public string? TerminalId { get; init; }
         public string? Value { get; init; }
 
-        public class ClearHandler : ICoreRequestHandler<ClearCommand>
+        public class ClearHandler
         {
             private readonly ITerminalRepository _terminalRepository;
 
@@ -23,7 +19,7 @@
                 _terminalRepository = terminalRepository;
             }
 
-            public async Task<Unit> Handle(ClearCommand request, CancellationToken cancellationToken)
+            public async Task Handle(ClearCommand request, CancellationToken cancellationToken)
             {
                 if (request.TerminalId is not null && request.Value is not null)
                 {
@@ -32,8 +28,6 @@
                     if (webTerminal is not null)
                         await webTerminal.ClearAsync();
                 }
-
-                return Unit.Value;
             }
         }
     }

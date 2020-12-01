@@ -1,7 +1,6 @@
 ﻿namespace TypinExamples.Services.Terminal
 {
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.JSInterop;
     using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Handlers.Commands;

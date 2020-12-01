@@ -8,7 +8,6 @@ namespace TypinExamples
     using TypinExamples.Application;
     using TypinExamples.Infrastructure.Compiler;
     using TypinExamples.Infrastructure.TypinWeb;
-    using TypinExamples.Infrastructure.Workers;
 
     public static class Program
     {
@@ -24,7 +23,6 @@ namespace TypinExamples
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
                             .ConfigureApplicationServices(configuration)
-                            .ConfigureInfrastructureWorkerServices(configuration)
                             .ConfigureInfrastructureTypinWebServices()
                             .ConfigureInfrastructureCompilerServices();
 
