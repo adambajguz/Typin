@@ -40,17 +40,16 @@
 
             Type? type = Type.GetType(descriptor.ProgramClass);
 
-            Task<int>? task = type?.GetMethod("Main")?.Invoke(null, null) as Task<int>;
+            if (type?.GetMethod("Main")?.Invoke(null, null) is Task<int> task)
+            {
+                int exitCode = await task;
 
-            if (task is null)
-                return null;
+                return exitCode;
+            }
 
-            int? exitCode = await task;
-
-            return exitCode;
+            return null;
         }
 
-        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "May be needed for examples.")]
         public static async Task<int> Main(string[] args)
         {
             string target = Environment.GetEnvironmentVariable(ENV_VAR) ?? string.Empty;

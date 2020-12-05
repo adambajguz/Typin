@@ -1,6 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.TypinWeb.Logging
 {
-    using TypinExamples.Application.Handlers.Commands.Terminal;
+    using TypinExamples.Application.Handlers.Notifications.LogViewer;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Domain.Models.TypinLogging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
@@ -18,7 +18,7 @@
 
         public async void WriteLog(LogEntry entry)
         {
-            await _worker.CallCommandAsync(new LogCommand
+            await _worker.NotifyAsync(new LogNotification
             {
                 TerminalId = _terminalId,
                 Entry = entry
