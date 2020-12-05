@@ -32,6 +32,11 @@ namespace TypinExamples.Services.Terminal
                 _terminals.Remove(terminal.Id);
         }
 
+        public bool Contains(string id)
+        {
+            return _terminals.ContainsKey(id);
+        }
+
         public IWebTerminal? GetOrDefault(string id)
         {
             _terminals.TryGetValue(id, out IWebTerminal? term);

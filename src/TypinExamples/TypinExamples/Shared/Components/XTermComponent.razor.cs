@@ -37,6 +37,7 @@ namespace TypinExamples.Shared.Components
         [Inject] private IWorkerFactory WorkerFactory { get; init; } = default!;
 
         private IWorker? _worker { get; set; }
+        private bool IsInitialized => TerminalRepository.Contains(Id) && _worker is not null;
 
         protected override async Task OnInitializedAsync()
         {
@@ -47,7 +48,7 @@ namespace TypinExamples.Shared.Components
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender && _worker is not null)
+            if (!TerminalRepository.Contains(Id) && _worker is not null)
             {
                 ExampleDescriptor descriptor = Options.Value.Examples?.Where(x => x.Key == ExampleKey ||
                                                                                   (x.Name?.Contains(ExampleKey ?? string.Empty) ?? false))
@@ -57,6 +58,7 @@ namespace TypinExamples.Shared.Components
                 await terminal.InitializeXtermAsync();
 
                 TerminalRepository.RegisterTerminal(terminal);
+                StateHasChanged();
 
                 await _worker.RunAsync();
             }

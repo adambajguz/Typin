@@ -1,5 +1,11 @@
 ﻿<div class="wave-loader">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
+    <span class="dot @(IsAlternativeColor ? "dot-primary" : string.Empty)"></span>
+    <span class="dot @(IsAlternativeColor ? "dot-primary" : string.Empty)"></span>
+    <span class="dot @(IsAlternativeColor ? "dot-primary" : string.Empty)"></span>
 </div>
+
+@code
+{
+    [Parameter]
+    public bool IsAlternativeColor { get; init; }
+}
