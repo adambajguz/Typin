@@ -10,8 +10,7 @@
     {
         public void Configure(IWorkerConfigurationBuilder builder)
         {
-            builder.UseLongRunningProgram()
-                   .RegisterCommandHandler<RunExampleCommand, WorkerRunExampleHandler, RunExampleResult>();
+            builder.RegisterCommandHandler<RunExampleCommand, WorkerRunExampleHandler, RunExampleResult>();
         }
 
         public void ConfigureServices(IServiceCollection services)

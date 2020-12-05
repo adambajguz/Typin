@@ -52,7 +52,7 @@
             await _messagingProvider.PostAsync(workerId, serialized);
         }
 
-        public MessageIdReservation ReserveId()
+        public MessageIdReservation ReserveId(ulong? targetWorkerId)
         {
             var callId = _idProvider.Next();
             var taskCompletionSource = new TaskCompletionSource<object>();
@@ -147,7 +147,7 @@
 
         public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? targetWorkerId, TPayload payload)
         {
-            (ulong callId, Task<object> task) = ReserveId();
+            (ulong callId, Task<object> task) = ReserveId(null);
 
             Message<TPayload> message = new()
             {
@@ -167,6 +167,11 @@
                 throw new WorkerException(returnMessage.Error);
 
             return returnMessage!.Payload!;
+        }
+
+        public void CleanMessageRegistry(ulong workerId)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

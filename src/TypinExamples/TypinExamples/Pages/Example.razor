@@ -52,7 +52,7 @@ else
                         </section>
                     </Tab>
                     <Tab Text="Logs">
-                        <LogViewer @ref="LogViewerInstance"/>
+                        <LogViewer @ref="LogViewerInstance" />
                     </Tab>
                 </TabContainer>
             </div>
@@ -64,7 +64,14 @@ else
             <div class="col">
                 <TabContainer>
                     <Tab Text="Terminal">
-                        <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance"/>
+                        <TabContent>
+                            <button type="button" class="button primary outline icon" @onclick="TerminateTerminal">
+                                <img src="https://icongr.am/feather/file.svg?size=16&amp;color=ffffff" alt="icon">
+                            </button>
+                        </TabContent>
+                        <ChildContent>
+                            <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance" @ref="XTermInstance" />
+                        </ChildContent>
                     </Tab>
                 </TabContainer>
             </div>
@@ -72,11 +79,10 @@ else
     </section>
 }
 
-
 @code
 {
-    [Parameter]
     public LogViewer? LogViewerInstance { get; set; }
+    public XTermComponent? XTermInstance { get; set; }
 
     [Parameter]
     public ExampleDescriptor? Descriptor { get; set; }
@@ -101,5 +107,11 @@ else
                                                                        .FirstOrDefault();
 
         return descriptor;
+    }
+
+    async Task TerminateTerminal()
+    {
+        if (XTermInstance is not null)
+            await XTermInstance.TerminateTerminal();
     }
 }

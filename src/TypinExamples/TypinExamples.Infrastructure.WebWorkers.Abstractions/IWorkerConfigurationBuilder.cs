@@ -6,15 +6,11 @@
     {
         /// <summary>
         /// Use specific worker program class.
+        /// When nothing is registered long running cancellable worker program class is used. It will return 0 after finish.
+        /// This can be used when you don't have any long running logic that you need to call and you only rely on messages.
         /// </summary>
         IWorkerConfigurationBuilder UseProgram<TProgram>()
             where TProgram : class, IWorkerProgram;
-
-        /// <summary>
-        /// Use long running cancellable worker program class that will return 0 when it finishes.
-        /// This can be used when you don't have any long running logic that you need to call and you only rely on messages.
-        /// </summary>
-        IWorkerConfigurationBuilder UseLongRunningProgram();
 
         /// <summary>
         /// Registers a handler.

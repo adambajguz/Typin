@@ -30,6 +30,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         private IMessagingService? _messagingService;
 
         public ulong Id { get; }
+        public bool IsCancelled { get; private set; }
         public bool IsDisposed { get; private set; }
         public bool IsInitialized { get; private set; }
 
@@ -151,6 +152,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             throw new NotImplementedException();
         }
 
+        //Cancel cancels everything and actually it acts as Dispose. There should be a method to cancel a specific message/scope/handler/program or simply Cancel should be removed.
         public Task CancelAsync()
         {
             _cancellationTokenSource.Cancel();
@@ -182,14 +184,16 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             }
         }
 
-        ValueTask<CommandFinished> ICommandHandler<CancelCommand, CommandFinished>.HandleAsync(CancelCommand request, IWorker worker, CancellationToken cancellationToken)
+        async ValueTask<CommandFinished> ICommandHandler<CancelCommand, CommandFinished>.HandleAsync(CancelCommand request, IWorker worker, CancellationToken cancellationToken)
         {
             if (request.Delay == TimeSpan.Zero)
-                _cancellationTokenSource.Cancel();
+                await CancelAsync();
             else
-                _cancellationTokenSource.CancelAfter(request.Delay);
+                await CancelAsync(request.Delay);
 
-            return CommandFinished.Task;
+            IsCancelled = true;
+
+            return CommandFinished.Instance;
         }
 
         async ValueTask<CommandFinished> ICommandHandler<DisposeCommand, CommandFinished>.HandleAsync(DisposeCommand request, IWorker worker, CancellationToken cancellationToken)

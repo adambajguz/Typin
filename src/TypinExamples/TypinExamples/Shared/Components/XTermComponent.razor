@@ -1,4 +1,4 @@
-<div>
+<div data-example-key="@ExampleKey">
     @if (!IsInitialized)
     {
         <div class="row">
@@ -7,10 +7,12 @@
         </div>
         <div class="row">
             <div class="col">
-                <WaveLoader IsAlternativeColor="true"/>
+                <WaveLoader IsAlternativeColor="true" />
             </div>
         </div>
     }
 
-    <div id="@Id" data-example-key="@ExampleKey" @attributes="InputAttributes"></div>
+    @*<div class="@(IsInitialized ? string.Empty : "is-hidden")">*@
+        <div id="@Id" @attributes="InputAttributes"></div>
+    @*</div>*@
 </div>

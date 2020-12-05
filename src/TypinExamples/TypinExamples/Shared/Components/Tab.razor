@@ -8,7 +8,11 @@
     private TabContainer? Parent { get; init; }
 
     [Parameter]
+    public RenderFragment? TabContent { get; init; }
+
+    [Parameter]
     public RenderFragment? ChildContent { get; init; }
+
 
     [Parameter]
     public string Text { get; init; } = string.Empty;

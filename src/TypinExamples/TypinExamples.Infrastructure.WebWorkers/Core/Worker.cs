@@ -1,7 +1,9 @@
 namespace TypinExamples.Infrastructure.WebWorkers.Core
 {
     using System;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
@@ -25,8 +27,10 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         private readonly IMessagingService _messagingService;
         private readonly IMessagingProvider _messagingProvider;
         private readonly ScriptLoader _scriptLoader;
+        private readonly ILogger _logger;
 
         public ulong Id { get; }
+        public bool IsCancelled { get; private set; }
         public bool IsDisposed { get; private set; }
         public bool IsInitialized { get; private set; }
 
@@ -35,7 +39,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                       IJSRuntime jsRuntime,
                       IMessagingService messagingService,
                       IMessagingProvider messagingProvider,
-                      string[] assemblies)
+                      string[] assemblies,
+                      ILogger logger)
         {
             Id = id;
 
@@ -47,6 +52,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             _scriptLoader = new ScriptLoader(_jsRuntime);
             _serializer = new DefaultSerializer();
+
+            _logger = logger;
         }
 
         public async Task NotifyAsync<TPayload>(TPayload payload)
@@ -77,7 +84,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             var ms = typeof(WorkerThreadMessagingProvider);
             var wp = typeof(WorkerEntryPoint);
 
-            (ulong callId, Task<object> task) = _messagingService.ReserveId();
+            (ulong callId, Task<object> task) = _messagingService.ReserveId(Id);
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.initWorker",
                                              Id,
@@ -114,6 +121,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         public async Task CancelAsync()
         {
             await CallCommandAsync(new CancelCommand());
+            IsCancelled = true;
         }
 
         public async Task CancelAsync(TimeSpan delay)
@@ -126,12 +134,37 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             if (IsDisposed)
                 return;
 
-            await CallCommandAsync(new DisposeCommand());
+            const int miliseconds = 3000;
+            TaskAwaiter awaiter = DisposeWorkerAsync().GetAwaiter();
+            await Task.Delay(miliseconds);
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
+            bool forcedToDispose = false;
+            if (!awaiter.IsCompleted)
+            {
+                _logger.LogWarning("Worker {Id} does not respond, thus failed to dispose within {Time} miliseconds.", Id, miliseconds);
+                forcedToDispose = true;
+            }
+
             IsDisposed = true;
 
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
+
+            _messagingService.CleanMessageRegistry(Id);
+
+            if (forcedToDispose)
+                _logger.LogInformation("Worker {Id} was forced to dispose.", Id);
+            else
+                _logger.LogInformation("Worker {Id} was disposed.", Id);
+
+            //TODO what happens to messages after force disposing the worker?
+
             _disposeCallback();
+        }
+
+        private async Task DisposeWorkerAsync()
+        {
+            await CallCommandAsync(new DisposeCommand());
+            IsDisposed = true;
         }
     }
 }

@@ -11,22 +11,14 @@
 
     internal class WorkerConfigurationBuilder : IWorkerConfigurationBuilder
     {
-        private Type? _defaultEntryPoint;
+        private Type? _programType;
         private readonly Dictionary<Type, MessageMapping> _messageMappings = new();
 
         /// <inheritdoc/>
         public IWorkerConfigurationBuilder UseProgram<T>()
             where T : class, IWorkerProgram
         {
-            _defaultEntryPoint = typeof(T);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IWorkerConfigurationBuilder UseLongRunningProgram()
-        {
-            _defaultEntryPoint = typeof(LongRunningWorkerProgram);
+            _programType = typeof(T);
 
             return this;
         }
@@ -83,12 +75,10 @@
 
         public WorkerConfiguration Build()
         {
-            if (_defaultEntryPoint is null)
-                throw new InvalidOperationException("When multiple entry points are registered default entry point must be set explicitly.");
-
+            _programType ??= typeof(LongRunningWorkerProgram);
             WorkerInstanceManager.ConfigureCoreHandlers(this);
 
-            return new WorkerConfiguration(_defaultEntryPoint, _messageMappings);
+            return new WorkerConfiguration(_programType, _messageMappings);
         }
     }
 }

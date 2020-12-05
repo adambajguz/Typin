@@ -9,6 +9,7 @@
         ulong Id { get; }
 
         bool IsInitialized { get; }
+        bool IsCancelled { get; }
         bool IsDisposed { get; }
 
         Task<int> RunAsync();

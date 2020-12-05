@@ -16,6 +16,7 @@
     {
         private readonly IdProvider _idProvider = new();
         private readonly Dictionary<ulong, TaskCompletionSource<object>> messageRegister = new();
+        private readonly Dictionary<ulong, HashSet<ulong>> workerToMessagesRegister = new();
 
         private readonly ISerializer _serializer;
         private readonly IWorkerManager _workerManager;
@@ -44,11 +45,18 @@
             await _messagingProvider.PostAsync(workerId, serialized);
         }
 
-        public MessageIdReservation ReserveId()
+        public MessageIdReservation ReserveId(ulong? targetWorkerId)
         {
             var callId = _idProvider.Next();
             var taskCompletionSource = new TaskCompletionSource<object>();
             messageRegister.Add(callId, taskCompletionSource);
+
+            if (targetWorkerId is ulong value)
+            {
+                workerToMessagesRegister.TryAdd(value, new HashSet<ulong>());
+                HashSet<ulong> list = workerToMessagesRegister[value];
+                list.Add(callId);
+            }
 
             return new MessageIdReservation(callId, taskCompletionSource.Task);
         }
@@ -64,6 +72,11 @@
             {
                 if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                     throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
+
+                if (message.WorkerId is ulong wId && workerToMessagesRegister.TryGetValue(wId, out HashSet<ulong>? set))
+                {
+                    set.Remove(message.Id);
+                }
 
                 if (message.Error is not null)
                 {
@@ -130,7 +143,7 @@
 
         public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? targetWorkerId, TPayload payload)
         {
-            (ulong callId, Task<object> task) = ReserveId();
+            (ulong callId, Task<object> task) = ReserveId(targetWorkerId);
 
             Message<TPayload> message = new()
             {
@@ -149,7 +162,24 @@
             if (returnMessage?.Error is not null)
                 throw new WorkerException(returnMessage.Error);
 
-            return returnMessage.Payload!;
+            return returnMessage!.Payload!;
+        }
+
+        public void CleanMessageRegistry(ulong workerId)
+        {
+            if (workerToMessagesRegister.TryGetValue(workerId, out HashSet<ulong>? set))
+            {
+                foreach (ulong callId in set)
+                {
+                    if (messageRegister.TryGetValue(callId, out TaskCompletionSource<object>? taskCompletionSource))
+                    {
+                        taskCompletionSource.SetCanceled();
+                        messageRegister.Remove(callId);
+                    }
+                }
+
+                workerToMessagesRegister.Remove(workerId);
+            }
         }
 
         public void Dispose()

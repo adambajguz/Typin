@@ -6,6 +6,8 @@
             <a class="text-uppercase @(tab == Active ? "active" : string.Empty)"
                @onclick="( () => Active = tab )">
                 @tab.Text
+
+                @tab.TabContent
             </a>
         }
     </nav>

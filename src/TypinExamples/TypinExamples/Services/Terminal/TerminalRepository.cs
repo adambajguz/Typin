@@ -1,35 +1,48 @@
 namespace TypinExamples.Services.Terminal
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Microsoft.JSInterop;
+    using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public class TerminalRepository : ITerminalRepository
     {
         private static readonly Dictionary<string, IWebTerminal> _terminals = new Dictionary<string, IWebTerminal>();
 
-        public TerminalRepository()
-        {
+        private IJSRuntime _runtime { get; }
+        private IOptions<ExamplesSettings> _options { get; }
 
+        public TerminalRepository(IJSRuntime runtime, IOptions<ExamplesSettings> options)
+        {
+            _runtime = runtime;
+            _options = options;
         }
 
-        public void RegisterTerminal(IWebTerminal terminal)
+        public async Task<IWebTerminal> CreateTerminalAsync(string id, string exampleKey, IWorker worker)
         {
-            _terminals.TryAdd(terminal.Id, terminal);
+            ExampleDescriptor descriptor = _options.Value.Examples.Where(x => x.Key == exampleKey || (x.Name?.Contains(exampleKey ?? string.Empty) ?? false))
+                                                                  .First();
+
+            IWebTerminal terminal = new WebTerminal(id, descriptor, _runtime, worker);
+            await terminal.InitializeXtermAsync();
+
+            _terminals.TryAdd(id, terminal);
+
+            return terminal;
         }
 
-        public void UnregisterTerminal(string id)
+        public async Task UnregisterAndDisposeTerminalAsync(string id)
         {
-            if (_terminals.ContainsKey(id))
+            if (GetOrDefault(id) is IWebTerminal terminal)
+            {
                 _terminals.Remove(id);
-        }
-
-        public void UnregisterTerminal(IWebTerminal terminal)
-        {
-            if (_terminals.ContainsKey(terminal.Id))
-                _terminals.Remove(terminal.Id);
+                await terminal.DisposeXtermAsync();
+            }
         }
 
         public bool Contains(string id)
@@ -51,6 +64,16 @@ namespace TypinExamples.Services.Terminal
             {
                 await term.RunExample(input);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (var terminal in _terminals.Values)
+            {
+                terminal.DisposeXtermAsync().Wait(100);
+            }
+
+            _terminals.Clear();
         }
     }
 }

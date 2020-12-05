@@ -50,7 +50,8 @@
                                              _jsRuntime,
                                              _messagingService,
                                              _messagingProvider,
-                                             _assemblies);
+                                             _assemblies,
+                                             _logger);
             await worker.InitAsync();
             _workerManager.AddWorker(worker);
 
