@@ -52,7 +52,7 @@ namespace TypinExamples.Shared.Components
             {
                 ExampleDescriptor descriptor = Options.Value.Examples?.Where(x => x.Key == ExampleKey ||
                                                                                   (x.Name?.Contains(ExampleKey ?? string.Empty) ?? false))
-                                                                      .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
+                                                                      .First();
 
                 IWebTerminal terminal = new WebTerminal(Id, descriptor, JSRuntime, _worker);
                 await terminal.InitializeXtermAsync();

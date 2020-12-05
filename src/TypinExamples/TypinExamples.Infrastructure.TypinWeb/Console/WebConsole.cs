@@ -97,21 +97,24 @@
 
             Output = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
-                AutoFlush = true
+                AutoFlush = false
             };
 
             Error = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
-                AutoFlush = true
+                AutoFlush = false
             };
 
-            //_flushTimer.Elapsed += FlushTimerElapsed;
-            //_flushTimer.Set(50, true);
+            _flushTimer.Elapsed += FlushTimerElapsed;
+            _flushTimer.Set(50, true);
         }
 
         private void FlushTimerElapsed()
         {
+#if DEBUG
             Console.WriteLine("Flush");
+#endif
+
             Output.FlushAsync().Wait(25);
             Error.FlushAsync().Wait(25);
         }
@@ -152,8 +155,8 @@
 
         public void Dispose()
         {
-            //_flushTimer.Stop();
-            //_flushTimer.Dispose();
+            _flushTimer.Stop();
+            _flushTimer.Dispose();
 
             Input.Dispose();
             Output.Dispose();

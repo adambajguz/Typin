@@ -122,8 +122,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         public async Task NotifyAsync<TNotification>(TNotification payload)
             where TNotification : INotification
         {
-            if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TNotification).Name}>: Worker not initialized.");
+            if (_messagingService is null || !IsInitialized || IsDisposed)
+                throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TNotification).Name}>: Worker not initialized or disposed.");
 
             await _messagingService.NotifyAsync(null, payload);
         }
@@ -131,8 +131,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         public async Task CallCommandAsync<TCommand>(TCommand payload)
             where TCommand : ICommand
         {
-            if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TCommand).Name}>: Worker not initialized.");
+            if (_messagingService is null || !IsInitialized || IsDisposed)
+                throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}>: Worker not initialized or disposed.");
 
             await _messagingService.CallCommandAsync<TCommand, CommandFinished>(null, payload);
         }
@@ -140,8 +140,8 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         public async Task<TResult> CallCommandAsync<TCommand, TResult>(TCommand payload)
             where TCommand : ICommand<TResult>
         {
-            if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}, {typeof(TResult).Name}>: Worker not initialized.");
+            if (_messagingService is null || !IsInitialized || IsDisposed)
+                throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}, {typeof(TResult).Name}>: Worker not initialized or disposed.");
 
             return await _messagingService.CallCommandAsync<TCommand, TResult>(null, payload);
         }
