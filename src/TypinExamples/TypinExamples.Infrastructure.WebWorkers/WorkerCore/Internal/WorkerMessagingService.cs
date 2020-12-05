@@ -78,11 +78,12 @@
                     if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                         throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
 
-                    taskCompletionSource!.SetResult(message);
-                    messageRegister.Remove(message.Id);
+                    if (message.Error is not null)
+                        taskCompletionSource.SetException(new WorkerException(message.Error));
+                    else
+                        taskCompletionSource!.SetResult(message);
 
-                    if (message.Exception is not null)
-                        taskCompletionSource.SetException(message.Exception);
+                    messageRegister.Remove(message.Id);
                 }
                 else if (message.Type.HasFlags(MessageTypes.Call))
                 {
@@ -108,7 +109,7 @@
                 }
                 else if (message.Type.HasFlags(MessageTypes.Exception))
                 {
-                    Console.WriteLine(message.Exception?.ToString());
+                    Console.WriteLine(message.Error?.ToString());
                 }
                 else
                     Console.WriteLine($"Unknown message type {message.Type}");
@@ -158,8 +159,8 @@
             if (await task is not Message<TResultPayload> returnMessage)
                 throw new InvalidOperationException("Invalid message.");
 
-            if (returnMessage.Exception is not null)
-                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+            if (returnMessage?.Error is not null)
+                throw new WorkerException(returnMessage.Error);
 
             return returnMessage.Payload!;
         }

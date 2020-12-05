@@ -60,7 +60,7 @@
                     WorkerId = message.TargetWorkerId,
                     TargetWorkerId = message.WorkerId,
                     Type = messageFrom | MessageTypes.Result | MessageTypes.Exception,
-                    Exception = ex
+                    Error = WorkerError.FromException(ex)
                 };
             }
         }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
 
     public sealed class Message<TRequest> : IMessage, IEquatable<Message<TRequest>?>
     {
@@ -12,7 +13,7 @@
         public DateTimeOffset Timestamp { get; } = DateTimeOffset.Now;
         public MessageTypes Type { get; init; }
 
-        public Exception? Exception { get; init; }
+        public WorkerError? Error { get; init; }
         public TRequest? Payload { get; init; } = default!;
 
         public Message()
@@ -33,7 +34,6 @@
                    TargetWorkerId == other.TargetWorkerId &&
                    Timestamp.Equals(other.Timestamp) &&
                    Type == other.Type &&
-                   EqualityComparer<Exception?>.Default.Equals(Exception, other.Exception) &&
                    EqualityComparer<TRequest?>.Default.Equals(Payload, other.Payload);
         }
 
@@ -49,7 +49,7 @@
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, TargetWorkerId, Timestamp, Type, Exception, Payload);
+            return HashCode.Combine(Id, TargetWorkerId, Timestamp, Type, Error, Payload);
         }
 
         public override string? ToString()

@@ -60,18 +60,20 @@
             if (message.TargetWorkerId != null)
                 throw new InvalidOperationException($"Message '{message}' is not for this worker.");
 
-            _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
-
             if (message.Type.HasFlags(MessageTypes.Result))
             {
                 if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                     throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
 
-                taskCompletionSource!.SetResult(message);
+                if (message.Error is not null)
+                {
+                    taskCompletionSource.SetException(new WorkerException(message.Error));
+                }
+                else
+                    taskCompletionSource!.SetResult(message);
+
                 messageRegister.Remove(message.Id);
 
-                if (message.Exception is not null)
-                    taskCompletionSource.SetException(message.Exception);
             }
             else if (message.WorkerId is not null && message.Type.HasFlags(MessageTypes.Call))
             {
@@ -98,7 +100,7 @@
             }
             else if (message.Type.HasFlags(MessageTypes.Exception))
             {
-                throw message.Exception ?? throw new NullReferenceException(message.ToString());
+                throw new WorkerException(message.Error ?? throw new NullReferenceException(message.ToString()));
             }
             else
                 throw new InvalidOperationException($"Unknown message type {message.Type}");
@@ -143,8 +145,8 @@
             if (await task is not Message<TResultPayload> returnMessage)
                 throw new InvalidOperationException("Invalid message.");
 
-            if (returnMessage.Exception is not null)
-                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+            if (returnMessage?.Error is not null)
+                throw new WorkerException(returnMessage.Error);
 
             return returnMessage.Payload!;
         }
