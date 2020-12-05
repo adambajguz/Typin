@@ -36,14 +36,14 @@
             _callbacks?.Invoke(this, rawMessage);
         }
 
-        public async Task PostAsync(ulong? workerId, string rawMessage)
+        public async Task PostAsync(ulong? targetWorkerId, string rawMessage)
         {
             _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
 
-            if (workerId is null)
-                throw new ArgumentNullException(nameof(workerId));
+            if (targetWorkerId is null)
+                throw new ArgumentNullException(nameof(targetWorkerId));
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", workerId, rawMessage);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", targetWorkerId, rawMessage);
         }
 
         public void Dispose()

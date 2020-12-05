@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
-    using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
 
     public sealed class Message<TRequest> : IMessage, IEquatable<Message<TRequest>?>
     {

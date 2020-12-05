@@ -3,5 +3,5 @@
     public interface INotification
     {
 
-    }    
+    }
 }

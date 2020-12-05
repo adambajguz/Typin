@@ -8,6 +8,6 @@
         event EventHandler<string> Callbacks;
 
         void OnMessage(string rawMessage);
-        Task PostAsync(ulong? workerId, string rawMessage);
+        Task PostAsync(ulong? targetWorkerId, string rawMessage);
     }
 }

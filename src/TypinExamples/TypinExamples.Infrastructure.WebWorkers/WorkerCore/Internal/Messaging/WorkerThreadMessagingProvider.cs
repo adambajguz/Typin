@@ -38,13 +38,13 @@
             _callbacks?.Invoke(null, rawMessage);
         }
 
-        public Task PostAsync(ulong? workerId, string rawMessage)
+        public Task PostAsync(ulong? targetWorkerId, string rawMessage)
         {
 #if DEBUG
-            Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({workerId}, {rawMessage})");
+            Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({targetWorkerId}, {rawMessage})");
 #endif
-            if (workerId is not null)
-                throw new ArgumentException("Id must be null. Cross-worker communication is not supported.", nameof(workerId));
+            if (targetWorkerId is not null)
+                throw new ArgumentException("Id must be null. Cross-worker communication is not supported.", nameof(targetWorkerId));
 
             _self.Invoke("postMessage", rawMessage);
 

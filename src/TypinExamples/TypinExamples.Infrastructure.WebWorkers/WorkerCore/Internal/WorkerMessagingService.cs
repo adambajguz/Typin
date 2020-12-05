@@ -124,7 +124,7 @@
             }
         }
 
-        public async Task NotifyAsync<TPayload>(ulong? workerId, TPayload payload)
+        public async Task NotifyAsync<TPayload>(ulong? targetWorkerId, TPayload payload)
         {
             ulong callId = _idProvider.Next();
 
@@ -132,20 +132,20 @@
             {
                 Id = callId,
                 WorkerId = _workerIdAccessor.Id,
-                TargetWorkerId = workerId,
+                TargetWorkerId = targetWorkerId,
                 Type = MessageTypes.FromWorker | MessageTypes.CallNotification,
                 Payload = payload
             };
 
-            await PostAsync(workerId, message);
+            await PostAsync(targetWorkerId, message);
         }
 
-        public async Task CallCommandAsync<TPayload>(ulong? workerId, TPayload payload)
+        public async Task CallCommandAsync<TPayload>(ulong? targetWorkerId, TPayload payload)
         {
-            await CallCommandAsync<TPayload, CommandFinished>(workerId, payload);
+            await CallCommandAsync<TPayload, CommandFinished>(targetWorkerId, payload);
         }
 
-        public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? workerId, TPayload payload)
+        public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? targetWorkerId, TPayload payload)
         {
             (ulong callId, Task<object> task) = ReserveId();
 
@@ -153,12 +153,12 @@
             {
                 Id = callId,
                 WorkerId = _workerIdAccessor.Id,
-                TargetWorkerId = workerId,
+                TargetWorkerId = targetWorkerId,
                 Type = MessageTypes.FromWorker | MessageTypes.CallCommand,
                 Payload = payload
             };
 
-            await PostAsync(workerId, message);
+            await PostAsync(targetWorkerId, message);
 
             if (await task is not Message<TResultPayload> returnMessage)
                 throw new InvalidOperationException("Invalid message.");

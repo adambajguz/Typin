@@ -45,7 +45,7 @@
                 ProgramClass = _exampleDescriptor.ProgramClass,
                 WebProgramClass = _exampleDescriptor.WebProgramClass
             });
-            }
+        }
 
         public async Task ResetAsync()
         {

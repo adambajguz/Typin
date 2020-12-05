@@ -48,7 +48,7 @@
                     Id = message.Id,
                     WorkerId = message.TargetWorkerId,
                     TargetWorkerId = message.WorkerId,
-                    Type = messageFrom | MessageTypes.Command | MessageTypes.Result,
+                    Type = messageFrom | MessageTypes.Result,
                     Payload = response,
                 };
             }
@@ -59,7 +59,7 @@
                     Id = message.Id,
                     WorkerId = message.TargetWorkerId,
                     TargetWorkerId = message.WorkerId,
-                    Type = messageFrom | MessageTypes.Result | MessageTypes.Exception,
+                    Type = messageFrom | MessageTypes.Exception,
                     Error = WorkerError.FromException(ex)
                 };
             }
