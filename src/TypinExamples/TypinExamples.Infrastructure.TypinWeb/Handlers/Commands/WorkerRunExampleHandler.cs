@@ -12,13 +12,12 @@
     {
         public async ValueTask<RunExampleResult> HandleAsync(RunExampleCommand request, IWorker worker, CancellationToken cancellationToken)
         {
-            _ = request.TerminalId ?? throw new ArgumentNullException(nameof(request.TerminalId));
-            _ = request.WebProgramClass ?? throw new ArgumentNullException(nameof(request.WebProgramClass));
-            _ = request.Args ?? throw new ArgumentNullException(nameof(request.Args));
+            _ = request.TerminalId ?? throw new ArgumentNullException(nameof(request), $"{nameof(request.TerminalId)} is null");
+            _ = request.WebProgramClass ?? throw new ArgumentNullException(nameof(request), $"{nameof(request.WebProgramClass)} is null");
+            _ = request.Args ?? throw new ArgumentNullException(nameof(request), $"{nameof(request.Args)} is null");
 
             using (WebExampleInvoker exampleInvoker = new(worker, request.TerminalId, cancellationToken))
             {
-                //_exampleInvoker.AttachLogger(LoggerDestination);
                 int exitCode = await exampleInvoker.Run(request.WebProgramClass, request.Args, request.EnvironmentVariables);
 
                 return new RunExampleResult { ExitCode = exitCode };
