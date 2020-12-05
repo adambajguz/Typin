@@ -15,13 +15,13 @@
         Task CancelAsync();
         Task CancelAsync(TimeSpan delay);
 
-        Task NotifyAsync<TPayload>(TPayload payload)
-            where TPayload : INotification;
+        Task NotifyAsync<TNotification>(TNotification payload)
+            where TNotification : INotification;
 
-        Task CallCommandAsync<TPayload>(TPayload payload)
-            where TPayload : ICommand;
+        Task CallCommandAsync<TCommand>(TCommand payload)
+            where TCommand : ICommand;
 
-        Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(TPayload payload)
-            where TPayload : ICommand<TResultPayload>;
+        Task<TResult> CallCommandAsync<TCommand, TResult>(TCommand payload)
+            where TCommand : ICommand<TResult>;
     }
 }

@@ -73,15 +73,23 @@
                 _ = _serviceScopeFactory ?? throw new InvalidOperationException("Worker not initialized.");
                 _ = _configuration ?? throw new InvalidOperationException("Worker not initialized.");
 
-                if (message.Type.HasFlags(MessageTypes.Result))
+                if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
                 {
                     if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                         throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
 
                     if (message.Error is not null)
+                    {
                         taskCompletionSource.SetException(new WorkerException(message.Error));
+
+                        Console.WriteLine(message.Error?.ToString());
+                    }
+                    else if (message.Type.HasFlags(MessageTypes.Exception))
+                    {
+                        Console.WriteLine($"Unknown error in message {message.Id}");
+                    }
                     else
-                        taskCompletionSource!.SetResult(message);
+                        taskCompletionSource.SetResult(message);
 
                     messageRegister.Remove(message.Id);
                 }
@@ -106,10 +114,6 @@
                         else
                             throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
                     }
-                }
-                else if (message.Type.HasFlags(MessageTypes.Exception))
-                {
-                    Console.WriteLine(message.Error?.ToString());
                 }
                 else
                     Console.WriteLine($"Unknown message type {message.Type}");
@@ -162,7 +166,7 @@
             if (returnMessage?.Error is not null)
                 throw new WorkerException(returnMessage.Error);
 
-            return returnMessage.Payload!;
+            return returnMessage!.Payload!;
         }
 
         public void Dispose()

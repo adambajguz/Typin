@@ -60,7 +60,7 @@
             if (message.TargetWorkerId != null)
                 throw new InvalidOperationException($"Message '{message}' is not for this worker.");
 
-            if (message.Type.HasFlags(MessageTypes.Result))
+            if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
             {
                 if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                     throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
@@ -68,12 +68,17 @@
                 if (message.Error is not null)
                 {
                     taskCompletionSource.SetException(new WorkerException(message.Error));
+
+                    throw new WorkerException(message.Error ?? throw new NullReferenceException(message.ToString()));
+                }
+                else if (message.Type.HasFlags(MessageTypes.Exception))
+                {
+                    throw new InvalidOperationException($"Unknown error in message {message.Id}");
                 }
                 else
-                    taskCompletionSource!.SetResult(message);
+                    taskCompletionSource.SetResult(message);
 
                 messageRegister.Remove(message.Id);
-
             }
             else if (message.WorkerId is not null && message.Type.HasFlags(MessageTypes.Call))
             {
@@ -97,10 +102,6 @@
                 }
                 else
                     throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
-            }
-            else if (message.Type.HasFlags(MessageTypes.Exception))
-            {
-                throw new WorkerException(message.Error ?? throw new NullReferenceException(message.ToString()));
             }
             else
                 throw new InvalidOperationException($"Unknown message type {message.Type}");

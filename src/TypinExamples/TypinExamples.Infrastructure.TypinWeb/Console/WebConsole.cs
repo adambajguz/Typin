@@ -97,16 +97,16 @@
 
             Output = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
-                AutoFlush = false
+                AutoFlush = true
             };
 
             Error = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
-                AutoFlush = false
+                AutoFlush = true
             };
 
-            _flushTimer.Elapsed += FlushTimerElapsed;
-            _flushTimer.Set(50, true);
+            //_flushTimer.Elapsed += FlushTimerElapsed;
+            //_flushTimer.Set(50, true);
         }
 
         private void FlushTimerElapsed()
@@ -152,7 +152,8 @@
 
         public void Dispose()
         {
-            _flushTimer.Dispose();
+            //_flushTimer.Stop();
+            //_flushTimer.Dispose();
 
             Input.Dispose();
             Output.Dispose();

@@ -27,7 +27,6 @@
             services.AddWebWorkers()
                     .RegisterCommandHandler<ClearCommand, ClearCommand.Handler>()
                     .RegisterCommandHandler<WriteCommand, WriteCommand.Handler>()
-                    .RegisterCommandHandler<WriteLineCommand, WriteLineCommand.Handler>()
                     .RegisterCommandHandler<LogCommand, LogCommand.Handler>()
                     .RegisterCommandHandler<TestCommand, TestCommand.Handler>()
                     .RegisterNotificationHandler<TestNotification, TestNotification.Handler>();

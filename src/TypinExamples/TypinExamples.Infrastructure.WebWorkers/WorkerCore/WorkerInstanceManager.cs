@@ -119,31 +119,31 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             }
         }
 
-        public async Task NotifyAsync<TPayload>(TPayload payload)
-            where TPayload : INotification
+        public async Task NotifyAsync<TNotification>(TNotification payload)
+            where TNotification : INotification
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
 
-            await _messagingService.NotifyAsync(Id, payload);
+            await _messagingService.NotifyAsync(null, payload);
         }
 
-        public async Task CallCommandAsync<TPayload>(TPayload payload)
-            where TPayload : ICommand
+        public async Task CallCommandAsync<TCommand>(TCommand payload)
+            where TCommand : ICommand
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
 
-            await _messagingService.CallCommandAsync<TPayload, CommandFinished>(Id, payload);
+            await _messagingService.CallCommandAsync<TCommand, CommandFinished>(null, payload);
         }
 
-        public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(TPayload payload)
-            where TPayload : ICommand<TResultPayload>
+        public async Task<TResult> CallCommandAsync<TCommand, TResult>(TCommand payload)
+            where TCommand : ICommand<TResult>
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
 
-            return await _messagingService.CallCommandAsync<TPayload, TResultPayload>(Id, payload);
+            return await _messagingService.CallCommandAsync<TCommand, TResult>(null, payload);
         }
 
         public Task<int> RunAsync()

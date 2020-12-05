@@ -19,13 +19,15 @@
 
         public async ValueTask<RunExampleResult> HandleAsync(RunExampleCommand request, IWorker worker, CancellationToken cancellationToken)
         {
-            using WebConsole webConsole = new WebConsole(worker, request.TerminalId, cancellationToken);
-            _exampleInvoker.AttachConsole(webConsole);
-            //_exampleInvoker.AttachLogger(LoggerDestination);
+            using (WebConsole webConsole = new WebConsole(worker, request.TerminalId, cancellationToken))
+            {
+                _exampleInvoker.AttachConsole(webConsole);
+                //_exampleInvoker.AttachLogger(LoggerDestination);
 
-            int exitCode = await _exampleInvoker.Run(request.WebProgramClass, request.Args, request.EnvironmentVariables);
+                int exitCode = await _exampleInvoker.Run(request.WebProgramClass, request.Args, request.EnvironmentVariables);
 
-            return new RunExampleResult { ExitCode = exitCode };
+                return new RunExampleResult { ExitCode = exitCode };
+            }
         }
     }
 }
