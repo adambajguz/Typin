@@ -70,8 +70,8 @@
                 if (message.TargetWorkerId != _workerIdAccessor.Id)
                     throw new InvalidOperationException($"Message '{message}' is not for this worker.");
 
-                _ = _serviceScopeFactory ?? throw new InvalidOperationException("Worker not initialized.");
-                _ = _configuration ?? throw new InvalidOperationException("Worker not initialized.");
+                _ = _serviceScopeFactory ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_serviceScopeFactory)} is null).");
+                _ = _configuration ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_configuration)} is null).");
 
                 if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
                 {

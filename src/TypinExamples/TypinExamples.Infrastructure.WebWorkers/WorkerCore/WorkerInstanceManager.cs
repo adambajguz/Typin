@@ -123,7 +123,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TNotification : INotification
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException("Worker not initialized.");
+                throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TNotification).Name}>: Worker not initialized.");
 
             await _messagingService.NotifyAsync(null, payload);
         }
@@ -132,7 +132,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TCommand : ICommand
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException("Worker not initialized.");
+                throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TCommand).Name}>: Worker not initialized.");
 
             await _messagingService.CallCommandAsync<TCommand, CommandFinished>(null, payload);
         }
@@ -141,7 +141,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TCommand : ICommand<TResult>
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
-                throw new InvalidOperationException("Worker not initialized.");
+                throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}, {typeof(TResult).Name}>: Worker not initialized.");
 
             return await _messagingService.CallCommandAsync<TCommand, TResult>(null, payload);
         }
@@ -168,7 +168,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         #region Core Handlers
         async ValueTask<RunProgramResult> ICommandHandler<RunProgramCommand, RunProgramResult>.HandleAsync(RunProgramCommand request, IWorker worker, CancellationToken cancellationToken)
         {
-            _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
+            _ = _serviceProvider ?? throw new InvalidOperationException($"{nameof(RunProgramCommand)} Handler: Worker not initialized.");
 
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {

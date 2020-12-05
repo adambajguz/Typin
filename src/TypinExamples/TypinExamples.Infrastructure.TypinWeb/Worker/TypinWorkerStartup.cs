@@ -3,8 +3,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Handlers.Commands;
     using TypinExamples.Application.Services;
-    using TypinExamples.Infrastructure.TypinWeb.Handlers;
-    using TypinExamples.Infrastructure.TypinWeb.Services;
+    using TypinExamples.Infrastructure.TypinWeb.Handlers.Commands;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public class TypinWorkerStartup : IWorkerStartup
@@ -17,8 +16,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<TimerService>()
-                    .AddTransient<IWebExampleInvokerService, WebExampleInvokerService>();
+            services.AddTransient<TimerService>();
         }
     }
 }
