@@ -33,16 +33,17 @@
             return services;
         }
 
-        public static IServiceCollection RegisterNotificationHandler<TPayload, THandler>(this IServiceCollection services)
-            where THandler : INotificationHandler<TPayload>
+        public static IServiceCollection RegisterNotificationHandler<TNotification, THandler>(this IServiceCollection services)
+            where THandler : INotificationHandler<TNotification>
+            where TNotification : INotification
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TNotification>);
 
             MessageMapping mapping = new MessageMapping(messageType,
-                                                        typeof(TPayload),
+                                                        typeof(TNotification),
                                                         typeof(THandler),
-                                                        typeof(INotificationHandler<TPayload>),
-                                                        typeof(NotificationHandlerWrapper<TPayload>));
+                                                        typeof(INotificationHandler<TNotification>),
+                                                        typeof(NotificationHandlerWrapper<TNotification>));
 
             MainConfiguration.AddMapping(mapping);
             services.TryAddTransient(mapping.HandlerInterfaceType, mapping.HandlerType);
@@ -50,17 +51,18 @@
             return services;
         }
 
-        public static IServiceCollection RegisterCommandHandler<TPayload, THandler>(this IServiceCollection services)
-            where THandler : ICommandHandler<TPayload>
+        public static IServiceCollection RegisterCommandHandler<TCommand, THandler>(this IServiceCollection services)
+            where THandler : ICommandHandler<TCommand>
+            where TCommand : ICommand
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TCommand>);
 
             MessageMapping mapping = new MessageMapping(messageType,
-                                                        typeof(TPayload),
+                                                        typeof(TCommand),
                                                         typeof(CommandFinished),
                                                         typeof(THandler),
-                                                        typeof(ICommandHandler<TPayload>),
-                                                        typeof(CommandHandlerWrapper<TPayload>));
+                                                        typeof(ICommandHandler<TCommand>),
+                                                        typeof(CommandHandlerWrapper<TCommand>));
 
             MainConfiguration.AddMapping(mapping);
             services.TryAddTransient(mapping.HandlerInterfaceType, mapping.HandlerType);
@@ -68,17 +70,18 @@
             return services;
         }
 
-        public static IServiceCollection RegisterCommandHandler<TPayload, THandler, TResultPayload>(this IServiceCollection services)
-            where THandler : ICommandHandler<TPayload, TResultPayload>
+        public static IServiceCollection RegisterCommandHandler<TCommand, THandler, TResult>(this IServiceCollection services)
+            where THandler : ICommandHandler<TCommand, TResult>
+            where TCommand : ICommand<TResult>
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TCommand>);
 
             MessageMapping mapping = new MessageMapping(messageType,
-                                                        typeof(TPayload),
-                                                        typeof(TResultPayload),
+                                                        typeof(TCommand),
+                                                        typeof(TResult),
                                                         typeof(THandler),
-                                                        typeof(ICommandHandler<TPayload, TResultPayload>),
-                                                        typeof(CommandHandlerWrapper<TPayload, TResultPayload>));
+                                                        typeof(ICommandHandler<TCommand, TResult>),
+                                                        typeof(CommandHandlerWrapper<TCommand, TResult>));
 
             MainConfiguration.AddMapping(mapping);
             services.TryAddTransient(mapping.HandlerInterfaceType, mapping.HandlerType);

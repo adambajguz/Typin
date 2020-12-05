@@ -1,15 +1,18 @@
-<div>
-    <div id="@Id" data-example-key="@ExampleKey" @attributes="InputAttributes"></div>
-
-    <button @onclick="Click">Worker test</button>
-    <p>@Result</p>
-</div>
-
-@code {
-    private string Result = string.Empty;
-
-    async Task Click()
+<div data-example-key="@ExampleKey">
+    @if (!IsInitialized)
     {
-        Result = await Mediator.Send<string>(new FlushCommand { TerminalId = Id });
+        <div class="row">
+            <div class="col">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <WaveLoader IsAlternativeColor="true" />
+            </div>
+        </div>
     }
-}
+
+    @*<div class="@(IsInitialized ? string.Empty : "is-hidden")">*@
+        <div id="@Id" @attributes="InputAttributes"></div>
+    @*</div>*@
+</div>

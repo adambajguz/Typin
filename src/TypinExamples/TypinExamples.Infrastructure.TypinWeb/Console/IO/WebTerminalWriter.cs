@@ -6,13 +6,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using TypinExamples.Application.Handlers.Commands.Terminal;
-    using TypinExamples.Application.Services.Workers;
-    using TypinExamples.Domain.Builders;
-    using TypinExamples.Domain.Models.Workers;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public class WebTerminalWriter : Stream
     {
-        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+        private readonly IWorker _worker;
 
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly string _terminalId;
@@ -36,9 +34,9 @@
             set => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
         }
 
-        public WebTerminalWriter(ICoreMessageDispatcher coreMessageDispatcher, string terminalId)
+        public WebTerminalWriter(IWorker worker, string terminalId)
         {
-            _coreMessageDispatcher = coreMessageDispatcher;
+            _worker = worker;
             _terminalId = terminalId;
         }
 
@@ -51,15 +49,11 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
-                                         .CallCommand(new WriteCommand
-                                         {
-                                             TerminalId = _terminalId,
-                                             Value = text
-                                         })
-                                         .Build();
-
-            _coreMessageDispatcher.DispatchAsync(message).Wait(10);
+            _worker.CallCommandAsync(new WriteCommand
+            {
+                TerminalId = _terminalId,
+                Value = text
+            }).Wait(10);
         }
 
         /// <inheritdoc/>
@@ -71,15 +65,11 @@
             string text = _buffer.ToString();
             _buffer.Clear();
 
-            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
-                             .CallCommand(new WriteCommand
-                             {
-                                 TerminalId = _terminalId,
-                                 Value = text
-                             })
-                             .Build();
-
-            await _coreMessageDispatcher.DispatchAsync(message);
+            await _worker.CallCommandAsync(new WriteCommand
+            {
+                TerminalId = _terminalId,
+                Value = text
+            });
         }
 
         /// <inheritdoc/>

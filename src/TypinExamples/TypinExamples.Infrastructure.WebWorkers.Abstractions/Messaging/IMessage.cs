@@ -10,6 +10,6 @@
         public DateTimeOffset Timestamp { get; }
         MessageTypes Type { get; init; }
 
-        Exception? Exception { get; init; }
+        WorkerError? Error { get; init; }
     }
 }

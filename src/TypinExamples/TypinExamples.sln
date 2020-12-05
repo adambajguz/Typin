@@ -81,29 +81,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.MarioBuilder.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.InteractiveQuery.Tests", "Examples\TypinExamples.InteractiveQuery.Tests\TypinExamples.InteractiveQuery.Tests.csproj", "{787AB97F-CD09-4EC4-8373-6FFB845FAFED}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorWorker", "BlazorWorker", "{7DEB41A3-6399-4A01-A95F-236846A3F2E0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.Core", "BlazorWorker\BlazorWorker.Core\BlazorWorker.Core.csproj", "{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.BackgroundServiceFactory", "BlazorWorker\BlazorWorker.ServiceFactory\BlazorWorker.BackgroundServiceFactory.csproj", "{2D554A65-AB68-436D-8887-244D5A5EB7F9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.WorkerBackgroundService", "BlazorWorker\BlazorWorker.WorkerBackgroundService\BlazorWorker.WorkerBackgroundService.csproj", "{7168D498-A07C-4E45-A4A9-0389A82CFE4A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorker.WorkerCore", "BlazorWorker\BlazorWorker.WorkerCore\BlazorWorker.WorkerCore.csproj", "{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Infrastructure.Workers", "TypinExamples.Infrastructure.Workers\TypinExamples.Infrastructure.Workers.csproj", "{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{37066432-5243-4993-AF20-8CC7D472D946}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{90E12A99-7AFE-47F9-B668-E2692D1A36C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Domain", "TypinExamples.Domain\TypinExamples.Domain.csproj", "{B4245255-BB80-4B9E-B74B-F12932B767C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.Infrastructure.WebWorkers", "TypinExamples.Infrastructure.WebWorkers\TypinExamples.Infrastructure.WebWorkers.csproj", "{D5010DEE-E159-45CE-BB09-1E992977A34A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Infrastructure.WebWorkers", "TypinExamples.Infrastructure.WebWorkers\TypinExamples.Infrastructure.WebWorkers.csproj", "{D5010DEE-E159-45CE-BB09-1E992977A34A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebWorkers", "WebWorkers", "{CB91CC6A-66B3-409F-A631-3536E7F1732B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypinExamples.Infrastructure.WebWorkers.Abstractions", "TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj", "{B825BE28-E2E1-4692-BA73-8404DAC6FF87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Infrastructure.WebWorkers.Abstractions", "TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj", "{B825BE28-E2E1-4692-BA73-8404DAC6FF87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,26 +167,6 @@ Global
 		{787AB97F-CD09-4EC4-8373-6FFB845FAFED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{787AB97F-CD09-4EC4-8373-6FFB845FAFED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{787AB97F-CD09-4EC4-8373-6FFB845FAFED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D554A65-AB68-436D-8887-244D5A5EB7F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D554A65-AB68-436D-8887-244D5A5EB7F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D554A65-AB68-436D-8887-244D5A5EB7F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D554A65-AB68-436D-8887-244D5A5EB7F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7168D498-A07C-4E45-A4A9-0389A82CFE4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7168D498-A07C-4E45-A4A9-0389A82CFE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7168D498-A07C-4E45-A4A9-0389A82CFE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7168D498-A07C-4E45-A4A9-0389A82CFE4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4245255-BB80-4B9E-B74B-F12932B767C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4245255-BB80-4B9E-B74B-F12932B767C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4245255-BB80-4B9E-B74B-F12932B767C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -238,12 +206,6 @@ Global
 		{8C6B97BC-93B3-4E0F-A0F1-91628F573C46} = {A7E6E1AF-4A8B-40F8-9A98-3D7140FABB93}
 		{FD13154D-C666-4DDC-B6FA-EB6E74956A12} = {A7E6E1AF-4A8B-40F8-9A98-3D7140FABB93}
 		{787AB97F-CD09-4EC4-8373-6FFB845FAFED} = {A7E6E1AF-4A8B-40F8-9A98-3D7140FABB93}
-		{7DEB41A3-6399-4A01-A95F-236846A3F2E0} = {37066432-5243-4993-AF20-8CC7D472D946}
-		{2ECA4E18-31E7-4F23-9043-C3C3AB5BD9AB} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
-		{2D554A65-AB68-436D-8887-244D5A5EB7F9} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
-		{7168D498-A07C-4E45-A4A9-0389A82CFE4A} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
-		{A7829253-4AEA-4DA7-82BB-BC4ABA15FDA8} = {7DEB41A3-6399-4A01-A95F-236846A3F2E0}
-		{FD6E95A6-4618-41FB-BA0C-799F335BE0F6} = {37066432-5243-4993-AF20-8CC7D472D946}
 		{37066432-5243-4993-AF20-8CC7D472D946} = {F4103478-F5DF-4E54-AA5A-2D2ED711E20C}
 		{90E12A99-7AFE-47F9-B668-E2692D1A36C5} = {F4103478-F5DF-4E54-AA5A-2D2ED711E20C}
 		{B4245255-BB80-4B9E-B74B-F12932B767C1} = {90E12A99-7AFE-47F9-B668-E2692D1A36C5}

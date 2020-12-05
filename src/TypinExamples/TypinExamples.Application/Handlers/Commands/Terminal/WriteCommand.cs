@@ -2,38 +2,36 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using MediatR;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
-    using TypinExamples.Domain.Interfaces.Handlers.Core;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
 
-    public class WriteCommand : ICoreRequest<Unit>
+    public sealed class WriteCommand : ICommand
     {
-        public long? WorkerId { get; set; }
-
         public string? TerminalId { get; init; }
         public string? Value { get; init; }
 
-        public class WriteHandler : ICoreRequestHandler<WriteCommand>
+        public class Handler : ICommandHandler<WriteCommand>
         {
             private readonly ITerminalRepository _terminalRepository;
 
-            public WriteHandler(ITerminalRepository terminalRepository)
+            public Handler(ITerminalRepository terminalRepository)
             {
                 _terminalRepository = terminalRepository;
             }
 
-            public async Task<Unit> Handle(WriteCommand request, CancellationToken cancellationToken)
+            public async ValueTask<CommandFinished> HandleAsync(WriteCommand request, IWorker worker, CancellationToken cancellationToken)
             {
-                if (request.TerminalId is not null && request.Value is not null)
+                if (request.TerminalId is string id &&
+                    request.Value is string value &&
+                    _terminalRepository.GetOrDefault(id) is IWebTerminal webTerminal)
                 {
-                    IWebTerminal? webTerminal = _terminalRepository.GetOrDefault(request.TerminalId);
-
-                    if (webTerminal is not null)
-                        await webTerminal.WriteAsync(request.Value);
+                    await webTerminal.WriteAsync(value);
                 }
 
-                return Unit.Value;
+                return CommandFinished.Instance;
             }
         }
     }

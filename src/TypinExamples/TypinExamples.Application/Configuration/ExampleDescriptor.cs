@@ -9,21 +9,8 @@
         public string? ProgramClass { get; init; }
         public string? WebProgramClass { get; init; }
         public string? Description { get; init; }
-        public string? QuickStart { get; init; }
-
-        public static ExampleDescriptor CreateDynamic()
-        {
-            return new ExampleDescriptor
-            {
-                Key = null,
-                Name = "<dynamic>",
-                IsNew = true,
-                ProgramClass = "TypinExamples.DynamicCode.Program, TypinExamples.DynamicCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-                WebProgramClass = "TypinExamples.DynamicCode.WebProgram, TypinExamples.DynamicCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-                Description = "User implemented example.",
-                QuickStart = string.Empty
-            };
-        }
+        public string[]? QuickStart { get; init; }
+        public string QuickStartText => QuickStart is null ? string.Empty : string.Join('\n', QuickStart);
 
         public override string? ToString()
         {

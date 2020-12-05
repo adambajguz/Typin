@@ -52,7 +52,7 @@
             await _messagingProvider.PostAsync(workerId, serialized);
         }
 
-        public MessageIdReservation ReserveId()
+        public MessageIdReservation ReserveId(ulong? targetWorkerId)
         {
             var callId = _idProvider.Next();
             var taskCompletionSource = new TaskCompletionSource<object>();
@@ -70,19 +70,28 @@
                 if (message.TargetWorkerId != _workerIdAccessor.Id)
                     throw new InvalidOperationException($"Message '{message}' is not for this worker.");
 
-                _ = _serviceScopeFactory ?? throw new InvalidOperationException("Worker not initialized.");
-                _ = _configuration ?? throw new InvalidOperationException("Worker not initialized.");
+                _ = _serviceScopeFactory ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_serviceScopeFactory)} is null).");
+                _ = _configuration ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_configuration)} is null).");
 
-                if (message.Type.HasFlags(MessageTypes.Result))
+                if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
                 {
                     if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
                         throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
 
-                    taskCompletionSource!.SetResult(message);
-                    messageRegister.Remove(message.Id);
+                    if (message.Error is not null)
+                    {
+                        taskCompletionSource.SetException(new WorkerException(message.Error));
 
-                    if (message.Exception is not null)
-                        taskCompletionSource.SetException(message.Exception);
+                        Console.WriteLine(message.Error?.ToString());
+                    }
+                    else if (message.Type.HasFlags(MessageTypes.Exception))
+                    {
+                        Console.WriteLine($"Unknown error in message {message.Id}");
+                    }
+                    else
+                        taskCompletionSource.SetResult(message);
+
+                    messageRegister.Remove(message.Id);
                 }
                 else if (message.Type.HasFlags(MessageTypes.Call))
                 {
@@ -106,10 +115,6 @@
                             throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
                     }
                 }
-                else if (message.Type.HasFlags(MessageTypes.Exception))
-                {
-                    Console.WriteLine(message.Exception?.ToString());
-                }
                 else
                     Console.WriteLine($"Unknown message type {message.Type}");
             }
@@ -119,7 +124,7 @@
             }
         }
 
-        public async Task NotifyAsync<TPayload>(ulong? workerId, TPayload payload)
+        public async Task NotifyAsync<TPayload>(ulong? targetWorkerId, TPayload payload)
         {
             ulong callId = _idProvider.Next();
 
@@ -127,41 +132,46 @@
             {
                 Id = callId,
                 WorkerId = _workerIdAccessor.Id,
-                TargetWorkerId = workerId,
+                TargetWorkerId = targetWorkerId,
                 Type = MessageTypes.FromWorker | MessageTypes.CallNotification,
                 Payload = payload
             };
 
-            await PostAsync(workerId, message);
+            await PostAsync(targetWorkerId, message);
         }
 
-        public async Task CallCommandAsync<TPayload>(ulong? workerId, TPayload payload)
+        public async Task CallCommandAsync<TPayload>(ulong? targetWorkerId, TPayload payload)
         {
-            await CallCommandAsync<TPayload, CommandFinished>(workerId, payload);
+            await CallCommandAsync<TPayload, CommandFinished>(targetWorkerId, payload);
         }
 
-        public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? workerId, TPayload payload)
+        public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(ulong? targetWorkerId, TPayload payload)
         {
-            (ulong callId, Task<object> task) = ReserveId();
+            (ulong callId, Task<object> task) = ReserveId(null);
 
             Message<TPayload> message = new()
             {
                 Id = callId,
                 WorkerId = _workerIdAccessor.Id,
-                TargetWorkerId = workerId,
+                TargetWorkerId = targetWorkerId,
                 Type = MessageTypes.FromWorker | MessageTypes.CallCommand,
                 Payload = payload
             };
 
-            await PostAsync(workerId, message);
+            await PostAsync(targetWorkerId, message);
 
             if (await task is not Message<TResultPayload> returnMessage)
                 throw new InvalidOperationException("Invalid message.");
 
-            if (returnMessage.Exception is not null)
-                throw new AggregateException($"Worker exception: {returnMessage.Exception.Message}", returnMessage.Exception);
+            if (returnMessage?.Error is not null)
+                throw new WorkerException(returnMessage.Error);
 
-            return returnMessage.Payload!;
+            return returnMessage!.Payload!;
+        }
+
+        public void CleanMessageRegistry(ulong workerId)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

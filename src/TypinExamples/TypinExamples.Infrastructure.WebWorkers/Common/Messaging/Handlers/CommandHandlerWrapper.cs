@@ -9,19 +9,21 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
 
-    internal class CommandHandlerWrapper<TRequest> : CommandHandlerWrapper<TRequest, CommandFinished>
+    internal class CommandHandlerWrapper<TCommand> : CommandHandlerWrapper<TCommand, CommandFinished>
+        where TCommand : ICommand
     {
-        public CommandHandlerWrapper(ICommandHandler<TRequest> handler) : base(handler)
+        public CommandHandlerWrapper(ICommandHandler<TCommand> handler) : base(handler)
         {
 
         }
     }
 
-    internal class CommandHandlerWrapper<TRequest, TResponse> : ICommandHandlerWrapper
+    internal class CommandHandlerWrapper<TCommmand, TResult> : ICommandHandlerWrapper
+        where TCommmand : ICommand<TResult>
     {
-        private readonly ICommandHandler<TRequest, TResponse> _handler;
+        private readonly ICommandHandler<TCommmand, TResult> _handler;
 
-        public CommandHandlerWrapper(ICommandHandler<TRequest, TResponse> handler)
+        public CommandHandlerWrapper(ICommandHandler<TCommmand, TResult> handler)
         {
             _handler = handler;
         }
@@ -38,27 +40,27 @@
                 if (!isCommand)
                     throw new InvalidOperationException("Cannot handle message that is not a command call.");
 
-                Message<TRequest>? casted = message as Message<TRequest>;
-                TResponse response = await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
+                Message<TCommmand> casted = message as Message<TCommmand> ?? throw new NullReferenceException("Invalid command message type."); ;
+                TResult response = await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
 
-                return new Message<TResponse>
+                return new Message<TResult>
                 {
                     Id = message.Id,
                     WorkerId = message.TargetWorkerId,
                     TargetWorkerId = message.WorkerId,
-                    Type = messageFrom | MessageTypes.Command | MessageTypes.Result,
+                    Type = messageFrom | MessageTypes.Result,
                     Payload = response,
                 };
             }
             catch (Exception ex)
             {
-                return new Message<TResponse>
+                return new Message<TResult>
                 {
                     Id = message.Id,
                     WorkerId = message.TargetWorkerId,
                     TargetWorkerId = message.WorkerId,
-                    Type = messageFrom | MessageTypes.Result | MessageTypes.Exception,
-                    Exception = ex
+                    Type = messageFrom | MessageTypes.Exception,
+                    Error = WorkerError.FromException(ex)
                 };
             }
         }

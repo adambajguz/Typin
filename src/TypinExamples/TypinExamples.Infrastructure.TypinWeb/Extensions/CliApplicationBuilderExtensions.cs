@@ -9,8 +9,7 @@
     {
         public static CliApplicationBuilder UseWebExample(this CliApplicationBuilder builder, WebCliConfiguration configuration)
         {
-            if (configuration.Console is not null)
-                builder.UseConsole(configuration.Console);
+            builder.UseConsole(configuration.Console);
 
             if (configuration.LoggerDestination is not null)
             {

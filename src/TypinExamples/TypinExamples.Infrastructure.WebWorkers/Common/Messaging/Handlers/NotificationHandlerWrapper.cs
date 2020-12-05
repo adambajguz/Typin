@@ -7,11 +7,12 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Extensions;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
 
-    internal class NotificationHandlerWrapper<TRequest> : INotificationHandlerWrapper
+    internal class NotificationHandlerWrapper<TNotification> : INotificationHandlerWrapper
+        where TNotification : INotification
     {
-        private readonly INotificationHandler<TRequest> _handler;
+        private readonly INotificationHandler<TNotification> _handler;
 
-        public NotificationHandlerWrapper(INotificationHandler<TRequest> handler)
+        public NotificationHandlerWrapper(INotificationHandler<TNotification> handler)
         {
             _handler = handler;
         }
@@ -26,7 +27,7 @@
                 if (!isNotification)
                     throw new InvalidOperationException("Cannot handle message that is not a notification call.");
 
-                Message<TRequest>? casted = message as Message<TRequest>;
+                Message<TNotification> casted = message as Message<TNotification> ?? throw new NullReferenceException("Invalid notification message type.");
                 await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
             }
             catch (Exception ex)

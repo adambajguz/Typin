@@ -10,13 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Domain\TypinExamples.Domain.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

@@ -36,6 +36,9 @@ else
         <div class="row">
             <div class="col">
                 <TabContainer>
+                    <Tab Text="Quick start">
+                        @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                    </Tab>
                     <Tab Text="Files">
                         <section id="features">
                             <div class="card">
@@ -49,16 +52,7 @@ else
                         </section>
                     </Tab>
                     <Tab Text="Logs">
-                        <LogViewer @ref="LogViewerInstance"/>
-                    </Tab>
-                    <Tab Text="Quick start">
-                        @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget efficitur lectus. Vivamus dapibus at ex eget vulputate. Etiam dui est, pretium eu diam ac, pellentesque egestas risus. Mauris nisi neque, porta ac porta commodo, vulputate non felis. Mauris ante turpis, gravida rutrum mi vel, aliquet tincidunt diam. Vestibulum pulvinar tempor enim eget viverra. Phasellus eros lectus, pharetra pharetra risus et, aliquet tristique odio.
-                        </p>
-                        <p>
-                            Pellentesque semper ex sed arcu placerat tempus eget ac odio. Duis semper quis arcu a sollicitudin. Sed sit amet justo nec mi rhoncus sagittis vitae vitae lectus. Nullam vitae placerat est, eget euismod eros. Nullam vel neque non lacus fringilla vehicula. Vivamus viverra odio sit amet lectus lacinia, in dapibus metus tempus. Vestibulum velit orci, dictum a turpis sit amet, facilisis pharetra risus. Phasellus neque augue, rhoncus at ex eget, faucibus commodo sapien. Quisque ornare nibh a leo pretium, vitae aliquet enim dapibus.
-                        </p>
+                        <LogViewer @ref="LogViewerInstance" />
                     </Tab>
                 </TabContainer>
             </div>
@@ -70,7 +64,14 @@ else
             <div class="col">
                 <TabContainer>
                     <Tab Text="Terminal">
-                        <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance"/>
+                        <TabContent>
+                            <button type="button" class="button primary outline icon" @onclick="TerminateTerminal">
+                                <img src="https://icongr.am/feather/file.svg?size=16&amp;color=ffffff" alt="icon">
+                            </button>
+                        </TabContent>
+                        <ChildContent>
+                            <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance" @ref="XTermInstance" />
+                        </ChildContent>
                     </Tab>
                 </TabContainer>
             </div>
@@ -78,11 +79,10 @@ else
     </section>
 }
 
-
 @code
 {
-    [Parameter]
     public LogViewer? LogViewerInstance { get; set; }
+    public XTermComponent? XTermInstance { get; set; }
 
     [Parameter]
     public ExampleDescriptor? Descriptor { get; set; }
@@ -107,5 +107,11 @@ else
                                                                        .FirstOrDefault();
 
         return descriptor;
+    }
+
+    async Task TerminateTerminal()
+    {
+        if (XTermInstance is not null)
+            await XTermInstance.TerminateTerminal();
     }
 }

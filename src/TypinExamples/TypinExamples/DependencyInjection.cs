@@ -8,6 +8,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Serilog;
+    using TypinExamples.Application.Handlers.Commands.Terminal;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Common.Extensions;
     using TypinExamples.Configuration;
@@ -24,6 +25,9 @@
             services.AddStorage();
 
             services.AddWebWorkers()
+                    .RegisterCommandHandler<ClearCommand, ClearCommand.Handler>()
+                    .RegisterCommandHandler<WriteCommand, WriteCommand.Handler>()
+                    .RegisterCommandHandler<LogCommand, LogCommand.Handler>()
                     .RegisterCommandHandler<TestCommand, TestCommand.Handler>()
                     .RegisterNotificationHandler<TestNotification, TestNotification.Handler>();
 

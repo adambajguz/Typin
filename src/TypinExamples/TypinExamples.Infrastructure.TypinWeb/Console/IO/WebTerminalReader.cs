@@ -5,11 +5,11 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TypinExamples.Application.Services.Workers;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public class WebTerminalReader : Stream
     {
-        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+        private readonly IWorker _worker;
 
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly string _terminalId;
@@ -33,9 +33,9 @@
             set => throw new NotSupportedException($"{nameof(WebTerminalReader)} does not support seeking.");
         }
 
-        public WebTerminalReader(ICoreMessageDispatcher coreMessageDispatcher, string terminalId)
+        public WebTerminalReader(IWorker worker, string terminalId)
         {
-            _coreMessageDispatcher = coreMessageDispatcher;
+            _worker = worker;
             _terminalId = terminalId;
         }
 

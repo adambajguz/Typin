@@ -1,10 +1,15 @@
 ﻿namespace TypinExamples.Application.Services.TypinWeb
 {
-    public interface ITerminalRepository
+    using System;
+    using System.Threading.Tasks;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+
+    public interface ITerminalRepository : IDisposable
     {
+        Task<IWebTerminal> CreateTerminalAsync(string id, string exampleKey, IWorker worker);
+        Task UnregisterAndDisposeTerminalAsync(string id);
+
+        bool Contains(string id);
         IWebTerminal? GetOrDefault(string id);
-        void RegisterTerminal(IWebTerminal terminal);
-        void UnregisterTerminal(IWebTerminal terminal);
-        void UnregisterTerminal(string id);
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Json;
@@ -51,7 +50,8 @@
                                              _jsRuntime,
                                              _messagingService,
                                              _messagingProvider,
-                                             _assemblies);
+                                             _assemblies,
+                                             _logger);
             await worker.InitAsync();
             _workerManager.AddWorker(worker);
 
