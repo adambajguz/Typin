@@ -7,7 +7,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
 
-    public class WorkerTestCommand
+    public class WorkerTestCommand : ICommand
     {
         public string? Value { get; init; }
 

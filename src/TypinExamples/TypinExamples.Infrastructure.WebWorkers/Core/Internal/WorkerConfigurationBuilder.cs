@@ -31,49 +31,52 @@
             return this;
         }
 
-        public IWorkerConfigurationBuilder RegisterNotificationHandler<TPayload, THandler>()
-            where THandler : INotificationHandler<TPayload>
+        public IWorkerConfigurationBuilder RegisterNotificationHandler<TNotification, THandler>()
+            where THandler : INotificationHandler<TNotification>
+            where TNotification : INotification
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TNotification>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,
-                                                       typeof(TPayload),
+                                                       typeof(TNotification),
                                                        typeof(THandler),
-                                                       typeof(INotificationHandler<TPayload>),
-                                                       typeof(NotificationHandlerWrapper<TPayload>)));
+                                                       typeof(INotificationHandler<TNotification>),
+                                                       typeof(NotificationHandlerWrapper<TNotification>)));
 
             return this;
         }
 
-        public IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler>()
-            where THandler : ICommandHandler<TPayload>
+        public IWorkerConfigurationBuilder RegisterCommandHandler<TCommand, THandler>()
+            where THandler : ICommandHandler<TCommand>
+            where TCommand : ICommand
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TCommand>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,
-                                                       typeof(TPayload),
+                                                       typeof(TCommand),
                                                        typeof(CommandFinished),
                                                        typeof(THandler),
-                                                       typeof(ICommandHandler<TPayload>),
-                                                       typeof(CommandHandlerWrapper<TPayload>)));
+                                                       typeof(ICommandHandler<TCommand>),
+                                                       typeof(CommandHandlerWrapper<TCommand>)));
 
             return this;
         }
 
-        public IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler, TResultPayload>()
-            where THandler : ICommandHandler<TPayload, TResultPayload>
+        public IWorkerConfigurationBuilder RegisterCommandHandler<TCommand, THandler, TResult>()
+            where THandler : ICommandHandler<TCommand, TResult>
+            where TCommand : ICommand<TResult>
         {
-            Type messageType = typeof(Message<TPayload>);
+            Type messageType = typeof(Message<TCommand>);
 
             _messageMappings.TryAdd(messageType,
                                     new MessageMapping(messageType,
-                                                       typeof(TPayload),
-                                                       typeof(TResultPayload),
+                                                       typeof(TCommand),
+                                                       typeof(TResult),
                                                        typeof(THandler),
-                                                       typeof(ICommandHandler<TPayload, TResultPayload>),
-                                                       typeof(CommandHandlerWrapper<TPayload, TResultPayload>)));
+                                                       typeof(ICommandHandler<TCommand, TResult>),
+                                                       typeof(CommandHandlerWrapper<TCommand, TResult>)));
 
             return this;
         }

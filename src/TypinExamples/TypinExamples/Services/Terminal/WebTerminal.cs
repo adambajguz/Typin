@@ -5,22 +5,23 @@
     using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Handlers.Commands;
     using TypinExamples.Application.Services;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public class WebTerminal : IWebTerminal
     {
         public string Id { get; }
 
         private readonly IJSRuntime _jsRuntime;
-        private readonly IMediator _mediator;
+        private readonly IWorker _worker;
         private readonly ExampleDescriptor _exampleDescriptor;
 
         public const string JS_MODULE_NAME = "xtermInterop";
 
-        public WebTerminal(string id, ExampleDescriptor exampleDescriptor, IJSRuntime jsRuntime, IMediator mediator)
+        public WebTerminal(string id, ExampleDescriptor exampleDescriptor, IJSRuntime jsRuntime, IWorker worker)
         {
             Id = id;
             _jsRuntime = jsRuntime;
-            _mediator = mediator;
+            _worker = worker;
             _exampleDescriptor = exampleDescriptor;
         }
 
@@ -36,21 +37,13 @@
 
         public async Task RunExample(string args)
         {
-            await _mediator.Send<string>(new RunExampleCommand
+            RunExampleResult result = await _worker.CallCommandAsync<RunExampleCommand, RunExampleResult>(new RunExampleCommand
             {
                 Key = _exampleDescriptor.Key,
                 Args = args,
                 TerminalId = Id,
                 ProgramClass = _exampleDescriptor.ProgramClass,
                 WebProgramClass = _exampleDescriptor.WebProgramClass
-            });
-        }
-
-        public async Task RunExample()
-        {
-            await _mediator.Send<string>(new FlushCommand
-            {
-                TerminalId = Id,
             });
         }
 

@@ -7,12 +7,13 @@
     using TypinExamples.Application.Handlers.Commands.Terminal;
     using TypinExamples.Application.Services;
     using TypinExamples.Infrastructure.TypinWeb.Console.IO;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public sealed class WebConsole : IConsole
     {
         private readonly TimerService _flushTimer = new TimerService();
 
-        private readonly ICoreMessageDispatcher _coreMessageDispatcher;
+        private readonly IWorker _worker;
         private readonly string _terminalId;
 
         private readonly CancellationToken _cancellationToken;
@@ -86,20 +87,20 @@
             set => throw new NotImplementedException();
         }
 
-        public WebConsole(ICoreMessageDispatcher coreMessageDispatcher, string terminalId, CancellationToken cancellationToken = default)
+        public WebConsole(IWorker worker, string terminalId, CancellationToken cancellationToken = default)
         {
-            _coreMessageDispatcher = coreMessageDispatcher;
+            _worker = worker;
             _terminalId = terminalId;
             _cancellationToken = cancellationToken;
 
-            Input = new StandardStreamReader(new WebTerminalReader(coreMessageDispatcher, terminalId), false, this);
+            Input = new StandardStreamReader(new WebTerminalReader(worker, terminalId), false, this);
 
-            Output = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
+            Output = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
                 AutoFlush = false
             };
 
-            Error = new StandardStreamWriter(new WebTerminalWriter(coreMessageDispatcher, terminalId), false, this)
+            Error = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
                 AutoFlush = false
             };
@@ -117,14 +118,10 @@
 
         public void Clear()
         {
-            WorkerMessage message = WorkerMessageBuilder<WorkerMessageFromWorkerBuilder>.CreateFromWorker()
-                                .CallCommand(new ClearCommand
-                                {
-                                    TerminalId = _terminalId,
-                                })
-                                .Build();
-
-            _coreMessageDispatcher.DispatchAsync(message).Wait(10);
+            _worker.CallCommandAsync(new ClearCommand
+            {
+                TerminalId = _terminalId,
+            }).Wait(10);
         }
 
         public CancellationToken GetCancellationToken()

@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

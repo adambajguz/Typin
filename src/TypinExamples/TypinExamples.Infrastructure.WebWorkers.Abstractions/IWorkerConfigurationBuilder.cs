@@ -19,19 +19,22 @@
         /// <summary>
         /// Registers a handler.
         /// </summary>
-        IWorkerConfigurationBuilder RegisterNotificationHandler<TPayload, THandler>()
-            where THandler : INotificationHandler<TPayload>;
+        IWorkerConfigurationBuilder RegisterNotificationHandler<TNotification, THandler>()
+            where THandler : INotificationHandler<TNotification>
+            where TNotification : INotification;
 
         /// <summary>
         /// Registers a handler.
         /// </summary>
-        IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler>()
-            where THandler : ICommandHandler<TPayload>;
+        IWorkerConfigurationBuilder RegisterCommandHandler<TCommand, THandler>()
+            where THandler : ICommandHandler<TCommand>
+            where TCommand : ICommand;
 
         /// <summary>
         /// Registers a handler.
         /// </summary>
-        IWorkerConfigurationBuilder RegisterCommandHandler<TPayload, THandler, TResultPayload>()
-            where THandler : ICommandHandler<TPayload, TResultPayload>;
+        IWorkerConfigurationBuilder RegisterCommandHandler<TCommand, THandler, TResult>()
+            where THandler : ICommandHandler<TCommand, TResult>
+            where TCommand : ICommand<TResult>;
     }
 }

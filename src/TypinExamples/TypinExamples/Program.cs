@@ -7,7 +7,6 @@ namespace TypinExamples
     using Serilog.Exceptions;
     using TypinExamples.Application;
     using TypinExamples.Infrastructure.Compiler;
-    using TypinExamples.Infrastructure.TypinWeb;
 
     public static class Program
     {
@@ -23,7 +22,6 @@ namespace TypinExamples
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
                             .ConfigureApplicationServices(configuration)
-                            .ConfigureInfrastructureTypinWebServices()
                             .ConfigureInfrastructureCompilerServices();
 
             await builder.Build().RunAsync();

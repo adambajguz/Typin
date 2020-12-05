@@ -1,6 +1,8 @@
 ﻿namespace TypinExamples.Application.Handlers.Commands
 {
-    public class FlushCommand
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+
+    public sealed class FlushCommand : ICommand
     {
         public string? TerminalId { get; init; }
     }

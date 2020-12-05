@@ -4,30 +4,32 @@
     using System.Threading.Tasks;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions.Payloads;
 
-    public class ClearCommand
+    public sealed class ClearCommand : ICommand
     {
         public string? TerminalId { get; init; }
-        public string? Value { get; init; }
 
-        public class ClearHandler
+        public class Handler : ICommandHandler<ClearCommand>
         {
             private readonly ITerminalRepository _terminalRepository;
 
-            public ClearHandler(ITerminalRepository terminalRepository)
+            public Handler(ITerminalRepository terminalRepository)
             {
                 _terminalRepository = terminalRepository;
             }
 
-            public async Task Handle(ClearCommand request, CancellationToken cancellationToken)
+            public async ValueTask<CommandFinished> HandleAsync(ClearCommand request, IWorker worker, CancellationToken cancellationToken)
             {
-                if (request.TerminalId is not null && request.Value is not null)
+                if (request.TerminalId is string id &&
+                    _terminalRepository.GetOrDefault(id) is IWebTerminal webTerminal)
                 {
-                    IWebTerminal? webTerminal = _terminalRepository.GetOrDefault(request.TerminalId);
-
-                    if (webTerminal is not null)
-                        await webTerminal.ClearAsync();
+                    await webTerminal.ClearAsync();
                 }
+
+                return CommandFinished.Instance;
             }
         }
     }

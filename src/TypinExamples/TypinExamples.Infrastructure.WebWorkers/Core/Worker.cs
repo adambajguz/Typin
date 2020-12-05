@@ -50,16 +50,19 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         }
 
         public async Task NotifyAsync<TPayload>(TPayload payload)
+            where TPayload : INotification
         {
             await _messagingService.NotifyAsync(Id, payload);
         }
 
         public async Task CallCommandAsync<TPayload>(TPayload payload)
+            where TPayload : ICommand
         {
             await _messagingService.CallCommandAsync<TPayload, CommandFinished>(Id, payload);
         }
 
         public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(TPayload payload)
+            where TPayload : ICommand<TResultPayload>
         {
             return await _messagingService.CallCommandAsync<TPayload, TResultPayload>(Id, payload);
         }
@@ -90,7 +93,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                                                  Debug = false
                                              });
 
-            if (await task is not Message<InitializedPayload> iwrm)
+            if (await task is not Message<InitializeResult> iwrm)
             {
                 throw new InvalidOperationException($"Failed to init worker with id {Id}.");
             }
@@ -100,7 +103,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task<int> RunAsync()
         {
-            ProgramFinishedPayload result = await CallCommandAsync<RunProgramPayload, ProgramFinishedPayload>(new RunProgramPayload
+            RunProgramResult result = await CallCommandAsync<RunProgramCommand, RunProgramResult>(new RunProgramCommand
             {
                 ProgramClass = typeof(T).AssemblyQualifiedName ?? throw new ApplicationException($"{typeof(T).Name} is a generic type.")
             });
@@ -110,12 +113,12 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
         public async Task CancelAsync()
         {
-            await CallCommandAsync(new CancelPayload());
+            await CallCommandAsync(new CancelCommand());
         }
 
         public async Task CancelAsync(TimeSpan delay)
         {
-            await CallCommandAsync(new CancelPayload { Delay = delay });
+            await CallCommandAsync(new CancelCommand { Delay = delay });
         }
 
         public async ValueTask DisposeAsync()
@@ -123,7 +126,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             if (IsDisposed)
                 return;
 
-            await CallCommandAsync(new DisposePayload());
+            await CallCommandAsync(new DisposeCommand());
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
             IsDisposed = true;

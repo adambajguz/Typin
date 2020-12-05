@@ -1,6 +1,6 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Payloads
 {
-    internal sealed class InitializedPayload
+    internal sealed class InitializeResult
     {
 
     }

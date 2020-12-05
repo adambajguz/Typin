@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Common\TypinExamples.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.Domain\TypinExamples.Domain.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

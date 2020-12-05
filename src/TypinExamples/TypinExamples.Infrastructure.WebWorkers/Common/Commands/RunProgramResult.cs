@@ -1,7 +1,7 @@
 ﻿namespace TypinExamples.Infrastructure.WebWorkers.Common.Payloads
 {
-    internal sealed class DisposePayload
+    public sealed class RunProgramResult
     {
-
+        public int ExitCode { get; init; }
     }
 }

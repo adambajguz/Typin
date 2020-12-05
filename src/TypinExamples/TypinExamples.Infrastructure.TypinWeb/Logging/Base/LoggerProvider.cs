@@ -12,8 +12,8 @@
     /// </summary>
     public abstract class LoggerProvider : IDisposable, ILoggerProvider, ISupportExternalScope
     {
-        private readonly ConcurrentDictionary<string, Logger> loggers = new ConcurrentDictionary<string, Logger>();
-        private IExternalScopeProvider? fScopeProvider;
+        private readonly ConcurrentDictionary<string, Logger> _loggers = new ConcurrentDictionary<string, Logger>();
+        private IExternalScopeProvider? _externalScopeProvider;
         protected IDisposable? SettingsChangeToken;
 
         /// <summary>
@@ -42,9 +42,9 @@
         /// Called by the logging framework in order to set external scope information source for the logger provider.
         /// <para>ISupportExternalScope implementation</para>
         /// </summary>
-        void ISupportExternalScope.SetScopeProvider(IExternalScopeProvider scopeProvider)
+        void ISupportExternalScope.SetScopeProvider(IExternalScopeProvider externalScopeProvider)
         {
-            fScopeProvider = scopeProvider;
+            _externalScopeProvider = externalScopeProvider;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@
         /// </summary>
         ILogger ILoggerProvider.CreateLogger(string category)
         {
-            return loggers.GetOrAdd(category,
+            return _loggers.GetOrAdd(category,
             (category) =>
             {
                 return new Logger(this, category);
@@ -113,10 +113,10 @@
         {
             get
             {
-                if (fScopeProvider is null)
-                    fScopeProvider = new LoggerExternalScopeProvider();
+                if (_externalScopeProvider is null)
+                    _externalScopeProvider = new LoggerExternalScopeProvider();
 
-                return fScopeProvider;
+                return _externalScopeProvider;
             }
         }
     }

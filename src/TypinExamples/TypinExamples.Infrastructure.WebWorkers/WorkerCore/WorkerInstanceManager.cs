@@ -18,9 +18,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
     using TypinExamples.Infrastructure.WebWorkers.WorkerCore.Internal.Messaging;
 
     public class WorkerInstanceManager : IWorker,
-        ICommandHandler<RunProgramPayload, ProgramFinishedPayload>,
-        ICommandHandler<CancelPayload>,
-        ICommandHandler<DisposePayload>
+        ICommandHandler<RunProgramCommand, RunProgramResult>,
+        ICommandHandler<CancelCommand>,
+        ICommandHandler<DisposeCommand>
     {
         private readonly ulong _initCallId;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -43,9 +43,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 
         internal static void ConfigureCoreHandlers(IWorkerConfigurationBuilder builder)
         {
-            builder.RegisterCommandHandler<RunProgramPayload, WorkerInstanceManager, ProgramFinishedPayload>();
-            builder.RegisterCommandHandler<CancelPayload, WorkerInstanceManager>();
-            builder.RegisterCommandHandler<DisposePayload, WorkerInstanceManager>();
+            builder.RegisterCommandHandler<RunProgramCommand, WorkerInstanceManager, RunProgramResult>();
+            builder.RegisterCommandHandler<CancelCommand, WorkerInstanceManager>();
+            builder.RegisterCommandHandler<DisposeCommand, WorkerInstanceManager>();
         }
 
         public void Start(string? startupType)
@@ -73,9 +73,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                                  .AddTransient(typeof(NotificationHandlerWrapper<>))
                                  .AddTransient(typeof(CommandHandlerWrapper<>))
                                  .AddTransient(typeof(CommandHandlerWrapper<,>))
-                                 .AddSingleton<ICommandHandler<RunProgramPayload, ProgramFinishedPayload>>(this)
-                                 .AddSingleton<ICommandHandler<CancelPayload>>(this)
-                                 .AddSingleton<ICommandHandler<DisposePayload>>(this)
+                                 .AddSingleton<ICommandHandler<RunProgramCommand, RunProgramResult>>(this)
+                                 .AddSingleton<ICommandHandler<CancelCommand>>(this)
+                                 .AddSingleton<ICommandHandler<DisposeCommand>>(this)
                                  .AddSingleton(_serializer)
                                  .AddSingleton(configuration)
                                  .AddSingleton<IWorker>(this)
@@ -85,7 +85,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                                  .AddSingleton(new WorkerCancellationTokenAccessor(_cancellationTokenSource.Token))
                                  .AddScoped<HttpClient>();
 
-                Type[] corePayloads = new[] { typeof(RunProgramPayload), typeof(CancelPayload), typeof(DisposePayload) };
+                Type[] corePayloads = new[] { typeof(RunProgramCommand), typeof(CancelCommand), typeof(DisposeCommand) };
 
                 foreach (MessageMapping mapping in configuration.MessageMappings.Values)
                 {
@@ -103,13 +103,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
 
                 IsInitialized = true;
 
-                messaging.PostAsync(null, new Message<InitializedPayload>
+                messaging.PostAsync(null, new Message<InitializeResult>
                 {
                     Id = _initCallId,
                     WorkerId = Id,
                     TargetWorkerId = null,
                     Type = MessageTypes.FromWorker | MessageTypes.Result,
-                    Payload = new InitializedPayload()
+                    Payload = new InitializeResult()
                 });
             }
             catch (Exception ex)
@@ -120,6 +120,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         }
 
         public async Task NotifyAsync<TPayload>(TPayload payload)
+            where TPayload : INotification
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
@@ -128,6 +129,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         }
 
         public async Task CallCommandAsync<TPayload>(TPayload payload)
+            where TPayload : ICommand
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
@@ -136,6 +138,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         }
 
         public async Task<TResultPayload> CallCommandAsync<TPayload, TResultPayload>(TPayload payload)
+            where TPayload : ICommand<TResultPayload>
         {
             if (_messagingService is null || !IsInitialized || !IsDisposed)
                 throw new InvalidOperationException("Worker not initialized.");
@@ -163,7 +166,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         }
 
         #region Core Handlers
-        async ValueTask<ProgramFinishedPayload> ICommandHandler<RunProgramPayload, ProgramFinishedPayload>.HandleAsync(RunProgramPayload request, IWorker worker, CancellationToken cancellationToken)
+        async ValueTask<RunProgramResult> ICommandHandler<RunProgramCommand, RunProgramResult>.HandleAsync(RunProgramCommand request, IWorker worker, CancellationToken cancellationToken)
         {
             _ = _serviceProvider ?? throw new InvalidOperationException("Worker not initialized.");
 
@@ -172,14 +175,14 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                 IWorkerProgram workerProgram = scope.ServiceProvider.GetRequiredService<IWorkerProgram>();
                 int exitCode = await workerProgram.Main(cancellationToken);
 
-                return new ProgramFinishedPayload
+                return new RunProgramResult
                 {
                     ExitCode = exitCode
                 };
             }
         }
 
-        ValueTask<CommandFinished> ICommandHandler<CancelPayload, CommandFinished>.HandleAsync(CancelPayload request, IWorker worker, CancellationToken cancellationToken)
+        ValueTask<CommandFinished> ICommandHandler<CancelCommand, CommandFinished>.HandleAsync(CancelCommand request, IWorker worker, CancellationToken cancellationToken)
         {
             if (request.Delay == TimeSpan.Zero)
                 _cancellationTokenSource.Cancel();
@@ -189,7 +192,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             return CommandFinished.Task;
         }
 
-        async ValueTask<CommandFinished> ICommandHandler<DisposePayload, CommandFinished>.HandleAsync(DisposePayload request, IWorker worker, CancellationToken cancellationToken)
+        async ValueTask<CommandFinished> ICommandHandler<DisposeCommand, CommandFinished>.HandleAsync(DisposeCommand request, IWorker worker, CancellationToken cancellationToken)
         {
             await DisposeAsync();
 

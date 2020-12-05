@@ -11,6 +11,8 @@ namespace TypinExamples.Shared.Components
     using TypinExamples.Application.Configuration;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
+    using TypinExamples.Application.Worker;
+    using TypinExamples.Infrastructure.WebWorkers.Abstractions;
     using TypinExamples.Services.Terminal;
 
     public sealed partial class XTermComponent : ComponentBase
@@ -31,21 +33,32 @@ namespace TypinExamples.Shared.Components
 
         [Inject] private IJSRuntime JSRuntime { get; init; } = default!;
         [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
-        [Inject] private IMediator Mediator { get; init; } = default!;
         [Inject] private IOptions<ExamplesSettings> Options { get; init; } = default!;
+        [Inject] private IWorkerFactory WorkerFactory { get; init; } = default!;
+
+        private IWorker? _worker { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await base.OnInitializedAsync();
+
+            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>();
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (firstRender && _worker is not null)
             {
                 ExampleDescriptor descriptor = Options.Value.Examples?.Where(x => x.Key == ExampleKey ||
                                                                                   (x.Name?.Contains(ExampleKey ?? string.Empty) ?? false))
                                                                       .FirstOrDefault() ?? ExampleDescriptor.CreateDynamic();
 
-                IWebTerminal terminal = new WebTerminal(Id, descriptor, JSRuntime, Mediator);
+                IWebTerminal terminal = new WebTerminal(Id, descriptor, JSRuntime, _worker);
                 await terminal.InitializeXtermAsync();
 
                 TerminalRepository.RegisterTerminal(terminal);
+
+                await _worker.RunAsync();
             }
         }
 
@@ -53,6 +66,9 @@ namespace TypinExamples.Shared.Components
         {
             TerminalRepository.UnregisterTerminal(Id);
             IWebTerminal? terminal = TerminalRepository.GetOrDefault(Id);
+
+            if (_worker is not null)
+                await _worker.DisposeAsync();
 
             if (terminal is not null)
                 await terminal.DisposeXtermAsync();
