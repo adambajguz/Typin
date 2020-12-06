@@ -19,6 +19,7 @@
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
 - Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added `IConsole.ReadKeyAsync`.
 
 ### v2.1.1 (18-Oct-2020)
 

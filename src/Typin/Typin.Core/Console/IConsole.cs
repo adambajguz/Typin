@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using Typin.Console.IO;
 
     /// <summary>
@@ -81,5 +82,11 @@
         /// </summary>
         /// <param name="intercept">Determines whether to display the pressed key in the console window. true to not display the pressed key; otherwise, false.</param>
         ConsoleKeyInfo ReadKey(bool intercept = false);
+
+        /// <summary>
+        /// Obtains the next character or function key pressed by the user. The pressed key is optionally displayed in the console window.
+        /// </summary>
+        /// <param name="intercept">Determines whether to display the pressed key in the console window. true to not display the pressed key; otherwise, false.</param>
+        Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false);
     }
 }
