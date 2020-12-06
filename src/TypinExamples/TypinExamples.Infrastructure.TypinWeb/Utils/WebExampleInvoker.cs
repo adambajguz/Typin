@@ -7,6 +7,7 @@
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.Infrastructure.TypinWeb.Console;
+    using TypinExamples.Infrastructure.TypinWeb.Logging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public sealed class WebExampleInvoker : IDisposable
@@ -17,6 +18,7 @@
         public WebExampleInvoker(IWorker worker, string terminalId, CancellationToken cancellationToken = default)
         {
             Console = new WebConsole(worker, terminalId, cancellationToken);
+            LoggerDestination = new DefaultWebLoggerDestination(worker, terminalId);
         }
 
         public void AttachLogger(IWebLoggerDestination? loggerDestination)

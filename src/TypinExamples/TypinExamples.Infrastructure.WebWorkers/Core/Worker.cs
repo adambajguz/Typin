@@ -156,8 +156,6 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             else
                 _logger.LogInformation("Worker {Id} was disposed.", Id);
 
-            //TODO what happens to messages after force disposing the worker?
-
             _disposeCallback();
         }
 

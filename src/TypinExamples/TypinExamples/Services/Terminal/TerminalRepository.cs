@@ -10,7 +10,7 @@ namespace TypinExamples.Services.Terminal
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
-    public class TerminalRepository : ITerminalRepository
+    public sealed class TerminalRepository : ITerminalRepository
     {
         private static readonly Dictionary<string, IWebTerminal> _terminals = new Dictionary<string, IWebTerminal>();
 

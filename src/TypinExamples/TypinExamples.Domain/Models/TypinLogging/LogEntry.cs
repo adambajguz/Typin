@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// The information of a log entry.
@@ -34,18 +35,21 @@
         /// <summary>
         /// The exception this information represents, if any, else null.
         /// </summary>
+        [JsonIgnore]
         public Exception? Exception { get; set; }
 
         /// <summary>
         /// The EventId of this information.
         /// <para>An EventId with Id set to zero, usually means no EventId.</para>
         /// </summary>
+        [JsonIgnore]
         public EventId EventId { get; set; }
 
         /// <summary>
         /// The state object. Contains information regarding the text message.
         /// <para>It looks like its type is always Microsoft.Extensions.Logging.Internal.FormattedLogValues </para>
         /// </summary>
+        [JsonIgnore]
         public object? State { get; set; }
 
         /// <summary>
