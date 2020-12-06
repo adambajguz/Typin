@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using Typin.Console;
     using Typin.Console.IO;
     using TypinExamples.Application.Handlers.Commands.Terminal;
@@ -133,6 +134,11 @@
         }
 
         public ConsoleKeyInfo ReadKey(bool intercept = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
         {
             throw new NotImplementedException();
         }

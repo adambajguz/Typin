@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-    <PackageReference Include="Typin" Version="3.0.0-dev-00006" />
+    <PackageReference Include="Typin" Version="3.0.0-dev-00007" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
   </ItemGroup>
 
