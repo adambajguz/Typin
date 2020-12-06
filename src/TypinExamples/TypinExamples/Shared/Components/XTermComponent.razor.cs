@@ -34,6 +34,7 @@ namespace TypinExamples.Shared.Components
 
         private IWorker? _worker { get; set; }
         private bool IsInitialized => TerminalRepository.Contains(Id) && _worker is not null;
+        private TaskCompletionSource WorkerInitSource { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -43,6 +44,7 @@ namespace TypinExamples.Shared.Components
                 LoggerDestinationRepository.Add(Id, LoggerDestination);
 
             _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>();
+            WorkerInitSource.SetResult();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -60,6 +62,8 @@ namespace TypinExamples.Shared.Components
         {
             if (TerminalRepository.Contains(Id) && _worker is IWorker worker)
             {
+                WorkerInitSource = new();
+
                 //Kill the old worker
                 const int miliseconds = 2000;
                 TaskAwaiter awaiter = worker.CancelAsync().GetAwaiter();
@@ -81,6 +85,8 @@ namespace TypinExamples.Shared.Components
                 _worker = worker;
                 StateHasChanged();
 
+                WorkerInitSource.SetResult();
+
                 try
                 {
                     await worker.RunAsync();
@@ -95,6 +101,8 @@ namespace TypinExamples.Shared.Components
         public async ValueTask DisposeAsync()
         {
             Logger.LogInformation("Dispose XTermcomponenet {Id}", Id);
+
+            await WorkerInitSource.Task;
 
             if (_worker is not null)
                 await _worker.DisposeAsync();
