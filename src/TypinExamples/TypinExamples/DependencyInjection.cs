@@ -40,6 +40,7 @@
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()
                     .AddScoped<ITerminalRepository, TerminalRepository>()
+                    .AddScoped<ILoggerDestinationRepository, LoggerDestinationRepository>()
                     .AddScoped<MonacoEditorService>();
 
             return services;

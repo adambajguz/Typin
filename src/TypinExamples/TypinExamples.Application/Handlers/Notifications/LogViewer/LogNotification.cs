@@ -15,20 +15,23 @@
 
         public class Handler : INotificationHandler<LogNotification>
         {
-            private readonly ITerminalRepository _terminalRepository;
+            private readonly ILoggerDestinationRepository _loggerDestinationRepository;
 
-            public Handler(ITerminalRepository terminalRepository)
+            public Handler(ILoggerDestinationRepository loggerDestinationRepository)
             {
-                _terminalRepository = terminalRepository;
+                _loggerDestinationRepository = loggerDestinationRepository;
             }
 
-            public async ValueTask HandleAsync(LogNotification request, IWorker worker, CancellationToken cancellationToken)
+            public ValueTask HandleAsync(LogNotification request, IWorker worker, CancellationToken cancellationToken)
             {
                 if (request.TerminalId is string id &&
-                    _terminalRepository.GetOrDefault(id) is IWebTerminal webTerminal)
+                    request.Entry is LogEntry entry &&
+                    _loggerDestinationRepository.GetOrDefault(id) is IWebLoggerDestination destination)
                 {
-                    await webTerminal.WriteLineAsync(request.Entry?.Text ?? string.Empty);
+                    destination.WriteLog(entry);
                 }
+
+                return default;
             }
         }
     }
