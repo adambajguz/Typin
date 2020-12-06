@@ -58,23 +58,18 @@
                 //await executor.ExecuteCommand(commandLineArguments);
             }
 
-            await RunInteractivelyAsync(executor);
+            string[]? interactiveArguments = await GetInputAsync(_console, _metadata.ExecutableName);
 
-            return ExitCodes.Success;
-        }
-
-        private async Task RunInteractivelyAsync(ICliCommandExecutor executor)
-        {
-            string[]? commandLineArguments = await GetInputAsync(_console, _metadata.ExecutableName);
-
-            if (commandLineArguments is null)
+            if (interactiveArguments is null)
             {
                 _console.ResetColor();
-                return;
+                return ExitCodes.Success;
             }
 
-            await executor.ExecuteCommandAsync(commandLineArguments);
+            await executor.ExecuteCommandAsync(interactiveArguments);
             _console.ResetColor();
+
+            return ExitCodes.Success;
         }
 
         /// <summary>
@@ -94,7 +89,7 @@
                 console.Output.Write(executableName);
             });
 
-            string scope = string.Empty;//CliContext.Scope;
+            string scope = Options.Scope;
 
             if (!string.IsNullOrWhiteSpace(scope))
             {
