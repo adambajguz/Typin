@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks;
     using Typin.Console.IO;
     using Typin.Extensions;
     using Typin.Utilities;
@@ -120,7 +121,28 @@
         [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            return ((char)Input.Read()).ToConsoleKeyInfo();
+            int v = -1;
+            while (v < 0)
+            {
+                v = Input.Read();
+            }
+
+            return ((char)v).ToConsoleKeyInfo();
+        }
+
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        {
+            char[] charsRead = new char[1];
+
+            int v = -1;
+            while (v < 0)
+            {
+                v = await Input.ReadAsync(charsRead, 0, 1);
+            }
+
+            return (charsRead[0]).ToConsoleKeyInfo();
         }
 
         /// <summary>

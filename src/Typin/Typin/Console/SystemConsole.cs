@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks;
     using Typin.Console.IO;
     using Typin.Extensions;
 
@@ -182,7 +183,7 @@
             if (Input.IsRedirected)
             {
                 int v = -1;
-                while (v == -1)
+                while (v < 0)
                 {
                     v = Input.Read();
                 }
@@ -191,6 +192,29 @@
             }
 
             return Console.ReadKey(intercept);
+        }
+
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        {
+            char[] charsRead = new char[1];
+
+            //TODO: fix enter and maybe other
+            if (Input.IsRedirected)
+            {
+                int v = -1;
+                while (v < 0)
+                {
+                    v = await Input.ReadAsync(charsRead, 0, 1);
+                }
+
+                return (charsRead[0]).ToConsoleKeyInfo();
+            }
+
+            ConsoleKeyInfo consoleKey = await Task.Run(() => Console.ReadKey(intercept));
+
+            return consoleKey;
         }
 
         /// <summary>

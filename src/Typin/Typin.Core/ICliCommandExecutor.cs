@@ -11,17 +11,17 @@
         /// <summary>
         /// Executes a command.
         /// </summary>
-        Task<int> ExecuteCommand(IEnumerable<string> commandLineArguments);
+        Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments);
 
 
         /// <summary>
         /// Executes a command.
         /// </summary>
-        Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments);
+        Task<int> ExecuteCommandAsync(IReadOnlyList<string> commandLineArguments);
 
         /// <summary>
         /// Executes a command.
         /// </summary>
-        Task<int> ExecuteCommand(string commandLine);
+        Task<int> ExecuteCommandAsync(string commandLine);
     }
 }

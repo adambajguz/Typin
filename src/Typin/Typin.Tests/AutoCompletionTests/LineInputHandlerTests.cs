@@ -35,7 +35,7 @@
             LineInputHandler handler = new LineInputHandler(_console);
 
             ConsoleKeyInfo[] input = "Hello".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             return handler;
         }
@@ -51,7 +51,7 @@
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
@@ -64,13 +64,13 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            handler.Read(Backspace);
+            handler.ReadAsync(Backspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hell");
 
             // Act
-            handler.Read(Backspace);
+            handler.ReadAsync(Backspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hel");
@@ -84,14 +84,14 @@
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.Read(keyInfo));
+                .ForEach((keyInfo) => handler.ReadAsync(keyInfo));
 
             // Assert
             handler.CurrentInput.Should().Be("Hell");
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.Read(keyInfo));
+                .ForEach((keyInfo) => handler.ReadAsync(keyInfo));
 
             // Assert
             handler.CurrentInput.Should().Be("Hel");
@@ -105,13 +105,13 @@
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlBackspace);
+            handler.ReadAsync(CtrlBackspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello ");
@@ -125,13 +125,13 @@
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlBackspace, CtrlBackspace, CtrlBackspace, CtrlBackspace);
+            handler.ReadAsync(CtrlBackspace, CtrlBackspace, CtrlBackspace, CtrlBackspace);
 
             // Assert
             handler.CurrentInput.Should().BeEmpty();
@@ -145,13 +145,13 @@
 
             // Act
             ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World  Test");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete);
+            handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello Test");
@@ -165,13 +165,13 @@
 
             // Act
             ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World  Test");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete, CtrlDelete, CtrlDelete);
+            handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete, CtrlDelete, CtrlDelete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello ");
@@ -184,7 +184,7 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            handler.Read(Delete);
+            handler.ReadAsync(Delete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello");
@@ -198,7 +198,7 @@
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, 'S'.ToConsoleKeyInfo() };
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("SHello");
@@ -212,7 +212,7 @@
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, End, ExclamationPoint };
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello!");
@@ -225,11 +225,11 @@
             LineInputHandler handler = GetKeyHandlerInstance();
 
             // Act
-            handler.Read(LeftArrow, LeftArrow);
+            handler.ReadAsync(LeftArrow, LeftArrow);
 
             ConsoleKeyInfo[] input = " N".Select(c => c.ToConsoleKeyInfo())
                                          .ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hel Nlo");
@@ -243,7 +243,7 @@
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, LeftArrow, RightArrow, ExclamationPoint };
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hell!o");
@@ -257,18 +257,18 @@
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlLeftArrow);
+            handler.ReadAsync(CtrlLeftArrow);
 
             input = " N".Select(c => c.ToConsoleKeyInfo())
                         .ToArray();
 
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello  NWorld");
@@ -282,18 +282,18 @@
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlRightArrow);
+            handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlRightArrow);
 
             input = " N".Select(c => c.ToConsoleKeyInfo())
                         .ToArray();
 
-            handler.Read(input);
+            handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello  NWorld");

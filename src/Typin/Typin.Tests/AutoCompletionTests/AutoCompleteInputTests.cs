@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.AutoCompletion;
     using Typin.Console;
@@ -50,198 +51,198 @@
         }
 
         [Fact]
-        public void Down_arrow_should_return_empty()
+        public async Task Down_arrow_should_return_empty()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(DownArrow, Enter);
+            string text = await input.ReadLineAsync(DownArrow, Enter);
 
             // Assert
             text.Should().BeEmpty();
         }
 
         [Fact]
-        public void Up_arrow_then_escape_should_return_empty()
+        public async Task Up_arrow_then_escape_should_return_empty()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(UpArrow, Escape, DownArrow, Enter);
+            string text = await input.ReadLineAsync(UpArrow, Escape, DownArrow, Enter);
 
             // Assert
             text.Should().BeEmpty();
         }
 
         [Fact]
-        public void Up_then_down_arrow_should_return_last_history_entry()
+        public async Task Up_then_down_arrow_should_return_last_history_entry()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(UpArrow, DownArrow, Enter);
+            string text = await input.ReadLineAsync(UpArrow, DownArrow, Enter);
 
             // Assert
             text.Should().Be("clear");
 
             // Act
-            text = input.ReadLine(UpArrow, DownArrow, DownArrow, DownArrow, Enter);
+            text = await input.ReadLineAsync(UpArrow, DownArrow, DownArrow, DownArrow, Enter);
 
             // Assert
             text.Should().Be("clear");
         }
 
         [Fact]
-        public void Up_arrow_should_return_valid_entry()
+        public async Task Up_arrow_should_return_valid_entry()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(UpArrow, UpArrow, UpArrow);
+            string text = await input.ReadLineAsync(UpArrow, UpArrow, UpArrow);
 
             // Assert
             text.Should().Be("dotnet run");
 
             // Act
-            text = input.ReadLine(UpArrow, UpArrow, UpArrow, UpArrow, UpArrow, Enter);
+            text = await input.ReadLineAsync(UpArrow, UpArrow, UpArrow, UpArrow, UpArrow, Enter);
 
             // Assert
             text.Should().Be("dotnet run");
         }
 
         [Fact]
-        public void Should_clear_history()
+        public async Task Should_clear_history()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(UpArrow, UpArrow, UpArrow, Enter);
+            string text = await input.ReadLineAsync(UpArrow, UpArrow, UpArrow, Enter);
 
             // Assert
             text.Should().Be("dotnet run");
 
             // Act
             input.History.Clear();
-            text = input.ReadLine(UpArrow, UpArrow, UpArrow, UpArrow, UpArrow, Enter);
+            text = await input.ReadLineAsync(UpArrow, UpArrow, UpArrow, UpArrow, UpArrow, Enter);
 
             // Assert
             text.Should().BeEmpty();
         }
 
         [Fact]
-        public void Nothing_should_happen_without_auto_complete_handler()
+        public async Task Nothing_should_happen_without_auto_complete_handler()
         {
             // Arrange
             AutoCompleteInput input = new AutoCompleteInput(_console);
 
             // Act
-            string text = input.ReadLine(Tab, Enter);
+            string text = await input.ReadLineAsync(Tab, Enter);
 
             // Assert
             text.Should().BeEmpty();
 
             // Act
-            text = input.ReadLine(Tab, Tab, Tab);
+            text = await input.ReadLineAsync(Tab, Tab, Tab);
 
             // Assert
             text.Should().BeEmpty();
         }
 
         [Fact]
-        public void Nothing_should_happen_when_no_completions_available()
+        public async Task Nothing_should_happen_when_no_completions_available()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine('X'.ToConsoleKeyInfo(), Tab);
+            string text = await input.ReadLineAsync('X'.ToConsoleKeyInfo(), Tab);
 
             // Assert
             text.Should().Be("X");
         }
 
         [Fact]
-        public void Should_return_valid_completion_for_W_Tab()
+        public async Task Should_return_valid_completion_for_W_Tab()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine('W'.ToConsoleKeyInfo(), Tab);
+            string text = await input.ReadLineAsync('W'.ToConsoleKeyInfo(), Tab);
 
             // Assert
             text.Should().Be("World");
         }
 
         [Fact]
-        public void Should_return_valid_completion_for_Tab_and_ShiftTab()
+        public async Task Should_return_valid_completion_for_Tab_and_ShiftTab()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(ShiftTab);
+            string text = await input.ReadLineAsync(ShiftTab);
 
             // Assert
             text.Should().Be("Hello");
 
             // Act
-            text = input.ReadLine(Tab);
+            text = await input.ReadLineAsync(Tab);
 
             // Assert
             text.Should().Be("World");
 
             // Act
-            text = input.ReadLine(Tab, ShiftTab);
+            text = await input.ReadLineAsync(Tab, ShiftTab);
 
             // Assert
             text.Should().Be("Hello");
         }
 
         [Fact]
-        public void Should_return_valid_completion_for_empty_line()
+        public async Task Should_return_valid_completion_for_empty_line()
         {
             // Arrange
             AutoCompleteInput input = GetAutoCompleteInstance();
 
             // Act
-            string text = input.ReadLine(Tab);
+            string text = await input.ReadLineAsync(Tab);
 
             // Assert
             text.Should().Be("World");
 
             // Act
-            text = input.ReadLine(Tab, Tab);
+            text = await input.ReadLineAsync(Tab, Tab);
 
             // Assert
             text.Should().Be("Angel");
 
             // Act
-            text = input.ReadLine(Tab, Tab, Tab);
+            text = await input.ReadLineAsync(Tab, Tab, Tab);
 
             // Assert
             text.Should().Be("Hello");
 
             // Act
-            text = input.ReadLine(Tab, Tab, Tab, Tab);
+            text = await input.ReadLineAsync(Tab, Tab, Tab, Tab);
 
             // Assert
             text.Should().Be("World");
 
             // Act
-            text = input.ReadLine(Tab, Tab, Tab, Tab, ShiftTab);
+            text = await input.ReadLineAsync(Tab, Tab, Tab, Tab, ShiftTab);
 
             // Assert
             text.Should().Be("Hello");
         }
 
         [Fact]
-        public void Custom_shortcut_should_work()
+        public async Task Custom_shortcut_should_work()
         {
             bool test = false;
 
@@ -260,7 +261,7 @@
             test.Should().BeFalse();
 
             // Act
-            string text = input.ReadLine(CtrlA);
+            string text = await input.ReadLineAsync(CtrlA);
 
             // Assert
             test.Should().BeTrue();

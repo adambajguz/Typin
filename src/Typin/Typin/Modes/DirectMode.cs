@@ -29,7 +29,7 @@
         /// <inheritdoc/>
         public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            int exitCode = await executor.ExecuteCommand(commandLineArguments);
+            int exitCode = await executor.ExecuteCommandAsync(commandLineArguments);
             _applicationLifetime.RequestStop();
 
             return exitCode;
