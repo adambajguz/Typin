@@ -40,8 +40,6 @@
                 typeof(ExitCodeMiddleware).AssemblyQualifiedName,
                 PipelineCommand.PipelineTermination,
                 "Typin.Internal.Pipeline");
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -67,8 +65,6 @@
                 ExecutionTimingMiddleware.ExpectedOutput1,
                 ExitCodeMiddleware.ExpectedOutput,
                 DefaultCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
         }
     }
 }

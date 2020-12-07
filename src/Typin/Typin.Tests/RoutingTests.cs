@@ -27,13 +27,12 @@
                 .AddCommand<NamedSubCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(DefaultCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -46,13 +45,12 @@
                 .AddCommand<NamedSubCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -65,13 +63,12 @@
                 .AddCommand<NamedSubCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedSubCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -84,13 +81,12 @@
                 .UseDescription("This will be visible in help");
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -107,12 +103,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll(
-                "Default command description",
-                "Usage"
-            );
-
-            _output.WriteLine(stdOut.GetString());
+            stdOut.GetString().Should().ContainAll("Default command description", "Usage");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -125,13 +117,12 @@
                 .UseDescription("This will be visible in help");
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -144,7 +135,7 @@
                 .AddCommand<NamedSubCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -153,8 +144,7 @@
                 "Usage",
                 "named"
             );
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -167,7 +157,7 @@
                 .AddCommand<NamedSubCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub", "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -176,8 +166,7 @@
                 "Usage",
                 "named", "sub"
             );
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -191,13 +180,12 @@
                 .UseVersionText("v6.9");
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--version" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--version" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be("v6.9");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }

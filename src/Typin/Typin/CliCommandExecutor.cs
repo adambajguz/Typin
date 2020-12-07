@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -31,22 +30,21 @@
         }
 
         /// <inheritdoc/>
-        public async Task<int> ExecuteCommand(string commandLine)
+        public async Task<int> ExecuteCommandAsync(string commandLine)
         {
             string[] commandLineArguments = CommandLineSplitter.Split(commandLine).ToArray();
 
-            return await ExecuteCommand(commandLineArguments);
+            return await ExecuteCommandAsync(commandLineArguments);
         }
 
         /// <inheritdoc/>
-        public async Task<int> ExecuteCommand(IEnumerable<string> commandLineArguments)
+        public async Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments)
         {
-            return await ExecuteCommand(commandLineArguments.ToList());
+            return await ExecuteCommandAsync(commandLineArguments.ToList());
         }
 
         /// <inheritdoc/>
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-        public async Task<int> ExecuteCommand(IReadOnlyList<string> commandLineArguments)
+        public async Task<int> ExecuteCommandAsync(IReadOnlyList<string> commandLineArguments)
         {
             _logger.LogInformation("Executing command '{CommandLineArguments}'", commandLineArguments);
 

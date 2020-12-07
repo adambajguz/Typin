@@ -12,7 +12,7 @@
         private readonly IConsole _console;
 
         public IReadOnlyDictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
-        public RootSchema? RootSchema { get; set; }
+        public RootSchema? RootSchema { get; internal set; }
 
         public CliContextFactory(ApplicationMetadata metadata,
                                  ApplicationConfiguration configuration,

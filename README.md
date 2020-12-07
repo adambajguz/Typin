@@ -56,7 +56,9 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Negative numbers handling,
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
 - Custom modes support.
-- Optional option names.
+- Logging.
+- Optional option names by providing a hypenated name.
+- Added support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\\\') during char parsing.
 - (more coming soon).
 
 > See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.

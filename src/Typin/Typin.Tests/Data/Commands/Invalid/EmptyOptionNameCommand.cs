@@ -6,13 +6,13 @@
     [Command("cmd")]
     public class EmptyOptionNameCommand : SelfSerializeCommandBase
     {
-        [CommandOption("")]
+        [CommandOption]
         public string? Apples { get; set; }
 
         [CommandOption]
         public string? Blackberries { get; set; }
 
-        [CommandOption('-')]
+        [CommandOption]
         public string? WestIndianCherry { get; set; }
 
         [CommandOption]

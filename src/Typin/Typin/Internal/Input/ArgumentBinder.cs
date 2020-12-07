@@ -8,6 +8,7 @@
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     internal static class ArgumentBinder
     {
@@ -19,7 +20,7 @@
                 [typeof(object)] = v => v,
                 [typeof(string)] = v => v,
                 [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
-                [typeof(char)] = v => v!.Single(),
+                [typeof(char)] = v => v.UnescapeChar(),
                 [typeof(sbyte)] = v => sbyte.Parse(v!, FormatProvider),
                 [typeof(byte)] = v => byte.Parse(v!, FormatProvider),
                 [typeof(short)] = v => short.Parse(v!, FormatProvider),
@@ -39,7 +40,7 @@
                 [typeof(TimeSpan)] = v => TimeSpan.Parse(v!, FormatProvider),
             };
 
-#region Value Converter
+        #region Value Converter
         private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType)
         {
             try
@@ -128,7 +129,7 @@
                 return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType);
             }
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Binds input values to command.

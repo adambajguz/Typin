@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Typin.Console;
 
     internal class AutoCompleteInput
@@ -74,9 +75,9 @@
         /// <summary>
         /// Reads a line from input.
         /// </summary>
-        public string ReadLine()
+        public async Task<string> ReadLineAsync()
         {
-            string text = _lineInputHandler.ReadLine();
+            string text = await _lineInputHandler.ReadLineAsync();
 
             ResetAutoComplete();
 
@@ -92,9 +93,9 @@
         /// <summary>
         /// Reads a line from array.
         /// </summary>
-        public string ReadLine(params ConsoleKeyInfo[] line)
+        public async Task<string> ReadLineAsync(params ConsoleKeyInfo[] line)
         {
-            string text = _lineInputHandler.Read(line);
+            string text = await _lineInputHandler.ReadAsync(line);
 
             ResetAutoComplete();
 

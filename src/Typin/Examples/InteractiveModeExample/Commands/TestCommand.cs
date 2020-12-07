@@ -1,23 +1,26 @@
-﻿//namespace Typin.InteractiveModeDemo.Commands
-//{
-//    using System.Threading.Tasks;
-//    using Typin.Attributes;
-//    using Typin.Console;
+﻿namespace Typin.InteractiveModeDemo.Commands
+{
+    using System.Threading.Tasks;
+    using Typin.Attributes;
+    using Typin.Console;
 
-//    [Command("test", Description = "Prints a middleware pipeline structure in application.")]
-//    public class TestCommand : ICommand
-//    {
-//        [CommandOption("x", 'a', IsRequired = true)]
-//        public string Author { get; set; } = "";
+    [Command("test", Description = "Test command.")]
+    public class TestCommand : ICommand
+    {
+        [CommandOption("xe", 'a')]
+        public string Author { get; set; } = string.Empty;
 
-//        [CommandOption('x', IsRequired = true)]
-//        public string AuthorX { get; set; } = "";
+        [CommandOption('x')]
+        public string AuthorX { get; set; } = string.Empty;
 
-//        public ValueTask ExecuteAsync(IConsole console)
-//        {
-//            console.Output.WriteLine("{Author} {AuthorX}");
+        [CommandOption("char", 'c')]
+        public char Ch { get; set; }
 
-//            return default;
-//        }
-//    }
-//}
+        public ValueTask ExecuteAsync(IConsole console)
+        {
+            console.Output.WriteLine($"'{Author}' '{AuthorX}' '{Ch}'");
+
+            return default;
+        }
+    }
+}
