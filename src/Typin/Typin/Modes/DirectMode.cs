@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
-    using Typin.Internal;
 
     /// <summary>
     /// Direct CLI mode. If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.

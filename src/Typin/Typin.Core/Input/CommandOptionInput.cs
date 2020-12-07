@@ -74,7 +74,7 @@
         /// </summary>
         public static bool IsOption(string argument)
         {
-            return argument.StartsWith("--", StringComparison.Ordinal) && argument.Length >= 3;
+            return argument.StartsWith("--", StringComparison.Ordinal) && argument.Length > 3 && char.IsLetter(argument[2]);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@
         /// </summary>
         public static bool IsOptionAlias(string argument)
         {
-            return argument.StartsWith('-') && argument.Length >= 2 && !char.IsDigit(argument[1]);
+            return argument.StartsWith('-') && argument.Length >= 2 && char.IsLetter(argument[1]);
         }
     }
 }

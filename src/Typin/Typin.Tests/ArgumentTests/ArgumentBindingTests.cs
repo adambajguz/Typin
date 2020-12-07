@@ -1,8 +1,10 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Directives;
+    using Typin.Tests.Data.Commands.Invalid;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -25,7 +27,7 @@
                 .AddCommand<WithStringArrayOptionCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
@@ -34,6 +36,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithStringArrayOptionCommand
             {
@@ -49,13 +52,14 @@
                 .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -67,13 +71,14 @@
                 .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -85,13 +90,14 @@
                 .AddCommand<WithRequiredOptionsCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -143,6 +149,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
+
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
@@ -151,6 +158,52 @@
                 ParamB = 0,
                 ParamC = new[] { "bar", "-", "baz" }
             });
+        }
+
+        [Theory]
+        [InlineData(typeof(NonLetterOptionName0Command))]
+        [InlineData(typeof(NonLetterOptionName1Command))]
+        [InlineData(typeof(NonLetterOptionName2Command))]
+        [InlineData(typeof(NonLetterOptionName3Command))]
+        public async Task Option_name_should_not_start_with_char_other_than_letter(Type commandType)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand(commandType);
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", "-h"
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+        }
+
+        [Theory]
+        [InlineData(typeof(NonLetterOptionShortName0Command))]
+        [InlineData(typeof(NonLetterOptionShortName1Command))]
+        [InlineData(typeof(NonLetterOptionShortName2Command))]
+        [InlineData(typeof(NonLetterOptionShortName3Command))]
+        public async Task Option_short_name_should_not_start_with_char_other_than_letter(Type commandType)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand(commandType);
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", "-h"
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -203,10 +256,11 @@
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -220,12 +274,13 @@
                 .AddDirective<DefaultDirective>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }

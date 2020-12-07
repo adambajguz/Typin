@@ -52,7 +52,7 @@
 
                 if (command.IsDefault)
                 {
-                    defaultCommand = defaultCommand is null ? command : throw ResolversExceptions.TooManyDefaultCommands();
+                    defaultCommand = defaultCommand is null ? command : throw CommandResolverExceptions.TooManyDefaultCommands();
                 }
                 else if (!commands.TryAdd(command.Name!, command))
                 {
@@ -61,7 +61,7 @@
             }
 
             if (commands.Count == 0 && defaultCommand is null)
-                throw ResolversExceptions.NoCommandsDefined();
+                throw CommandResolverExceptions.NoCommandsDefined();
 
             if (invalidCommands.Count > 0)
             {
@@ -69,7 +69,7 @@
                                                                                      .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
                                                                                      .First();
 
-                throw ResolversExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
+                throw CommandResolverExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
             DefaultCommand = defaultCommand;
@@ -95,7 +95,7 @@
                                                                                          .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
                                                                                          .First();
 
-                throw ResolversExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
+                throw DirectiveResolverExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
             Directives = directives;

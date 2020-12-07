@@ -19,12 +19,12 @@
         public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
         {
             if (!SchemasHelpers.IsCommandType(type))
-                throw ResolversExceptions.InvalidCommandType(type);
+                throw CommandResolverExceptions.InvalidCommandType(type);
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
             if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
-                throw ResolversExceptions.InvalidSupportedModesInCommand(type);
+                throw CommandResolverExceptions.InvalidSupportedModesInCommand(type);
 
             string? name = attribute.Name;
 
@@ -68,7 +68,7 @@
 
             if (duplicateOrderGroup != null)
             {
-                throw ResolversExceptions.ParametersWithSameOrder(
+                throw ParameterResolverExceptions.ParametersWithSameOrder(
                     command,
                     duplicateOrderGroup.Key,
                     duplicateOrderGroup.ToArray()
@@ -82,7 +82,7 @@
 
             if (duplicateNameGroup != null)
             {
-                throw ResolversExceptions.ParametersWithSameName(
+                throw ParameterResolverExceptions.ParametersWithSameName(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -95,7 +95,7 @@
 
             if (nonScalarParameters.Length > 1)
             {
-                throw ResolversExceptions.TooManyNonScalarParameters(
+                throw ParameterResolverExceptions.TooManyNonScalarParameters(
                     command,
                     nonScalarParameters
                 );
@@ -108,7 +108,7 @@
 
             if (nonLastNonScalarParameter != null)
             {
-                throw ResolversExceptions.NonLastNonScalarParameter(
+                throw ParameterResolverExceptions.NonLastNonScalarParameter(
                     command,
                     nonLastNonScalarParameter
                 );
@@ -117,41 +117,6 @@
 
         private static void ValidateOptions(CommandSchema command)
         {
-            IEnumerable<CommandOptionSchema> noNameGroup = command.Options
-                .Where(o => o.ShortName == null && string.IsNullOrWhiteSpace(o.Name));
-
-            if (noNameGroup.Any())
-            {
-                throw ResolversExceptions.OptionsWithNoName(
-                    command,
-                    noNameGroup.ToArray()
-                );
-            }
-
-            IEnumerable<CommandOptionSchema> digitStartingGroup = command.Options
-                .Where(o => char.IsDigit(o.ShortName ?? 'a') || char.IsDigit(o.Name?.FirstOrDefault() ?? 'a'));
-
-            if (digitStartingGroup.Any())
-            {
-                throw ResolversExceptions.OptionsWithDigitStartingName(
-                    command,
-                    digitStartingGroup.ToArray()
-                );
-            }
-
-            CommandOptionSchema[] invalidLengthNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .Where(o => o.Name!.Length <= 1)
-                .ToArray();
-
-            if (invalidLengthNameGroup.Any())
-            {
-                throw ResolversExceptions.OptionsWithInvalidLengthName(
-                    command,
-                    invalidLengthNameGroup
-                );
-            }
-
             IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.Name))
                 .GroupBy(o => o.Name!, StringComparer.OrdinalIgnoreCase)
@@ -159,7 +124,7 @@
 
             if (duplicateNameGroup != null)
             {
-                throw ResolversExceptions.OptionsWithSameName(
+                throw OptionResolverExceptions.OptionsWithSameName(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -173,7 +138,7 @@
 
             if (duplicateShortNameGroup != null)
             {
-                throw ResolversExceptions.OptionsWithSameShortName(
+                throw OptionResolverExceptions.OptionsWithSameShortName(
                     command,
                     duplicateShortNameGroup.Key,
                     duplicateShortNameGroup.ToArray()
@@ -187,7 +152,7 @@
 
             if (duplicateEnvironmentVariableNameGroup != null)
             {
-                throw ResolversExceptions.OptionsWithSameEnvironmentVariableName(
+                throw OptionResolverExceptions.OptionsWithSameEnvironmentVariableName(
                     command,
                     duplicateEnvironmentVariableNameGroup.Key,
                     duplicateEnvironmentVariableNameGroup.ToArray()

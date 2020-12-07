@@ -2,6 +2,7 @@
 {
     using System;
     using System.Text;
+    using Typin.AutoCompletion;
     using Typin.Exceptions;
     using Typin.Schemas;
 
@@ -10,11 +11,18 @@
     /// </summary>
     internal static class ModeEndUserExceptions
     {
+        public static TypinException DuplicatedShortcut(ShortcutDefinition definition)
+        {
+            string message = $@"Shortcut '{definition.Modifiers}+{definition.Key}' is already used by Typin.";
+
+            return new TypinException(message);
+        }
+
         public static TypinException InvalidStartupModeType(Type type)
         {
             var message = $"Cannot start the app. '{type.FullName}' is not a valid CLI mode type.";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
 
         public static TypinException CommandExecutedInInvalidMode(CommandSchema command, Type currentMode)

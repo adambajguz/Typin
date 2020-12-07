@@ -15,7 +15,7 @@
 
         public static CustomStringParsableWithFormatProvider Parse(string value, IFormatProvider formatProvider)
         {
-            return new CustomStringParsableWithFormatProvider(value + " " + formatProvider);
+            return new CustomStringParsableWithFormatProvider(value + " " + formatProvider.GetType().Name);
         }
     }
 }
