@@ -19,7 +19,7 @@
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
 - Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
-- Added `IConsole.ReadKeyAsync`.
+- Added `IConsole.ReadKeyAsync()`.
 - Option name with 3 characters is no logner treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).
 - Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.

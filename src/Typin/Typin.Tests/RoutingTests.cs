@@ -32,8 +32,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(DefaultCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -51,8 +49,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -70,8 +66,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedSubCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -89,8 +83,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -107,12 +99,8 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll(
-                "Default command description",
-                "Usage"
+            stdOut.GetString().Should().ContainAll("Default command description", "Usage"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -130,8 +118,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -153,8 +139,6 @@
                 "Usage",
                 "named"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -176,8 +160,6 @@
                 "Usage",
                 "named", "sub"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -196,8 +178,6 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be("v6.9");
-
-            _output.WriteLine(stdOut.GetString());
         }
     }
 }

@@ -32,8 +32,6 @@
                 "Usage",
                 "cmd", "<param-a>", "<param-b>", "<param-c...>"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -56,8 +54,6 @@
                 "-b|--opt-b",
                 "* -c|--opt-c"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -79,8 +75,6 @@
                 "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
                 "* --required-enum", "Valid values: \"Value1\", \"Value2\", \"Value3\"."
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -100,8 +94,6 @@
                 "-a|--opt-a", "Environment variable:", "ENV_OPT_A",
                 "-b|--opt-b", "Environment variable:", "ENV_OPT_B"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -130,8 +122,6 @@
                 "--timespan", "Default: \"02:03:00\"",
                 "--enum", "Default: \"Value2\""
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -160,8 +150,6 @@
                 "--time-span", "Default: \"02:03:00\"",
                 "--enum", "Default: \"Value2\""
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
     }
 }
