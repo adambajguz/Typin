@@ -131,7 +131,7 @@
                 {
                     if (!_shortcuts.Add(shortcut))
                     {
-                        throw ResolversExceptions.DuplicatedShortcut(shortcut);
+                        throw ModeEndUserExceptions.DuplicatedShortcut(shortcut);
                     }
                 }
             }

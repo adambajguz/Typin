@@ -1,8 +1,10 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Directives;
+    using Typin.Tests.Data.Commands.Invalid;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -151,6 +153,52 @@
                 ParamB = 0,
                 ParamC = new[] { "bar", "-", "baz" }
             });
+        }
+
+        [Theory]
+        [InlineData(typeof(NonLetterOptionName0Command))]
+        [InlineData(typeof(NonLetterOptionName1Command))]
+        [InlineData(typeof(NonLetterOptionName2Command))]
+        [InlineData(typeof(NonLetterOptionName3Command))]
+        public async Task Option_name_should_not_start_with_char_other_than_letter(Type commandType)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand(commandType);
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", "-h"
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+        }
+
+        [Theory]
+        [InlineData(typeof(NonLetterOptionShortName0Command))]
+        [InlineData(typeof(NonLetterOptionShortName1Command))]
+        [InlineData(typeof(NonLetterOptionShortName2Command))]
+        [InlineData(typeof(NonLetterOptionShortName3Command))]
+        public async Task Option_short_name_should_not_start_with_char_other_than_letter(Type commandType)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand(commandType);
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", "-h"
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]

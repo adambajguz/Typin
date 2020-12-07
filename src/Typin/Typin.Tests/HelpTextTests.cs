@@ -30,7 +30,7 @@
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Usage",
-                "cmd", "<parama>", "<paramb>", "<paramc...>"
+                "cmd", "<param-a>", "<param-b>", "<param-c...>"
             );
 
             _output.WriteLine(stdOut.GetString());

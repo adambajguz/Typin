@@ -39,7 +39,7 @@
                 [typeof(TimeSpan)] = v => TimeSpan.Parse(v!, FormatProvider),
             };
 
-#region Value Converter
+        #region Value Converter
         private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType)
         {
             try
@@ -128,7 +128,7 @@
                 return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType);
             }
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Binds input values to command.

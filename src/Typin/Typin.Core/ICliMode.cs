@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Typin.Internal;
 
     /// <summary>
     /// CLI mode definition.
