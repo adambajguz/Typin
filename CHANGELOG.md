@@ -1,4 +1,4 @@
-### v3.0.0 (xx-Oct-2020)
+### v3.0.0 (xx-Dec-2020)
 
 - Added `Typin.Core` library.
 - Added `CliApplication.RunAsync` with string command line.
