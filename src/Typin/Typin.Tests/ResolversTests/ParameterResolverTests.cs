@@ -24,10 +24,11 @@
                 .AddCommand<DuplicateParameterOrderCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -39,10 +40,11 @@
                 .AddCommand<DuplicateParameterNameCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -53,10 +55,11 @@
                 .AddCommand<MultipleNonScalarParametersCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -68,10 +71,11 @@
                 .AddCommand<NonLastNonScalarParameterCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
     }

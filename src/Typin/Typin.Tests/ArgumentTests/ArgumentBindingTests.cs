@@ -27,7 +27,7 @@
                 .AddCommand<WithStringArrayOptionCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
@@ -36,6 +36,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithStringArrayOptionCommand
             {
@@ -51,13 +52,14 @@
                 .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -69,13 +71,14 @@
                 .AddCommand<WithSingleRequiredOptionCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -87,13 +90,14 @@
                 .AddCommand<WithRequiredOptionsCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--opt-a", "foo"
             });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -145,6 +149,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
+
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand
@@ -251,10 +256,11 @@
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -268,12 +274,13 @@
                 .AddDirective<DefaultDirective>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }
