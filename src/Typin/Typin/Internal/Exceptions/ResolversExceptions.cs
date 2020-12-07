@@ -193,7 +193,7 @@ If it's not feasible to fit into these constraints, consider using options inste
 Command '{command.Type.FullName}' is invalid because it contains one or more options with a name starting from digit or short names with a digit:
 {invalidOptions.JoinToString(Environment.NewLine)}
 
-Options must have a name starting from char other than digit, while short name must not be a digit.";
+Options must have a name starting from letter, while short names must be a letter.";
 
             return new TypinException(message.Trim());
         }

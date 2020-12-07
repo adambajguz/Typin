@@ -21,6 +21,7 @@
 - Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
 - Added `IConsole.ReadKeyAsync`.
 - Option name with 3 characters is no logner treated as option alias (e.g., `--h` is not `-h`).
+- Option name and short name must start with letter.
 
 ### v2.1.1 (18-Oct-2020)
 
