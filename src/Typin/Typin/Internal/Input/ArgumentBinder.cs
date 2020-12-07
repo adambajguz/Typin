@@ -8,6 +8,7 @@
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     internal static class ArgumentBinder
     {
@@ -19,7 +20,7 @@
                 [typeof(object)] = v => v,
                 [typeof(string)] = v => v,
                 [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
-                [typeof(char)] = v => v!.Single(),
+                [typeof(char)] = v => v.UnescapeChar(),
                 [typeof(sbyte)] = v => sbyte.Parse(v!, FormatProvider),
                 [typeof(byte)] = v => byte.Parse(v!, FormatProvider),
                 [typeof(short)] = v => short.Parse(v!, FormatProvider),
