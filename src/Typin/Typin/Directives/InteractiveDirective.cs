@@ -33,12 +33,11 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
-            context.ExitCode ??= ExitCodes.Success;
 
-            return default;
+            await next();
         }
     }
 }
