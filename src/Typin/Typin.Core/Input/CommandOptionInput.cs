@@ -74,7 +74,7 @@
         /// </summary>
         public static bool IsOption(string argument)
         {
-            return argument.StartsWith("--", StringComparison.Ordinal) && argument.Length >= 3;
+            return argument.StartsWith("--", StringComparison.Ordinal) && argument.Length > 3;
         }
 
         /// <summary>
