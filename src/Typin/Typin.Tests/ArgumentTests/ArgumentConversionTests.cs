@@ -3,7 +3,6 @@
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Newtonsoft.Json;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomTypes.Initializable;
     using Typin.Tests.Extensions;
@@ -143,7 +142,7 @@
 
         //Parasable or constructible
         [InlineData(@"cmd --str-parsable foobar", @"{ ""str-parsable"": { ""Value"": ""foobar""} }")]
-        [InlineData(@"cmd --str-parsable-format foobar", @"{ ""str-parsable-format"": { ""Value"": ""foobar ""} }")] //TODO: why space at the end?
+        [InlineData(@"cmd --str-parsable-format foobar", @"{ ""str-parsable-format"": { ""Value"": ""foobar CultureInfo""} }")]
         [InlineData(@"cmd --str-constructible foobar", @"{ ""str-constructible"": { ""Value"": ""foobar""} }")]
         [InlineData(@"cmd --str-constructible-array foo bar ""foo bar""", @"{ ""str-constructible-array"": [ { ""Value"": ""foo""}, { ""Value"": ""bar""}, { ""Value"": ""foo bar""}] }")]
 
@@ -187,15 +186,8 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Include,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                DefaultValueHandling = DefaultValueHandling.Include
-            };
-
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>(settings);
+            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);

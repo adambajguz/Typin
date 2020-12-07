@@ -48,11 +48,10 @@ Option {option} expects a single value, but provided with multiple:
             };
         }
 
-        public static TypinException CannotConvertToType(
-            CommandParameterSchema parameter,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(CommandParameterSchema parameter,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
             string message = $@"
 Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter}.
@@ -61,11 +60,10 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter 
             return new TypinException(message.Trim(), innerException);
         }
 
-        public static TypinException CannotConvertToType(
-            CommandOptionSchema option,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(CommandOptionSchema option,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
             string message = $@"
 Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option}.
@@ -74,11 +72,10 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
             return new TypinException(message.Trim(), innerException);
         }
 
-        public static TypinException CannotConvertToType(
-            ArgumentSchema argument,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(ArgumentSchema argument,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
             return argument switch
             {
@@ -88,10 +85,9 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
             };
         }
 
-        public static TypinException CannotConvertNonScalar(
-            CommandParameterSchema parameter,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(CommandParameterSchema parameter,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
             string message = $@"
 Can't convert provided values to type '{type.Name}' for parameter {parameter}:
@@ -102,10 +98,9 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertNonScalar(
-            CommandOptionSchema option,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(CommandOptionSchema option,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
             string message = $@"
 Can't convert provided values to type '{type.Name}' for option {option}:
@@ -116,10 +111,9 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertNonScalar(
-            ArgumentSchema argument,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(ArgumentSchema argument,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
             return argument switch
             {

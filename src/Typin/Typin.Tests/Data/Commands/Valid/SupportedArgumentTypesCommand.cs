@@ -61,9 +61,9 @@
         [CommandOption("ulong")]
         public ulong Ulong { get; init; }
 
-        [JsonProperty("half")]
-        [CommandOption("half")]
-        public Half Half { get; init; }
+        //[JsonProperty("half")]
+        //[CommandOption("half")]
+        //public Half Half { get; init; } = (Half)98.1245;
 
         [JsonProperty("float")]
         [CommandOption("float")]
