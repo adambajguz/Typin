@@ -15,15 +15,14 @@
     {
         public static TypinException UnknownDirectiveName(DirectiveInput directive)
         {
-            var message = $@"
-Unknown directive '{directive}'.";
+            string message = $@"Unknown directive '{directive}'.";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
 
         public static TypinException CannotConvertMultipleValuesToNonScalar(CommandParameterSchema parameter, IReadOnlyList<string> values)
         {
-            var message = $@"
+            string message = $@"
 Parameter {parameter} expects a single value, but provided with multiple:
 {values.Select(v => v.Quote()).JoinToString(' ')}";
 
@@ -32,7 +31,7 @@ Parameter {parameter} expects a single value, but provided with multiple:
 
         public static TypinException CannotConvertMultipleValuesToNonScalar(CommandOptionSchema option, IReadOnlyList<string> values)
         {
-            var message = $@"
+            string message = $@"
 Option {option} expects a single value, but provided with multiple:
 {values.Select(v => v.Quote()).JoinToString(' ')}";
 
@@ -49,37 +48,34 @@ Option {option} expects a single value, but provided with multiple:
             };
         }
 
-        public static TypinException CannotConvertToType(
-            CommandParameterSchema parameter,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(CommandParameterSchema parameter,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
-            var message = $@"
+            string message = $@"
 Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter}.
 {innerException?.Message ?? "This type is not supported."}";
 
             return new TypinException(message.Trim(), innerException);
         }
 
-        public static TypinException CannotConvertToType(
-            CommandOptionSchema option,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(CommandOptionSchema option,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
-            var message = $@"
+            string message = $@"
 Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option}.
 {innerException?.Message ?? "This type is not supported."}";
 
             return new TypinException(message.Trim(), innerException);
         }
 
-        public static TypinException CannotConvertToType(
-            ArgumentSchema argument,
-            string? value,
-            Type type,
-            Exception? innerException = null)
+        public static TypinException CannotConvertToType(ArgumentSchema argument,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
         {
             return argument switch
             {
@@ -89,12 +85,11 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
             };
         }
 
-        public static TypinException CannotConvertNonScalar(
-            CommandParameterSchema parameter,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(CommandParameterSchema parameter,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
-            var message = $@"
+            string message = $@"
 Can't convert provided values to type '{type.Name}' for parameter {parameter}:
 {values.Select(v => v.Quote()).JoinToString(' ')}
 
@@ -103,12 +98,11 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertNonScalar(
-            CommandOptionSchema option,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(CommandOptionSchema option,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
-            var message = $@"
+            string message = $@"
 Can't convert provided values to type '{type.Name}' for option {option}:
 {values.Select(v => v.Quote()).JoinToString(' ')}
 
@@ -117,10 +111,9 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertNonScalar(
-            ArgumentSchema argument,
-            IReadOnlyList<string> values,
-            Type type)
+        public static TypinException CannotConvertNonScalar(ArgumentSchema argument,
+                                                            IReadOnlyList<string> values,
+                                                            Type type)
         {
             return argument switch
             {
@@ -132,37 +125,30 @@ Target type is not assignable from array and doesn't have a public constructor t
 
         public static TypinException ParameterNotSet(CommandParameterSchema parameter)
         {
-            var message = $@"
-Missing value for parameter {parameter}.";
+            string message = $@"Missing value for parameter {parameter}.";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
 
         public static TypinException RequiredOptionsNotSet(IReadOnlyList<CommandOptionSchema> options)
         {
-            var message = $@"
-Missing values for one or more required options:
-{options.Select(o => o).JoinToString(Environment.NewLine)}";
+            string message = $@"Missing values for one or more required options: {options.Select(o => o).JoinToString(Environment.NewLine)}";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
 
         public static TypinException UnrecognizedParametersProvided(IReadOnlyList<CommandParameterInput> parameterInputs)
         {
-            var message = $@"
-Unrecognized parameters provided:
-{parameterInputs.Select(p => p.Value).JoinToString(Environment.NewLine)}";
+            string message = $@"Unrecognized parameters provided: {parameterInputs.Select(p => p.Value).JoinToString(Environment.NewLine)}";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
 
         public static TypinException UnrecognizedOptionsProvided(IReadOnlyList<CommandOptionInput> optionInputs)
         {
-            var message = $@"
-Unrecognized options provided:
-{optionInputs.Select(o => o.GetRawAlias()).JoinToString(Environment.NewLine)}";
+            string message = $@"Unrecognized options provided: {optionInputs.Select(o => o.GetRawAlias()).JoinToString(Environment.NewLine)}";
 
-            return new TypinException(message.Trim());
+            return new TypinException(message);
         }
     }
 }

@@ -1,4 +1,4 @@
-### v3.0.0 (xx-Oct-2020)
+### v3.0.0 (xx-Dec-2020)
 
 - Added `Typin.Core` library.
 - Added `CliApplication.RunAsync` with string command line.
@@ -19,6 +19,12 @@
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
 - Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added `IConsole.ReadKeyAsync()`.
+- Option name with 3 characters is no logner treated as option alias (e.g., `--h` is not `-h`).
+- Option name and short name must start with letter (previously not start with digit).
+- Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
+- Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolfing RootSchema.
+- Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\') during char parsing.
 
 ### v2.1.1 (18-Oct-2020)
 

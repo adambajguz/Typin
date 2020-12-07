@@ -7,17 +7,9 @@
     using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
     using Xunit;
-    using Xunit.Abstractions;
 
     public class CancellationTests
     {
-        private readonly ITestOutputHelper _output;
-
-        public CancellationTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-
         [Fact]
         public async Task Command_can_perform_additional_cleanup_if_cancellation_is_requested()
         {

@@ -19,20 +19,16 @@
         public static DirectiveSchema Resolve(Type type, IReadOnlyList<Type> modeTypes)
         {
             if (!SchemasHelpers.IsDirectiveType(type))
-                throw ResolversExceptions.InvalidDirectiveType(type);
+                throw DirectiveResolverExceptions.InvalidDirectiveType(type);
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
 
             if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
-                throw ResolversExceptions.InvalidSupportedModesInDirective(type);
-
-            string name = attribute.Name.TrimStart('[').TrimEnd(']');
-            if (string.IsNullOrWhiteSpace(name))
-                throw ResolversExceptions.DirectiveNameIsInvalid(name, type);
+                throw DirectiveResolverExceptions.InvalidSupportedModesInDirective(type);
 
             return new DirectiveSchema(
                 type,
-                name,
+                attribute.Name,
                 attribute.Description,
                 attribute.SupportedModes
             );

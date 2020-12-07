@@ -3,7 +3,6 @@
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Newtonsoft.Json;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomTypes.Initializable;
     using Typin.Tests.Extensions;
@@ -31,6 +30,17 @@
         [InlineData(@"cmd --bool false", @"{ ""bool"": false }")]
 
         [InlineData(@"cmd --char a", @"{ ""char"": ""a"" }")]
+        [InlineData(@"cmd --char 0", @"{ ""char"": ""0"" }")]
+        [InlineData(@"cmd --char", @"{ ""char"": ""\u0000"" }")]
+        [InlineData(@"cmd --char \0", @"{ ""char"": ""\u0000"" }")]
+        [InlineData(@"cmd --char \a", @"{ ""char"": ""\u0007"" }")]
+        [InlineData(@"cmd --char \b", @"{ ""char"": ""\b"" }")]
+        [InlineData(@"cmd --char \f", @"{ ""char"": ""\f"" }")]
+        [InlineData(@"cmd --char \n", @"{ ""char"": ""\n"" }")]
+        [InlineData(@"cmd --char \r", @"{ ""char"": ""\r"" }")]
+        [InlineData(@"cmd --char \t", @"{ ""char"": ""\t"" }")]
+        [InlineData(@"cmd --char \v", @"{ ""char"": ""\u000b"" }")]
+        [InlineData(@"cmd --char \\", @"{ ""char"": ""\\"" }")]
 
         [InlineData(@"cmd --byte 15", @"{ ""byte"": 15 }")]
         [InlineData(@"cmd --sbyte 15", @"{ ""sbyte"": 15 }")]
@@ -77,6 +87,16 @@
 
         [InlineData(@"cmd --char-nullable a", @"{ ""char-nullable"": ""a"" }")]
         [InlineData(@"cmd --char-nullable", @"{ ""char-nullable"": null }")]
+        [InlineData(@"cmd --char-nullable 0", @"{ ""char-nullable"": ""0"" }")]
+        [InlineData(@"cmd --char-nullable \0", @"{ ""char-nullable"": ""\u0000"" }")]
+        [InlineData(@"cmd --char-nullable \a", @"{ ""char-nullable"": ""\u0007"" }")]
+        [InlineData(@"cmd --char-nullable \b", @"{ ""char-nullable"": ""\b"" }")]
+        [InlineData(@"cmd --char-nullable \f", @"{ ""char-nullable"": ""\f"" }")]
+        [InlineData(@"cmd --char-nullable \n", @"{ ""char-nullable"": ""\n"" }")]
+        [InlineData(@"cmd --char-nullable \r", @"{ ""char-nullable"": ""\r"" }")]
+        [InlineData(@"cmd --char-nullable \t", @"{ ""char-nullable"": ""\t"" }")]
+        [InlineData(@"cmd --char-nullable \v", @"{ ""char-nullable"": ""\u000b"" }")]
+        [InlineData(@"cmd --char-nullable \\", @"{ ""char-nullable"": ""\\"" }")]
 
         [InlineData(@"cmd --byte-nullable 15", @"{ ""byte-nullable"": 15 }")]
         [InlineData(@"cmd --byte-nullable", @"{ ""byte-nullable"": null }")]
@@ -143,7 +163,7 @@
 
         //Parasable or constructible
         [InlineData(@"cmd --str-parsable foobar", @"{ ""str-parsable"": { ""Value"": ""foobar""} }")]
-        [InlineData(@"cmd --str-parsable-format foobar", @"{ ""str-parsable-format"": { ""Value"": ""foobar ""} }")] //TODO: why space at the end?
+        [InlineData(@"cmd --str-parsable-format foobar", @"{ ""str-parsable-format"": { ""Value"": ""foobar CultureInfo""} }")]
         [InlineData(@"cmd --str-constructible foobar", @"{ ""str-constructible"": { ""Value"": ""foobar""} }")]
         [InlineData(@"cmd --str-constructible-array foo bar ""foo bar""", @"{ ""str-constructible-array"": [ { ""Value"": ""foo""}, { ""Value"": ""bar""}, { ""Value"": ""foo bar""}] }")]
 
@@ -187,15 +207,8 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Include,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                DefaultValueHandling = DefaultValueHandling.Include
-            };
-
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>(settings);
+            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -225,6 +238,26 @@
             {
                 StringParsableWithFormatProvider = CustomStringParsableWithFormatProvider.Parse("foobar", CultureInfo.InvariantCulture)
             });
+        }
+
+        [Theory]
+        [InlineData(@"cmd --char \x")]
+        [InlineData(@"cmd --char \\n")]
+        [InlineData(@"cmd --char ~\")]
+        [InlineData(@"cmd --char \u0001")]
+        public async Task Should_not_parse_unknown_char_escape_sequence(string args)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<SupportedArgumentTypesCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
     }
 }

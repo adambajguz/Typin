@@ -114,7 +114,7 @@
             {
                 string argument = commandLineArguments[index];
 
-                if (CommandOptionInput.IsOptionAlias(argument))
+                if (CommandOptionInput.IsOption(argument) | CommandOptionInput.IsOptionAlias(argument))
                     break;
 
                 result.Add(new CommandParameterInput(argument));

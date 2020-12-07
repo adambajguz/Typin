@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.AutoCompletion;
     using Typin.Console;
@@ -29,271 +30,271 @@
                                           error: stdErr);
         }
 
-        private LineInputHandler GetKeyHandlerInstance()
+        private async Task<LineInputHandler> GetKeyHandlerInstance()
         {
             // Arrange
             LineInputHandler handler = new LineInputHandler(_console);
 
             ConsoleKeyInfo[] input = "Hello".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             return handler;
         }
 
         [Fact]
-        public void TestWriteChar()
+        public async Task TestWriteChar()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Assert
             handler.CurrentInput.Should().Be("Hello");
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
         }
 
         [Fact]
-        public void TestBackspace()
+        public async Task TestBackspace()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            handler.Read(Backspace);
+            await handler.ReadAsync(Backspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hell");
 
             // Act
-            handler.Read(Backspace);
+            await handler.ReadAsync(Backspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hel");
         }
 
         [Fact]
-        public void TestDelete()
+        public async Task TestDelete()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.Read(keyInfo));
+                .ForEach((keyInfo) => handler.ReadAsync(keyInfo).Wait());
 
             // Assert
             handler.CurrentInput.Should().Be("Hell");
 
             // Act
             new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach((keyInfo) => handler.Read(keyInfo));
+                .ForEach((keyInfo) => handler.ReadAsync(keyInfo).Wait());
 
             // Assert
             handler.CurrentInput.Should().Be("Hel");
         }
 
         [Fact]
-        public void TestCtrlBackspace()
+        public async Task TestCtrlBackspace()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlBackspace);
+            await handler.ReadAsync(CtrlBackspace);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello ");
         }
 
         [Fact]
-        public void TestCtrlBackspaceMultiple()
+        public async Task TestCtrlBackspaceMultiple()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlBackspace, CtrlBackspace, CtrlBackspace, CtrlBackspace);
+            await handler.ReadAsync(CtrlBackspace, CtrlBackspace, CtrlBackspace, CtrlBackspace);
 
             // Assert
             handler.CurrentInput.Should().BeEmpty();
         }
 
         [Fact]
-        public void TestCtrlDelete()
+        public async Task TestCtrlDelete()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World  Test");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete);
+            await handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello Test");
         }
 
         [Fact]
-        public void TestCtrlDeleteMultiple()
+        public async Task TestCtrlDeleteMultiple()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World  Test".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World  Test");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete, CtrlDelete, CtrlDelete);
+            await handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlDelete, CtrlDelete, CtrlDelete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello ");
         }
 
         [Fact]
-        public void TestDelete_EndOfLine()
+        public async Task TestDelete_EndOfLine()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            handler.Read(Delete);
+            await handler.ReadAsync(Delete);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello");
         }
 
         [Fact]
-        public void TestHome()
+        public async Task TestHome()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, 'S'.ToConsoleKeyInfo() };
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("SHello");
         }
 
         [Fact]
-        public void TestEnd()
+        public async Task TestEnd()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, End, ExclamationPoint };
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello!");
         }
 
         [Fact]
-        public void TestLeftArrow()
+        public async Task TestLeftArrow()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            handler.Read(LeftArrow, LeftArrow);
+            await handler.ReadAsync(LeftArrow, LeftArrow);
 
             ConsoleKeyInfo[] input = " N".Select(c => c.ToConsoleKeyInfo())
                                          .ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hel Nlo");
         }
 
         [Fact]
-        public void TestRightArrow()
+        public async Task TestRightArrow()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, LeftArrow, RightArrow, ExclamationPoint };
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hell!o");
         }
 
         [Fact]
-        public void TestCtrlLeftArrow()
+        public async Task TestCtrlLeftArrow()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlLeftArrow);
+            await handler.ReadAsync(CtrlLeftArrow);
 
             input = " N".Select(c => c.ToConsoleKeyInfo())
                         .ToArray();
 
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello  NWorld");
         }
 
         [Fact]
-        public void TestCtrlRightArrow()
+        public async Task TestCtrlRightArrow()
         {
             // Arrange
-            LineInputHandler handler = GetKeyHandlerInstance();
+            LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
             ConsoleKeyInfo[] input = " World".Select(c => c.ToConsoleKeyInfo()).ToArray();
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello World");
 
             // Act
-            handler.Read(CtrlLeftArrow, CtrlLeftArrow, CtrlRightArrow);
+            await handler.ReadAsync(CtrlLeftArrow, CtrlLeftArrow, CtrlRightArrow);
 
             input = " N".Select(c => c.ToConsoleKeyInfo())
                         .ToArray();
 
-            handler.Read(input);
+            await handler.ReadAsync(input);
 
             // Assert
             handler.CurrentInput.Should().Be("Hello  NWorld");

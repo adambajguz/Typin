@@ -58,72 +58,66 @@
                 //await executor.ExecuteCommand(commandLineArguments);
             }
 
-            await RunInteractivelyAsync(executor);
+            string[]? interactiveArguments = await GetInputAsync(_console, _metadata.ExecutableName);
 
-            return ExitCodes.Success;
-        }
-
-        private async Task RunInteractivelyAsync(ICliCommandExecutor executor)
-        {
-            string[]? commandLineArguments = GetInput(_console, _metadata.ExecutableName);
-
-            if (commandLineArguments is null)
+            if (interactiveArguments is null)
             {
                 _console.ResetColor();
-                return;
+                return ExitCodes.Success;
             }
 
-            await executor.ExecuteCommand(commandLineArguments);
+            await executor.ExecuteCommandAsync(interactiveArguments);
             _console.ResetColor();
+
+            return ExitCodes.Success;
         }
 
         /// <summary>
         /// Gets user input and returns arguments or null if cancelled.
         /// </summary>
-        private string[]? GetInput(IConsole console, string executableName)
+        private async Task<string[]?> GetInputAsync(IConsole console, string executableName)
         {
-            string[] arguments;
+            string[]? arguments = null;
             string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
 
-            do
+            ConsoleColor promptForeground = Options.PromptForeground;
+            ConsoleColor commandForeground = Options.CommandForeground;
+
+            // Print prompt
+            console.WithForegroundColor(promptForeground, () =>
             {
-                ConsoleColor promptForeground = Options.PromptForeground;
-                ConsoleColor commandForeground = Options.CommandForeground;
+                console.Output.Write(executableName);
+            });
 
-                // Print prompt
-                console.WithForegroundColor(promptForeground, () =>
+            string scope = Options.Scope;
+
+            if (!string.IsNullOrWhiteSpace(scope))
+            {
+                console.WithForegroundColor(ConsoleColor.Cyan, () =>
                 {
-                    console.Output.Write(executableName);
+                    console.Output.Write(' ');
+                    console.Output.Write(scope);
                 });
+            }
 
-                string scope = string.Empty;//CliContext.Scope;
+            console.WithForegroundColor(promptForeground, () =>
+            {
+                console.Output.Write("> ");
+            });
 
-                if (!string.IsNullOrWhiteSpace(scope))
-                {
-                    console.WithForegroundColor(ConsoleColor.Cyan, () =>
-                    {
-                        console.Output.Write(' ');
-                        console.Output.Write(scope);
-                    });
-                }
+            // Read user input
+            ConsoleColor lastColor = console.ForegroundColor;
+            console.ForegroundColor = commandForeground;
 
-                console.WithForegroundColor(promptForeground, () =>
-                {
-                    console.Output.Write("> ");
-                });
+            if (_autoCompleteInput is null)
+                line = await console.Input.ReadLineAsync();
+            else
+                line = await _autoCompleteInput.ReadLineAsync();
 
-                // Read user input
-                console.WithForegroundColor(commandForeground, () =>
-                {
-                    if (_autoCompleteInput is null)
-                        line = console.Input.ReadLine();
-                    else
-                        line = _autoCompleteInput.ReadLine();
-                });
+            console.ForegroundColor = lastColor;
 
-                if (line is null)
-                    return null;
-
+            if (!string.IsNullOrWhiteSpace(line))
+            {
                 if (string.IsNullOrWhiteSpace(scope)) // handle unscoped command input
                 {
                     arguments = CommandLineSplitter.Split(line)
@@ -141,8 +135,7 @@
 
                     arguments = tmp.ToArray();
                 }
-
-            } while (string.IsNullOrWhiteSpace(line)); // retry on empty line
+            }
 
             console.ForegroundColor = ConsoleColor.Gray;
 

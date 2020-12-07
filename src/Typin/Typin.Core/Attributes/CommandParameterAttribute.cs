@@ -17,7 +17,7 @@
 
         /// <summary>
         /// Parameter name, which is only used in help text.
-        /// If this isn't specified, property name is used instead.
+        /// If this isn't specified, hypenated property name is used instead.
         /// </summary>
         public string? Name { get; set; }
 

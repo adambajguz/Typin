@@ -24,6 +24,25 @@
         }
 
         [Fact]
+        public async Task Invalid_directive_type_should_throw_error()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddDirective(typeof(NamedCommand));
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().Contain("not a valid directive type.");
+        }
+
+        [Fact]
         public async Task Direct_mode_application_cannot_process_interactive_directive()
         {
             // Arrange
@@ -41,9 +60,6 @@
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Unknown directive '[interactive]'.");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -64,8 +80,6 @@
             stdOut.GetString().Should().ContainAll(
                 "named", "<param>", "[-a]", "[-b]", "[-c]", "[--option \"foo\"]"
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -150,8 +164,6 @@
             stdOut.GetString().Should().ContainAll(
                 CustomDirective.ExpectedOutput, NamedCommand.ExpectedOutputText
             );
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -198,8 +210,6 @@
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
             stdErr.GetString().Should().Contain($"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' contains an invalid mode in SupportedModes parameter.");
-
-            _output.WriteLine(stdOut.GetString());
         }
 
         [Fact]
@@ -228,8 +238,6 @@
             stdErr.GetString().Should().ContainEquivalentOf(
                 "Typin.Exceptions.DirectiveException: Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
             );
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -253,9 +261,6 @@
             exitCode.Should().Be(CustomThrowableDirectiveWithMessage.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirectiveWithMessage.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessage.ExpectedExceptionMessage);
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -286,9 +291,6 @@
             stdOut.GetString().Should().ContainAll(
                 "  [custom-throwable-with-message-and-show-help]", "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -314,9 +316,6 @@
             exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithInnerException.ExpectedExceptionMessage);
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -354,9 +353,6 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -375,9 +371,6 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
 
@@ -399,9 +392,6 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("[preview]");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -423,9 +413,6 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("[  ]");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -444,9 +431,6 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Unknown directive '[preview]'.");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -469,9 +453,6 @@
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().ContainAll($"This application is running in '{typeof(DirectMode).FullName}' mode.",
                                                    $"directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' can be executed only from the following modes");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         //[Fact]
@@ -505,7 +486,6 @@
         //    stdErr.GetString().Should().NotContainAll(
         //        "Directive", "[custom-interactive]", "is for interactive mode only."
         //    );
-        //    _output.WriteLine(stdOut.GetString());
         //}
     }
 }

@@ -53,7 +53,7 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName(); //TODO: fix scope directives hadnling by interactive mode
+            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
 
             if (name != null)
             {

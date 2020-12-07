@@ -34,9 +34,6 @@
                 "ErrorTest", "at",
                 "Typin.Tests"
             );
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
 
@@ -59,9 +56,6 @@
                 "ErrorTest", "at",
                 "Typin.Tests"
             );
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Theory]
@@ -90,9 +84,6 @@
             exitCode.Should().Be(errorCode);
             stdOut.GetString().Should().BeEmpty();
             stdErr.GetString().Trim().Should().Be("ErrorTest");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -113,9 +104,6 @@
                 "at",
                 "Typin.Tests"
             );
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -136,9 +124,6 @@
                 "-h|--help"
             );
             stdErr.GetString().Trim().Should().Be("ErrorTest");
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
 
         [Fact]
@@ -159,9 +144,6 @@
                 "-h|--help"
             );
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-
-            _output.WriteLine(stdOut.GetString());
-            _output.WriteLine(stdErr.GetString());
         }
     }
 }
