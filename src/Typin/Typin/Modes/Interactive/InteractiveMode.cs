@@ -53,7 +53,7 @@
         /// <inheritdoc/>
         public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode))
+            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Count > 0)
             {
                 await executor.ExecuteCommandAsync(commandLineArguments);
             }
