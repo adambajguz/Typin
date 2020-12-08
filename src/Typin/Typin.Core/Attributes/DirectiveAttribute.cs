@@ -22,9 +22,15 @@
 
         /// <summary>
         /// List of CLI mode types, in which the directive can be executed.
-        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// If null (default) or empty, directive can be executed in every registered mode in the app.
         /// </summary>
         public Type[]? SupportedModes { get; set; }
+
+        /// <summary>
+        /// List of CLI mode types, in which the directive cannot be executed.
+        /// If null (default) or empty, directive can be executed in every registered mode in the app.
+        /// </summary>
+        public Type[]? ExcludedModes { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandAttribute"/>.

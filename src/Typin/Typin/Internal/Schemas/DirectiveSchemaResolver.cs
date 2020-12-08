@@ -23,14 +23,25 @@
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
 
-            if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
-                throw DirectiveResolverExceptions.InvalidSupportedModesInDirective(type);
+            if (modeTypes != null)
+            {
+                if (attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
+                {
+                    throw DirectiveResolverExceptions.InvalidSupportedModesInDirective(type, attribute);
+                }
+
+                if (attribute.ExcludedModes != null && attribute.ExcludedModes.Except(modeTypes).Any())
+                {
+                    throw DirectiveResolverExceptions.InvalidExcludedModesInDirective(type, attribute);
+                }
+            }
 
             return new DirectiveSchema(
                 type,
                 attribute.Name,
                 attribute.Description,
-                attribute.SupportedModes
+                attribute.SupportedModes,
+                attribute.ExcludedModes
             );
         }
     }

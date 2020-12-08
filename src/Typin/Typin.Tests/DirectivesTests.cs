@@ -209,7 +209,7 @@
             stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
             );
-            stdErr.GetString().Should().Contain($"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' contains an invalid mode in SupportedModes parameter.");
+            stdErr.GetString().Should().Contain($"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' contains invalid supported mode(s)");
         }
 
         [Fact]

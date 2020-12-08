@@ -28,10 +28,16 @@
         public string? Description { get; }
 
         /// <summary>
-        /// List of CLI mode types, in which the command can be executed.
-        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// List of CLI mode types, in which the directive can be executed.
+        /// If null (default) or empty, directive can be executed in every registered mode in the app.
         /// </summary>
         public IReadOnlyCollection<Type>? SupportedModes { get; }
+
+        /// <summary>
+        /// List of CLI mode types, in which the directive cannot be executed.
+        /// If null (default) or empty, directive can be executed in every registered mode in the app.
+        /// </summary>
+        public IReadOnlyCollection<Type>? ExcludedModes { get; }
 
         /// <summary>
         /// Whether directive is pipelined directive.
@@ -44,12 +50,14 @@
         public DirectiveSchema(Type type,
                                string name,
                                string? description,
-                               Type[]? supportedModes)
+                               Type[]? supportedModes,
+                               Type[]? excludedModes)
         {
             Type = type;
             Name = name;
             Description = description;
             SupportedModes = supportedModes?.ToHashSet();
+            ExcludedModes = excludedModes?.ToHashSet();
             IsPipelinedDirective = typeof(IPipelinedDirective).IsAssignableFrom(type);
         }
 
@@ -67,10 +75,10 @@
         /// </summary>
         public bool CanBeExecutedInMode(Type type)
         {
-            if ((SupportedModes?.Count ?? 0) == 0)
+            if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
                 return true;
 
-            return SupportedModes!.Contains(type);
+            return SupportedModes!.Contains(type) && !ExcludedModes!.Contains(type);
         }
 
         /// <inheritdoc/>

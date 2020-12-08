@@ -121,7 +121,7 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains an invalid mode in SupportedModes parameter.");
+            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains invalid supported mode(s)");
         }
 
         [Fact]

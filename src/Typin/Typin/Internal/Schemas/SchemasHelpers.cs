@@ -22,5 +22,12 @@
                    !type.IsAbstract &&
                    !type.IsInterface;
         }
+
+        public static bool IsCliModeType(Type type)
+        {
+            return type.Implements(typeof(ICliMode)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
     }
 }

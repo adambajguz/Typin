@@ -46,6 +46,12 @@
         public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
+        /// List of CLI mode types, in which the command cannot be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// </summary>
+        public IReadOnlyCollection<Type>? ExcludedModes { get; }
+
+        /// <summary>
         /// List of ordered parameters.
         /// </summary>
         public IReadOnlyList<CommandParameterSchema> Parameters { get; }
@@ -73,6 +79,7 @@
                              string? description,
                              string? manual,
                              Type[]? supportedModes,
+                             Type[]? excludedModes,
                              IReadOnlyList<CommandParameterSchema> parameters,
                              IReadOnlyList<CommandOptionSchema> options)
         {
@@ -81,6 +88,7 @@
             Description = description;
             Manual = manual;
             SupportedModes = supportedModes?.ToHashSet();
+            ExcludedModes = excludedModes?.ToHashSet();
             Parameters = parameters;
             Options = options;
         }
@@ -99,10 +107,10 @@
         /// </summary>
         public bool CanBeExecutedInMode(Type type)
         {
-            if ((SupportedModes?.Count ?? 0) == 0)
+            if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
                 return true;
 
-            return SupportedModes!.Contains(type);
+            return SupportedModes!.Contains(type) && !ExcludedModes!.Contains(type);
         }
 
         /// <summary>
