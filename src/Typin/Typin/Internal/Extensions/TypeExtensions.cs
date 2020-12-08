@@ -8,11 +8,6 @@
 
     internal static class TypeExtensions
     {
-        public static bool Implements(this Type type, Type interfaceType)
-        {
-            return type.GetInterfaces().Contains(interfaceType);
-        }
-
         public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
         {
             return property != null && property.PropertyType != typeof(string)

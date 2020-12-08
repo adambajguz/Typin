@@ -29,11 +29,27 @@
         {
             var builder = new StringBuilder();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
-            builder.AppendLine($"However, command '{command.Type.FullName}' can be executed only from the following modes:");
 
-            foreach (Type mode in command.SupportedModes!)
+            if (command.SupportedModes != null)
             {
-                builder.AppendLine($"  - '{mode.FullName}'");
+                builder.AppendLine();
+                builder.AppendLine($"Command '{command.Type.FullName}' supports modes:");
+
+                foreach (Type mode in command.SupportedModes!)
+                {
+                    builder.AppendLine($"  - '{mode.FullName}'");
+                }
+            }
+
+            if (command.ExcludedModes != null)
+            {
+                builder.AppendLine();
+                builder.AppendLine($"Command '{command.Type.FullName}' cannot run in modes:");
+
+                foreach (Type mode in command.ExcludedModes!)
+                {
+                    builder.AppendLine($"  - '{mode.FullName}'");
+                }
             }
 
             return new TypinException(builder.ToString());

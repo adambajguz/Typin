@@ -1,5 +1,6 @@
 ﻿namespace Typin.Core.Internal.Exceptions
 {
+    using System;
     using Typin.Exceptions;
 
     /// <summary>
@@ -7,6 +8,18 @@
     /// </summary>
     internal static class AttributesExceptions
     {
+        public static TypinException InvalidModeType(Type type)
+        {
+            string message = $@"
+CLI mode '{type.FullName}' is not a valid CLI mode type.
+
+In order to be a valid CLI mode type, it must:
+- Not be an abstract class
+- Implement {typeof(ICliMode).FullName}.";
+
+            return new TypinException(message.Trim());
+        }
+
         public static TypinException DirectiveNameIsInvalid(string name)
         {
             string message = $@"

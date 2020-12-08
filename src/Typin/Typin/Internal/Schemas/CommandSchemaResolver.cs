@@ -18,7 +18,7 @@
         /// </summary>
         public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
         {
-            if (!SchemasHelpers.IsCommandType(type))
+            if (!KnownTypesHelpers.IsCommandType(type))
                 throw CommandResolverExceptions.InvalidCommandType(type);
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;

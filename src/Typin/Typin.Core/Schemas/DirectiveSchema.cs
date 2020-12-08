@@ -5,6 +5,8 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
+    using Typin.Core.Internal.Exceptions;
+    using Typin.Internal.Schemas;
 
     /// <summary>
     /// Stores directive schema.
@@ -75,10 +77,19 @@
         /// </summary>
         public bool CanBeExecutedInMode(Type type)
         {
+            if (!KnownTypesHelpers.IsCliModeType(type))
+                throw AttributesExceptions.InvalidModeType(type);
+
             if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
                 return true;
 
-            return SupportedModes!.Contains(type) && !ExcludedModes!.Contains(type);
+            if (SupportedModes != null && !SupportedModes!.Contains(type))
+                return false;
+
+            if (ExcludedModes != null && ExcludedModes!.Contains(type))
+                return false;
+
+            return true;
         }
 
         /// <inheritdoc/>

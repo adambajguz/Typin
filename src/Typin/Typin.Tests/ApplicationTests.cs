@@ -125,6 +125,23 @@
         }
 
         [Fact]
+        public async Task Application_with_direct_mode_cannot_execute_direct_mode_excluded_commands()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                     .AddCommand<NamedDirectExcludedCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-direct-excluded-only" }, isInputRedirected: false);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().ContainAll($"Command '{typeof(NamedDirectExcludedCommand).FullName}' cannot run in modes");
+        }
+
+        [Fact]
         public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands_even_if_supports_interactive_mode_but_is_not_started()
         {
             // Arrange

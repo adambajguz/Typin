@@ -5,8 +5,14 @@
     using Typin.Attributes;
     using Typin.Internal.Extensions;
 
-    internal static class SchemasHelpers
+    /// <summary>
+    /// Known types helpers.
+    /// </summary>
+    public static class KnownTypesHelpers
     {
+        /// <summary>
+        /// Checks whether type is a valid directive.
+        /// </summary>
         public static bool IsDirectiveType(Type type)
         {
             return type.Implements(typeof(IDirective)) &&
@@ -15,6 +21,9 @@
                    !type.IsInterface;
         }
 
+        /// <summary>
+        /// Checks whether type is a valid command.
+        /// </summary>
         public static bool IsCommandType(Type type)
         {
             return type.Implements(typeof(ICommand)) &&
@@ -23,6 +32,9 @@
                    !type.IsInterface;
         }
 
+        /// <summary>
+        /// Checks whether type is a valid CLI mode.
+        /// </summary>
         public static bool IsCliModeType(Type type)
         {
             return type.Implements(typeof(ICliMode)) &&
