@@ -7,7 +7,7 @@
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
 - Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
-- Replaced `IsInteractiveModeOnly` with `SupportedModes`.
+- Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
 - Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.

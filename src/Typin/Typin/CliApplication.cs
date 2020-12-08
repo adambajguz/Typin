@@ -202,7 +202,7 @@
                 ICliMode? currentMode = _applicationLifetime.CurrentMode;
 
                 if (currentMode != null)
-                    exitCode = await currentMode.Execute(commandLineArguments, _cliCommandExecutor);
+                    exitCode = await currentMode.ExecuteAsync(commandLineArguments, _cliCommandExecutor);
 
                 _applicationLifetime.TrySwitchModes();
                 _applicationLifetime.TryStop();

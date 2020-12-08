@@ -5,9 +5,9 @@
     using Typin.AutoCompletion;
 
     /// <summary>
-    /// Interactive mode configuration.
+    /// Interactive mode options.
     /// </summary>
-    public class InteractiveModeSettings
+    public class InteractiveModeOptions
     {
         /// <summary>
         /// Prompt foreground color.
@@ -29,7 +29,7 @@
         /// <summary>
         /// User defined shortcuts.
         /// </summary>
-        public HashSet<ShortcutDefinition> UserDefinedShortcut { get; set; } = new HashSet<ShortcutDefinition>();
+        public HashSet<ShortcutDefinition> UserDefinedShortcuts { get; set; } = new HashSet<ShortcutDefinition>();
 
         /// <summary>
         /// Whether advanced input is available.
