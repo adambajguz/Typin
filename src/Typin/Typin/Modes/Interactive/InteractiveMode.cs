@@ -19,18 +19,23 @@
         private readonly InteractiveModeOptions _options;
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
+        private readonly ApplicationConfiguration _configuration;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
-        public InteractiveMode(IOptions<InteractiveModeOptions> options, IConsole console, ApplicationMetadata metadata)
+        public InteractiveMode(IOptions<InteractiveModeOptions> options,
+                               IConsole console,
+                               ApplicationMetadata metadata,
+                               ApplicationConfiguration configuration)
         {
             _options = options.Value;
 
             _console = console;
             _metadata = metadata;
+            _configuration = configuration;
 
             //TODO: fix advanced mode
             if (_options.IsAdvancedInputAvailable && !console.Input.IsRedirected)
@@ -48,10 +53,9 @@
         /// <inheritdoc/>
         public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            //TODO: fix advanced mode execution
-            if (firstEnter)
+            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode))
             {
-                //await executor.ExecuteCommand(commandLineArguments);
+                await executor.ExecuteCommandAsync(commandLineArguments);
             }
 
             string[]? interactiveArguments = await GetInputAsync(_console, _metadata.ExecutableName);
