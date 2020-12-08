@@ -46,7 +46,7 @@
         public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
-        /// List of parameters.
+        /// List of ordered parameters.
         /// </summary>
         public IReadOnlyList<CommandParameterSchema> Parameters { get; }
 

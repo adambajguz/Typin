@@ -14,7 +14,7 @@
 - User middlewares are now executed after command instance creation.
 - Middleware types collection in `ApplicationConfiguration` order was reversed.
 - Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
-- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `ExecuteCommand`).
+- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `BindInputAndExecuteCommand`).
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.

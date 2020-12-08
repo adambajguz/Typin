@@ -35,6 +35,7 @@
             CommandParameterSchema?[] parameters = type.GetProperties()
                                                        .Select(CommandParameterSchemaResolver.TryResolve)
                                                        .Where(p => p != null)
+                                                       .OrderBy(p => p!.Order)
                                                        .ToArray();
 
             CommandOptionSchema?[] options = type.GetProperties()
