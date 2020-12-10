@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Tests.Data.Commands.Invalid;
+    using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
@@ -14,6 +15,22 @@
         public OptionResolverTests(ITestOutputHelper output)
         {
             _output = output;
+        }
+
+        [Fact]
+        public async Task Option_alias_should_not_be_available_when_two_dashes_are_specified()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithRequiredOptionsCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd --a a --c c z \n \b a");
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]

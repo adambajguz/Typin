@@ -1,7 +1,6 @@
 ﻿namespace Typin.Utilities
 {
     using System;
-    using System.Text;
     using System.Text.RegularExpressions;
 
     /// <summary>

@@ -1,11 +1,13 @@
 ﻿namespace Typin.Console.IO
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
 
     /// <summary>
     /// <see cref="StreamWriter"/> wrapper.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class StandardStreamWriter : StreamWriter, IStandardRedirectableConsoleStream
     {
         /// <summary>

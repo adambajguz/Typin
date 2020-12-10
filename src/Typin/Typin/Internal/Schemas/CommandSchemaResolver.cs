@@ -18,13 +18,24 @@
         /// </summary>
         public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
         {
-            if (!SchemasHelpers.IsCommandType(type))
+            if (!KnownTypesHelpers.IsCommandType(type))
                 throw CommandResolverExceptions.InvalidCommandType(type);
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
-            if (modeTypes != null && attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
-                throw CommandResolverExceptions.InvalidSupportedModesInCommand(type);
+            if (modeTypes != null)
+            {
+                if (attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
+                {
+                    throw CommandResolverExceptions.InvalidSupportedModesInCommand(type, attribute);
+                }
+
+                if (attribute.ExcludedModes != null && attribute.ExcludedModes.Except(modeTypes).Any())
+                {
+                    throw CommandResolverExceptions.InvalidExcludedModesInCommand(type, attribute);
+                }
+            }
+
 
             string? name = attribute.Name;
 
@@ -35,6 +46,7 @@
             CommandParameterSchema?[] parameters = type.GetProperties()
                                                        .Select(CommandParameterSchemaResolver.TryResolve)
                                                        .Where(p => p != null)
+                                                       .OrderBy(p => p!.Order)
                                                        .ToArray();
 
             CommandOptionSchema?[] options = type.GetProperties()
@@ -49,6 +61,7 @@
                 attribute.Description,
                 attribute.Manual,
                 attribute.SupportedModes,
+                attribute.ExcludedModes,
                 parameters!,
                 options!
             );

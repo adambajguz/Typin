@@ -1,9 +1,10 @@
-﻿namespace Typin.Directives
+﻿namespace Typin.Commands
 {
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Console;
+    using Typin.Directives;
     using Typin.Modes;
 
     /// <summary>
@@ -13,32 +14,26 @@
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.Interactive, Description = "Executs a command, then starts an interactive mode.",
-               ExcludedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class InteractiveDirective : IPipelinedDirective
+    [Command(BuiltInDirectives.Interactive, Description = "Starts an interactive mode.",
+             ExcludedModes = new[] { typeof(InteractiveMode) })]
+    public sealed class InteractiveCommand : ICommand
     {
         private readonly ICliApplicationLifetime _applicationLifetime;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveDirective"/>.
         /// </summary>
-        public InteractiveDirective(ICliApplicationLifetime cliContext)
+        public InteractiveCommand(ICliApplicationLifetime applicationLifetime)
         {
-            _applicationLifetime = cliContext;
+            _applicationLifetime = applicationLifetime;
         }
 
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
-        {
-            return default;
-        }
-
-        /// <inheritdoc/>
-        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public ValueTask ExecuteAsync(IConsole console)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
 
-            await next();
+            return default;
         }
     }
 }

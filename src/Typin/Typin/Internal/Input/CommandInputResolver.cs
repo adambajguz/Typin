@@ -142,7 +142,7 @@
                     if (!string.IsNullOrWhiteSpace(currentOptionAlias))
                         result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
 
-                    currentOptionAlias = argument.Substring(2); // TODO: --h is treated as -h because there is no distinction between - and -- in parser. What if we have --a and -a in command?
+                    currentOptionAlias = argument.Substring(2);
                     currentOptionValues = new List<string>();
                 }
                 // Short name

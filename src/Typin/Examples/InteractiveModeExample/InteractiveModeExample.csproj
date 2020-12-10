@@ -16,13 +16,4 @@
     <ProjectReference Include="..\..\Typin\Typin.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="commands.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="input-redirection.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

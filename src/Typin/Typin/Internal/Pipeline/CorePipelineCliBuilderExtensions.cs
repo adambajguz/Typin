@@ -13,7 +13,7 @@
         {
             return builder.UseMiddleware<HandleSpecialOptions>()
                           .UseMiddleware<ExecuteDirectivesSubpipeline>()
-                          .UseMiddleware<ExecuteCommand>();
+                          .UseMiddleware<BindInputAndExecuteCommand>();
         }
     }
 }

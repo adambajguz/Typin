@@ -2,6 +2,7 @@
 {
     using System;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin.Commands;
     using Typin.Directives;
 
     /// <summary>
@@ -15,17 +16,27 @@
         ///
         /// If you wish to add only [default] directive, set addScopeDirectives to false.
         /// </summary>
-        public static CliApplicationBuilder UseInteractiveMode(this CliApplicationBuilder builder, bool asStartup = false, Action<InteractiveModeSettings>? configuration = null, bool addScopeDirectives = true)
+        public static CliApplicationBuilder UseInteractiveMode(this CliApplicationBuilder builder,
+                                                               bool asStartup = false,
+                                                               Action<InteractiveModeOptions>? options = null,
+                                                               InteractiveModeBuilderSettings? builderSettings = null)
         {
+            builderSettings ??= new InteractiveModeBuilderSettings();
+
             builder.RegisterMode<InteractiveMode>(asStartup);
 
-            configuration ??= (InteractiveModeSettings cfg) => { };
-            builder.ConfigureServices((IServiceCollection sc) => sc.Configure(configuration));
+            options ??= (InteractiveModeOptions cfg) => { };
+            builder.ConfigureServices((IServiceCollection sc) => sc.Configure(options));
 
-            builder.AddDirective<InteractiveDirective>();
             builder.AddDirective<DefaultDirective>();
 
-            if (addScopeDirectives)
+            if (builderSettings.AddInteractiveCommand)
+                builder.AddCommand<InteractiveCommand>();
+
+            if (builderSettings.AddInteractiveDirective)
+                builder.AddDirective<InteractiveDirective>();
+
+            if (builderSettings.AddScopeDirectives)
             {
                 builder.AddDirective<ScopeDirective>();
                 builder.AddDirective<ScopeResetDirective>();

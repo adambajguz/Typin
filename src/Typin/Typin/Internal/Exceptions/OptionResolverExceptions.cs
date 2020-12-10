@@ -17,8 +17,7 @@
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same name ('{name}'):
 {invalidOptions.JoinToString(Environment.NewLine)}
 
-Options must have unique names.
-Names are not case-sensitive.";
+Options must have unique names (names are case-insensitive).";
 
             return new TypinException(message.Trim());
         }
@@ -29,8 +28,7 @@ Names are not case-sensitive.";
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same short name ('{shortName}'):
 {invalidOptions.JoinToString(Environment.NewLine)}
 
-Options must have unique short names.
-Short names are case-sensitive (i.e. 'a' and 'A' are different short names).";
+Options must have unique short names. Short names are case-sensitive (i.e. 'a' and 'A' are different short names).";
 
             return new TypinException(message.Trim());
         }
@@ -41,8 +39,7 @@ Short names are case-sensitive (i.e. 'a' and 'A' are different short names).";
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same fallback environment variable name ('{environmentVariableName}'):
 {invalidOptions.JoinToString(Environment.NewLine)}
 
-Options cannot share the same environment variable as a fallback.
-Environment variable names are not case-sensitive.";
+Options cannot share the same environment variable as a fallback (environment variable names are case-insensitive).";
 
             return new TypinException(message.Trim());
         }

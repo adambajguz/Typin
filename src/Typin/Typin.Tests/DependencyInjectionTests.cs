@@ -5,6 +5,14 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Debug;
+    using Typin.Exceptions;
+    using Typin.HelpWriter;
+    using Typin.Internal;
+    using Typin.Internal.Pipeline;
+    using Typin.Modes;
+    using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.Services;
     using Typin.Tests.Extensions;
@@ -141,6 +149,53 @@
 
             guids.Should().HaveCount(3);
             depGuid.Should().NotBe(guids[1]);
+        }
+
+        [Fact]
+        public async Task Services_property_in_configuration_should_contain_registered_services()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<ServicesCommand>()
+                .ConfigureServices(services =>
+                {
+                    services.AddTransient<DependencyA>();
+                    services.AddTransient<DependencyB>();
+                    services.AddTransient<DependencyC>();
+                }); ;
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "services");
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+
+            stdOut.GetString().Should().ContainAll(ServiceLifetime.Scoped.ToString(),
+                                                   ServiceLifetime.Singleton.ToString(),
+                                                   ServiceLifetime.Transient.ToString(),
+                                                   nameof(ServicesCommand),
+                                                   nameof(DependencyA),
+                                                   nameof(DependencyB),
+                                                   nameof(DependencyC),
+                                                   nameof(ApplicationConfiguration),
+                                                   nameof(ApplicationMetadata),
+                                                   nameof(DirectMode),
+                                                   nameof(CliApplicationLifetime),
+                                                   nameof(CliCommandExecutor),
+                                                   nameof(LoggerFactory),
+                                                   nameof(DebugLoggerProvider),
+                                                   nameof(EnvironmentVariableFallbackProvider),
+                                                   nameof(BindInputAndExecuteCommand),
+                                                   nameof(ExecuteDirectivesSubpipeline),
+                                                   nameof(HandleSpecialOptions),
+                                                   nameof(DefaultExceptionHandler),
+                                                   nameof(DefaultHelpWriter),
+                                                   nameof(ResolveCommandInstance),
+                                                   nameof(ResolveCommandSchema),
+                                                   nameof(InitializeDirectives));
+
+            stdOut.GetString().Should().NotContainAll("-h", "--help");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }

@@ -130,21 +130,21 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message);
         }
 
-        public static TypinException RequiredOptionsNotSet(IReadOnlyList<CommandOptionSchema> options)
+        public static TypinException RequiredOptionsNotSet(IEnumerable<CommandOptionSchema> options)
         {
             string message = $@"Missing values for one or more required options: {options.Select(o => o).JoinToString(Environment.NewLine)}";
 
             return new TypinException(message);
         }
 
-        public static TypinException UnrecognizedParametersProvided(IReadOnlyList<CommandParameterInput> parameterInputs)
+        public static TypinException UnrecognizedParametersProvided(IEnumerable<CommandParameterInput> parameterInputs)
         {
             string message = $@"Unrecognized parameters provided: {parameterInputs.Select(p => p.Value).JoinToString(Environment.NewLine)}";
 
             return new TypinException(message);
         }
 
-        public static TypinException UnrecognizedOptionsProvided(IReadOnlyList<CommandOptionInput> optionInputs)
+        public static TypinException UnrecognizedOptionsProvided(IEnumerable<CommandOptionInput> optionInputs)
         {
             string message = $@"Unrecognized options provided: {optionInputs.Select(o => o.GetRawAlias()).JoinToString(Environment.NewLine)}";
 

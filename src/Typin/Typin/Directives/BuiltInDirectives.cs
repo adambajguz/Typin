@@ -27,7 +27,7 @@
 
         /// <summary>
         /// Normally when application runs in interactive mode, an empty line does nothing; but [!] will override this behavior, executing a root or scoped command.
-        /// This directive will also force default command execution when input contains default command parameter values equal to command/subcommand name.
+        /// This directive will also force default command execution when input contains default commmand parameter values equal to command/subcommand name.
         /// </summary>
         public const string Default = "!";
 
