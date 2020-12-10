@@ -11,55 +11,60 @@
 
     internal static class CommandBinder
     {
+        /// <summary>
+        /// Binds parameter inputs in command instance.
+        /// </summary>
         public static void BindParameters(this CommandSchema commandSchema, ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
         {
             IReadOnlyList<CommandParameterSchema> parameters = commandSchema.Parameters;
 
             // All inputs must be bound
-            List<CommandParameterInput> remainingParameterInputs = parameterInputs.ToList();
+            int remainingParameters = parameters.Count;
+            int remainingInputs = parameterInputs.Count;
+
+            if (parameters.Count > remainingParameters)
+                throw ArgumentBindingExceptions.ParameterNotSet(parameters[remainingParameters - 1]);
 
             // Scalar parameters
-            CommandParameterSchema[] scalarParameters = parameters.OrderBy(p => p.Order)
-                                                                                .TakeWhile(p => p.IsScalar)
-                                                                                .ToArray();
-
-            for (int i = 0; i < scalarParameters.Length; i++)
+            int i = 0;
+            for (; i < parameters.Count && parameters[i].IsScalar; ++i)
             {
-                CommandParameterSchema parameter = scalarParameters[i];
-
-                CommandParameterInput scalarInput = i < parameterInputs.Count
-                                                        ? parameterInputs[i]
-                                                        : throw ArgumentBindingExceptions.ParameterNotSet(parameter);
+                CommandParameterSchema parameter = parameters[i];
+                CommandParameterInput scalarInput = parameterInputs[i];
 
                 parameter.BindOn(instance, scalarInput.Value);
-                remainingParameterInputs.Remove(scalarInput);
+
+                --remainingParameters;
+                --remainingInputs;
             }
 
             // Non-scalar parameter (only one is allowed)
-            CommandParameterSchema? nonScalarParameter = parameters.OrderBy(p => p.Order)
-                                                                   .FirstOrDefault(p => !p.IsScalar);
-
-            if (nonScalarParameter != null)
+            if (i < parameters.Count && !parameters[i].IsScalar)
             {
-                string[] nonScalarValues = parameterInputs.Skip(scalarParameters.Length)
+                CommandParameterSchema nonScalarParameter = parameters[i];
+
+                string[] nonScalarValues = parameterInputs.TakeLast(remainingInputs)
                                                           .Select(p => p.Value)
                                                           .ToArray();
 
-                // Parameters are required by default and so a non-scalar parameter must
-                // be bound to at least one value
+                // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
                 if (!nonScalarValues.Any())
                     throw ArgumentBindingExceptions.ParameterNotSet(nonScalarParameter);
 
                 nonScalarParameter.BindOn(instance, nonScalarValues);
-                remainingParameterInputs.Clear();
+                --remainingParameters;
+                remainingInputs = 0;
             }
 
             // Ensure all inputs were bound
-            if (remainingParameterInputs.Any())
-                throw ArgumentBindingExceptions.UnrecognizedParametersProvided(remainingParameterInputs);
+            if (remainingInputs > 0)
+                throw ArgumentBindingExceptions.UnrecognizedParametersProvided(parameterInputs.TakeLast(remainingParameters));
         }
 
-        private static void BindOptions(this CommandSchema commandSchema,
+        /// <summary>
+        /// Binds option inputs in command instance.
+        /// </summary>
+        public static void BindOptions(this CommandSchema commandSchema,
                                         ICommand instance,
                                         IReadOnlyList<CommandOptionInput> optionInputs,
                                         IOptionFallbackProvider optionFallbackProvider)
@@ -67,17 +72,16 @@
             IReadOnlyList<CommandOptionSchema> options = commandSchema.Options;
 
             // All inputs must be bound
-            List<CommandOptionInput> remainingOptionInputs = optionInputs.ToList();
+            HashSet<CommandOptionInput> remainingOptionInputs = optionInputs.ToHashSet();
 
             // All required options must be set
-            List<CommandOptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
-                                                                    .ToList();
+            HashSet<CommandOptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
+                                                                       .ToHashSet();
 
             // Direct or fallback input
             foreach (CommandOptionSchema option in options)
             {
-                CommandOptionInput[] inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias))
-                                                          .ToArray();
+                IEnumerable<CommandOptionInput> inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias));
 
                 bool inputsProvided = inputs.Any();
 
@@ -115,18 +119,6 @@
             // Ensure all required options were set
             if (unsetRequiredOptions.Any())
                 throw ArgumentBindingExceptions.RequiredOptionsNotSet(unsetRequiredOptions);
-        }
-
-        /// <summary>
-        /// Binds input in command instance.
-        /// </summary>
-        public static void Bind(this CommandSchema commandSchema,
-                                ICommand instance,
-                                CommandInput input,
-                                IOptionFallbackProvider optionFallbackProvider)
-        {
-            BindParameters(commandSchema, instance, input.Parameters);
-            BindOptions(commandSchema, instance, input.Options, optionFallbackProvider);
         }
     }
 }

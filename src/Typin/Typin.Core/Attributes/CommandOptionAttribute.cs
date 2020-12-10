@@ -1,8 +1,8 @@
 ﻿namespace Typin.Attributes
 {
     using System;
-    using Typin.Core.Internal.Exceptions;
     using Typin.Input;
+    using Typin.Internal.Exceptions;
 
     /// <summary>
     /// Annotates a property that defines a command option.

@@ -5,6 +5,8 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
+    using Typin.Internal.Exceptions;
+    using Typin.Internal.Schemas;
 
     /// <summary>
     /// Stores command schema.
@@ -46,7 +48,13 @@
         public IReadOnlyCollection<Type>? SupportedModes { get; }
 
         /// <summary>
-        /// List of parameters.
+        /// List of CLI mode types, in which the command cannot be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// </summary>
+        public IReadOnlyCollection<Type>? ExcludedModes { get; }
+
+        /// <summary>
+        /// List of ordered parameters.
         /// </summary>
         public IReadOnlyList<CommandParameterSchema> Parameters { get; }
 
@@ -73,6 +81,7 @@
                              string? description,
                              string? manual,
                              Type[]? supportedModes,
+                             Type[]? excludedModes,
                              IReadOnlyList<CommandParameterSchema> parameters,
                              IReadOnlyList<CommandOptionSchema> options)
         {
@@ -81,6 +90,7 @@
             Description = description;
             Manual = manual;
             SupportedModes = supportedModes?.ToHashSet();
+            ExcludedModes = excludedModes?.ToHashSet();
             Parameters = parameters;
             Options = options;
         }
@@ -99,10 +109,19 @@
         /// </summary>
         public bool CanBeExecutedInMode(Type type)
         {
-            if ((SupportedModes?.Count ?? 0) == 0)
+            if (!KnownTypesHelpers.IsCliModeType(type))
+                throw AttributesExceptions.InvalidModeType(type);
+
+            if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
                 return true;
 
-            return SupportedModes!.Contains(type);
+            if (SupportedModes != null && !SupportedModes!.Contains(type))
+                return false;
+
+            if (ExcludedModes != null && ExcludedModes!.Contains(type))
+                return false;
+
+            return true;
         }
 
         /// <summary>

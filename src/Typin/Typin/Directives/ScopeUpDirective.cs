@@ -21,14 +21,14 @@
     [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeUpDirective : IPipelinedDirective
     {
-        private readonly InteractiveModeSettings _settings;
+        private readonly InteractiveModeOptions _options;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
         /// </summary>
-        public ScopeUpDirective(IOptions<InteractiveModeSettings> interactiveModeSettings)
+        public ScopeUpDirective(IOptions<InteractiveModeOptions> options)
         {
-            _settings = interactiveModeSettings.Value;
+            _options = options.Value;
         }
 
         /// <inheritdoc/>
@@ -41,12 +41,12 @@
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             // Scope up
-            string[] splittedScope = _settings.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (splittedScope.Length > 1)
-                _settings.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
+                _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
             else if (splittedScope.Length == 1)
-                _settings.Scope = string.Empty;
+                _options.Scope = string.Empty;
 
             context.ExitCode ??= ExitCodes.Success;
 

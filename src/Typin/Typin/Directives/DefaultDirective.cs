@@ -6,7 +6,7 @@
 
     /// <summary>
     /// Normally when application runs in interactive mode, an empty line does nothing; but [!] will override this behaviour, executing a root or scoped command.
-    /// This directive will also force defualt command execution when input contains default commmand parmameter values equal to command/subcommand name.
+    /// This directive will also force default command execution when input contains default commmand parameter values equal to command/subcommand name.
     /// </summary>
     [Directive(BuiltInDirectives.Default, Description = "Executes a root or scoped command.")]
     public sealed class DefaultDirective : IDirective

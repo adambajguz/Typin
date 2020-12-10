@@ -7,23 +7,23 @@
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
 - Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
-- Replaced `IsInteractiveModeOnly` with `SupportedModes`.
+- Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
 - Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 - User middlewares are now executed after command instance creation.
 - Middleware types collection in `ApplicationConfiguration` order was reversed.
 - Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
-- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `ExecuteCommand`).
+- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `BindInputAndExecuteCommand`).
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
 - Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
 - Added `IConsole.ReadKeyAsync()`.
-- Option name with 3 characters is no logner treated as option alias (e.g., `--h` is not `-h`).
+- Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).
 - Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
-- Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolfing RootSchema.
+- Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolving RootSchema.
 - Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\') during char parsing.
 
 ### v2.1.1 (18-Oct-2020)

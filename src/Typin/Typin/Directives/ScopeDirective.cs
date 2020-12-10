@@ -32,15 +32,15 @@
     [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeDirective : IPipelinedDirective
     {
-        private readonly InteractiveModeSettings _settings;
+        private readonly InteractiveModeOptions _options;
         private readonly ICliContext _cliContext;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(IOptions<InteractiveModeSettings> settings, ICliContext cliContext)
+        public ScopeDirective(IOptions<InteractiveModeOptions> options, ICliContext cliContext)
         {
-            _settings = settings.Value;
+            _options = options.Value;
             _cliContext = cliContext;
         }
 
@@ -57,7 +57,7 @@
 
             if (name != null)
             {
-                _settings.Scope = name;
+                _options.Scope = name;
                 context.ExitCode ??= ExitCodes.Success;
             }
 

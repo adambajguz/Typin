@@ -102,7 +102,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(SchemasHelpers.IsDirectiveType))
+            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(KnownTypesHelpers.IsDirectiveType))
                 AddDirective(directiveType);
 
             return this;
@@ -173,7 +173,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (Type commandType in commandAssembly.ExportedTypes.Where(SchemasHelpers.IsCommandType))
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(KnownTypesHelpers.IsCommandType))
                 AddCommand(commandType);
 
             return this;
@@ -323,8 +323,22 @@ namespace Typin
         public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
             where T : ICliMode
         {
-            Type cliMode = typeof(T);
+            return RegisterMode(typeof(T), asStartup);
+        }
+
+        /// <summary>
+        /// Registers a CLI mode. Only one mode can be registered as startup mode.
+        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
+        ///
+        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
+        /// </summary>
+        public CliApplicationBuilder RegisterMode(Type modeType, bool asStartup = false)
+        {
+            Type cliMode = modeType;
             _modeTypes.Add(cliMode);
+
+            if (!KnownTypesHelpers.IsCliModeType(modeType))
+                throw new ArgumentException($"Invalid CLI mode type '{modeType}'.", nameof(modeType));
 
             _configureServicesActions.Add(services =>
             {

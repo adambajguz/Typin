@@ -1,2 +1,0 @@
-book list
-book list-interactive

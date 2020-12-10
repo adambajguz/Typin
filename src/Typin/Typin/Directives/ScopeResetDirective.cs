@@ -20,14 +20,14 @@
     [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeResetDirective : IPipelinedDirective
     {
-        private readonly InteractiveModeSettings _settings;
+        private readonly InteractiveModeOptions _options;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeResetDirective"/>.
         /// </summary>
-        public ScopeResetDirective(IOptions<InteractiveModeSettings> settings)
+        public ScopeResetDirective(IOptions<InteractiveModeOptions> options)
         {
-            _settings = settings.Value;
+            _options = options.Value;
         }
 
         /// <inheritdoc/>
@@ -39,7 +39,7 @@
         /// <inheritdoc/>
         public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            _settings.Scope = string.Empty;
+            _options.Scope = string.Empty;
             context.ExitCode ??= ExitCodes.Success;
 
             return default;

@@ -80,6 +80,11 @@ namespace System.Linq
 
     internal static class Extensions
     {
+        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int n)
+        {
+            return source.Reverse().Take(n).Reverse();
+        }
+
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             return new HashSet<T>(source);

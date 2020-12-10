@@ -121,7 +121,24 @@
             exitCode.Should().Be(ExitCodes.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
-            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains an invalid mode in SupportedModes parameter.");
+            stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains invalid supported mode(s)");
+        }
+
+        [Fact]
+        public async Task Application_with_direct_mode_cannot_execute_direct_mode_excluded_commands()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
+                                                     .AddCommand<NamedDirectExcludedCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-direct-excluded-only" }, isInputRedirected: false);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Error);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace();
+            stdErr.GetString().Should().ContainAll($"Command '{typeof(NamedDirectExcludedCommand).FullName}' cannot run in modes");
         }
 
         [Fact]

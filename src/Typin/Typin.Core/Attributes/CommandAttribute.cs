@@ -33,6 +33,12 @@
         public Type[]? SupportedModes { get; set; }
 
         /// <summary>
+        /// List of CLI mode types, in which the command cannot be executed.
+        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// </summary>
+        public Type[]? ExcludedModes { get; set; }
+
+        /// <summary>
         /// Initializes an instance of <see cref="CommandAttribute"/>.
         /// </summary>
         public CommandAttribute(string name)

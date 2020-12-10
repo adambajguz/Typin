@@ -16,28 +16,29 @@
     {
         private readonly bool firstEnter = true;
 
+        private readonly InteractiveModeOptions _options;
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
+        private readonly ApplicationConfiguration _configuration;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
 
         /// <summary>
-        /// Mode options.
-        /// </summary>
-        public InteractiveModeSettings Options { get; }
-
-        /// <summary>
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
-        public InteractiveMode(IOptions<InteractiveModeSettings> options, IConsole console, ApplicationMetadata metadata)
+        public InteractiveMode(IOptions<InteractiveModeOptions> options,
+                               IConsole console,
+                               ApplicationMetadata metadata,
+                               ApplicationConfiguration configuration)
         {
-            Options = options.Value;
+            _options = options.Value;
 
             _console = console;
             _metadata = metadata;
+            _configuration = configuration;
 
             //TODO: fix advanced mode
-            if (Options.IsAdvancedInputAvailable && !console.Input.IsRedirected)
+            if (_options.IsAdvancedInputAvailable && !console.Input.IsRedirected)
             {
                 //_autoCompleteInput = new AutoCompleteInput(console, Options.UserDefinedShortcut)
                 //{
@@ -50,12 +51,11 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> Execute(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
+        public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            //TODO: fix advanced mode execution
-            if (firstEnter)
+            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Count > 0)
             {
-                //await executor.ExecuteCommand(commandLineArguments);
+                await executor.ExecuteCommandAsync(commandLineArguments);
             }
 
             string[]? interactiveArguments = await GetInputAsync(_console, _metadata.ExecutableName);
@@ -80,8 +80,8 @@
             string[]? arguments = null;
             string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
 
-            ConsoleColor promptForeground = Options.PromptForeground;
-            ConsoleColor commandForeground = Options.CommandForeground;
+            ConsoleColor promptForeground = _options.PromptForeground;
+            ConsoleColor commandForeground = _options.CommandForeground;
 
             // Print prompt
             console.WithForegroundColor(promptForeground, () =>
@@ -89,8 +89,7 @@
                 console.Output.Write(executableName);
             });
 
-            string scope = Options.Scope;
-
+            string scope = _options.Scope;
             if (!string.IsNullOrWhiteSpace(scope))
             {
                 console.WithForegroundColor(ConsoleColor.Cyan, () =>

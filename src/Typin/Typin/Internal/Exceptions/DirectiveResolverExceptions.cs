@@ -12,13 +12,20 @@
     /// </summary>
     internal static class DirectiveResolverExceptions
     {
-        public static TypinException InvalidSupportedModesInDirective(Type type)
+        public static TypinException InvalidSupportedModesInDirective(Type type, DirectiveAttribute attribute)
         {
             string message = $@"
-Directive '{type.FullName}' contains an invalid mode in SupportedModes parameter.
-Either the type does not implement {nameof(ICliMode)} or CLI mode was not registered.
+Directive '{type.FullName}' contains invalid supported mode(s) ({attribute.SupportedModes}).
+Either the type does not implement {nameof(ICliMode)} or CLI mode was not registered.";
 
-If you're experiencing problems, please refer to the readme for a quickstart example.";
+            return new TypinException(message.Trim());
+        }
+
+        public static TypinException InvalidExcludedModesInDirective(Type type, DirectiveAttribute attribute)
+        {
+            string message = $@"
+Directive '{type.FullName}' contains invalid excluded mode(s) ({attribute.ExcludedModes}).
+Either the type does not implement {nameof(ICliMode)} or CLI mode was not registered.";
 
             return new TypinException(message.Trim());
         }
@@ -31,9 +38,7 @@ Directive '{type.FullName}' is not a valid directive type.
 In order to be a valid directive type, it must:
 - Not be an abstract class
 - Implement {typeof(IDirective).FullName}
-- Be annotated with {typeof(DirectiveAttribute).FullName}
-
-If you're experiencing problems, please refer to the readme for a quickstart example.";
+- Be annotated with {typeof(DirectiveAttribute).FullName}.";
 
             return new TypinException(message.Trim());
         }
@@ -44,8 +49,7 @@ If you're experiencing problems, please refer to the readme for a quickstart exa
 Application configuration is invalid because there are {invalidDirectives.Count} directives with the same name ('[{name}]'):
 {invalidDirectives.JoinToString(Environment.NewLine)}
 
-Directives must have unique names.
-Names are not case-sensitive.";
+Directives must have unique name (names are case-insensitive).";
 
             return new TypinException(message.Trim());
         }
