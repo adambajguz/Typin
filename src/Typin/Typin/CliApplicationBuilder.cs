@@ -323,7 +323,18 @@ namespace Typin
         public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
             where T : ICliMode
         {
-            Type cliMode = typeof(T);
+            return RegisterMode(typeof(T), asStartup);
+        }
+
+        /// <summary>
+        /// Registers a CLI mode. Only one mode can be registered as startup mode.
+        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
+        ///
+        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
+        /// </summary>
+        public CliApplicationBuilder RegisterMode(Type modeType, bool asStartup = false)
+        {
+            Type cliMode = modeType;
             _modeTypes.Add(cliMode);
 
             _configureServicesActions.Add(services =>

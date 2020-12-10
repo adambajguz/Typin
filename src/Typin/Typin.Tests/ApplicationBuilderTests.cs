@@ -11,6 +11,7 @@
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Middlewares;
+    using Typin.Tests.Data.Modes.Valid;
     using Typin.Tests.Data.Startups;
     using Xunit;
 
@@ -115,6 +116,9 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseDirectMode(true)
+                .UseInteractiveMode()
+                .RegisterMode<ValidCustomMode>()
+                .RegisterMode(typeof(ValidCustomMode))
                 .UseInteractiveMode()
                 .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
                 .UseConsole(new VirtualConsole(Stream.Null))
