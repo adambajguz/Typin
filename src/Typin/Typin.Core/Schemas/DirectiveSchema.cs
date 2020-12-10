@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
-    using Typin.Core.Internal.Exceptions;
+    using Typin.Internal.Exceptions;
     using Typin.Internal.Schemas;
 
     /// <summary>

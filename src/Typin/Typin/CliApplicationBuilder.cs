@@ -337,6 +337,9 @@ namespace Typin
             Type cliMode = modeType;
             _modeTypes.Add(cliMode);
 
+            if (!KnownTypesHelpers.IsCliModeType(modeType))
+                throw new ArgumentException($"Invalid CLI mode type '{modeType}'.", nameof(modeType));
+
             _configureServicesActions.Add(services =>
             {
                 services.TryAddSingleton(cliMode);

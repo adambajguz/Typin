@@ -1,4 +1,4 @@
-﻿namespace Typin.Core.Internal.Exceptions
+﻿namespace Typin.Internal.Exceptions
 {
     using System;
     using Typin.Exceptions;

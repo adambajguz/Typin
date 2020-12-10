@@ -1,7 +1,7 @@
 ﻿namespace Typin.Attributes
 {
     using System;
-    using Typin.Core.Internal.Exceptions;
+    using Typin.Internal.Exceptions;
 
     /// <summary>
     /// Annotates a type that defines a command.
