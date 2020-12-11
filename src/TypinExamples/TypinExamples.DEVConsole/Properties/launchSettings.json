@@ -21,10 +21,10 @@
         "TARGET_TYPIN_PROJECT": "TypinExamples.Timer.Program"
       }
     },
-    "Run: InteractiveQuery": {
+    "Run: Validation": {
       "commandName": "Project",
       "environmentVariables": {
-        "TARGET_TYPIN_PROJECT": "TypinExamples.InteractiveQuery.Program"
+        "TARGET_TYPIN_PROJECT": "TypinExamples.Validation.Program"
       }
     },
     "Run: MarioBuilder": {

@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.InteractiveQuery
+﻿namespace TypinExamples.Validation
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
