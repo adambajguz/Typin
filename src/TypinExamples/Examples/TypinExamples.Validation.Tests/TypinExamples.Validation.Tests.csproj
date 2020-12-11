@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
-    <ProjectReference Include="..\TypinExamples.InteractiveQuery\TypinExamples.Validation.csproj" />
+    <ProjectReference Include="..\TypinExamples.Validation\TypinExamples.Validation.csproj" />
   </ItemGroup>
 
 </Project>

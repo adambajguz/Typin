@@ -9,9 +9,7 @@
     {
         public static async Task<int> Main()
         {
-            return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
-                                                    .AddDirective<PreviewDirective>()
-                                                    .UseInteractiveMode()
+            return await new CliApplicationBuilder().UseStartup<Startup>()
                                                     .Build()
                                                     .RunAsync();
         }

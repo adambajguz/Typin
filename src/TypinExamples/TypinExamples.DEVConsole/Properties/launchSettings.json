@@ -23,6 +23,7 @@
     },
     "Run: Validation": {
       "commandName": "Project",
+      "commandLineArgs": "a b",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.Validation.Program"
       }

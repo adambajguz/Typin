@@ -52,7 +52,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
-    <ProjectReference Include="..\Examples\TypinExamples.InteractiveQuery\TypinExamples.Validation.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Validation\TypinExamples.Validation.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj" />
   </ItemGroup>
