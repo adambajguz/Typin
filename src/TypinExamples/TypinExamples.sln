@@ -4,13 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples", "TypinExamples\TypinExamples.csproj", "{B8D4EFF7-91B6-4E28-95B4-4B6A0A55E7C5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BFD52A01-5ACA-4DAC-B6F8-8179044216AC} = {BFD52A01-5ACA-4DAC-B6F8-8179044216AC}
-		{C002883D-3934-4928-8A05-1033D07CCDC6} = {C002883D-3934-4928-8A05-1033D07CCDC6}
-		{01E81B4D-A957-4856-8E3C-681910324924} = {01E81B4D-A957-4856-8E3C-681910324924}
-		{4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF} = {4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF}
-		{1C243AFB-050A-43A0-955D-8B4B315DC3F8} = {1C243AFB-050A-43A0-955D-8B4B315DC3F8}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Common", "TypinExamples.Common\TypinExamples.Common.csproj", "{C002883D-3934-4928-8A05-1033D07CCDC6}"
 EndProject
@@ -23,12 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F4103478-F5DF-4E54-AA5A-2D2ED711E20C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Application", "TypinExamples.Application\TypinExamples.Application.csproj", "{01E81B4D-A957-4856-8E3C-681910324924}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BFD52A01-5ACA-4DAC-B6F8-8179044216AC} = {BFD52A01-5ACA-4DAC-B6F8-8179044216AC}
-		{C002883D-3934-4928-8A05-1033D07CCDC6} = {C002883D-3934-4928-8A05-1033D07CCDC6}
-		{4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF} = {4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF}
-		{1C243AFB-050A-43A0-955D-8B4B315DC3F8} = {1C243AFB-050A-43A0-955D-8B4B315DC3F8}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{A7E6E1AF-4A8B-40F8-9A98-3D7140FABB93}"
 EndProject
@@ -39,25 +26,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{39059218-1969-4C8B-98CF-F06970670DCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.HelloWorld", "Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj", "{BFD52A01-5ACA-4DAC-B6F8-8179044216AC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF} = {4DE7B6C2-F0CF-4D84-977B-03FD9525D5EF}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0617CE81-5BBD-4261-B9AF-3A6AE9CEE97D}"
-	ProjectSection(SolutionItems) = preProject
-		README-TE.md = README-TE.md
-		..\..\README.md = ..\..\README.md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{54F89B43-429A-4DD2-BF77-6BDAB3471FA4}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\.gitattributes = ..\..\.gitattributes
-		..\..\.gitignore = ..\..\.gitignore
-		..\..\.github\workflows\CI-Examples.yml = ..\..\.github\workflows\CI-Examples.yml
-		clean.ps1 = clean.ps1
-		..\..\codecov.yml = ..\..\codecov.yml
-		..\..\LICENSE = ..\..\LICENSE
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.CalculatOR", "Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj", "{32C43CA4-B590-4B62-81AC-36FB1132C709}"
 EndProject
