@@ -38,7 +38,7 @@
             }
             catch (ValidationException ex)
             {
-                context.Console.WithForegroundColor(ConsoleColor.Red, () => context.Console.Output.WriteLine("Validation failed:"));
+                context.Console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("Validation failed:"));
 
                 foreach (IGrouping<string, ValidationFailure> group in ex.Errors.GroupBy(x => x.PropertyName))
                 {
@@ -55,16 +55,16 @@
                     }
 
                     context.Console.Output.Write(" ");
-                    context.Console.WithForegroundColor(ConsoleColor.Cyan, () => context.Console.Output.Write(name));
+                    context.Console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(name));
 
                     context.Console.Output.Write(" ");
-                    context.Console.WithForegroundColor(ConsoleColor.Green, () => context.Console.Output.Write($"[{group.First().AttemptedValue}]"));
+                    context.Console.Output.WithForegroundColor(ConsoleColor.Green, (output) => context.Console.Output.Write($"[{group.First().AttemptedValue}]"));
                     context.Console.Output.WriteLine(" ");
 
                     foreach (var error in group)
                     {
                         context.Console.Output.Write("   -- ");
-                        context.Console.WithForegroundColor(ConsoleColor.White, () => context.Console.Output.WriteLine(error.ErrorMessage));
+                        context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) => context.Console.Output.WriteLine(error.ErrorMessage));
                     }
 
                     context.Console.Output.WriteLine();

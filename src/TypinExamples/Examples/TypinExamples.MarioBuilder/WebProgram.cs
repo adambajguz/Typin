@@ -14,7 +14,7 @@
         {
             return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
                                                     .AddDirective<PreviewDirective>()
-                                                    .UseInteractiveMode()
+                                                    .UseInteractiveMode(options: (cfg) => cfg.IsAdvancedInputAvailable = false)
                                                     .UseWebExample(configuration)
                                                     .Build()
                                                     .RunAsync(commandLine, environmentVariables, true);

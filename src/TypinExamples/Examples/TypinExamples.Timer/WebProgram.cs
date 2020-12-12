@@ -23,7 +23,7 @@
                                                     .AddDirective<PreviewDirective>()
                                                     .UseMiddleware<ExecutionTimingMiddleware>()
                                                     .ConfigureServices((services) => services.AddSingleton<IPerformanceLogsRepository, PerformanceLogsRepository>())
-                                                    .UseInteractiveMode()
+                                                    .UseInteractiveMode(options: (cfg) => cfg.IsAdvancedInputAvailable = false)
                                                     .UseWebExample(configuration)
                                                     .Build()
                                                     .RunAsync(commandLine, environmentVariables, true);

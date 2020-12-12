@@ -33,16 +33,16 @@
 
                 if (Force || !Confirm)
                 {
-                    console.WithForegroundColor(ConsoleColor.Red, () => console.Output.Write("Sorry, I really can't do that. "));
-                    console.WithForegroundColor(ConsoleColor.Green, () => console.Output.WriteLine("The World is safe :)"));
+                    console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.Write("Sorry, I really can't do that. "));
+                    console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine("The World is safe :)"));
                 }
                 else
-                    console.WithForegroundColor(ConsoleColor.Yellow, () => console.Output.WriteLine("Sorry, I can't do that :<"));
+                    console.Output.WithForegroundColor(ConsoleColor.Yellow, (output) => output.WriteLine("Sorry, I can't do that :<"));
             }
             catch (TaskCanceledException)
             {
                 console.Output.WriteLine();
-                console.WithForegroundColor(ConsoleColor.Green, () => console.Output.WriteLine("Cancelled! The World is safe :)"));
+                console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine("Cancelled! The World is safe :)"));
             }
         }
     }

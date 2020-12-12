@@ -13,7 +13,7 @@
             app.AddCommandsFromThisAssembly()
                .AddDirective<PreviewDirective>()
                .UseMiddleware<FluentValidationMiddleware>()
-               .UseInteractiveMode();
+               .UseInteractiveMode(options: (cfg) => cfg.IsAdvancedInputAvailable = false);
         }
 
         public void ConfigureServices(IServiceCollection services)
