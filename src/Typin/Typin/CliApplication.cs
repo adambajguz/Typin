@@ -176,7 +176,7 @@
             // we handle all exceptions and route them to the console nicely.
             // However, we don't want to swallow unhandled exceptions when the debugger is attached,
             // because we still want the IDE to show them to the developer.
-            catch (Exception ex) when (!Debugger.IsAttached)
+            catch (Exception ex) //when (!Debugger.IsAttached)
             {
                 _logger.LogError(ex, "Unhandled exception caused app to stop.");
 
