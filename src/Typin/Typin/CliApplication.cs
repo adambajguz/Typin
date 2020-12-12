@@ -12,6 +12,7 @@
     using Typin.Exceptions;
     using Typin.Internal;
     using Typin.Internal.Schemas;
+    using Typin.Utilities;
 
     /// <summary>
     /// Command line application facade.

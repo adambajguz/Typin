@@ -4,7 +4,7 @@
     using System.Linq;
     using FluentAssertions;
     using Newtonsoft.Json;
-    using Typin.Internal;
+    using Typin.Utilities;
     using Xunit;
     using Xunit.Abstractions;
 

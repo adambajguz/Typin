@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Linq.Expressions;
     using Typin.Console;
-    using Typin.Internal.Extensions;
+    using Typin.Extensions;
 
     /// <summary>
     /// Simple table utils for console.

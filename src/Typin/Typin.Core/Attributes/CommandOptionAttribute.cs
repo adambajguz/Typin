@@ -13,7 +13,7 @@
         /// <summary>
         /// Option name (must be longer than a single character). Starting dashes are trimed automatically.
         /// All options in a command must have different names (comparison is not case-sensitive).
-        /// If this isn't specified, hypenated property name is used instead.
+        /// If this isn't specified, kebab-cased property name is used instead.
         /// </summary>
         public string? Name { get; }
 

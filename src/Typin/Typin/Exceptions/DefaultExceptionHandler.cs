@@ -2,7 +2,7 @@
 {
     using System;
     using Typin.Console;
-    using Typin.HelpWriter;
+    using Typin.Help;
 
     /// <summary>
     /// Implementation of <see cref="ICliExceptionHandler"/> that prints all exceptions to console.

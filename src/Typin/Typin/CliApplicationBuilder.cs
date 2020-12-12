@@ -10,13 +10,13 @@ namespace Typin
     using Microsoft.Extensions.Logging;
     using Typin.Console;
     using Typin.Exceptions;
-    using Typin.HelpWriter;
+    using Typin.Help;
     using Typin.Internal;
     using Typin.Internal.DependencyInjection;
     using Typin.Internal.Pipeline;
-    using Typin.Internal.Schemas;
     using Typin.Modes;
     using Typin.OptionFallback;
+    using Typin.Schemas;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.

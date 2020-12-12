@@ -1,4 +1,4 @@
-﻿namespace Typin.HelpWriter
+﻿namespace Typin.Help
 {
     using System;
     using System.Collections;

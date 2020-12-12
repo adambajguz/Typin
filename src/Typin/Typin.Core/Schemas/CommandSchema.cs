@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Text;
     using Typin.Internal.Exceptions;
-    using Typin.Internal.Schemas;
 
     /// <summary>
     /// Stores command schema.

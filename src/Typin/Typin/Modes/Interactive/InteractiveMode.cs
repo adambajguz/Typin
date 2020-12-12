@@ -7,7 +7,7 @@
     using Microsoft.Extensions.Options;
     using Typin.AutoCompletion;
     using Typin.Console;
-    using Typin.Internal;
+    using Typin.Utilities;
 
     /// <summary>
     /// Interactive CLI mode.

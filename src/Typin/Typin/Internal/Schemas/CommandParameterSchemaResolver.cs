@@ -2,7 +2,7 @@
 {
     using System.Reflection;
     using Typin.Attributes;
-    using Typin.Internal.Extensions;
+    using Typin.Extensions;
     using Typin.Schemas;
 
     /// <summary>
@@ -19,7 +19,7 @@
             if (attribute is null)
                 return null;
 
-            string name = attribute.Name ?? property.Name.ToHyphenCase();
+            string name = attribute.Name ?? property.Name.ToKebabCase();
 
             return new CommandParameterSchema(
                 property,
