@@ -33,19 +33,13 @@
         /// <inheritdoc/>
         public async Task<int> ExecuteCommandAsync(string commandLine)
         {
-            string[] commandLineArguments = CommandLineSplitter.Split(commandLine).ToArray();
+            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine);
 
             return await ExecuteCommandAsync(commandLineArguments);
         }
 
         /// <inheritdoc/>
         public async Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments)
-        {
-            return await ExecuteCommandAsync(commandLineArguments.ToList());
-        }
-
-        /// <inheritdoc/>
-        public async Task<int> ExecuteCommandAsync(IReadOnlyList<string> commandLineArguments)
         {
             _logger.LogInformation("Executing command '{CommandLineArguments}'", commandLineArguments);
 

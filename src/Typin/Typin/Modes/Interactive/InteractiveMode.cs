@@ -27,6 +27,7 @@
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
         public InteractiveMode(IOptions<InteractiveModeOptions> options,
+                               //ICliContext context, //TODO: should not have ICliContext -> possible add another class with root schema etc
                                IConsole console,
                                ApplicationMetadata metadata,
                                ApplicationConfiguration configuration)
@@ -37,37 +38,34 @@
             _metadata = metadata;
             _configuration = configuration;
 
-            //TODO: fix advanced mode
-            if (_options.IsAdvancedInputAvailable && !console.Input.IsRedirected)
+            if (_options.IsAdvancedInputAvailable && !_console.Input.IsRedirected)
             {
-                //_autoCompleteInput = new AutoCompleteInput(console, Options.UserDefinedShortcut)
+                //_autoCompleteInput = new AutoCompleteInput(_console, _options.UserDefinedShortcuts)
                 //{
-                //    AutoCompletionHandler = new AutoCompletionHandler(cliContext),
+                //    AutoCompletionHandler = new AutoCompletionHandler(context),
                 //};
 
                 //_autoCompleteInput.History.IsEnabled = true;
-                //cliContext.InternalInputHistory = _autoCompleteInput.History;
             }
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
+        public async ValueTask<int> ExecuteAsync(IEnumerable<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Count > 0)
+            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Any())
             {
                 await executor.ExecuteCommandAsync(commandLineArguments);
             }
 
-            string[]? interactiveArguments = await GetInputAsync(_console, _metadata.ExecutableName);
+            IEnumerable<string> interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
 
-            if (interactiveArguments is null)
-            {
-                _console.ResetColor();
-                return ExitCodes.Success;
-            }
-
-            await executor.ExecuteCommandAsync(interactiveArguments);
             _console.ResetColor();
+
+            if (interactiveArguments.Any())
+            {
+                await executor.ExecuteCommandAsync(interactiveArguments);
+                _console.ResetColor();
+            }
 
             return ExitCodes.Success;
         }
@@ -75,21 +73,20 @@
         /// <summary>
         /// Gets user input and returns arguments or null if cancelled.
         /// </summary>
-        private async Task<string[]?> GetInputAsync(IConsole console, string executableName)
+        private async Task<IEnumerable<string>> GetInputAsync(string executableName)
         {
-            string[]? arguments = null;
-            string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
-
-            ConsoleColor promptForeground = _options.PromptForeground;
-            ConsoleColor commandForeground = _options.CommandForeground;
+            IConsole console = _console;
 
             // Print prompt
+            ConsoleColor promptForeground = _options.PromptForeground;
             console.Output.WithForegroundColor(promptForeground, (output) => output.Write(executableName));
 
             string scope = _options.Scope;
-            if (!string.IsNullOrWhiteSpace(scope))
+            bool hasScope = !string.IsNullOrWhiteSpace(scope);
+
+            if (hasScope)
             {
-                console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) =>
+                console.Output.WithForegroundColor(_options.ScopeForeground, (output) =>
                 {
                     output.Write(' ');
                     output.Write(scope);
@@ -99,38 +96,34 @@
             console.Output.WithForegroundColor(promptForeground, (output) => output.Write("> "));
 
             // Read user input
-            ConsoleColor lastColor = console.ForegroundColor;
-            console.ForegroundColor = commandForeground;
+            console.ForegroundColor = _options.CommandForeground;
 
+            string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
             if (_autoCompleteInput is null)
                 line = await console.Input.ReadLineAsync();
             else
                 line = await _autoCompleteInput.ReadLineAsync();
 
-            console.ForegroundColor = lastColor;
+            console.ForegroundColor = ConsoleColor.Gray;
+
+            IEnumerable<string> arguments = Enumerable.Empty<string>();
 
             if (!string.IsNullOrWhiteSpace(line))
             {
-                if (string.IsNullOrWhiteSpace(scope)) // handle unscoped command input
+                if (hasScope) // handle scoped command input
                 {
-                    arguments = CommandLineSplitter.Split(line)
-                                                   .Where(x => !string.IsNullOrWhiteSpace(x))
-                                                   .ToArray();
-                }
-                else // handle scoped command input
-                {
-                    List<string> tmp = CommandLineSplitter.Split(line)
-                                                          .Where(x => !string.IsNullOrWhiteSpace(x))
-                                                          .ToList();
+                    List<string> tmp = CommandLineSplitter.Split(line).ToList();
 
                     int lastDirective = tmp.FindLastIndex(x => x.StartsWith('[') && x.EndsWith(']'));
                     tmp.Insert(lastDirective + 1, scope);
 
                     arguments = tmp.ToArray();
                 }
+                else // handle unscoped command input
+                {
+                    arguments = CommandLineSplitter.Split(line);
+                }
             }
-
-            console.ForegroundColor = ConsoleColor.Gray;
 
             return arguments;
         }

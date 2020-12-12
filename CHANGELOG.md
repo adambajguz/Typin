@@ -1,7 +1,7 @@
 ### v3.0.0 (xx-Dec-2020)
 
 - Added `Typin.Core` library.
-- Added `CliApplication.RunAsync` with string command line.
+- Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
 - Renamed `normal mode` to `direct mode`.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.

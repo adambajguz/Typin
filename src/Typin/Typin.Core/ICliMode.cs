@@ -11,6 +11,6 @@
         /// <summary>
         /// Executes CLI mode.
         /// </summary>
-        ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor);
+        ValueTask<int> ExecuteAsync(IEnumerable<string> commandLineArguments, ICliCommandExecutor executor);
     }
 }

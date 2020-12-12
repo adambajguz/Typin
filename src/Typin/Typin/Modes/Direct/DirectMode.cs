@@ -19,7 +19,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
+        public async ValueTask<int> ExecuteAsync(IEnumerable<string> commandLineArguments, ICliCommandExecutor executor)
         {
             int exitCode = await executor.ExecuteCommandAsync(commandLineArguments);
             _applicationLifetime.RequestStop();

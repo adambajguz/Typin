@@ -578,7 +578,7 @@ namespace Typin
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            return new CliApplication(serviceProvider, cliContextFactory);
+            return new CliApplication(serviceProvider, cliContextFactory, _console, metadata, configuration);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)

@@ -16,6 +16,12 @@
         public ConsoleColor PromptForeground { get; set; } = ConsoleColor.Blue;
 
         /// <summary>
+        /// Scope foreground color.
+        /// Default color is <see cref="ConsoleColor.Cyan"/>.
+        /// </summary>
+        public ConsoleColor ScopeForeground { get; set; } = ConsoleColor.Cyan;
+
+        /// <summary>
         /// Command input foreground color.
         /// Default color is <see cref="ConsoleColor.Yellow"/>.
         /// </summary>
@@ -25,6 +31,11 @@
         /// Command scope.
         /// </summary>
         public string Scope { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Command input history.
+        /// </summary>
+        public IInputHistoryProvider InputHistory { get; } = new InputHistoryProvider();
 
         /// <summary>
         /// User defined shortcuts.

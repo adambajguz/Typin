@@ -32,14 +32,18 @@
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        internal CliApplication(IServiceProvider serviceProvider, CliContextFactory cliContextFactory)
+        internal CliApplication(IServiceProvider serviceProvider,
+                                CliContextFactory cliContextFactory,
+                                IConsole console,
+                                ApplicationMetadata metadata,
+                                ApplicationConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
             _cliContextFactory = cliContextFactory;
 
-            _configuration = serviceProvider.GetRequiredService<ApplicationConfiguration>();
-            _metadata = serviceProvider.GetRequiredService<ApplicationMetadata>();
-            _console = serviceProvider.GetRequiredService<IConsole>();
+            _configuration = configuration;
+            _metadata = metadata;
+            _console = console;
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
             _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
             _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
@@ -83,9 +87,8 @@
         /// </remarks>
         public async ValueTask<int> RunAsync(string commandLine, bool containsExecutable = false)
         {
-            string[] commandLineArguments = CommandLineSplitter.Split(commandLine)
-                                                               .Skip(containsExecutable ? 1 : 0)
-                                                               .ToArray();
+            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                                          .Skip(containsExecutable ? 1 : 0);
 
             return await RunAsync(commandLineArguments);
         }
@@ -100,9 +103,8 @@
         /// </remarks>
         public async ValueTask<int> RunAsync(string commandLine, IReadOnlyDictionary<string, string> environmentVariables, bool containsExecutable = false)
         {
-            string[] commandLineArguments = CommandLineSplitter.Split(commandLine)
-                                                               .Skip(containsExecutable ? 1 : 0)
-                                                               .ToArray();
+            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                                          .Skip(containsExecutable ? 1 : 0);
 
             return await RunAsync(commandLineArguments, environmentVariables);
         }
@@ -116,7 +118,7 @@
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments)
+        public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments)
         {
             // Environment variable names are case-insensitive on Windows but are case-sensitive on Linux and macOS
             Dictionary<string, string> environmentVariables = Environment.GetEnvironmentVariables()
@@ -136,7 +138,7 @@
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments,
+        public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {
             try
@@ -190,7 +192,7 @@
             }
         }
 
-        private async Task<int> StartAppAsync(IReadOnlyList<string> commandLineArguments)
+        private async Task<int> StartAppAsync(IEnumerable<string> commandLineArguments)
         {
             _applicationLifetime.Initialize();
 
