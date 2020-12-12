@@ -47,8 +47,8 @@
 
             ConsoleColor lastForegroundColor = console.ForegroundColor;
             ConsoleColor lastBackgroundColor = console.BackgroundColor;
-            console.BackgroundColor = backgroundColor;
             console.ForegroundColor = foregroundColor;
+            console.BackgroundColor = backgroundColor;
 
             action(stream);
 
@@ -89,8 +89,8 @@
         {
             ConsoleColor lastForegroundColor = console.ForegroundColor;
             ConsoleColor lastBackgroundColor = console.BackgroundColor;
-            console.BackgroundColor = backgroundColor;
             console.ForegroundColor = foregroundColor;
+            console.BackgroundColor = backgroundColor;
 
             action(console);
 
