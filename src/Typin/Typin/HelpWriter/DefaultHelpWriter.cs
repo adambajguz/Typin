@@ -91,7 +91,7 @@
 
         private void Write(ConsoleColor foregroundColor, string value)
         {
-            _console.WithForegroundColor(foregroundColor, () => Write(value));
+            _console.Output.WithForegroundColor(foregroundColor, (output) => Write(value));
         }
 
         private void WriteLine()

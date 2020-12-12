@@ -19,7 +19,8 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            console.WithForegroundColor(ConsoleColor.DarkGreen, () => console.Output.WriteLine("Hello world from default command"));
+            console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
+
             foreach (var value in Values)
             {
                 console.Output.WriteLine(value);

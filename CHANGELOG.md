@@ -10,7 +10,8 @@
 - Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
-- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- Rewritten `Typin.Core.Console.ConsoleExtensions` to target `StandardStreamWriter`.
 - User middlewares are now executed after command instance creation.
 - Middleware types collection in `ApplicationConfiguration` order was reversed.
 - Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.

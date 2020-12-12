@@ -65,7 +65,7 @@
         /// </summary>
         private static void WriteError(IConsole console, string message)
         {
-            console.WithForegroundColor(ConsoleColor.Red, () => console.Error.WriteLine(message));
+            console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine(message));
         }
     }
 }

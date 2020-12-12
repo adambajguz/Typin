@@ -36,10 +36,10 @@
             console.Output.Write('{');
             foreach (DirectiveInput directive in input.Directives)
             {
-                console.WithForegroundColor(ConsoleColor.White, () =>
+                console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
                 {
                     // Name
-                    console.Output.Write(directive.Name.ToString());
+                    output.Write(directive.Name.ToString());
                 });
 
                 if (directive != input.Directives[input.Directives.Count - 1])
@@ -51,8 +51,7 @@
             // Command name
             if (!string.IsNullOrWhiteSpace(input.CommandName))
             {
-                console.WithForegroundColor(ConsoleColor.Cyan, () =>
-                    console.Output.Write(input.CommandName));
+                console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(input.CommandName));
 
                 console.Output.Write(' ');
             }
@@ -62,8 +61,7 @@
             {
                 console.Output.Write('<');
 
-                console.WithForegroundColor(ConsoleColor.White, () =>
-                    console.Output.Write(parameter));
+                console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.Write(parameter));
 
                 console.Output.Write('>');
                 console.Output.Write(' ');
@@ -74,16 +72,16 @@
             {
                 console.Output.Write('[');
 
-                console.WithForegroundColor(ConsoleColor.White, () =>
+                console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
                 {
                     // Alias
-                    console.Output.Write(option.GetRawAlias());
+                    output.Write(option.GetRawAlias());
 
                     // Values
                     if (option.Values.Any())
                     {
-                        console.Output.Write(' ');
-                        console.Output.Write(option.GetRawValues());
+                        output.Write(' ');
+                        output.Write(option.GetRawValues());
                     }
                 });
 

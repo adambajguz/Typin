@@ -9,22 +9,22 @@
         public static void RenderBook(this IConsole console, Book book)
         {
             // Title
-            console.WithForegroundColor(ConsoleColor.White, () => console.Output.WriteLine(book.Title));
+            console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.WriteLine(book.Title));
 
             // Author
             console.Output.Write("  ");
             console.Output.Write("Author: ");
-            console.WithForegroundColor(ConsoleColor.White, () => console.Output.WriteLine(book.Author));
+            console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.WriteLine(book.Author));
 
             // Published
             console.Output.Write("  ");
             console.Output.Write("Published: ");
-            console.WithForegroundColor(ConsoleColor.White, () => console.Output.WriteLine($"{book.Published:d}"));
+            console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.WriteLine($"{book.Published:d}"));
 
             // ISBN
             console.Output.Write("  ");
             console.Output.Write("ISBN: ");
-            console.WithForegroundColor(ConsoleColor.White, () => console.Output.WriteLine(book.Isbn));
+            console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.WriteLine(book.Isbn));
         }
     }
 }
