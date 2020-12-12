@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal
+﻿namespace Typin.Utilities
 {
     using System.Collections.Generic;
     using System.Text;
@@ -65,7 +65,9 @@
                 }
                 else if (chr == ' ' && !quoted)
                 {
-                    if (started) yield return result.ToString();
+                    if (started)
+                        yield return result.ToString();
+
                     result.Clear();
                     started = false;
                 }

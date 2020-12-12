@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.FrameworksComparison.Commands.TypinCommands
+﻿namespace Typin.Benchmarks.FrameworksComparison.Commands
 {
     using System.Threading.Tasks;
     using Typin.Attributes;

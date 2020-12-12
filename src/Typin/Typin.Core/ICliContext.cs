@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Schemas;
@@ -48,12 +47,6 @@
         /// </summary>
         /// <exception cref="NullReferenceException"> Throws when uninitialized</exception>
         CommandInput Input { get; }
-
-        /// <summary>
-        /// Command input history in interactive mode.
-        /// </summary>
-        /// <exception cref="NullReferenceException"> Throws when uninitialized or in direct mode.</exception>
-        IInputHistoryProvider InputHistory { get; }
 
         /// <summary>
         /// Current command schema.

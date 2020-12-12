@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Input;
     using Typin.Schemas;
@@ -12,7 +11,6 @@
     internal sealed class CliContext : ICliContext
     {
         private CommandInput? _input;
-        private InputHistoryProvider? _inputHistoryProvider;
         private CommandSchema? _commandSchema;
         private IReadOnlyList<IDirective>? _directives;
         private IReadOnlyList<IPipelinedDirective>? _pipelinedDirectives;
@@ -43,16 +41,6 @@
             get => _input ?? throw new NullReferenceException($"{nameof(Input)} is uninitialized in this context.");
             internal set => _input = value;
         }
-
-        /// <inheritdoc/>
-        internal InputHistoryProvider InternalInputHistory
-        {
-            get => _inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InternalInputHistory)} is either uninitialized in this context or not available due to direct mode.");
-            set => _inputHistoryProvider = value;
-        }
-
-        /// <inheritdoc/>
-        public IInputHistoryProvider InputHistory => _inputHistoryProvider ?? throw new NullReferenceException($"{nameof(InputHistory)} is either uninitialized in this context or not available due to direct mode.");
 
         /// <inheritdoc/>
         public CommandSchema CommandSchema

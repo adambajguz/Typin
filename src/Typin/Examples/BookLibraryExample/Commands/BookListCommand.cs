@@ -35,7 +35,7 @@
             }
 
             if (isFirst)
-                console.WithForegroundColor(ConsoleColor.Red, () => console.Output.WriteLine("No books"));
+                console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("No books"));
 
             return default;
         }

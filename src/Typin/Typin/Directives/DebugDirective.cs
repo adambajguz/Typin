@@ -33,8 +33,7 @@
 
             IConsole console = context.Console;
 
-            console.WithForegroundColor(ConsoleColor.Green, () =>
-                console.Output.WriteLine($"Attach debugger to PID {processId} to continue."));
+            console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine($"Attach debugger to PID {processId} to continue."));
 
             Debugger.Launch();
 

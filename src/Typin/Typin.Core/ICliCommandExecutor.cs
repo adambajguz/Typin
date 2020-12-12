@@ -13,12 +13,6 @@
         /// </summary>
         Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments);
 
-
-        /// <summary>
-        /// Executes a command.
-        /// </summary>
-        Task<int> ExecuteCommandAsync(IReadOnlyList<string> commandLineArguments);
-
         /// <summary>
         /// Executes a command.
         /// </summary>

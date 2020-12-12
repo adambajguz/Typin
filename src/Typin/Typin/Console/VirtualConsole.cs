@@ -17,7 +17,7 @@
     public class VirtualConsole : IConsole
     {
         private readonly CancellationToken _cancellationToken;
-        private bool disposedValue;
+        private bool _disposedValue;
 
         /// <inheritdoc />
         public StandardStreamReader Input { get; }
@@ -150,7 +150,7 @@
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -159,7 +159,7 @@
                     Error.Dispose();
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

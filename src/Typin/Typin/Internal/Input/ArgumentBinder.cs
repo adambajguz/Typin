@@ -20,7 +20,7 @@
                 [typeof(object)] = v => v,
                 [typeof(string)] = v => v,
                 [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
-                [typeof(char)] = v => v.UnescapeChar(),
+                [typeof(char)] = v => TextUtils.UnescapeChar(v),
                 [typeof(sbyte)] = v => sbyte.Parse(v!, FormatProvider),
                 [typeof(byte)] = v => byte.Parse(v!, FormatProvider),
                 [typeof(short)] = v => short.Parse(v!, FormatProvider),
