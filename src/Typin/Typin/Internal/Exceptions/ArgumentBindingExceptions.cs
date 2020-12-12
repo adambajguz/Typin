@@ -123,30 +123,30 @@ Target type is not assignable from array and doesn't have a public constructor t
             };
         }
 
-        public static TypinException ParameterNotSet(CommandParameterSchema parameter)
+        public static TypinException ParameterNotSet(IEnumerable<CommandParameterSchema> parameter)
         {
-            string message = $@"Missing value for parameter {parameter}.";
+            string message = $@"Missing value for parameter: {parameter.Select(x => x.ToString()).JoinToString(", ")}.";
 
             return new TypinException(message);
         }
 
         public static TypinException RequiredOptionsNotSet(IEnumerable<CommandOptionSchema> options)
         {
-            string message = $@"Missing values for one or more required options: {options.Select(o => o).JoinToString(Environment.NewLine)}";
+            string message = $@"Missing values for one or more required options: {options.Select(o => o).JoinToString(", ")}";
 
             return new TypinException(message);
         }
 
         public static TypinException UnrecognizedParametersProvided(IEnumerable<CommandParameterInput> parameterInputs)
         {
-            string message = $@"Unrecognized parameters provided: {parameterInputs.Select(p => p.Value).JoinToString(Environment.NewLine)}";
+            string message = $@"Unrecognized parameters provided: {parameterInputs.Select(p => p.Value).JoinToString(", ")}";
 
             return new TypinException(message);
         }
 
         public static TypinException UnrecognizedOptionsProvided(IEnumerable<CommandOptionInput> optionInputs)
         {
-            string message = $@"Unrecognized options provided: {optionInputs.Select(o => o.GetRawAlias()).JoinToString(Environment.NewLine)}";
+            string message = $@"Unrecognized options provided: {optionInputs.Select(o => o.GetRawAlias()).JoinToString(", ")}";
 
             return new TypinException(message);
         }

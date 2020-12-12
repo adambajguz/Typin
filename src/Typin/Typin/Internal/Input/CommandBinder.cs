@@ -22,8 +22,8 @@
             int remainingParameters = parameters.Count;
             int remainingInputs = parameterInputs.Count;
 
-            if (parameters.Count > remainingParameters)
-                throw ArgumentBindingExceptions.ParameterNotSet(parameters[remainingParameters - 1]);
+            if (remainingParameters > remainingInputs)
+                throw ArgumentBindingExceptions.ParameterNotSet(parameters.TakeLast(remainingParameters - remainingInputs));
 
             // Scalar parameters
             int i = 0;
@@ -49,7 +49,7 @@
 
                 // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
                 if (!nonScalarValues.Any())
-                    throw ArgumentBindingExceptions.ParameterNotSet(nonScalarParameter);
+                    throw ArgumentBindingExceptions.ParameterNotSet(new[] { nonScalarParameter });
 
                 nonScalarParameter.BindOn(instance, nonScalarValues);
                 --remainingParameters;

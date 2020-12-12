@@ -101,6 +101,27 @@
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
+        [Fact]
+        public async Task Command_with_parameters_should_display_error_when_no_parameters_were_passed_in_input()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", "foo"
+            });
+
+            // Assert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().BeNullOrWhiteSpace();
+            stdErr.GetString().Should().NotBeNullOrWhiteSpace()
+                                       .And.NotContain("Exception")
+                                       .And.ContainAll("Missing value for parameter", "ParamB", "ParamC");
+        }
+
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
@@ -247,7 +268,7 @@
         [InlineData("cmd", "--non-existing-option", "13", "--non2")]
         [InlineData("cmd", "--non-existing-option", "13", "non2")]
         [InlineData("cmd", "non-existing-parameter")]
-        [InlineData("cmd", "--non-existing-option", "13", "non-existing-parameter")]
+        [InlineData("cmd", "--non-existing-option", "13", "non-existing-parameter", "--invalid")]
         [InlineData("cmd", "non-existing-parameter", "--non-existing-option", "13")]
         public async Task All_provided_parameter_and_option_arguments_must_be_bound_to_corresponding_properties(params string[] args)
         {
