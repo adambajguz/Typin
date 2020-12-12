@@ -1,4 +1,6 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿using Typin;
+
+namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Threading.Tasks;

@@ -1,8 +1,9 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
 
@@ -22,9 +23,7 @@
             console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
 
             foreach (var value in Values)
-            {
                 console.Output.WriteLine(value);
-            }
 
             return default;
         }

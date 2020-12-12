@@ -1,9 +1,10 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Threading.Tasks;
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
 

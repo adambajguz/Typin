@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.MultiCommand
+﻿namespace Typin.Benchmarks.MultiCommand.CliFxCommands
 {
     using System.Threading.Tasks;
     using CliFx;

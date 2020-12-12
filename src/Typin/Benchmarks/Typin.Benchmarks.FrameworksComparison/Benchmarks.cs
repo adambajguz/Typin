@@ -9,7 +9,6 @@
     using BenchmarkDotNet.Running;
     using CommandLine;
     using Typin.Benchmarks.FrameworksComparison.Commands;
-    using Typin.Benchmarks.FrameworksComparison.Commands.TypinCommands;
 
     [SimpleJob]
     [RankColumn]
