@@ -27,7 +27,7 @@
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
         public InteractiveMode(IOptions<InteractiveModeOptions> options,
-                               //ICliContext context, //TODO: should not have ICliContext -> possible add another class with root schema etc
+                               ICliContext context, //TODO: should not have ICliContext -> possible add another class with root schema etc
                                IConsole console,
                                ApplicationMetadata metadata,
                                ApplicationConfiguration configuration)
@@ -40,12 +40,12 @@
 
             if (_options.IsAdvancedInputAvailable && !_console.Input.IsRedirected)
             {
-                //_autoCompleteInput = new AutoCompleteInput(_console, _options.UserDefinedShortcuts)
-                //{
-                //    AutoCompletionHandler = new AutoCompletionHandler(context),
-                //};
+                _autoCompleteInput = new AutoCompleteInput(_console, _options.UserDefinedShortcuts)
+                {
+                    AutoCompletionHandler = new AutoCompletionHandler(context),
+                };
 
-                //_autoCompleteInput.History.IsEnabled = true;
+                _autoCompleteInput.History.IsEnabled = true;
             }
         }
 
