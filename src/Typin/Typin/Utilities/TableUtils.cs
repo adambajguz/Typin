@@ -46,7 +46,7 @@
             console.Output.WriteLine(new string('=', totalWidth));
 
             //Write table header
-            if (headers.Count() > 0)
+            if (headers.Any())
             {
                 for (int i = 0; i < columnsCount; ++i)
                 {
@@ -131,7 +131,7 @@
             console.Output.WriteLine(new string('=', totalWidth));
 
             //Write table header
-            if (headers.Count() > 0)
+            if (headers.Any())
             {
                 for (int i = 0; i < columnsCount; ++i)
                 {
