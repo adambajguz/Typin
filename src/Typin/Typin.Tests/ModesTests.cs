@@ -5,6 +5,7 @@ namespace Typin.Tests
     using FluentAssertions;
     using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Data.Modes.Invalid;
     using Typin.Tests.Data.Modes.Valid;
     using Typin.Tests.Extensions;
     using Xunit;

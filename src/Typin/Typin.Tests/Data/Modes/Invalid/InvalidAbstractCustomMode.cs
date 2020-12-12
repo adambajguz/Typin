@@ -1,4 +1,4 @@
-﻿namespace Typin.Modes
+﻿namespace Typin.Tests.Data.Modes.Invalid
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

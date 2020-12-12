@@ -1,7 +1,8 @@
-﻿namespace Typin.Modes
+﻿namespace Typin.Tests.Data.Modes.Invalid
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Typin;
     using Typin.Console;
 
     public class InvalidCustomMode

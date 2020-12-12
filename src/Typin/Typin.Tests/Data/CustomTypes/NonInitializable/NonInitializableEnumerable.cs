@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Valid
+﻿namespace Typin.Tests.Data.CustomTypes.NonInitializable
 {
     using System;
     using System.Collections;

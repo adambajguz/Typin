@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests
+﻿namespace Typin.Tests.ArgumentTests
 {
     using System.Threading.Tasks;
     using FluentAssertions;

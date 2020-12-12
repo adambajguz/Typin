@@ -3,7 +3,6 @@
     using Typin.Attributes;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.NonInitializable;
-    using Typin.Tests.Data.Valid;
 
     [Command("cmd")]
     public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
