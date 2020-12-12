@@ -2,7 +2,7 @@
 {
     using System;
     using Typin.Console;
-    using Typin.HelpWriter;
+    using Typin.Help;
 
     /// <summary>
     /// Implementation of <see cref="ICliExceptionHandler"/> that prints all exceptions to console.
@@ -65,7 +65,7 @@
         /// </summary>
         private static void WriteError(IConsole console, string message)
         {
-            console.WithForegroundColor(ConsoleColor.Red, () => console.Error.WriteLine(message));
+            console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine(message));
         }
     }
 }

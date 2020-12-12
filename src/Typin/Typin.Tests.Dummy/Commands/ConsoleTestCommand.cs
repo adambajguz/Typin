@@ -10,12 +10,12 @@
     {
         public ValueTask ExecuteAsync(IConsole console)
         {
-            var input = console.Input.ReadToEnd();
+            string input = console.Input.ReadToEnd();
 
-            console.WithColors(ConsoleColor.Black, ConsoleColor.White, () =>
+            console.WithColors(ConsoleColor.Black, ConsoleColor.White, (c) =>
             {
-                console.Output.WriteLine(input);
-                console.Error.WriteLine(input);
+                c.Output.WriteLine(input);
+                c.Error.WriteLine(input);
             });
 
             return default;

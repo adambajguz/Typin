@@ -3,7 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
-    using Typin.HelpWriter;
+    using Typin.Help;
     using Typin.Input;
     using Typin.Schemas;
 

@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal.Schemas
+﻿namespace Typin.Schemas
 {
     using System;
     using System.Reflection;

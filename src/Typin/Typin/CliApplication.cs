@@ -3,7 +3,6 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,6 +12,7 @@
     using Typin.Exceptions;
     using Typin.Internal;
     using Typin.Internal.Schemas;
+    using Typin.Utilities;
 
     /// <summary>
     /// Command line application facade.
@@ -53,7 +53,7 @@
             if (_metadata.StartupMessage is null)
                 return;
 
-            _console.WithForegroundColor(ConsoleColor.Blue, () => _console.Output.WriteLine(_metadata.StartupMessage));
+            _console.Output.WithForegroundColor(ConsoleColor.Blue, (output) => output.WriteLine(_metadata.StartupMessage));
         }
 
         /// <summary>
@@ -180,10 +180,10 @@
             {
                 _logger.LogError(ex, "Unhandled exception caused app to stop.");
 
-                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
 
                 _console.Error.WriteLine();
-                _console.WithForegroundColor(ConsoleColor.DarkRed, () => _console.Error.WriteLine(ex.ToString()));
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine(ex.ToString()));
                 _console.Error.WriteLine();
 
                 return ExitCodes.FromException(ex);

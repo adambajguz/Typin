@@ -10,7 +10,8 @@
 - Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
 - Added support for options with no name by automatic conversion of property names.
 - Added native support for .NET 5.0.
-- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- Rewritten `Typin.Core.Console.ConsoleExtensions` to target `StandardStreamWriter`.
 - User middlewares are now executed after command instance creation.
 - Middleware types collection in `ApplicationConfiguration` order was reversed.
 - Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
@@ -24,7 +25,7 @@
 - Option name and short name must start with letter (previously not start with digit).
 - Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
 - Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolving RootSchema.
-- Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\') during char parsing.
+- Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A) during char parsing.
 
 ### v2.1.1 (18-Oct-2020)
 

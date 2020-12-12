@@ -85,8 +85,8 @@
                 "--apple",
                 "--blackberries",
                 "--west-indian-cherry",
-                "--coconut-meat--or--pitaya-dragonfruit",
-                "--coconut-meat-or--pitaya");
+                "--coconut-meat-or-pitaya-dragonfruit",
+                "--coconut-meat-or-pitaya");
         }
 
         [Fact]

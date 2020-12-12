@@ -244,7 +244,9 @@
         [InlineData(@"cmd --char \x")]
         [InlineData(@"cmd --char \\n")]
         [InlineData(@"cmd --char ~\")]
-        [InlineData(@"cmd --char \u0001")]
+        [InlineData(@"cmd --char \\\")]
+        [InlineData(@"cmd --char 00Z")]
+        [InlineData(@"cmd --char \u000Z")]
         public async Task Should_not_parse_unknown_char_escape_sequence(string args)
         {
             // Arrange

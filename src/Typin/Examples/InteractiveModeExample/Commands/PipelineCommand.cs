@@ -1,9 +1,10 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Utilities;
@@ -32,7 +33,7 @@
                                         .Concat(middlewares.Reverse()),
                              new string[] { "Middleware type name", "Assembly" },
                              footnotes: null,
-                             x => x == null ? "<PipelineTermination>" : (x.FullName == null ? string.Empty : x.FullName.ToString()),
+                             x => x == null ? "<PipelineTermination>" : x.FullName == null ? string.Empty : x.FullName.ToString(),
                              x => x == null ? string.Empty : x.Assembly.ToString());
         }
     }

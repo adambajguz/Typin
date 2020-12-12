@@ -1,4 +1,6 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿using Typin;
+
+namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Threading.Tasks;
@@ -37,7 +39,7 @@
             }
 
             if (isFirst)
-                console.WithForegroundColor(ConsoleColor.Red, () => console.Output.WriteLine("No books"));
+                console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No books"));
 
             return default;
         }

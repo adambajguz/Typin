@@ -11,6 +11,7 @@
     using Typin.Input;
     using Typin.Internal.Extensions;
     using Typin.Internal.Input;
+    using Typin.Utilities;
 
     internal sealed class CliCommandExecutor : ICliCommandExecutor
     {

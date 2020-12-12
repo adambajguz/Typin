@@ -1,6 +1,7 @@
 ﻿namespace Typin.Console
 {
     using System;
+    using Typin.Console.IO;
 
     /// <summary>
     /// Extensions for <see cref="IConsole"/>.
@@ -10,35 +11,91 @@
         /// <summary>
         /// Sets console foreground color, executes specified action, and sets the color back to the original value.
         /// </summary>
-        public static void WithForegroundColor(this IConsole console, ConsoleColor foregroundColor, Action action)
+        public static void WithForegroundColor(this StandardStreamWriter stream, ConsoleColor foregroundColor, Action<StandardStreamWriter> action)
         {
-            ConsoleColor lastColor = console.ForegroundColor;
+            IConsole console = stream.BoundedConsole;
+
+            ConsoleColor lastForegroundColor = console.ForegroundColor;
             console.ForegroundColor = foregroundColor;
 
-            action();
+            action(stream);
 
-            console.ForegroundColor = lastColor;
+            console.ForegroundColor = lastForegroundColor;
         }
 
         /// <summary>
         /// Sets console background color, executes specified action, and sets the color back to the original value.
         /// </summary>
-        public static void WithBackgroundColor(this IConsole console, ConsoleColor backgroundColor, Action action)
+        public static void WithBackgroundColor(this StandardStreamWriter stream, ConsoleColor backgroundColor, Action<StandardStreamWriter> action)
         {
-            ConsoleColor lastColor = console.BackgroundColor;
+            IConsole console = stream.BoundedConsole;
+
+            ConsoleColor lastBackgroundColor = console.BackgroundColor;
             console.BackgroundColor = backgroundColor;
 
-            action();
+            action(stream);
 
-            console.BackgroundColor = lastColor;
+            console.BackgroundColor = lastBackgroundColor;
         }
 
         /// <summary>
         /// Sets console foreground and background colors, executes specified action, and sets the colors back to the original values.
         /// </summary>
-        public static void WithColors(this IConsole console, ConsoleColor foregroundColor, ConsoleColor backgroundColor, Action action)
+        public static void WithColors(this StandardStreamWriter stream, ConsoleColor foregroundColor, ConsoleColor backgroundColor, Action<StandardStreamWriter> action)
         {
-            console.WithForegroundColor(foregroundColor, () => console.WithBackgroundColor(backgroundColor, action));
+            IConsole console = stream.BoundedConsole;
+
+            ConsoleColor lastForegroundColor = console.ForegroundColor;
+            ConsoleColor lastBackgroundColor = console.BackgroundColor;
+            console.ForegroundColor = foregroundColor;
+            console.BackgroundColor = backgroundColor;
+
+            action(stream);
+
+            console.ForegroundColor = lastForegroundColor;
+            console.BackgroundColor = lastBackgroundColor;
+        }
+
+        /// <summary>
+        /// Sets console foreground color, executes specified action, and sets the color back to the original value.
+        /// </summary>
+        public static void WithForegroundColor(this IConsole console, ConsoleColor foregroundColor, Action<IStandardOutputAndError> action)
+        {
+            ConsoleColor lastForegroundColor = console.ForegroundColor;
+            console.ForegroundColor = foregroundColor;
+
+            action(console);
+
+            console.ForegroundColor = lastForegroundColor;
+        }
+
+        /// <summary>
+        /// Sets console background color, executes specified action, and sets the color back to the original value.
+        /// </summary>
+        public static void WithBackgroundColor(this IConsole console, ConsoleColor backgroundColor, Action<IStandardOutputAndError> action)
+        {
+            ConsoleColor lastBackgroundColor = console.BackgroundColor;
+            console.BackgroundColor = backgroundColor;
+
+            action(console);
+
+            console.BackgroundColor = lastBackgroundColor;
+        }
+
+        /// <summary>
+        /// Sets console foreground and background colors, executes specified action, and sets the colors back to the original values.
+        /// </summary>
+        public static void WithColors(this IConsole console, ConsoleColor foregroundColor, ConsoleColor backgroundColor, Action<IStandardOutputAndError> action)
+        {
+            ConsoleColor lastForegroundColor = console.ForegroundColor;
+            ConsoleColor lastBackgroundColor = console.BackgroundColor;
+            console.ForegroundColor = foregroundColor;
+            console.BackgroundColor = backgroundColor;
+
+            action(console);
+
+            console.ForegroundColor = lastForegroundColor;
+            console.BackgroundColor = lastBackgroundColor;
         }
     }
 }

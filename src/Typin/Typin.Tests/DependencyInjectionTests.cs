@@ -8,7 +8,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Debug;
     using Typin.Exceptions;
-    using Typin.HelpWriter;
+    using Typin.Help;
     using Typin.Internal;
     using Typin.Internal.Pipeline;
     using Typin.Modes;

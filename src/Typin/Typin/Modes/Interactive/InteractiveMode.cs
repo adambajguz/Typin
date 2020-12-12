@@ -7,7 +7,7 @@
     using Microsoft.Extensions.Options;
     using Typin.AutoCompletion;
     using Typin.Console;
-    using Typin.Internal;
+    using Typin.Utilities;
 
     /// <summary>
     /// Interactive CLI mode.
@@ -84,25 +84,19 @@
             ConsoleColor commandForeground = _options.CommandForeground;
 
             // Print prompt
-            console.WithForegroundColor(promptForeground, () =>
-            {
-                console.Output.Write(executableName);
-            });
+            console.Output.WithForegroundColor(promptForeground, (output) => output.Write(executableName));
 
             string scope = _options.Scope;
             if (!string.IsNullOrWhiteSpace(scope))
             {
-                console.WithForegroundColor(ConsoleColor.Cyan, () =>
+                console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) =>
                 {
-                    console.Output.Write(' ');
-                    console.Output.Write(scope);
+                    output.Write(' ');
+                    output.Write(scope);
                 });
             }
 
-            console.WithForegroundColor(promptForeground, () =>
-            {
-                console.Output.Write("> ");
-            });
+            console.Output.WithForegroundColor(promptForeground, (output) => output.Write("> "));
 
             // Read user input
             ConsoleColor lastColor = console.ForegroundColor;
