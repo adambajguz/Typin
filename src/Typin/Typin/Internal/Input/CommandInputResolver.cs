@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Typin.Directives;
     using Typin.Input;
     using Typin.Internal.Extensions;
@@ -14,35 +15,37 @@
         /// <summary>
         /// Resolves <see cref="CommandInput"/>.
         /// </summary>
-        public static CommandInput Parse(IReadOnlyList<string> commandLineArguments,
+        public static CommandInput Parse(IEnumerable<string> commandLineArguments,
                                          ISet<string> availableCommandNamesSet)
         {
             int index = 0;
 
+            IReadOnlyList<string> tmp = commandLineArguments.ToList();
+
             IReadOnlyList<DirectiveInput> directives = ParseDirectives(
-                commandLineArguments,
+                tmp,
                 ref index,
                 out bool isDefaultDirectiveSpecified
             );
 
             string? commandName = ParseCommandName(
-                commandLineArguments,
+                tmp,
                 availableCommandNamesSet,
                 isDefaultDirectiveSpecified,
                 ref index
             );
 
             IReadOnlyList<CommandParameterInput> parameters = ParseParameters(
-                commandLineArguments,
+                tmp,
                 ref index
             );
 
             IReadOnlyList<CommandOptionInput> options = ParseOptions(
-                commandLineArguments,
+                tmp,
                 ref index
             );
 
-            return new CommandInput(commandLineArguments, directives, commandName, parameters, options);
+            return new CommandInput(tmp, directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
