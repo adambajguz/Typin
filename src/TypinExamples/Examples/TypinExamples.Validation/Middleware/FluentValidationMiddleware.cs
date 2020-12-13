@@ -28,7 +28,7 @@
                 if (_serviceProvider.GetService(validatorType) is IValidator validator)
                 {
                     IValidationContext validationContext = new ValidationContext<ICommand>(context.Command);
-                    ValidationResult validationResult = await validator.ValidateAsync(validationContext);
+                    ValidationResult validationResult = await validator.ValidateAsync(validationContext, cancellationToken);
 
                     if (!validationResult.IsValid)
                     {
