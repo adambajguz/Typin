@@ -65,9 +65,17 @@ else
                 <TabContainer>
                     <Tab Text="Terminal">
                         <TabContent>
-                            <button type="button" class="button primary outline icon" @onclick="TerminateTerminal">
-                                <img src="https://icongr.am/feather/file.svg?size=16&amp;color=ffffff" alt="icon">
-                            </button>
+                            <div class="pull-right">
+                                <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
+                                    ⇩
+                                </button>
+                                <button type="button" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
+                                    Clear
+                                </button>
+                                <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
+                                    Restart
+                                </button>
+                            </div>
                         </TabContent>
                         <ChildContent>
                             <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance" @ref="XTermInstance" />
@@ -94,6 +102,8 @@ else
 
     [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
 
+    [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
+
     protected override void OnInitialized()
     {
         Descriptor ??= GetDescriptor();
@@ -109,9 +119,25 @@ else
         return descriptor;
     }
 
-    async Task TerminateTerminal()
+    async Task TerminateTerminalAsync()
     {
         if (XTermInstance is not null)
             await XTermInstance.TerminateTerminal();
+    }
+
+    async Task ClearTerminalAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ClearAsync();
+        }
+    }
+
+    async Task ScrollToBottomAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ScrollToBottomAsync();
+        }
     }
 }
