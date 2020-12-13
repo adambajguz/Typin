@@ -13,3 +13,20 @@
         </div>
     </div>
 </section>
+
+@code
+{
+    [Inject] private IToastService ToastService { get; init; } = default!;
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ToastService.ShowInfo("I'm an INFO message", "Welcome");
+            ToastService.ShowSuccess("I'm an success message", "Welcome");
+            ToastService.ShowWarning("I'm an warning message", "Welcome");
+            ToastService.ShowError("I'm an error message", "Welcome");
+        }
+    }
+}

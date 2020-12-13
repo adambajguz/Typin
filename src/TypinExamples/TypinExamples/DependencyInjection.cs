@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net.Http;
+    using Blazored.Toast;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IWebAssemblyHostEnvironment environment)
         {
             services.AddOptions();
+            services.AddBlazoredToast();
 
             services.AddWebWorkers()
                     .RegisterCommandHandler<ClearCommand, ClearCommand.Handler>()

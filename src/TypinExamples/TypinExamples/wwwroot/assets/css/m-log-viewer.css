@@ -6,6 +6,7 @@
         font-family: var(--font-family-mono);
     }
 
+    /*Text*/
     .m-log-viewer .text-ltrace {
         color: #c0dddb;
         font-weight: bold;
@@ -33,5 +34,36 @@
 
     .m-log-viewer .text-lcrit {
         color: #c400c4;
+        font-weight: bold;
+    }
+
+    /*BG*/
+    .m-log-viewer .bg-ltrace {
+        background-color: #c0dddb;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .bg-ldbg {
+        background-color: #21daff;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .bg-linfo {
+        background-color: #22E51B;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .bg-lwrn {
+        background-color: #e3eb25;
+        font-weight: bold;
+    }
+
+    .m-log-viewer .bg-lerr {
+        background-color: #ff3333;
+        font-weight: bold;
+    }
+
+    .m-log-viewer.bg-lcrit {
+        background-color: #c400c4;
         font-weight: bold;
     }

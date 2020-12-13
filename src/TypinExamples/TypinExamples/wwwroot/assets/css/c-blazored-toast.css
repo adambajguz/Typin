@@ -1,0 +1,22 @@
+﻿.blazored-toast {
+    -webkit-box-shadow: 1px 1px 6px 0 rgba(0,0,0,0.7) !important;
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.7) !important;
+    box-shadow: 1px 1px 6px 0 rgba(0,0,0,0.7) !important;
+    padding: 0.5rem .75rem 1rem 1.25rem !important;
+}
+
+    .blazored-toast > div:first-child:not(:last-child) {
+        margin-bottom: 4px !important;
+    }
+
+    .blazored-toast .blazored-toast-body .blazored-toast-header h5 {
+        line-height: 24px !important;
+    }
+
+    .blazored-toast .blazored-toast-message {
+        font-size: calc(var(--font-size) * var(--font-size-small-multiplier)) !important;
+    }
+
+    .blazored-toast .blazored-toast-body .blazored-toast-header .blazored-toast-close {
+        padding: .8rem 1.2rem !important;
+    }

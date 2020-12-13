@@ -1,5 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
+@using Blazored.Toast.Configuration
+
+<BlazoredToasts Position="ToastPosition.TopRight"
+                IconType="IconType.FontAwesome"
+                Timeout="60"
+                ShowProgressBar="false"
+
+                InfoIcon=""
+                SuccessIcon=""
+                ErrorIcon=""
+                WarningIcon=""
+
+                InfoClass="bg-accent"
+                SuccessClass="bg-primary"
+                ErrorClass="bg-error"
+                WarningClass="bg-warning"
+
+                RemoveToastsOnNavigation="false" />
+
 <div class="container container-bg">
     <PageHeader />
 
