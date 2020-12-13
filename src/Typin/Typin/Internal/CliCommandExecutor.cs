@@ -41,14 +41,11 @@
         {
             _logger.LogInformation("Executing command '{CommandLineArguments}'.", commandLineArguments);
 
-            int exitCode;
-            Guid cliContextId;
-
             using (IServiceScope serviceScope = _serviceScopeFactory.CreateScope())
             {
                 IServiceProvider provider = serviceScope.ServiceProvider;
                 ICliContext cliContext = provider.GetRequiredService<ICliContext>();
-                cliContextId = cliContext.Id;
+                Guid cliContextId = cliContext.Id;
 
                 _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContextId);
 
@@ -62,22 +59,30 @@
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogDebug("Exception occured. Trying to find exception handler.");
+
                     IEnumerable<ICliExceptionHandler> exceptionHandlers = provider.GetServices<ICliExceptionHandler>();
                     foreach (ICliExceptionHandler handler in exceptionHandlers)
                     {
                         if (handler.HandleException(ex))
+                        {
+                            _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
+
                             return ExitCodes.FromException(ex);
+                        }
                     }
+
+                    _logger.LogCritical(ex, "Unhandled exception during command execution.");
 
                     throw;
                 }
+                finally
+                {
+                    _logger.LogDebug("Disposed scope with CliContext {CliContextId}.", cliContextId);
+                }
 
-                exitCode = cliContext.ExitCode ?? ExitCodes.Error;
+                return cliContext.ExitCode ?? ExitCodes.Error;
             }
-
-            _logger.LogDebug("Disposed scope with CliContext {CliContextId} (exit code is {ExitCode}).", cliContextId, exitCode);
-
-            return exitCode;
         }
 
         private async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)

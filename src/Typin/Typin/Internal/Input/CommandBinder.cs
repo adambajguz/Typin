@@ -58,7 +58,7 @@
 
             // Ensure all inputs were bound
             if (remainingInputs > 0)
-                throw ArgumentBindingExceptions.UnrecognizedParametersProvided(parameterInputs.TakeLast(remainingParameters));
+                throw ArgumentBindingExceptions.UnrecognizedParametersProvided(parameterInputs.TakeLast(remainingInputs));
         }
 
         /// <summary>

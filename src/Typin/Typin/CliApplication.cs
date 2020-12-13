@@ -162,12 +162,20 @@ namespace Typin
             // This may throw pre-execution resolving exceptions which are useful only to the end-user
             catch (TypinException ex)
             {
-                IEnumerable<ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
+                _logger.LogDebug(ex, $"{nameof(TypinException)} occured. Trying to find exception handler.");
+
+                IEnumerable <ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
                 foreach (ICliExceptionHandler handler in exceptionHandlers)
                 {
                     if (handler.HandleException(ex))
+                    {
+                        _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
+
                         break;
+                    }
                 }
+
+                _logger.LogCritical(ex, "Unhandled Typin exception caused app to terminate.");
 
                 return ExitCodes.FromException(ex);
             }
@@ -177,7 +185,7 @@ namespace Typin
             // because we still want the IDE to show them to the developer.
             catch (Exception ex) //when (!Debugger.IsAttached)
             {
-                _logger.LogError(ex, "Unhandled exception caused app to stop.");
+                _logger.LogCritical(ex, "Unhandled exception caused app to terminate.");
 
                 _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
 
