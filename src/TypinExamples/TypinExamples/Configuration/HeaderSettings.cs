@@ -15,9 +15,14 @@
         public string? Heading { get; init; }
 
         /// <summary>
+        /// Subheading lines with markdown formatting.
+        /// </summary>
+        public string[]? Subheading { get; init; }
+
+        /// <summary>
         /// Subheading with markdown formatting.
         /// </summary>
-        public string? Subheading { get; init; }
+        public string SubheadingText => Subheading is null ? string.Empty : string.Join("\n", Subheading);
 
         /// <summary>
         /// Links colleciton.

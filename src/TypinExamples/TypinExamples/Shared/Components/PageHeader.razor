@@ -8,7 +8,7 @@
             </div>
 
             <div class="header-heading">@Markdown.ToHtml(HeaderSettings.Heading ?? string.Empty)</div>
-            <div class="header-subheading">@Markdown.ToHtml(HeaderSettings.Subheading ?? string.Empty)</div>
+            <div class="header-subheading">@Markdown.ToHtml(HeaderSettings.SubheadingText ?? string.Empty)</div>
         </div>
         <nav class="tabs is-center is-full">
             @foreach (LinkDefinition link in HeaderSettings.Links)
