@@ -16,9 +16,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="EnvironmentVariableFallbackProvider"/>.
         /// </summary>
-        public EnvironmentVariableFallbackProvider(ICliContext cliContext)
+        public EnvironmentVariableFallbackProvider(IEnvironmentVariablesAccessor environmentVariablesAccessor)
         {
-            _environmentVariables = cliContext.EnvironmentVariables;
+            _environmentVariables = environmentVariablesAccessor.EnvironmentVariables;
         }
 
         /// <inheritdoc/>

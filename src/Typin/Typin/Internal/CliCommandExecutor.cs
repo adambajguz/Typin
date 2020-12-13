@@ -15,18 +15,16 @@
 
     internal sealed class CliCommandExecutor : ICliCommandExecutor
     {
-        /// <summary>
-        /// Service scope factory.
-        /// </summary>
-        /// <remarks>
-        /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
-        /// </remarks>
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly ILogger _logger;
 
-        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory, ILogger<CliCommandExecutor> logger)
+        public CliCommandExecutor(IServiceScopeFactory serviceScopeFactory,
+                                  IRootSchemaAccessor rootSchemaAccessor,
+                                  ILogger<CliCommandExecutor> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _rootSchemaAccessor = rootSchemaAccessor;
             _logger = logger;
         }
 
@@ -41,14 +39,17 @@
         /// <inheritdoc/>
         public async Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments)
         {
-            _logger.LogInformation("Executing command '{CommandLineArguments}'", commandLineArguments);
+            _logger.LogInformation("Executing command '{CommandLineArguments}'.", commandLineArguments);
 
             using (IServiceScope serviceScope = _serviceScopeFactory.CreateScope())
             {
                 IServiceProvider provider = serviceScope.ServiceProvider;
                 ICliContext cliContext = provider.GetRequiredService<ICliContext>();
+                Guid cliContextId = cliContext.Id;
 
-                CommandInput input = CommandInputResolver.Parse(commandLineArguments, cliContext.RootSchema.GetCommandNames());
+                _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContextId);
+
+                CommandInput input = CommandInputResolver.Parse(commandLineArguments, _rootSchemaAccessor.RootSchema.GetCommandNames());
                 ((CliContext)cliContext).Input = input;
 
                 try
@@ -58,21 +59,33 @@
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogDebug("Exception occured. Trying to find exception handler.");
+
                     IEnumerable<ICliExceptionHandler> exceptionHandlers = provider.GetServices<ICliExceptionHandler>();
                     foreach (ICliExceptionHandler handler in exceptionHandlers)
                     {
                         if (handler.HandleException(ex))
+                        {
+                            _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
+
                             return ExitCodes.FromException(ex);
+                        }
                     }
+
+                    _logger.LogCritical(ex, "Unhandled exception during command execution.");
 
                     throw;
                 }
+                finally
+                {
+                    _logger.LogDebug("Disposed scope with CliContext {CliContextId}.", cliContextId);
+                }
 
-                return cliContext.ExitCode ??= ExitCodes.Error;
+                return cliContext.ExitCode ?? ExitCodes.Error;
             }
         }
 
-        private static async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)
+        private async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)
         {
             IReadOnlyCollection<Type> middlewareTypes = context.Configuration.MiddlewareTypes;
 
@@ -82,7 +95,7 @@
             foreach (Type middlewareType in middlewareTypes.Reverse())
             {
                 IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
-                next = instance.Next(context, next, cancellationToken);
+                next = instance.Next(context, next, middlewareType, _logger, cancellationToken);
             }
 
             await next();

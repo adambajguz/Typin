@@ -1,8 +1,7 @@
 ### v3.0.0 (xx-Dec-2020)
 
 - Added `Typin.Core` library.
-- Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
-- Advanced interactive input is disabled when input is redirected.
+- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`).
 - Renamed `normal mode` to `direct mode`.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
@@ -15,7 +14,6 @@
 - User middlewares are now executed after command instance creation.
 - Middleware types collection in `ApplicationConfiguration` order was reversed.
 - Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
-- Core middleware execution order has changed: `ResolveCommandSchema` -> `ResolveCommandInstance` -> [User middlewares] -> `HandleSpecialOptions` -> `BindInputAndExecuteCommand`).
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
@@ -26,6 +24,9 @@
 - Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
 - Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolving RootSchema.
 - Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A) during char parsing.
+- Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
+- Advanced interactive input is disabled when input is redirected.
+- Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
 
 ### v2.1.1 (18-Oct-2020)
 
