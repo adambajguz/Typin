@@ -78,7 +78,7 @@
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
-                "named", "<param>", "[-a]", "[-b]", "[-c]", "[--option \"foo\"]"
+                "named", "<param>", "(-a)", "(-b)", "(-c)", "(--option \"foo\")"
             );
         }
 
@@ -101,6 +101,33 @@
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContain("Attach debugger to PID");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll(
+                "[preview] [debug]", "named", "<param>", "(-a)", "(-b)", "(-c)", "(--option \"foo\")"
+            );
+        }
+
+        [Fact]
+        public async Task Preview_directive_can_be_specified_after_debug_directive()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<NamedCommand>()
+                .UseInteractiveMode()
+                .AddDirective<PreviewDirective>()
+                .AddDirective<FakeDebugDirective>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                new[] { "[debug]", "[preview]", "named", "param", "-abc", "--option", "foo" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().NotBeNullOrWhiteSpace();
+            stdOut.GetString().Should().Contain("Attach debugger to PID");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+            stdOut.GetString().Should().ContainAll(
+                "[debug] [preview]", "named", "<param>", "(-a)", "(-b)", "(-c)", "(--option \"foo\")"
+            );
         }
 
         [Fact]

@@ -21,13 +21,13 @@
         {
             return await new CliApplicationBuilder()
                 .ConfigureServices(GetServiceCollection)
-                .AddCommandsFromThisAssembly()
+               // .AddCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseDirectMode(true)
-                .UseInteractiveMode()
+               // .UseInteractiveMode()
                 .ConfigureLogging(cfg =>
                 {
                     cfg.SetMinimumLevel(LogLevel.Debug);

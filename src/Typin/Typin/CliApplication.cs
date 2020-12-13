@@ -12,8 +12,6 @@ namespace Typin
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
-    using Typin.Internal.Schemas;
-    using Typin.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -43,9 +41,10 @@ namespace Typin
             _environmentVariablesAccessor = environmentVariablesAccessor;
             _metadata = metadata;
             _console = console;
+
+            _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
             _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
-            _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
         }
 
         /// <summary>
@@ -147,7 +146,7 @@ namespace Typin
                 _logger.LogInformation("Starting CLI application...");
                 _console.ResetColor();
 
-                ((EnvironmentVariablesAccessor)_environmentVariablesAccessor).EnvironmentVariables = environmentVariables;
+                _environmentVariablesAccessor.EnvironmentVariables = environmentVariables;
 
                 //TODO: OnStart()
 

@@ -1,7 +1,6 @@
 ﻿namespace Typin
 {
     using System.Collections.Generic;
-    using Typin.Schemas;
 
     /// <summary>
     /// Service that can be used to access environment variables passed to CliApplication.RunAsync.
