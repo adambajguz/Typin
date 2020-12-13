@@ -13,6 +13,7 @@
 
   <PropertyGroup>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
+    <UserSecretsId>80f789dd-a769-4b6c-ba5b-517081432d5c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

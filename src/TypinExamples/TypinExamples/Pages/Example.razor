@@ -36,23 +36,38 @@ else
         <div class="row">
             <div class="col">
                 <TabContainer>
-                    <Tab Text="Quick start">
-                        @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-alt"></i> Quick start
+                        </TabContent>
+                        <ChildContent>
+                            @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                        </ChildContent>
                     </Tab>
-                    <Tab Text="Files">
-                        <section id="features">
-                            <div class="card">
-                                <ul>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                </ul>
-                            </div>
-                        </section>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-folder"></i> Code
+                        </TabContent>
+                        <ChildContent>
+                            <section id="features">
+                                <div class="card">
+                                    <ul>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                    </ul>
+                                </div>
+                            </section>
+                        </ChildContent>
                     </Tab>
-                    <Tab Text="Logs">
-                        <LogViewer @ref="LogViewerInstance" />
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-contract"></i> Logs
+                        </TabContent>
+                        <ChildContent>
+                            <LogViewer @ref="LogViewerInstance" />
+                        </ChildContent>
                     </Tab>
                 </TabContainer>
             </div>
@@ -63,17 +78,18 @@ else
         <div class="row">
             <div class="col">
                 <TabContainer>
-                    <Tab Text="Terminal">
+                    <Tab>
                         <TabContent>
+                            <i class="fas fa-terminal"></i> Terminal
                             <div class="pull-right">
                                 <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
-                                    ⇩
+                                    <i class="fas fa-caret-down"></i>
                                 </button>
-                                <button type="button" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
-                                    Clear
+                                <button type="button" title="Clear screen" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
+                                    <i class="fas fa-eraser"></i>
                                 </button>
                                 <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
-                                    Restart
+                                    <i class="fas fa-power-off"></i> Restart
                                 </button>
                             </div>
                         </TabContent>

@@ -1,5 +1,6 @@
-﻿@import "../frameworks/chota/dist/chota.min.css";
-@import "../frameworks/xterm/xterm.min.css";
+﻿@import "../libraries/chota/dist/chota.min.css";
+@import "../libraries/xterm/xterm.min.css";
+@import "../libraries/font-awesome/css/all.min.css";
 
 @import "c-dots-wave-loader.css";
 @import "code-highlight.css";

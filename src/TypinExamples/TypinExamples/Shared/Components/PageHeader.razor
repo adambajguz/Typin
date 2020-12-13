@@ -11,9 +11,9 @@
             <div class="header-subheading">@Markdown.ToHtml(HeaderSettings.Subheading ?? string.Empty)</div>
         </div>
         <nav class="tabs is-center is-full">
-            @foreach (var link in HeaderSettings.Links)
+            @foreach (LinkDefinition link in HeaderSettings.Links)
             {
-                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" />
+                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle"/>
             }
         </nav>
     </div>

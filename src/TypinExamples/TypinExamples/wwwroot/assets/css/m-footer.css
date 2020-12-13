@@ -9,6 +9,10 @@ footer.page-footer > div.footer-authors {
     font-size: 1em;
 }
 
+footer .text-separator {
+    padding: 0 .6rem;
+}
+
 /*Sticky footer*/
 app {
     display: flex;
