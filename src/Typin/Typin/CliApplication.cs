@@ -1,8 +1,9 @@
-﻿namespace Typin
+namespace Typin
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@
     using Typin.Exceptions;
     using Typin.Internal;
     using Typin.Internal.Schemas;
+    using Typin.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -20,28 +22,25 @@
     public sealed class CliApplication
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly CliContextFactory _cliContextFactory;
 
-        private readonly ApplicationConfiguration _configuration;
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
         private readonly CliApplicationLifetime _applicationLifetime;
+        private readonly EnvironmentVariablesAccessor _environmentVariablesAccessor;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
         internal CliApplication(IServiceProvider serviceProvider,
-                                CliContextFactory cliContextFactory,
                                 IConsole console,
-                                ApplicationMetadata metadata,
-                                ApplicationConfiguration configuration)
+                                EnvironmentVariablesAccessor environmentVariablesAccessor,
+                                ApplicationMetadata metadata)
         {
             _serviceProvider = serviceProvider;
-            _cliContextFactory = cliContextFactory;
 
-            _configuration = configuration;
+            _environmentVariablesAccessor = environmentVariablesAccessor;
             _metadata = metadata;
             _console = console;
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
@@ -130,6 +129,7 @@
             return await RunAsync(commandLineArguments, environmentVariables);
         }
 
+
         /// <summary>
         /// Runs the application with specified command line arguments and environment variables, and returns the exit code.
         /// </summary>
@@ -138,18 +138,16 @@
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {
             try
             {
-                _console.ResetColor();
-                _console.ForegroundColor = ConsoleColor.Gray;
                 _logger.LogInformation("Starting CLI application...");
+                _console.ResetColor();
 
-                _logger.LogDebug("Resolving root schema.");
-                _cliContextFactory.EnvironmentVariables = environmentVariables;
-                _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes, _configuration.ModeTypes).Resolve();
+                ((EnvironmentVariablesAccessor)_environmentVariablesAccessor).EnvironmentVariables = environmentVariables;
 
                 //TODO: OnStart()
 

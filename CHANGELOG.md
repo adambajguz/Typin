@@ -26,6 +26,7 @@
 - Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A) during char parsing.
 - Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
+- Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
 
 ### v2.1.1 (18-Oct-2020)
 
