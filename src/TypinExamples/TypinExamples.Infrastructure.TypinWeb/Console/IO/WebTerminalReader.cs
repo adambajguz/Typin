@@ -57,7 +57,7 @@
             ValidateReadParameters(buffer, offset, count);
 
 #if DEBUG
-            Console.WriteLine("Read");
+            //Console.WriteLine("Read");
 #endif
             f = !f;
 
@@ -84,7 +84,7 @@
             try
             {
 #if DEBUG
-                Console.WriteLine("ReadAsyncBuf");
+               // Console.WriteLine("ReadAsyncBuf");
 #endif
                 f = !f;
 

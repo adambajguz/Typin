@@ -24,3 +24,7 @@
         header > .hero > .logo .header-subheading {
             font-weight: 100;
         }
+
+        header > .hero > .logo .header-subheading > p {
+            margin-bottom: .4rem;
+        }

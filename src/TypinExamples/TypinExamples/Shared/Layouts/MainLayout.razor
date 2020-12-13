@@ -2,15 +2,15 @@
 
 @using Blazored.Toast.Configuration
 
-<BlazoredToasts Position="ToastPosition.TopRight"
+<BlazoredToasts Position="ToastPosition.TopLeft"
                 IconType="IconType.FontAwesome"
-                Timeout="10"
+                Timeout="5"
                 ShowProgressBar="true"
                 InfoClass="bg-accent"
                 SuccessClass="bg-primary"
                 ErrorClass="bg-error"
                 WarningClass="bg-warning"
-                RemoveToastsOnNavigation="false" />
+                RemoveToastsOnNavigation="true" />
 
 @*
     InfoIcon="fas fa-info fa-xs"
@@ -29,3 +29,19 @@
 
 <PageFooter />
 <TopScroller />
+
+@code
+{
+    [Inject] private IToastService ToastService { get; init; } = default!;
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            RenderFragment message = @<text><span>Welcome to TypinExamples</span> <NavLinkExtended href="example/hello-world" class="button is-small primary text-uppercase">Start <i class="fas fa-caret-right"></i></NavLinkExtended></text>;
+
+            ToastService.ShowInfo(message, "Hello, World!");
+        }
+    }
+}
