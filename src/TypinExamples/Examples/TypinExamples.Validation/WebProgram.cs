@@ -6,7 +6,7 @@
     using TypinExamples.Infrastructure.TypinWeb.Configuration;
     using TypinExamples.TypinWeb.Extensions;
 
-    public static class WenProgram
+    public static class WebProgram
     {
         public static async Task<int> WebMain(WebCliConfiguration configuration, string commandLine, IReadOnlyDictionary<string, string> environmentVariables)
         {

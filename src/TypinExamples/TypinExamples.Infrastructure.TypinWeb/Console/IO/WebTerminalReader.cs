@@ -50,15 +50,24 @@
         {
             throw new IOException($"{nameof(WebTerminalReader)} can flush.");
         }
-
+        bool f = false;
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
+            ValidateReadParameters(buffer, offset, count);
+
 #if DEBUG
             Console.WriteLine("Read");
 #endif
-            buffer[0] = (byte)'\r';
-            buffer[1] = (byte)'\n';
+            f = !f;
+
+            if (f)
+            {
+                buffer[offset + 0] = (byte)'\r';
+                buffer[offset + 1] = (byte)'\n';
+
+                return 2;
+            }
 
             return 0;
         }
@@ -66,22 +75,37 @@
         /// <inheritdoc/>
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-#if DEBUG
-            Console.WriteLine("ReadAsyncBuf");
-#endif
-            buffer[0] = (byte)'\r';
-            buffer[1] = (byte)'\n';
+            ValidateReadParameters(buffer, offset, count);
 
-            return Task<int>.FromResult(0);
-        }
+            // If cancellation was requested, bail early
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled<int>(cancellationToken);
 
-        /// <inheritdoc/>
-        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-        {
+            try
+            {
 #if DEBUG
-            Console.WriteLine("ReadAsyncMem");
+                Console.WriteLine("ReadAsyncBuf");
 #endif
-            return base.ReadAsync(buffer, cancellationToken);
+                f = !f;
+
+                if (f)
+                {
+                    buffer[offset + 0] = (byte)'\r';
+                    buffer[offset + 1] = (byte)'\n';
+
+                    return Task<int>.FromResult(2);
+                }
+
+                return Task<int>.FromResult(0);
+            }
+            catch (OperationCanceledException)
+            {
+                return Task.FromCanceled<int>(cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException<int>(exception);
+            }
         }
 
         /// <inheritdoc/>
@@ -106,6 +130,21 @@
         public override void Close()
         {
             base.Close();
+        }
+
+        private static void ValidateReadParameters(byte[] buffer, int offset, int count)
+        {
+            if (buffer is null)
+                throw new ArgumentNullException("buffer", "Buffer cannot be null.");
+
+            if (count < 0)
+                throw new ArgumentOutOfRangeException("count", "Non-negative number required.");
+
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException("offset", "Non-negative number required.");
+
+            if ((uint)count > buffer.Length - offset)
+                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
         }
     }
 }
