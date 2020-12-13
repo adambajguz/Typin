@@ -54,10 +54,34 @@
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
+#if DEBUG
+            Console.WriteLine("Read");
+#endif
             buffer[0] = (byte)'\r';
             buffer[1] = (byte)'\n';
 
             return 0;
+        }
+
+        /// <inheritdoc/>
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+#if DEBUG
+            Console.WriteLine("ReadAsyncBuf");
+#endif
+            buffer[0] = (byte)'\r';
+            buffer[1] = (byte)'\n';
+
+            return Task<int>.FromResult(0);
+        }
+
+        /// <inheritdoc/>
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+#if DEBUG
+            Console.WriteLine("ReadAsyncMem");
+#endif
+            return base.ReadAsync(buffer, cancellationToken);
         }
 
         /// <inheritdoc/>
