@@ -33,7 +33,7 @@
         private static void WriteCommandLineInput(IConsole console, CommandInput input)
         {
             // Directives
-            console.Output.Write('{');
+            console.Output.Write('[');
             foreach (DirectiveInput directive in input.Directives)
             {
                 console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
@@ -45,7 +45,7 @@
                 if (directive != input.Directives[input.Directives.Count - 1])
                     console.Output.Write(' ');
             }
-            console.Output.Write('}');
+            console.Output.Write(']');
             console.Output.Write(' ');
 
             // Command name
@@ -70,7 +70,7 @@
             // Options
             foreach (CommandOptionInput option in input.Options)
             {
-                console.Output.Write('[');
+                console.Output.Write('(');
 
                 console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
                 {
@@ -85,7 +85,7 @@
                     }
                 });
 
-                console.Output.Write(']');
+                console.Output.Write(')');
                 console.Output.Write(' ');
             }
 

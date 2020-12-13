@@ -185,13 +185,13 @@
                                                    nameof(LoggerFactory),
                                                    nameof(DebugLoggerProvider),
                                                    nameof(EnvironmentVariableFallbackProvider),
-                                                   nameof(BindInputAndExecuteCommand),
+                                                   nameof(BindInput),
+                                                   nameof(ExecuteCommand),
                                                    nameof(ExecuteDirectivesSubpipeline),
                                                    nameof(HandleSpecialOptions),
                                                    nameof(DefaultExceptionHandler),
                                                    nameof(DefaultHelpWriter),
-                                                   nameof(ResolveCommandInstance),
-                                                   nameof(ResolveCommandSchema),
+                                                   nameof(ResolveCommandSchemaAndInstance),
                                                    nameof(InitializeDirectives));
 
             stdOut.GetString().Should().NotContainAll("-h", "--help");

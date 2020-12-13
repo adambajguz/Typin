@@ -56,7 +56,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder()
         {
-            this.AddAfterInputParseMiddlewares();
+            this.AddBeforeUserMiddlewares();
         }
 
         #region Directives

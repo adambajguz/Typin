@@ -2,18 +2,18 @@
 {
     internal static class CorePipelineCliBuilderExtensions
     {
-        public static CliApplicationBuilder AddAfterInputParseMiddlewares(this CliApplicationBuilder builder)
+        public static CliApplicationBuilder AddBeforeUserMiddlewares(this CliApplicationBuilder builder)
         {
-            return builder.UseMiddleware<ResolveCommandSchema>()
-                          .UseMiddleware<ResolveCommandInstance>()
-                          .UseMiddleware<InitializeDirectives>();
+            return builder.UseMiddleware<ResolveCommandSchemaAndInstance>()
+                          .UseMiddleware<InitializeDirectives>()
+                          .UseMiddleware<ExecuteDirectivesSubpipeline>()
+                          .UseMiddleware<HandleSpecialOptions>()
+                          .UseMiddleware<BindInput>();
         }
 
         public static CliApplicationBuilder AddAfterUserMiddlewares(this CliApplicationBuilder builder)
         {
-            return builder.UseMiddleware<HandleSpecialOptions>()
-                          .UseMiddleware<ExecuteDirectivesSubpipeline>()
-                          .UseMiddleware<BindInputAndExecuteCommand>();
+            return builder.UseMiddleware<ExecuteCommand>();
         }
     }
 }

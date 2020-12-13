@@ -452,7 +452,7 @@
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().ContainAll($"This application is running in '{typeof(DirectMode).FullName}' mode.",
-                                                   $"directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}' can be executed only from the following modes");
+                                                   $"Directive '{typeof(CustomInteractiveModeOnlyDirective).FullName}'");
         }
 
         //[Fact]
