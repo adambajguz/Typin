@@ -12,6 +12,7 @@ namespace Typin
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
+    using Typin.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -24,6 +25,7 @@ namespace Typin
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly CliApplicationLifetime _applicationLifetime;
         private readonly EnvironmentVariablesAccessor _environmentVariablesAccessor;
         private readonly ILogger _logger;
@@ -44,6 +46,7 @@ namespace Typin
 
             _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
+            _rootSchemaAccessor = serviceProvider.GetRequiredService<IRootSchemaAccessor>();
             _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
         }
 
@@ -147,6 +150,8 @@ namespace Typin
                 _console.ResetColor();
 
                 _environmentVariablesAccessor.EnvironmentVariables = environmentVariables;
+
+                RootSchema rootSchema = _rootSchemaAccessor.RootSchema; //Force root schema to resolve. TODO: find a solution to enable lazy root schema resolving.
 
                 //TODO: OnStart()
 
