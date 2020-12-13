@@ -10,13 +10,13 @@
     using Typin.OptionFallback;
     using Typin.Schemas;
 
-    internal sealed class BindInputAndExecuteCommand : IMiddleware
+    internal sealed class BindInput : IMiddleware
     {
         private readonly IOptionFallbackProvider _optionFallbackProvider;
         private readonly ICliApplicationLifetime _applicationLifetime;
 
-        public BindInputAndExecuteCommand(IOptionFallbackProvider optionFallbackProvider,
-                                          ICliApplicationLifetime applicationLifetime)
+        public BindInput(IOptionFallbackProvider optionFallbackProvider,
+                         ICliApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime;
             _optionFallbackProvider = optionFallbackProvider;
@@ -37,11 +37,6 @@
             ICommand instance = context.Command;
             commandSchema.BindParameters(instance, input.Parameters);
             commandSchema.BindOptions(instance, input.Options, _optionFallbackProvider);
-
-            // Execute command
-            await instance.ExecuteAsync(context.Console);
-
-            context.ExitCode ??= ExitCodes.Success;
 
             await next();
         }

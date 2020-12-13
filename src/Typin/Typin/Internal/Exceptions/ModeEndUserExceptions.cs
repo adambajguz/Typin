@@ -35,7 +35,7 @@
                 builder.AppendLine();
                 builder.AppendLine($"Command '{command.Type.FullName}' supports modes:");
 
-                foreach (Type mode in command.SupportedModes!)
+                foreach (Type mode in command.SupportedModes)
                 {
                     builder.AppendLine($"  - '{mode.FullName}'");
                 }
@@ -46,7 +46,7 @@
                 builder.AppendLine();
                 builder.AppendLine($"Command '{command.Type.FullName}' cannot run in modes:");
 
-                foreach (Type mode in command.ExcludedModes!)
+                foreach (Type mode in command.ExcludedModes)
                 {
                     builder.AppendLine($"  - '{mode.FullName}'");
                 }
@@ -59,11 +59,27 @@
         {
             var builder = new StringBuilder();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
-            builder.AppendLine($"However, directive '{directive.Type.FullName}' can be executed only from the following modes:");
 
-            foreach (Type mode in directive.SupportedModes!)
+            if (directive.SupportedModes != null)
             {
-                builder.AppendLine($"  - '{mode.FullName}'");
+                builder.AppendLine();
+                builder.AppendLine($"Directive '{directive.Type.FullName}' supports modes:");
+
+                foreach (Type mode in directive.SupportedModes)
+                {
+                    builder.AppendLine($"  - '{mode.FullName}'");
+                }
+            }
+
+            if (directive.ExcludedModes != null)
+            {
+                builder.AppendLine();
+                builder.AppendLine($"Directive '{directive.Type.FullName}' cannot run in modes:");
+
+                foreach (Type mode in directive.ExcludedModes)
+                {
+                    builder.AppendLine($"  - '{mode.FullName}'");
+                }
             }
 
             return new TypinException(builder.ToString());

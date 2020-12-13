@@ -5,6 +5,7 @@
 
     /// <summary>
     /// Option fallback value provider.
+    /// Be careful when passing ICliContext to IOptionFallbackProvider implementation when it is registered as singleton.
     /// </summary>
     public interface IOptionFallbackProvider : IEnumerable<KeyValuePair<string, string>>, IEnumerable<KeyValuePair<(string, Type), string>>
     {

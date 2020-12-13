@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
     using Typin.Console;
@@ -40,10 +41,10 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext, IConsole console, ICliApplicationLifetime applicationLifetime)
+        public DefaultHelpWriter(ICliContext cliContext, ICliApplicationLifetime applicationLifetime)
         {
             _context = cliContext;
-            _console = console;
+            _console = cliContext.Console;
             _applicationLifetime = applicationLifetime;
         }
 
@@ -407,6 +408,7 @@
         #endregion
 
         #region Command Children
+        [SuppressMessage("Style", "IDE0057:Use range operator")]
         private void WriteCommandChildren(CommandSchema command,
                                           IEnumerable<CommandSchema> childCommands)
         {

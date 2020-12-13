@@ -56,7 +56,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder()
         {
-            this.AddAfterInputParseMiddlewares();
+            this.AddBeforeUserMiddlewares();
         }
 
         #region Directives
@@ -558,16 +558,28 @@ namespace Typin
                                                              _startupMode!,
                                                              _serviceCollection);
 
-            var cliContextFactory = new CliContextFactory(metadata, configuration, _console);
+            var environmentVariablesAccessor = new EnvironmentVariablesAccessor();
 
             // Add core services
             _serviceCollection.AddOptions();
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
             _serviceCollection.AddSingleton(typeof(IConsole), _console);
-            _serviceCollection.AddScoped(typeof(ICliContext), (provider) => cliContextFactory.Create(provider));
+            _serviceCollection.AddSingleton(typeof(IEnvironmentVariablesAccessor), environmentVariablesAccessor);
+            _serviceCollection.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
             _serviceCollection.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
+
+            _serviceCollection.AddScoped(typeof(ICliContext), (provider) =>
+            {
+                IRootSchemaAccessor rootSchemaAccessor = provider.GetRequiredService<IRootSchemaAccessor>();
+
+                return new CliContext(metadata,
+                                      configuration,
+                                      rootSchemaAccessor.RootSchema,
+                                      environmentVariablesAccessor.EnvironmentVariables,
+                                      _console);
+            });
 
             _serviceCollection.AddLogging(cfg =>
             {
@@ -578,7 +590,7 @@ namespace Typin
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            return new CliApplication(serviceProvider, cliContextFactory, _console, metadata, configuration);
+            return new CliApplication(serviceProvider, _console, environmentVariablesAccessor, metadata);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
