@@ -5,6 +5,7 @@
 
     /// <summary>
     /// CLI command executor.
+    /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
     /// </summary>
     public interface ICliCommandExecutor
     {

@@ -17,6 +17,8 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
+            console.ForegroundColor = ConsoleColor.Gray;
+
             console.Output.WithBackgroundColor(ConsoleColor.Magenta, (output) => output.WriteLine("Magenta"));
             console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine("Green"));
             console.Output.WithColors(ConsoleColor.Red, ConsoleColor.Yellow, (output) => output.Write("Red"));

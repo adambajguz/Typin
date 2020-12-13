@@ -1,6 +1,7 @@
 ﻿namespace Typin.Utilities
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Text.RegularExpressions;
 
@@ -36,10 +37,12 @@
             return text.Replace("\t", new string(' ', width));
         }
 
+
         /// <summary>
         /// Convertes escaped char sequence to char.
         /// The following escape sequences are supported: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\')
         /// </summary>
+        [SuppressMessage("Style", "IDE0057:Use range operator")]
         public static char UnescapeChar(string? text)
         {
             if (string.IsNullOrWhiteSpace(text))

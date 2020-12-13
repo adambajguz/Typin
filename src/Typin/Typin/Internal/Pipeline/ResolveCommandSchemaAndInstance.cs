@@ -6,14 +6,16 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
+    using Typin.Directives;
+    using Typin.Input;
     using Typin.Internal;
     using Typin.Schemas;
 
-    internal sealed class ResolveCommandInstance : IMiddleware
+    internal sealed class ResolveCommandSchemaAndInstance : IMiddleware
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public ResolveCommandInstance(IServiceProvider serviceProvider)
+        public ResolveCommandSchemaAndInstance(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
@@ -27,8 +29,23 @@
 
         private int? Execute(CliContext context)
         {
-            // Get command schema from context
-            CommandSchema commandSchema = context.CommandSchema;
+            RootSchema root = context.RootSchema;
+            CommandInput input = context.Input;
+
+            // Try to get the command matching the input or fallback to default
+            bool hasDefaultDirective = input.HasDirective(BuiltInDirectives.Default);
+            CommandSchema commandSchema = root.TryFindCommand(input.CommandName, hasDefaultDirective) ?? StubDefaultCommand.Schema;
+
+            // Forbid to execute real default command in interactive mode without [!] directive.
+            //if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
+            //    context.ModeSwitcher.Current == CliModes.Interactive &&
+            //    command.IsDefault && !hasDefaultDirective)
+            //{
+            //    command = StubDefaultCommand.Schema;
+            //}
+
+            // Update CommandSchema
+            context.CommandSchema = commandSchema;
 
             // Get command instance (also used in help text)
             ICommand instance = GetCommandInstance(commandSchema);

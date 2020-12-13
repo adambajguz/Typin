@@ -1,8 +1,9 @@
-﻿namespace Typin
+namespace Typin
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -11,7 +12,7 @@
     using Typin.Console;
     using Typin.Exceptions;
     using Typin.Internal;
-    using Typin.Internal.Schemas;
+    using Typin.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -20,33 +21,33 @@
     public sealed class CliApplication
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly CliContextFactory _cliContextFactory;
 
-        private readonly ApplicationConfiguration _configuration;
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
         private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly CliApplicationLifetime _applicationLifetime;
+        private readonly EnvironmentVariablesAccessor _environmentVariablesAccessor;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
         internal CliApplication(IServiceProvider serviceProvider,
-                                CliContextFactory cliContextFactory,
                                 IConsole console,
-                                ApplicationMetadata metadata,
-                                ApplicationConfiguration configuration)
+                                EnvironmentVariablesAccessor environmentVariablesAccessor,
+                                ApplicationMetadata metadata)
         {
             _serviceProvider = serviceProvider;
-            _cliContextFactory = cliContextFactory;
 
-            _configuration = configuration;
+            _environmentVariablesAccessor = environmentVariablesAccessor;
             _metadata = metadata;
             _console = console;
-            _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
-            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
+
             _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
+            _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
+            _rootSchemaAccessor = serviceProvider.GetRequiredService<IRootSchemaAccessor>();
+            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
         }
 
         /// <summary>
@@ -130,6 +131,7 @@
             return await RunAsync(commandLineArguments, environmentVariables);
         }
 
+
         /// <summary>
         /// Runs the application with specified command line arguments and environment variables, and returns the exit code.
         /// </summary>
@@ -138,18 +140,18 @@
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {
             try
             {
-                _console.ResetColor();
-                _console.ForegroundColor = ConsoleColor.Gray;
                 _logger.LogInformation("Starting CLI application...");
+                _console.ResetColor();
 
-                _logger.LogDebug("Resolving root schema.");
-                _cliContextFactory.EnvironmentVariables = environmentVariables;
-                _cliContextFactory.RootSchema = new RootSchemaResolver(_configuration.CommandTypes, _configuration.DirectiveTypes, _configuration.ModeTypes).Resolve();
+                _environmentVariablesAccessor.EnvironmentVariables = environmentVariables;
+
+                RootSchema rootSchema = _rootSchemaAccessor.RootSchema; //Force root schema to resolve. TODO: find a solution to enable lazy root schema resolving.
 
                 //TODO: OnStart()
 
@@ -165,12 +167,20 @@
             // This may throw pre-execution resolving exceptions which are useful only to the end-user
             catch (TypinException ex)
             {
+                _logger.LogDebug(ex, $"{nameof(TypinException)} occured. Trying to find exception handler.");
+
                 IEnumerable<ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
                 foreach (ICliExceptionHandler handler in exceptionHandlers)
                 {
                     if (handler.HandleException(ex))
+                    {
+                        _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
+
                         break;
+                    }
                 }
+
+                _logger.LogCritical(ex, "Unhandled Typin exception caused app to terminate.");
 
                 return ExitCodes.FromException(ex);
             }
@@ -180,7 +190,7 @@
             // because we still want the IDE to show them to the developer.
             catch (Exception ex) //when (!Debugger.IsAttached)
             {
-                _logger.LogError(ex, "Unhandled exception caused app to stop.");
+                _logger.LogCritical(ex, "Unhandled exception caused app to terminate.");
 
                 _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
 
