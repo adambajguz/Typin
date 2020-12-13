@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.ExamplesTests.Common\TypinExamples.ExamplesTests.Common.csproj" />
     <ProjectReference Include="..\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\TypinExamples.MarioBuilder.Tests\TypinExamples.MarioBuilder.Tests.csproj" />
   </ItemGroup>
 
 </Project>

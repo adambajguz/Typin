@@ -28,12 +28,25 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.HelloWorld", "Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj", "{BFD52A01-5ACA-4DAC-B6F8-8179044216AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0617CE81-5BBD-4261-B9AF-3A6AE9CEE97D}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\LICENSE = ..\..\LICENSE
+		README-TE.md = README-TE.md
+		..\..\README.md = ..\..\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{54F89B43-429A-4DD2-BF77-6BDAB3471FA4}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.gitattributes = ..\..\.gitattributes
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\.github\workflows\CD-Examples.yml = ..\..\.github\workflows\CD-Examples.yml
+		..\..\.github\workflows\CI-Examples.yml = ..\..\.github\workflows\CI-Examples.yml
+		clean.ps1 = clean.ps1
+		..\..\codecov.yml = ..\..\codecov.yml
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.CalculatOR", "Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj", "{32C43CA4-B590-4B62-81AC-36FB1132C709}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.InteractiveQuery", "Examples\TypinExamples.InteractiveQuery\TypinExamples.InteractiveQuery.csproj", "{CD96A786-2F59-45BB-9665-FEFF9547E0A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Validation", "Examples\TypinExamples.Validation\TypinExamples.Validation.csproj", "{CD96A786-2F59-45BB-9665-FEFF9547E0A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.MarioBuilder", "Examples\TypinExamples.MarioBuilder\TypinExamples.MarioBuilder.csproj", "{CE41A6CA-2A33-4665-B656-106A382F85BD}"
 EndProject
@@ -51,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Timer.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.MarioBuilder.Tests", "Examples\TypinExamples.MarioBuilder.Tests\TypinExamples.MarioBuilder.Tests.csproj", "{FD13154D-C666-4DDC-B6FA-EB6E74956A12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.InteractiveQuery.Tests", "Examples\TypinExamples.InteractiveQuery.Tests\TypinExamples.InteractiveQuery.Tests.csproj", "{787AB97F-CD09-4EC4-8373-6FFB845FAFED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.Validation.Tests", "Examples\TypinExamples.Validation.Tests\TypinExamples.Validation.Tests.csproj", "{787AB97F-CD09-4EC4-8373-6FFB845FAFED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{37066432-5243-4993-AF20-8CC7D472D946}"
 EndProject

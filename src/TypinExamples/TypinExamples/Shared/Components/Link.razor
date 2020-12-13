@@ -2,11 +2,29 @@
 
 @if (IsExternal)
 {
-    <a href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" target="_blank">@(Title ?? string.Empty)</a>
+    <a href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" target="_blank">
+        @if (IsHtmlTitle)
+        {
+            @((MarkupString)(Title ?? string.Empty))
+        }
+        else
+        {
+            @(Title ?? string.Empty)
+        }
+    </a>
 }
 else
 {
-    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.Path">@(Title ?? string.Empty)</NavLinkExtended>
+    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.Path">
+        @if (IsHtmlTitle)
+        {
+            @((MarkupString)(Title ?? string.Empty))
+        }
+        else
+        {
+            @(Title ?? string.Empty)
+        }
+    </NavLinkExtended>
 }
 
 @code
@@ -20,4 +38,7 @@ else
 
     [Parameter]
     public bool IsExternal { get; init; }
+
+    [Parameter]
+    public bool IsHtmlTitle { get; init; }
 }

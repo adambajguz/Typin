@@ -1,11 +1,13 @@
-﻿@import "../frameworks/chota/dist/chota.min.css";
-@import "../frameworks/xterm/xterm.min.css";
+﻿@import "../libraries/chota/dist/chota.min.css";
+@import "../libraries/xterm/xterm.min.css";
+@import "../libraries/font-awesome/css/all.min.css";
 
 @import "c-dots-wave-loader.css";
 @import "code-highlight.css";
 @import "img-zoom-in-out.css";
 @import "custom-scrollbars.css";
 
+@import "c-blazored-toast.css";
 @import "c-top-scroller.css";
 @import "c-box.css";
 @import "c-table.css";
@@ -23,22 +25,25 @@ body {
     --grid-maxWidth: 120rem;
     --grid-gutter: 2rem;
     --font-size: 1.6rem;
+    --font-size-small-multiplier: .82;
+    --font-size-tiny-multiplier: .7;
     --font-family-sans: -apple-system, BlinkMacSystemFont, Avenir, "Avenir Next", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     --font-family-mono: "CascadiaCode", monaco, "Consolas", "Lucida Console", monospace;
 }
 
-body.dark {
-    /*Chota overrides*/
-    --bg-color: #080a0a;
-    --bg-secondary-color: #082542;
-    --page-column-bg-color: #0f3952;
-    --font-color: #f5f5f5;
-    --color-grey: #bbb;
-    --color-darkGrey: #777;
-    --color-primary: #17c16f;
-    --color-error: #ea4f4f;
-    --color-accent: #00d5ff;
-}
+    body.dark {
+        /*Chota overrides*/
+        --bg-color: #080a0a;
+        --bg-secondary-color: #082542;
+        --page-column-bg-color: #0f3952;
+        --font-color: #f5f5f5;
+        --color-grey: #bbb;
+        --color-darkGrey: #777;
+        --color-primary: #17c16f;
+        --color-error: #ea4f4f;
+        --color-accent: #00d5ff;
+        --color-warning: #ffa500;
+    }
 
 .container {
     padding: 0;
@@ -75,31 +80,45 @@ hr {
     font-size: 1.2rem;
 }
 
-
-.buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+button:focus {
+    outline: none;
 }
 
-    .buttons > * {
-        margin: 0.5rem;
-    }
+.button.outline.error {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
 
-    .buttons > .button + .button {
-        margin-left: 0.5rem;
-    }
+.button.outline.accent {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.button.is-small {
+    padding: 0.4rem;
+    font-size: 0.75em;
+}
+
+.button.is-medium {
+    padding: 0.55rem;
+    font-size: 0.85em;
+}
+
+.button.is-large {
+    padding: 0.7rem;
+    font-size: 1.125em;
+}
 
 .tag.new-example-tag {
     margin-right: 1rem;
 }
 
 .text-small {
-    font-size: calc(var(--font-size) * 0.82);
+    font-size: calc(var(--font-size) * var(--font-size-small-multiplier));
 }
 
 .text-tiny {
-    font-size: calc(var(--font-size) * .7);
+    font-size: calc(var(--font-size) * var(--font-size-tiny-multiplier));
 }
 
 .bd-accent {
@@ -112,4 +131,8 @@ hr {
 
 .bg-accent {
     background-color: var(--color-accent) !important;
+}
+
+.bg-warning {
+    background-color: var(--color-warning) !important;
 }

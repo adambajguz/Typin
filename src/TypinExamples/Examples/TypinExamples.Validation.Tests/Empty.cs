@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.InterctiveQuery.Tests
+﻿namespace TypinExamples.Validation.Tests
 {
     using FluentAssertions;
     using Xunit;

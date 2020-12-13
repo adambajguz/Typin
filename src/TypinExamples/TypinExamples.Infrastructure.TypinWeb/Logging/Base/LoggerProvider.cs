@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using TypinExamples.Domain.Models.TypinLogging;
 

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Net.Http;
-    using Blazor.Extensions.Storage;
+    using Blazored.Toast;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +16,13 @@
     using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
-    using TypinExamples.Shared;
 
     public static class DependencyInjection
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IWebAssemblyHostEnvironment environment)
         {
             services.AddOptions();
-            services.AddStorage();
+            services.AddBlazoredToast();
 
             services.AddWebWorkers()
                     .RegisterCommandHandler<ClearCommand, ClearCommand.Handler>()

@@ -1,15 +1,15 @@
 ﻿<footer class="page-footer footer-bg">
     <div class="footer-links">
         <p>
-            @foreach (var link in FooterSettings.Links)
+            @foreach (LinkDefinition link in FooterSettings.Links)
             {
                 bool isLast = link == FooterSettings.Links.Last();
 
-                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" />
+                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle" />
 
                 @if (!isLast)
                 {
-                    <span> • </span>
+                    <span class="text-separator"> • </span>
                 }
             }
         </p>

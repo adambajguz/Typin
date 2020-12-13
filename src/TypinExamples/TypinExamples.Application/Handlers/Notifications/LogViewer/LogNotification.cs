@@ -2,7 +2,6 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Domain.Models.TypinLogging;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;

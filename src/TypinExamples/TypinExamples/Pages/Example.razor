@@ -8,7 +8,7 @@
                 <p class="text-error"><b>Error:</b> not found any example for key '@(ExampleKey)'.</p>
             </div>
             <div class="col is-vertical-align is-right">
-                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
+                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
             </div>
         </div>
     </section>
@@ -21,7 +21,7 @@ else
                 <h1>@(Descriptor?.Name ?? string.Empty)</h1>
             </div>
             <div class="col is-vertical-align is-right">
-                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline">Go back</NavLinkExtended>
+                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary outline"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
             </div>
         </div>
 
@@ -36,23 +36,38 @@ else
         <div class="row">
             <div class="col">
                 <TabContainer>
-                    <Tab Text="Quick start">
-                        @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-alt"></i> Quick start
+                        </TabContent>
+                        <ChildContent>
+                            @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                        </ChildContent>
                     </Tab>
-                    <Tab Text="Files">
-                        <section id="features">
-                            <div class="card">
-                                <ul>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                    <li>📁&nbsp; File</li>
-                                </ul>
-                            </div>
-                        </section>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-code"></i> Code
+                        </TabContent>
+                        <ChildContent>
+                            <section id="features">
+                                <div class="card">
+                                    <ul>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                        <li>📁&nbsp; File</li>
+                                    </ul>
+                                </div>
+                            </section>
+                        </ChildContent>
                     </Tab>
-                    <Tab Text="Logs">
-                        <LogViewer @ref="LogViewerInstance" />
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-contract"></i> Typin Log Viewer
+                        </TabContent>
+                        <ChildContent>
+                            <LogViewer @ref="LogViewerInstance" />
+                        </ChildContent>
                     </Tab>
                 </TabContainer>
             </div>
@@ -63,11 +78,20 @@ else
         <div class="row">
             <div class="col">
                 <TabContainer>
-                    <Tab Text="Terminal">
+                    <Tab>
                         <TabContent>
-                            <button type="button" class="button primary outline icon" @onclick="TerminateTerminal">
-                                <img src="https://icongr.am/feather/file.svg?size=16&amp;color=ffffff" alt="icon">
-                            </button>
+                            <i class="fas fa-terminal"></i> Terminal
+                            <div class="pull-right">
+                                <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
+                                    <i class="fas fa-level-down-alt fa-flip-horizontal"></i>
+                                </button>
+                                <button type="button" title="Clear screen" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
+                                    <i class="fas fa-power-off"></i> Restart
+                                </button>
+                            </div>
                         </TabContent>
                         <ChildContent>
                             <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance" @ref="XTermInstance" />
@@ -94,6 +118,8 @@ else
 
     [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
 
+    [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
+
     protected override void OnInitialized()
     {
         Descriptor ??= GetDescriptor();
@@ -109,9 +135,25 @@ else
         return descriptor;
     }
 
-    async Task TerminateTerminal()
+    async Task TerminateTerminalAsync()
     {
         if (XTermInstance is not null)
             await XTermInstance.TerminateTerminal();
+    }
+
+    async Task ClearTerminalAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ClearAsync();
+        }
+    }
+
+    async Task ScrollToBottomAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ScrollToBottomAsync();
+        }
     }
 }

@@ -39,7 +39,7 @@
             _logger = logger;
         }
 
-        public async Task<IWorker> CreateAsync<T>()
+        public async Task<IWorker> CreateAsync<T>(Action<ulong>? onInitStarted = null, Action<ulong>? onWorkerCreated = null)
             where T : class, IWorkerStartup, new()
         {
             _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
@@ -52,10 +52,14 @@
                                              _messagingProvider,
                                              _assemblies,
                                              _logger);
+
+            onInitStarted?.Invoke(workerId);
+
             await worker.InitAsync();
             _workerManager.AddWorker(worker);
 
             _logger.LogInformation("Created worker {Id}", worker.Id);
+            onWorkerCreated?.Invoke(workerId);
 
             return worker;
         }

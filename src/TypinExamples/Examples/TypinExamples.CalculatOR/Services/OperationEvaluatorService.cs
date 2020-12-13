@@ -39,26 +39,26 @@
 
                 if (printSteps)
                 {
-                    _console.WithForegroundColor(ConsoleColor.DarkCyan, () => _console.Output.Write(operationSymbol));
+                    _console.Output.WithForegroundColor(ConsoleColor.DarkCyan, (output) => output.Write(operationSymbol));
                     await _console.Output.WriteAsync(' ');
 
                     PrintColored(x.Value, @base ?? x.Base, pad);
 
-                    _console.WithForegroundColor(ConsoleColor.DarkGray, () => _console.Output.Write($" (= "));
+                    _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) => output.Write($" (= "));
                     PrintColored(result, @base ?? x.Base, 0, ConsoleColor.DarkGray);
-                    _console.WithForegroundColor(ConsoleColor.DarkGray, () => _console.Output.WriteLine($")"));
+                    _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) => output.WriteLine($")"));
                 }
             }
 
             if (printSteps)
             {
-                _console.WithForegroundColor(ConsoleColor.DarkCyan, () => _console.Output.Write("=".PadLeft(operationSymbol.Length)));
+                _console.Output.WithForegroundColor(ConsoleColor.DarkCyan, (output) => output.Write("=".PadLeft(operationSymbol.Length)));
                 await _console.Output.WriteAsync(' ');
 
                 PrintColored(result, @base ?? a.Base, pad, ConsoleColor.Green);
             }
             else
-                _console.WithForegroundColor(ConsoleColor.Green, () => _console.Output.WriteLine(result.ToString(@base ?? a.Base)));
+                _console.Output.WithForegroundColor(ConsoleColor.Green, (output) => _console.Output.WriteLine(result.ToString(@base ?? a.Base)));
 
             await _console.Output.WriteLineAsync();
 
@@ -82,7 +82,7 @@
 
         private void PrintColored(BigInteger value, NumberBase @base, int pad = 0, ConsoleColor valueColor = ConsoleColor.Gray)
         {
-            _console.WithForegroundColor(valueColor, () => _console.Output.Write(value.ToString(@base).PadLeft(pad)));
+            _console.Output.WithForegroundColor(valueColor, (output) => output.Write(value.ToString(@base).PadLeft(pad)));
         }
     }
 }

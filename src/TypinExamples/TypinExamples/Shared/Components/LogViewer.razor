@@ -39,9 +39,18 @@
 @code {
     private LinkedList<LogEntry> logs = new();
 
+    [Inject] private IToastService ToastService { get; init; } = default!;
+
     void IWebLoggerDestination.WriteLog(LogEntry entry)
     {
         logs.AddLast(entry);
         StateHasChanged();
+
+        if (entry.Level >= Microsoft.Extensions.Logging.LogLevel.Error)
+        {
+            RenderFragment message = @<text><b>@HtmlHelpers.GetLogLevelAlias(entry.Level):</b> @entry.Text</text>;
+
+            ToastService.ShowError(message, "Typin Log Viewer");
+        }
     }
 }

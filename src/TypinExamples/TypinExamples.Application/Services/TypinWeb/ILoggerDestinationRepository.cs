@@ -1,7 +1,6 @@
 ﻿namespace TypinExamples.Application.Services.TypinWeb
 {
     using System;
-    using System.Threading.Tasks;
 
     public interface ILoggerDestinationRepository : IDisposable
     {

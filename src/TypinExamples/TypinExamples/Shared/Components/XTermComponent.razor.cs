@@ -5,6 +5,7 @@ namespace TypinExamples.Shared.Components
     using System.Globalization;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using Blazored.Toast.Services;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Logging;
     using TypinExamples.Application.Services.TypinWeb;
@@ -31,6 +32,7 @@ namespace TypinExamples.Shared.Components
         [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
         [Inject] private IWorkerFactory WorkerFactory { get; init; } = default!;
         [Inject] private ILogger<XTermComponent> Logger { get; init; } = default!;
+        [Inject] private IToastService ToastService { get; init; } = default!;
 
         private IWorker? _worker { get; set; }
         private bool IsInitialized => TerminalRepository.Contains(Id) && _worker is not null;
@@ -43,7 +45,8 @@ namespace TypinExamples.Shared.Components
             if (LoggerDestination is not null)
                 LoggerDestinationRepository.Add(Id, LoggerDestination);
 
-            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>();
+            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."),
+                                                                            onCreated: (id) => ToastService.ShowSuccess($"Worker ({id}) created."));
             WorkerInitSource.SetResult();
         }
 
@@ -52,6 +55,9 @@ namespace TypinExamples.Shared.Components
             if (!TerminalRepository.Contains(Id) && _worker is IWorker worker)
             {
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
+
+                ToastService.ShowSuccess("Terminal emulation ready.");
+
                 StateHasChanged();
 
                 await _worker.RunAsync();
@@ -64,13 +70,18 @@ namespace TypinExamples.Shared.Components
             {
                 WorkerInitSource = new();
 
+                ToastService.ShowInfo("Terminal is about to shutdown...");
+
                 //Kill the old worker
                 const int miliseconds = 2000;
                 TaskAwaiter awaiter = worker.CancelAsync().GetAwaiter();
                 await Task.Delay(miliseconds);
 
                 if (!awaiter.IsCompleted || !worker.IsCancelled)
+                {
                     Logger.LogWarning("Worker {Id} does not respond, thus failed to cancel within {Time} miliseconds.", worker.Id, miliseconds);
+                    ToastService.ShowWarning($"Worker {worker.Id} does not respond. Executing forced disposal...");
+                }
 
                 _worker = null;
                 await TerminalRepository.UnregisterAndDisposeTerminalAsync(Id);
@@ -78,14 +89,19 @@ namespace TypinExamples.Shared.Components
 
                 await worker.DisposeAsync();
 
+                ToastService.ShowSuccess($"Disposed worker ({worker.Id}).");
+
                 //Create a new worker
-                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>();
+                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."),
+                                                                             onCreated: (id) => ToastService.ShowSuccess($"Worker ({id}) created."));
 
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
                 _worker = worker;
                 StateHasChanged();
 
                 WorkerInitSource.SetResult();
+
+                ToastService.ShowSuccess("Terminal emulation ready.");
 
                 try
                 {
@@ -94,20 +110,26 @@ namespace TypinExamples.Shared.Components
                 catch (Exception) when (worker.IsDisposed)
                 {
                     Logger.LogWarning("Execution of program was cancelled, and worker (Id) was disposed. No result was returned from program.", worker.Id);
+                    ToastService.ShowWarning($"Execution of program was cancelled, and worker ({worker.Id}) was disposed. No result was returned from program.");
                 }
             }
         }
 
         public async ValueTask DisposeAsync()
         {
-            Logger.LogInformation("Dispose XTermcomponenet {Id}", Id);
-
             await WorkerInitSource.Task;
 
+            ulong? id = null;
             if (_worker is not null)
+            {
+                id = _worker.Id;
                 await _worker.DisposeAsync();
+            }
 
             await TerminalRepository.UnregisterAndDisposeTerminalAsync(Id);
+
+            Logger.LogInformation("Disposed XTermcomponenet {Id}", Id);
+            ToastService.ShowSuccess($"Disposed worker ({id}).");
         }
     }
 }

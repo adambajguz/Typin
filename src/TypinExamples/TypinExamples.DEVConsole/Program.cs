@@ -2,7 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Text.Json;
@@ -12,11 +11,8 @@
     {
         private const string ENV_VAR = "TARGET_TYPIN_PROJECT";
 
-#if DEBUG
-        private const string CONFIGURATION_FILE = "appsettings.Development.json";
-#else
         private const string CONFIGURATION_FILE = "appsettings.json";
-#endif
+
 
         private static ExampleDescriptor? LoadConfiguration(string exampleName)
         {

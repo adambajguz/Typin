@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Timer
+﻿namespace TypinExamples.Validation
 {
     using System.Threading.Tasks;
     using Typin;

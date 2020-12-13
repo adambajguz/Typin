@@ -33,12 +33,12 @@
 
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            _logger.LogTrace("Hello world!");
-            _logger.LogDebug("Hello world!");
-            _logger.LogInformation("Hello world!");
-            _logger.LogWarning("Hello world!");
-            _logger.LogError("Hello world!");
-            _logger.LogCritical("Hello world!");
+            _logger.LogTrace("Example trace message from Typin.");
+            _logger.LogDebug("Example debug message from Typin.");
+            _logger.LogInformation("Example inforamtion message from Typin.");
+            _logger.LogWarning("Example warning message from Typin.");
+            _logger.LogError("Example error message from Typin.");
+            _logger.LogCritical("Example critical message from Typin.");
 
             if (Name is null && Surname is null)
                 await console.Output.WriteLineAsync("Hello World!");

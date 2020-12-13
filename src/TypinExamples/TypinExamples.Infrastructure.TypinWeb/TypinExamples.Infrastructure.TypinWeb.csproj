@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
-    <PackageReference Include="Typin" Version="3.0.0-dev-00008" />
+    <PackageReference Include="Typin" Version="3.0.0-dev-00011" />
   </ItemGroup>
 
   <ItemGroup>
