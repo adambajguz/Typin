@@ -27,8 +27,8 @@
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
         public InteractiveMode(IOptions<InteractiveModeOptions> options,
-                               ICliContext context, //TODO: should not have ICliContext -> possible add another class with root schema etc
                                IConsole console,
+                               IRootSchemaAccessor rootSchemaAccessor,
                                ApplicationMetadata metadata,
                                ApplicationConfiguration configuration)
         {
@@ -42,7 +42,7 @@
             {
                 _autoCompleteInput = new AutoCompleteInput(_console, _options.UserDefinedShortcuts)
                 {
-                    AutoCompletionHandler = new AutoCompletionHandler(context),
+                    AutoCompletionHandler = new AutoCompletionHandler(rootSchemaAccessor),
                 };
 
                 _autoCompleteInput.History.IsEnabled = true;

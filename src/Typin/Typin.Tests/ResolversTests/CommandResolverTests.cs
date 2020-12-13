@@ -42,7 +42,7 @@
         {
             // Arrange
             var builder = new CliApplicationBuilder();
-            #warning Startup message should not show until root shema is resolved
+#warning Startup message should not show until root shema is resolved
             //.UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
@@ -60,8 +60,8 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand(typeof(NonImplementedCommand));
-            #warning Startup message should not show until root shema is resolved
-                //.UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
+#warning Startup message should not show until root shema is resolved
+            //.UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);

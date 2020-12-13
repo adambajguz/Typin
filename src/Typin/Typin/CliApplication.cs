@@ -164,7 +164,7 @@ namespace Typin
             {
                 _logger.LogDebug(ex, $"{nameof(TypinException)} occured. Trying to find exception handler.");
 
-                IEnumerable <ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
+                IEnumerable<ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
                 foreach (ICliExceptionHandler handler in exceptionHandlers)
                 {
                     if (handler.HandleException(ex))
