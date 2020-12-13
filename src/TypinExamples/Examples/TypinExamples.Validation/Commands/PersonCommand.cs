@@ -5,15 +5,18 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command("other")]
-    public class OtherCommand : ICommand
+    [Command("person", Description = "Person validation example.")]
+    public class PersonCommand : ICommand
     {
         [CommandParameter(0)]
         public string? Name { get; set; }
 
+        [CommandParameter(1)]
+        public int Age { get; set; }
+
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            await console.Output.WriteLineAsync(typeof(SampleCommand).AssemblyQualifiedName);
+            await console.Output.WriteLineAsync($"{Name} is {Age} years old.");
         }
     }
 }

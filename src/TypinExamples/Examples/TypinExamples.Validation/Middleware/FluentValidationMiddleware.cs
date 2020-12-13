@@ -12,28 +12,30 @@
 
     public sealed class FluentValidationMiddleware : IMiddleware
     {
-        public FluentValidationMiddleware()
-        {
+        private readonly IServiceProvider _serviceProvider;
 
+        public FluentValidationMiddleware(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-            //var context = new ValidationContext(request);
-
-            //var failures = _validators
-            //    .Select(v => v.Validate(context))
-            //    .SelectMany(result => result.Errors)
-            //    .Where(f => f != null)
-            //    .ToList();
-
-            //if (failures.Count != 0)
-            //{
-            //    throw new ValidationException(failures);
-            //}
-
             try
             {
+                Type validatorType = typeof(IValidator<>).MakeGenericType(context.CommandSchema.Type);
+
+                if (_serviceProvider.GetService(validatorType) is IValidator validator)
+                {
+                    IValidationContext validationContext = new ValidationContext<ICommand>(context.Command);
+                    ValidationResult validationResult = await validator.ValidateAsync(validationContext);
+
+                    if (!validationResult.IsValid)
+                    {
+                        throw new ValidationException(validationResult.Errors);
+                    }
+                }
+
                 await next();
             }
             catch (ValidationException ex)

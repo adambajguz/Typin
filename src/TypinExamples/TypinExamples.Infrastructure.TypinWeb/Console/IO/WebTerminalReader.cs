@@ -50,7 +50,8 @@
         {
             throw new IOException($"{nameof(WebTerminalReader)} can flush.");
         }
-        bool f = false;
+
+        private bool f = false;
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
