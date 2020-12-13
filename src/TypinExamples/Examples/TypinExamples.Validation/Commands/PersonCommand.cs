@@ -8,10 +8,10 @@
     [Command("person", Description = "Person validation example.")]
     public class PersonCommand : ICommand
     {
-        [CommandParameter(0)]
+        [CommandParameter(0, Description = "Person name.")]
         public string? Name { get; set; }
 
-        [CommandParameter(1)]
+        [CommandParameter(1, Description = "Person age.")]
         public int Age { get; set; }
 
         public async ValueTask ExecuteAsync(IConsole console)

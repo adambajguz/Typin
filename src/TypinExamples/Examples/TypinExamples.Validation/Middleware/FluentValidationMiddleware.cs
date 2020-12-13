@@ -40,37 +40,42 @@
             }
             catch (ValidationException ex)
             {
-                context.Console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("Validation failed:"));
+                PrintValidationResults(context, ex);
+            }
+        }
 
-                foreach (IGrouping<string, ValidationFailure> group in ex.Errors.GroupBy(x => x.PropertyName))
+        private static void PrintValidationResults(ICliContext context, ValidationException ex)
+        {
+            context.Console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("Validation failed:"));
+
+            foreach (IGrouping<string, ValidationFailure> group in ex.Errors.GroupBy(x => x.PropertyName))
+            {
+                ArgumentSchema property = context.CommandSchema.GetArguments().Where(x => x.Property?.Name == group.Key).First();
+
+                string name = group.Key;
+                if (property is CommandOptionSchema option)
                 {
-                    ArgumentSchema property = context.CommandSchema.GetArguments().Where(x => x.Property?.Name == group.Key).First();
-
-                    string name = group.Key;
-                    if (property is CommandOptionSchema option)
-                    {
-                        name = "--" + option.Name;
-                    }
-                    else if (property is CommandParameterSchema parameter)
-                    {
-                        name = $"Parameter {parameter.Order}";
-                    }
-
-                    context.Console.Output.Write(" ");
-                    context.Console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(name));
-
-                    context.Console.Output.Write(" ");
-                    context.Console.Output.WithForegroundColor(ConsoleColor.Green, (output) => context.Console.Output.Write($"[{group.First().AttemptedValue}]"));
-                    context.Console.Output.WriteLine(" ");
-
-                    foreach (var error in group)
-                    {
-                        context.Console.Output.Write("   -- ");
-                        context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) => context.Console.Output.WriteLine(error.ErrorMessage));
-                    }
-
-                    context.Console.Output.WriteLine();
+                    name = "--" + option.Name;
                 }
+                else if (property is CommandParameterSchema parameter)
+                {
+                    name = $"Parameter {parameter.Order}";
+                }
+
+                context.Console.Output.Write(" ");
+                context.Console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(name));
+
+                context.Console.Output.Write(" ");
+                context.Console.Output.WithForegroundColor(ConsoleColor.Green, (output) => context.Console.Output.Write($"[{group.First().AttemptedValue}]"));
+                context.Console.Output.WriteLine(" ");
+
+                foreach (var error in group)
+                {
+                    context.Console.Output.Write("   -- ");
+                    context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) => context.Console.Output.WriteLine(error.ErrorMessage));
+                }
+
+                context.Console.Output.WriteLine();
             }
         }
     }

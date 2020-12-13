@@ -7,8 +7,7 @@
     {
         public PersonCommandValidator()
         {
-            RuleFor(x => x.Name).MinimumLength(2)
-                                .WithMessage("Name must be at least 2 charasters long.");
+            RuleFor(x => x.Name).MinimumLength(2);
 
             RuleFor(x => x.Name).Custom((x, context) =>
             {
@@ -18,9 +17,7 @@
                 }
             });
 
-            RuleFor(x => x.Age).GreaterThanOrEqualTo(1)
-                               .LessThan(150)
-                               .WithMessage("Must be withing range <1, 150).");
+            RuleFor(x => x.Age).ExclusiveBetween(1, 150);
         }
     }
 }

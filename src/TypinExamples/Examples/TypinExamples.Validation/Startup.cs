@@ -12,6 +12,8 @@
     {
         public void Configure(CliApplicationBuilder app)
         {
+            ValidatorOptions.Global.LanguageManager.Enabled = false;
+
             app.AddCommandsFromThisAssembly()
                .AddDirective<PreviewDirective>()
                .AddCommand<PipelineCommand>()
