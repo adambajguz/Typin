@@ -15,8 +15,8 @@
         }
 
         .blazored-toast-container .blazored-toast .blazored-toast-body .blazored-toast-header h5 {
-            line-height: 24px !important;
-            font-size: 1.3rem;
+            line-height: 18px !important;
+            font-size: 1.5rem;
         }
 
         .blazored-toast-container .blazored-toast .blazored-toast-message {
