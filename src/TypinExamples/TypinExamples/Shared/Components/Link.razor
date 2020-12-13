@@ -2,7 +2,7 @@
 
 @if (IsExternal)
 {
-    <a href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" target="_blank">
+    <a href="@(string.IsNullOrWhiteSpace(href) ? string.Empty : href)" target="_blank">
         @if (IsHtmlTitle)
         {
             @((MarkupString)(Title ?? string.Empty))
@@ -15,7 +15,7 @@
 }
 else
 {
-    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? "/" : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.Path">
+    <NavLinkExtended href="@(string.IsNullOrWhiteSpace(href) ? string.Empty : href)" ActiveClass="active text-primary" Match="NavLinkExtendedMatch.Path">
         @if (IsHtmlTitle)
         {
             @((MarkupString)(Title ?? string.Empty))
