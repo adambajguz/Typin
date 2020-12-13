@@ -4,7 +4,7 @@
 
 <BlazoredToasts Position="ToastPosition.TopLeft"
                 IconType="IconType.FontAwesome"
-                Timeout="5"
+                Timeout="(AppSettings.ToastDuration > 1 ? AppSettings.ToastDuration : 5)"
                 ShowProgressBar="true"
                 InfoClass="bg-accent"
                 SuccessClass="bg-primary"
@@ -34,6 +34,8 @@
 {
     [Inject] private IToastService ToastService { get; init; } = default!;
 
+    [Inject] private IOptions<ApplicationSettings> _AppSettings { get; init; } = default!;
+    private ApplicationSettings AppSettings => _AppSettings.Value;
 
     protected override void OnAfterRender(bool firstRender)
     {
