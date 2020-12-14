@@ -5,7 +5,7 @@ namespace TypinExamples.Services.Terminal
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using Microsoft.JSInterop;
-    using TypinExamples.Application.Configuration;
+    using TypinExamples.Application.Configurations;
     using TypinExamples.Application.Services;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;

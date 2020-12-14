@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
     using Microsoft.JSInterop;
-    using TypinExamples.Application.Configuration;
+    using TypinExamples.Application.Configurations;
     using TypinExamples.Application.Handlers.Commands;
     using TypinExamples.Application.Services;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;

@@ -96,12 +96,7 @@
 
             Input = new StandardStreamReader(new WebTerminalReader(worker, terminalId), false, this);
 
-            Output = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
-            {
-                AutoFlush = false
-            };
-
-            Error = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
+            Output = Error = new StandardStreamWriter(new WebTerminalWriter(worker, terminalId), false, this)
             {
                 AutoFlush = false
             };
@@ -117,7 +112,6 @@
 #endif
 
             Output.FlushAsync().Wait(25);
-            Error.FlushAsync().Wait(25);
         }
 
         public void Clear()
