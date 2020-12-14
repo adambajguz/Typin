@@ -1,8 +1,8 @@
-﻿namespace TypinExamples.Configuration
+﻿namespace TypinExamples.Configurations
 {
     using System;
 
-    public sealed class FooterSettings
+    public sealed class FooterConfiguration
     {
         /// <summary>
         /// Authors with Markdown formatting.

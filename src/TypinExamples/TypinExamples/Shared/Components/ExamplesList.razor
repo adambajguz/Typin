@@ -1,5 +1,5 @@
 ﻿<div class="c-box--container">
-    @foreach (ExampleDescriptor descriptor in ExamplesSettings.Examples)
+    @foreach (ExampleDescriptor descriptor in ExamplesConfiguration.Descriptors)
     {
         <div class="c-box">
 
@@ -47,6 +47,6 @@
 {
     [Inject] private IMarkdownService Markdown { get; init; } = default!;
 
-    [Inject] private IOptions<ExamplesSettings> _ExamplesSettings { get; init; } = default!;
-    private ExamplesSettings ExamplesSettings => _ExamplesSettings.Value;
+    [Inject] private IOptions<ExamplesConfiguration> _ExamplesConfiguration { get; init; } = default!;
+    private ExamplesConfiguration ExamplesConfiguration => _ExamplesConfiguration.Value;
 }

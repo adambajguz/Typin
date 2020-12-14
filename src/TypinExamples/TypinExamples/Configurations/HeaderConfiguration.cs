@@ -1,8 +1,8 @@
-﻿namespace TypinExamples.Configuration
+﻿namespace TypinExamples.Configurations
 {
     using System;
 
-    public sealed class HeaderSettings
+    public sealed class HeaderConfiguration
     {
         /// <summary>
         /// Whether header is full screen height.

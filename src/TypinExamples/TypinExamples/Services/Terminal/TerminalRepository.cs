@@ -15,9 +15,9 @@ namespace TypinExamples.Services.Terminal
         private static readonly Dictionary<string, IWebTerminal> _terminals = new Dictionary<string, IWebTerminal>();
 
         private IJSRuntime _runtime { get; }
-        private IOptions<ExamplesSettings> _options { get; }
+        private IOptions<ExamplesConfiguration> _options { get; }
 
-        public TerminalRepository(IJSRuntime runtime, IOptions<ExamplesSettings> options)
+        public TerminalRepository(IJSRuntime runtime, IOptions<ExamplesConfiguration> options)
         {
             _runtime = runtime;
             _options = options;
@@ -25,7 +25,7 @@ namespace TypinExamples.Services.Terminal
 
         public async Task<IWebTerminal> CreateTerminalAsync(string id, string exampleKey, IWorker worker)
         {
-            ExampleDescriptor descriptor = _options.Value.Examples.Where(x => x.Key == exampleKey || (x.Name?.Contains(exampleKey ?? string.Empty) ?? false))
+            ExampleDescriptor descriptor = _options.Value.Descriptors.Where(x => x.Key == exampleKey || (x.Name?.Contains(exampleKey ?? string.Empty) ?? false))
                                                                   .First();
 
             IWebTerminal terminal = new WebTerminal(id, descriptor, _runtime, worker);

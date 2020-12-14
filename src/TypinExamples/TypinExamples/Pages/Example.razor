@@ -116,7 +116,7 @@ else
 
     [Inject] private IMarkdownService Markdown { get; init; } = default!;
 
-    [Inject] private IOptions<ExamplesSettings> ExamplesSettings { get; init; } = default!;
+    [Inject] private IOptions<ExamplesConfiguration> ExamplesConfiguration { get; init; } = default!;
 
     [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
 
@@ -129,8 +129,8 @@ else
     {
         string key = ExampleKey ?? string.Empty;
 
-        ExampleDescriptor? descriptor = ExamplesSettings.Value.Examples.Where(x => x.Key == key)
-                                                                       .FirstOrDefault();
+        ExampleDescriptor? descriptor = ExamplesConfiguration.Value.Descriptors.Where(x => x.Key == key)
+                                                                               .FirstOrDefault();
 
         return descriptor;
     }

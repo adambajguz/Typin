@@ -4,12 +4,12 @@
 
     public sealed class Configuration
     {
-        public ExamplesSettings? ExamplesSettings { get; init; }
+        public ExamplesConfiguration? ExamplesSettings { get; init; }
     }
 
-    public sealed class ExamplesSettings
+    public sealed class ExamplesConfiguration
     {
-        public ExampleDescriptor[] Examples { get; init; } = Array.Empty<ExampleDescriptor>();
+        public ExampleDescriptor[] Descriptors { get; init; } = Array.Empty<ExampleDescriptor>();
     }
 
     public sealed class ExampleDescriptor

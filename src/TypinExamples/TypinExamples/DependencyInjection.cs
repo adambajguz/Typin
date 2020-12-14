@@ -12,7 +12,7 @@
     using TypinExamples.Application.Handlers.Notifications.LogViewer;
     using TypinExamples.Application.Services.TypinWeb;
     using TypinExamples.Common.Extensions;
-    using TypinExamples.Configuration;
+    using TypinExamples.Configurations;
     using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;
     using TypinExamples.Services.Terminal;
@@ -32,9 +32,9 @@
             services.AddLogging(builder => builder.AddSerilog(dispose: true)
                                                   .SetMinimumLevel(environment.IsDevelopment() ? LogLevel.Trace : LogLevel.Information));
 
-            services.AddConfiguration<ApplicationSettings>(configuration)
-                    .AddConfiguration<HeaderSettings>(configuration)
-                    .AddConfiguration<FooterSettings>(configuration);
+            services.AddConfiguration<ApplicationConfiguration>(configuration)
+                    .AddConfiguration<HeaderConfiguration>(configuration)
+                    .AddConfiguration<FooterConfiguration>(configuration);
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(environment.BaseAddress) })
                     .AddScoped<IMarkdownService, MarkdownService>()

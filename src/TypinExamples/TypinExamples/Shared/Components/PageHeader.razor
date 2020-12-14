@@ -1,17 +1,17 @@
 ﻿<header>
-    <div class="hero @(HeaderSettings.IsFullScreen ? "is-full-screen" : string.Empty)">
+    <div class="hero @(HeaderConfiguration.IsFullScreen ? "is-full-screen" : string.Empty)">
         <div class="logo is-center is-vertical-align">
             <div class="row is-center">
                 <div class="col-9-lg col-10-md col-11">
-                    <img src="@AppSettings.LogoPath" alt="Logo">
+                    <img src="@ApplicationConfiguration.LogoPath" alt="Logo">
                 </div>
             </div>
 
-            <div class="header-heading">@Markdown.ToHtml(HeaderSettings.Heading ?? string.Empty)</div>
-            <div class="header-subheading">@Markdown.ToHtml(HeaderSettings.SubheadingText ?? string.Empty)</div>
+            <div class="header-heading">@Markdown.ToHtml(HeaderConfiguration.Heading ?? string.Empty)</div>
+            <div class="header-subheading">@Markdown.ToHtml(HeaderConfiguration.SubheadingText ?? string.Empty)</div>
         </div>
         <nav class="tabs is-center is-full">
-            @foreach (LinkDefinition link in HeaderSettings.Links)
+            @foreach (LinkDefinition link in HeaderConfiguration.Links)
             {
                 <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle"/>
             }
@@ -23,9 +23,9 @@
 {
     [Inject] private IMarkdownService Markdown { get; init; } = default!;
 
-    [Inject] private IOptions<ApplicationSettings> _AppSettings { get; init; } = default!;
-    private ApplicationSettings AppSettings => _AppSettings.Value;
+    [Inject] private IOptions<ApplicationConfiguration> _ApplicationConfiguration { get; init; } = default!;
+    private ApplicationConfiguration ApplicationConfiguration => _ApplicationConfiguration.Value;
 
-    [Inject] private IOptions<HeaderSettings> _HeaderSettings { get; init; } = default!;
-    private HeaderSettings HeaderSettings => _HeaderSettings.Value;
+    [Inject] private IOptions<HeaderConfiguration> _HeaderConfiguration { get; init; } = default!;
+    private HeaderConfiguration HeaderConfiguration => _HeaderConfiguration.Value;
 }

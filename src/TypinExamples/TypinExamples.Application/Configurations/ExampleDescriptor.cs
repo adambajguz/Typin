@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Application.Configuration
+﻿namespace TypinExamples.Application.Configurations
 {
     public sealed class ExampleDescriptor
     {

@@ -8,7 +8,7 @@
         public static IServiceCollection AddConfiguration<TOptions>(this IServiceCollection services, IConfiguration configuration, string? overrideSectionName = null)
             where TOptions : class
         {
-            string sectionName = overrideSectionName ?? typeof(TOptions).Name;
+            string sectionName = overrideSectionName ?? GetFallbackName<TOptions>();
 
             IConfigurationSection section = configuration.GetSection(sectionName);
             services.Configure<TOptions>(section);
@@ -19,7 +19,7 @@
         public static IServiceCollection AddConfiguration<TOptions>(this IServiceCollection services, IConfiguration configuration, out TOptions options, string? overrideSectionName = null)
             where TOptions : class
         {
-            string sectionName = overrideSectionName ?? typeof(TOptions).Name;
+            string sectionName = overrideSectionName ?? GetFallbackName<TOptions>();
 
             IConfigurationSection section = configuration.GetSection(sectionName);
             services.Configure<TOptions>(section);
@@ -27,6 +27,11 @@
             options = section.Get<TOptions>();
 
             return services;
+        }
+
+        private static string GetFallbackName<TOptions>() where TOptions : class
+        {
+            return typeof(TOptions).Name.Replace("Configuration", string.Empty);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Configuration
+﻿namespace TypinExamples.Configurations
 {
     public sealed class LinkDefinition
     {

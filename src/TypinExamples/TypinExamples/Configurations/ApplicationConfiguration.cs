@@ -1,6 +1,6 @@
-﻿namespace TypinExamples.Configuration
+﻿namespace TypinExamples.Configurations
 {
-    public sealed class ApplicationSettings
+    public sealed class ApplicationConfiguration
     {
         /// <summary>
         /// Application name.

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Text.Json;
@@ -22,7 +23,7 @@
             string configuration = File.ReadAllText(CONFIGURATION_FILE);
             Configuration? options = JsonSerializer.Deserialize<Configuration>(configuration);
 
-            ExampleDescriptor? descriptor = options?.ExamplesSettings?.Examples?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
+            ExampleDescriptor? descriptor = options?.ExamplesSettings?.Descriptors?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
                                                                                             (x.Name?.Contains(exampleName) ?? false))
                                                                                 .FirstOrDefault();
 
@@ -46,6 +47,7 @@
             return null;
         }
 
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
         public static async Task<int> Main(string[] args)
         {
             string target = Environment.GetEnvironmentVariable(ENV_VAR) ?? string.Empty;

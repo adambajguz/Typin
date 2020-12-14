@@ -4,7 +4,7 @@
 
 <BlazoredToasts Position="ToastPosition.TopLeft"
                 IconType="IconType.FontAwesome"
-                Timeout="(AppSettings.ToastDuration > 1 ? AppSettings.ToastDuration : 5)"
+                Timeout="(ApplicationConfiguration.ToastDuration > 1 ? ApplicationConfiguration.ToastDuration : 5)"
                 ShowProgressBar="true"
                 InfoClass="bg-accent"
                 SuccessClass="bg-primary"
@@ -34,8 +34,8 @@
 {
     [Inject] private IToastService ToastService { get; init; } = default!;
 
-    [Inject] private IOptions<ApplicationSettings> _AppSettings { get; init; } = default!;
-    private ApplicationSettings AppSettings => _AppSettings.Value;
+    [Inject] private IOptions<ApplicationConfiguration> _ApplicationConfiguration { get; init; } = default!;
+    private ApplicationConfiguration ApplicationConfiguration => _ApplicationConfiguration.Value;
 
     protected override void OnAfterRender(bool firstRender)
     {
