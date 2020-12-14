@@ -25,7 +25,11 @@ jobs:
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: Copy index.html to 404.html
       run: cp src/TypinExamples/TypinExamples/wwwroot/index.html src/TypinExamples/TypinExamples/wwwroot/404.html
-     
+      
+    # remove appsettings.Development.json
+    - name: Copy index.html to 404.html
+      run: rm src/TypinExamples/TypinExamples/wwwroot/appsettings.Development.json
+        
     # publishes Blazor project to the release-folder
     - name: Publish .NET Core Project
       run: dotnet publish src/TypinExamples/TypinExamples.sln -c Release -o release --nologo -p:PublishTrimmed=false
