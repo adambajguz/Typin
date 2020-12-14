@@ -27,12 +27,6 @@
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.Validation.Program"
       }
-    },
-    "Run: MarioBuilder": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "TARGET_TYPIN_PROJECT": "TypinExamples.MarioBuilder.Program"
-      }
     }
   }
 }

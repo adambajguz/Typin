@@ -17,7 +17,7 @@
                 }
             });
 
-            RuleFor(x => x.Age).ExclusiveBetween(1, 150);
+            RuleFor(x => x.Age).InclusiveBetween(1, 150);
         }
     }
 }

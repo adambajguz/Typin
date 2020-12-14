@@ -79,7 +79,7 @@ namespace TypinExamples.CalculatOR.Tests.CommandTests.Arithmetic
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
-            exitCode.Should().Be(0);
+            exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

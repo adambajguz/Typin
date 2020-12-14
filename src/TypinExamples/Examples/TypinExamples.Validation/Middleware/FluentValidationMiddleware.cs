@@ -46,7 +46,7 @@
 
         private static void PrintValidationResults(ICliContext context, ValidationException ex)
         {
-            context.Console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("Validation failed:"));
+            context.Console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("Validation failed:"));
 
             foreach (IGrouping<string, ValidationFailure> group in ex.Errors.GroupBy(x => x.PropertyName))
             {
@@ -62,20 +62,20 @@
                     name = $"Parameter {parameter.Order}";
                 }
 
-                context.Console.Output.Write(" ");
-                context.Console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(name));
+                context.Console.Error.Write(" ");
+                context.Console.Error.WithForegroundColor(ConsoleColor.Cyan, (error) => error.Write(name));
 
-                context.Console.Output.Write(" ");
-                context.Console.Output.WithForegroundColor(ConsoleColor.Green, (output) => context.Console.Output.Write($"[{group.First().AttemptedValue}]"));
-                context.Console.Output.WriteLine(" ");
+                context.Console.Error.Write(" ");
+                context.Console.Error.WithForegroundColor(ConsoleColor.Green, (error) => error.Write($"[{group.First().AttemptedValue}]"));
+                context.Console.Error.WriteLine(" ");
 
-                foreach (var error in group)
+                foreach (var validationError in group)
                 {
-                    context.Console.Output.Write("   -- ");
-                    context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) => context.Console.Output.WriteLine(error.ErrorMessage));
+                    context.Console.Error.Write("   -- ");
+                    context.Console.Error.WithForegroundColor(ConsoleColor.White, (error) => error.WriteLine(validationError.ErrorMessage));
                 }
 
-                context.Console.Output.WriteLine();
+                context.Console.Error.WriteLine();
             }
         }
     }
