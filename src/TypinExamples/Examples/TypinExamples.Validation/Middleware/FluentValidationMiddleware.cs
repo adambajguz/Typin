@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using FluentValidation;
     using FluentValidation.Results;
+    using Microsoft.Extensions.Logging;
     using Typin;
     using Typin.Console;
     using Typin.Schemas;
@@ -13,34 +14,42 @@
     public sealed class FluentValidationMiddleware : IMiddleware
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger _logger;
 
-        public FluentValidationMiddleware(IServiceProvider serviceProvider)
+        public FluentValidationMiddleware(IServiceProvider serviceProvider, ILogger<FluentValidationMiddleware> logger)
         {
             _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             try
             {
-                Type validatorType = typeof(IValidator<>).MakeGenericType(context.CommandSchema.Type);
-
-                if (_serviceProvider.GetService(validatorType) is IValidator validator)
-                {
-                    IValidationContext validationContext = new ValidationContext<ICommand>(context.Command);
-                    ValidationResult validationResult = await validator.ValidateAsync(validationContext, cancellationToken);
-
-                    if (!validationResult.IsValid)
-                    {
-                        throw new ValidationException(validationResult.Errors);
-                    }
-                }
+                await ValidateCurrentCommand(context, cancellationToken);
 
                 await next();
             }
             catch (ValidationException ex)
             {
+                _logger.LogError(ex, "Validation of command {CommandType} failed.", context.CommandSchema.Type.FullName);
                 PrintValidationResults(context, ex);
+            }
+        }
+
+        private async Task ValidateCurrentCommand(ICliContext context, CancellationToken cancellationToken)
+        {
+            Type validatorType = typeof(IValidator<>).MakeGenericType(context.CommandSchema.Type);
+
+            if (_serviceProvider.GetService(validatorType) is IValidator validator)
+            {
+                IValidationContext validationContext = new ValidationContext<ICommand>(context.Command);
+                ValidationResult validationResult = await validator.ValidateAsync(validationContext, cancellationToken);
+
+                if (!validationResult.IsValid)
+                {
+                    throw new ValidationException(validationResult.Errors);
+                }
             }
         }
 
