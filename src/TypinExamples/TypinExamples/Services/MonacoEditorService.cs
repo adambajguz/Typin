@@ -1,29 +1,45 @@
 ﻿namespace TypinExamples.Services
 {
+    using System.Threading.Tasks;
     using Microsoft.JSInterop;
 
     public class MonacoEditorService
     {
-        private readonly IJSInProcessRuntime Runtime;
+        private readonly IJSRuntime Runtime;
 
         public MonacoEditorService(IJSRuntime runtime)
         {
-            Runtime = (IJSInProcessRuntime)runtime;
+            Runtime = runtime;
         }
 
-        public void Initialize(string elementId, string initialCode, string language, string theme, bool readOnly)
+        public async Task InitializeAsync(string elementId, string initialCode, string language, string theme, bool readOnly)
         {
-            Runtime.Invoke<object>("monacoInterop.initialize", elementId, initialCode, language, theme, readOnly);
+            await Runtime.InvokeVoidAsync("monacoInterop.initialize", elementId, initialCode, language, theme, readOnly);
         }
 
-        public string GetCode(string elementId)
+        public async Task<string> GetTextAsync(string elementId)
         {
-            return Runtime.Invoke<string>("monacoInterop.getCode", elementId);
+            return await Runtime.InvokeAsync<string>("monacoInterop.getText", elementId);
         }
 
-        public void SetCode(string elementId, string code)
+        public async Task SetTextAsync(string elementId, string code)
         {
-            Runtime.Invoke<object>("monacoInterop.setCode", elementId, code);
+            await Runtime.InvokeVoidAsync("monacoInterop.setText", elementId, code);
+        }
+
+        public async Task ShowLineNumbers(string elementId)
+        {
+            await Runtime.InvokeVoidAsync("monacoInterop.showLineNumbers", elementId);
+        }
+
+        public async Task HideLineNumbers(string elementId)
+        {
+            await Runtime.InvokeVoidAsync("monacoInterop.hideLineNumbers", elementId);
+        }
+
+        public async Task ToggleLineNumbersVisibility(string elementId)
+        {
+            await Runtime.InvokeVoidAsync("monacoInterop.toggleLineNumbersVisibility", elementId);
         }
     }
 }

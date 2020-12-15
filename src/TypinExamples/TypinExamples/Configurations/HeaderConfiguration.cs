@@ -27,6 +27,6 @@
         /// <summary>
         /// Links colleciton.
         /// </summary>
-        public LinkDefinition[] Links { get; init; } = Array.Empty<LinkDefinition>();
+        public LinkDefinition[]? Links { get; init; } = Array.Empty<LinkDefinition>();
     }
 }

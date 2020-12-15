@@ -7,15 +7,26 @@
                 </div>
             </div>
 
-            <div class="header-heading">@Markdown.ToHtml(HeaderConfiguration.Heading ?? string.Empty)</div>
-            <div class="header-subheading">@Markdown.ToHtml(HeaderConfiguration.SubheadingText ?? string.Empty)</div>
-        </div>
-        <nav class="tabs is-center is-full">
-            @foreach (LinkDefinition link in HeaderConfiguration.Links)
+            @if (HeaderConfiguration.Heading is not null)
             {
-                <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle"/>
+                <div class="header-heading">@Markdown.ToHtml(HeaderConfiguration.Heading)</div>
             }
-        </nav>
+
+            @if (HeaderConfiguration.Subheading is not null)
+            {
+                <div class="header-subheading">@Markdown.ToHtml(HeaderConfiguration.SubheadingText)</div>
+            }
+        </div>
+
+        @if (HeaderConfiguration.Links is not null)
+        {
+            <nav class="tabs is-center is-full">
+                @foreach (LinkDefinition link in HeaderConfiguration.Links)
+                {
+                    <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle" />
+                }
+            </nav>
+        }
     </div>
 </header>
 
