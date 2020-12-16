@@ -21,7 +21,8 @@
                         }
                     </div>
                     <div class="col-4 is-vertical-align is-right">
-                        <NavLinkExtended href="@("example/" + descriptor.Key)" class="button outline primary">Run <i class="fas fa-chevron-right"></i></NavLinkExtended>
+                        <a href="@(descriptor.DownloadPath ?? string.Empty)" title="Download" target="_top" class="button outline accent icon-only"><i class="fas fa-download"></i></a>
+                        <NavLinkExtended href="@("example/" + descriptor.Key ?? string.Empty)" class="button primary">Run <i class="fas fa-chevron-right"></i></NavLinkExtended>
                     </div>
                 </div>
              </div>
