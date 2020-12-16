@@ -4,7 +4,7 @@
 
     public sealed class Configuration
     {
-        public ExamplesConfiguration? ExamplesSettings { get; init; }
+        public ExamplesConfiguration? Examples { get; init; }
     }
 
     public sealed class ExamplesConfiguration

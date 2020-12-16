@@ -71,6 +71,11 @@ hr {
     margin: 3rem 0;
 }
 
+code,
+kbd {
+    color: var(--color-accent);
+}
+
 #grid .card {
     padding: 1rem 0rem;
     -webkit-box-shadow: none;
