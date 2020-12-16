@@ -68,7 +68,12 @@ section {
 }
 
 hr {
-    margin: 3rem 0;
+    margin: 2.75rem 0;
+    background-color: transparent;
+    border-top: 1px dashed var(--color-lightGrey);
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
 }
 
 code,
