@@ -76,6 +76,10 @@ hr {
     border-right: none;
 }
 
+blockquote > p:last-child {
+    margin-bottom: 0;
+}
+
 code,
 kbd {
     color: var(--color-accent);

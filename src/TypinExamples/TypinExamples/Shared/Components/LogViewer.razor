@@ -48,7 +48,23 @@
 
         if (entry.Level >= Microsoft.Extensions.Logging.LogLevel.Error)
         {
-            RenderFragment message = @<text><b>@HtmlHelpers.GetLogLevelAlias(entry.Level):</b> @entry.Text</text>;
+            string[] lines = entry.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
+
+            RenderFragment message =
+                @<text>
+                <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
+
+                @foreach(string line in lines)
+                {
+                    @line
+
+                    if (lines.Last() != line)
+                    {
+                        <br />
+                    }
+                }
+
+                </text>;
 
             ToastService.ShowError(message, "Typin Log Viewer");
         }

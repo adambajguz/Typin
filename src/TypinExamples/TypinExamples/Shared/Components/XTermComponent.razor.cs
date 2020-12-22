@@ -45,8 +45,7 @@ namespace TypinExamples.Shared.Components
             if (LoggerDestination is not null)
                 LoggerDestinationRepository.Add(Id, LoggerDestination);
 
-            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."),
-                                                                            onCreated: (id) => ToastService.ShowSuccess($"Worker ({id}) created."));
+            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
             WorkerInitSource.SetResult();
         }
 
@@ -56,9 +55,9 @@ namespace TypinExamples.Shared.Components
             {
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
 
-                ToastService.ShowSuccess("Terminal emulation ready.");
-
                 StateHasChanged();
+
+                ToastService.ShowSuccess($"Terminal emulation ready on worker ({worker.Id}).");
 
                 await _worker.RunAsync();
             }
@@ -92,8 +91,7 @@ namespace TypinExamples.Shared.Components
                 ToastService.ShowSuccess($"Disposed worker ({worker.Id}).");
 
                 //Create a new worker
-                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."),
-                                                                             onCreated: (id) => ToastService.ShowSuccess($"Worker ({id}) created."));
+                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
 
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
                 _worker = worker;
@@ -101,7 +99,7 @@ namespace TypinExamples.Shared.Components
 
                 WorkerInitSource.SetResult();
 
-                ToastService.ShowSuccess("Terminal emulation ready.");
+                ToastService.ShowSuccess($"Terminal emulation ready on worker ({worker.Id}).");
 
                 try
                 {

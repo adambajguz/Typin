@@ -1,5 +1,6 @@
 ﻿namespace TypinExamples.HelloWorld.Commands
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Typin;
@@ -9,6 +10,8 @@
     [Command(Description = "Simple command that prints text.")]
     public class SimpleCommand : ICommand
     {
+        private static string IntentionalErrorMessage = $"{Environment.NewLine}{Environment.NewLine}DO NOT take this error seriously as it is just an example. Switch to Log Viewer and see all logs.";
+
         [CommandOption("name", 'n')]
         public string? Name { get; init; }
 
@@ -37,8 +40,8 @@
             _logger.LogDebug("Example debug message from Typin.");
             _logger.LogInformation("Example inforamtion message from Typin.");
             _logger.LogWarning("Example warning message from Typin.");
-            _logger.LogError("Example error message from Typin.");
-            _logger.LogCritical("Example critical message from Typin.");
+            _logger.LogError($"Example error message from Typin.{IntentionalErrorMessage}");
+            _logger.LogCritical($"Example critical message from Typin.{IntentionalErrorMessage}");
 
             if (Name is null && Surname is null)
                 await console.Output.WriteLineAsync("Hello World!");
