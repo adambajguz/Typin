@@ -68,7 +68,7 @@ namespace TypinExamples.Services.Terminal
 
         public void Dispose()
         {
-            foreach (var terminal in _terminals.Values)
+            foreach (IWebTerminal terminal in _terminals.Values)
             {
                 terminal.DisposeXtermAsync().Wait(100);
             }

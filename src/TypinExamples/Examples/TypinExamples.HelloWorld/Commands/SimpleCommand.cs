@@ -10,7 +10,7 @@
     [Command(Description = "Simple command that prints text.")]
     public class SimpleCommand : ICommand
     {
-        private static string IntentionalErrorMessage = $"{Environment.NewLine}{Environment.NewLine}DO NOT take this error seriously as it is just an example. Switch to Log Viewer and see all logs.";
+        private static readonly string IntentionalErrorMessage = $"{Environment.NewLine}{Environment.NewLine}DO NOT take this error seriously as it is just an example. Switch to Log Viewer and see all logs.";
 
         [CommandOption("name", 'n')]
         public string? Name { get; init; }
