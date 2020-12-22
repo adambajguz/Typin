@@ -9,7 +9,7 @@ xtermInterop.initialize = function (id) {
 
         terminal.open(document.getElementById(id));
 
-        shellprompt = '$ ';
+        const shellprompt = '$ ';
         //terminal.on("data", (data) => {
         //    terminal.write(data);
         //});
@@ -44,8 +44,19 @@ xtermInterop.initialize = function (id) {
         terminal.cmd = '';
         terminal.on('key', function (key, ev) {
             let printable = (
-                !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey
+                !ev.altKey &&
+                !ev.altGraphKey &&
+                !ev.ctrlKey &&
+                !ev.metaKey &&
+                !(ev.keyCode >= 112 && ev.keyCode <= 123) // filter F1-F12
             );
+
+            if (!printable) {
+                return;
+            }
+
+            //console.log("KEY_TYPE: " + ev.keyCode + " " + printable);
+            //console.log(ev);
 
             if (ev.keyCode == 13) {
                 if (terminal.cmd === 'clear' || terminal.cmd === 'cls') {
@@ -62,9 +73,12 @@ xtermInterop.initialize = function (id) {
                     terminal.cmd.startsWith("run.exe") ||
                     terminal.cmd.startsWith("./run.exe") ||
                     terminal.cmd.startsWith("run")) {
+
                     terminal.writeln("");
 
-                    DotNet.invokeMethodAsync('TypinExamples', 'TerminalManager_ExampleInit', terminal.id, terminal.cmd)
+                    let tmpCmd = terminal.cmd;
+
+                    DotNet.invokeMethodAsync('TypinExamples', 'TerminalManager_ExampleInit', terminal.id, tmpCmd)
                         .then(() => {
                             terminal.write('\u001b[39m')
                             terminal.prompt();
@@ -87,7 +101,7 @@ xtermInterop.initialize = function (id) {
                     terminal.cmd = terminal.cmd.slice(0, -1);
                     terminal.write('\b \b');
                 }
-            } else if (printable) {
+            } else {
                 terminal.cmd += key;
                 terminal.write(key);
             }
