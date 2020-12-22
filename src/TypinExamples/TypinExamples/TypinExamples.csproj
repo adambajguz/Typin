@@ -45,7 +45,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
-    <ProjectReference Include="..\TypinExamples.Infrastructure.Compiler\TypinExamples.Infrastructure.Compiler.csproj" />
     <ProjectReference Include="..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
     <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers\TypinExamples.Infrastructure.WebWorkers.csproj" />
   </ItemGroup>

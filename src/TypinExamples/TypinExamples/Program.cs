@@ -6,7 +6,6 @@ namespace TypinExamples
     using Serilog.Events;
     using Serilog.Exceptions;
     using TypinExamples.Application;
-    using TypinExamples.Infrastructure.Compiler;
 
     public static class Program
     {
@@ -21,8 +20,7 @@ namespace TypinExamples
             AddSerilog(hostEnvironment);
 
             builder.Services.ConfigureServices(configuration, hostEnvironment)
-                            .ConfigureApplicationServices(configuration)
-                            .ConfigureInfrastructureCompilerServices();
+                            .ConfigureApplicationServices(configuration);
 
             await builder.Build().RunAsync();
         }
