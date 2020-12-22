@@ -62,10 +62,10 @@
             scriptContent = escapeScriptTextReplacements.Aggregate(scriptContent, (r, pair) => r.Replace(pair.Key, pair.Value));
 
             StringBuilder builder = new();
-            builder.Append("(function(){var d = document; var s = d.createElement('script'); s.async=false; s.src=");
+            builder.Append("(function(){let d = document; var s = d.createElement('script'); s.async=false; s.src=");
             builder.Append("URL.createObjectURL(new Blob([\"");
             builder.Append(scriptContent);
-            builder.Append("\"],{ \"type\": \"text/javascript\"})); d.head.appendChild(s); d.head.removeChild(s);})();");
+            builder.Append("\"],{\"type\": \"text/javascript\"})); d.head.appendChild(s); d.head.removeChild(s);})();");
 
             string script = builder.ToString();
 
