@@ -36,6 +36,19 @@
                         </div>
                     </div>
 
+                    <div class="row is-center">
+                        <div class="col">
+                            <progress id="progressbar" class="top" value="0" max="8"></progress>
+                        </div>
+                    </div>
+
+                    <!--<div class="row is-center text-center">
+                        <div class="col">
+                            <p id="progresbar-percent" class="is-marginless"></p>
+                            <p id="progresbar-desc" class="is-marginless"></p>
+                        </div>
+                    </div>-->
+
                 </div>
             </div>
         </header>
@@ -47,7 +60,44 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.webassembly.js"></script>
+    <!--<script src="_framework/blazor.webassembly.js"></script>-->
+
+    <script type="text/javascript">
+        var __loadedDllCounter = 0;
+        var __loadedDllTotal = 0;
+        window.loadResourceCallback = (keys, name, response) => {
+            const progressbar = document.getElementById('progressbar');
+            progressbar.value = __loadedDllCounter;
+
+            if (__loadedDllTotal == 0) {
+                __loadedDllTotal = keys.length + 8; //TODO add some collection with length for dll and pdb
+                progressbar.max = __loadedDllTotal;
+            }
+
+            const currentProgress = Math.ceil((++__loadedDllCounter * 100.0) / __loadedDllTotal);
+            console.log(`${__loadedDllCounter}/${__loadedDllTotal} (${currentProgress}%) [${name.substr(name.lastIndexOf('.') + 1)}] ${name}`);
+
+            //const progressbarPercent = document.getElementById('progresbar-percent');
+            //progressbarPercent.innerHTML = `(${currentProgress}%)`;
+
+            //const progressbarDesc = document.getElementById('progresbar-desc');
+            //progressbarDesc.innerHTML = `'${name}'`;
+        }
+
+        fetch("_framework/blazor.webassembly.js")
+            .then(response => response.text())
+            .then(text => {
+                const patchedBlazorLoader =
+                    text.replace("return r.loadResource(o,t(o),e[o],n)",
+                        "var p = r.loadResource(o,t(o),e[o],n); p.response.then((x) => { if (typeof window.loadResourceCallback === 'function') { window.loadResourceCallback(Object.keys(e), o, x);}}); return p;");
+
+                const script = document.createElement('script');
+                script.textContent = patchedBlazorLoader;
+
+                document.body.appendChild(script);
+            });
+    </script>
+
     <script src="assets/libraries/xterm/xterm.min.js" defer></script>
     <script src="assets/libraries/monaco-editor/min/vs/loader.js" defer></script>
     <script src="assets/js/js-extensions.js" defer></script>
