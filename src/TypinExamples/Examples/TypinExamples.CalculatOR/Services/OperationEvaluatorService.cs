@@ -33,7 +33,7 @@
             if (printSteps)
                 await _console.Output.WriteLineAsync($"{new string(' ', operationSymbol.Length)} {result.ToString(@base ?? a.Base).PadLeft(pad)}");
 
-            foreach (var x in b)
+            foreach (Number x in b)
             {
                 result = operation.Invoke(result, x.Value);
 

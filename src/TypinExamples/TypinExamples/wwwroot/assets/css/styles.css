@@ -2,6 +2,7 @@
 @import "../libraries/xterm/xterm.min.css";
 @import "../libraries/font-awesome/css/all.min.css";
 
+@import "c-progress.css";
 @import "c-dots-wave-loader.css";
 @import "code-highlight.css";
 @import "img-zoom-in-out.css";
