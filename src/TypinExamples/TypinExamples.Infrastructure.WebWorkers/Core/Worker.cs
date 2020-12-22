@@ -1,6 +1,7 @@
 namespace TypinExamples.Infrastructure.WebWorkers.Core
 {
     using System;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         where T : class, IWorkerStartup, new()
     {
         private readonly Action _disposeCallback;
-        private readonly string[] _assemblies;
+        private readonly WorkerCreationConfiguration _workerCreationConfiguration;
 
         private readonly ISerializer _serializer;
         private readonly IJSRuntime _jsRuntime;
@@ -39,13 +40,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                       IJSRuntime jsRuntime,
                       IMessagingService messagingService,
                       IMessagingProvider messagingProvider,
-                      string[] assemblies,
+                      WorkerCreationConfiguration workerCreationConfiguration,
                       ILogger logger)
         {
             Id = id;
 
             _disposeCallback = disposeCallback;
-            _assemblies = assemblies;
+            _workerCreationConfiguration = workerCreationConfiguration;
             _jsRuntime = jsRuntime;
             _messagingService = messagingService;
             _messagingProvider = messagingProvider;
@@ -81,17 +82,19 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             await _scriptLoader.InitScript();
 
-            var ms = typeof(WorkerThreadMessagingProvider);
-            var wp = typeof(WorkerEntryPoint);
+            Type ms = typeof(WorkerThreadMessagingProvider);
+            Type wp = typeof(WorkerEntryPoint);
 
             (ulong callId, Task<object> task) = _messagingService.ReserveId(Id);
+
+            string[] dependentAssemblyFilenames = _workerCreationConfiguration.IncludedAssemblies.Except(_workerCreationConfiguration.ExcludedAssemblied).ToArray();
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.initWorker",
                                              Id,
                                              DotNetObjectReference.Create((MainThreadMessagingProvider)_messagingProvider),
                                              new WorkerInitOptions
                                              {
-                                                 DependentAssemblyFilenames = _assemblies,
+                                                 DependentAssemblyFilenames = dependentAssemblyFilenames,
                                                  CallbackMethod = nameof(MainThreadMessagingProvider.OnMessage),
                                                  MessageEndpoint = $"[{ms.Assembly.GetName().Name}]{ms.FullName}:{nameof(WorkerThreadMessagingProvider.InternalOnMessage)}",
                                                  InitEndpoint = $"[{wp.Assembly.GetName().Name}]{wp.FullName}:{nameof(WorkerEntryPoint.Init)}",

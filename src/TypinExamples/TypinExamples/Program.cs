@@ -40,11 +40,11 @@ namespace TypinExamples
             else
             {
                 loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                               .MinimumLevel.Information();
+                                   .MinimumLevel.Information();
             }
 
             Log.Logger = loggerConfiguration.CreateLogger();
-            Log.Logger.Information("Initializing {Program}", typeof(Program).FullName);
+            Log.Logger.Information("Initializing {Program} (env: {Environment})", typeof(Program).FullName, hostEnvironment.Environment);
         }
     }
 }
