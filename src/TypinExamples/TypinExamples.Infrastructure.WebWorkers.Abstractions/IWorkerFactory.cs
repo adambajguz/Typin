@@ -5,7 +5,9 @@
 
     public interface IWorkerFactory
     {
-        Task<IWorker> CreateAsync<TStartup>(Action<ulong>? onInitStarted = null, Action<ulong>? onCreated = null)
+        Task<IWorker> CreateAsync<TStartup>(Action<WorkerCreationConfiguration>? creationConfiguration = null,
+                                            Action<ulong>? onInitStarted = null,
+                                            Action<ulong>? onCreated = null)
             where TStartup : class, IWorkerStartup, new();
     }
 }

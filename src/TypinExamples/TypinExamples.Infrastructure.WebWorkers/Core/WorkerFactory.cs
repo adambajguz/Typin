@@ -39,10 +39,21 @@
             _logger = logger;
         }
 
-        public async Task<IWorker> CreateAsync<T>(Action<ulong>? onInitStarted = null, Action<ulong>? onWorkerCreated = null)
+        public async Task<IWorker> CreateAsync<T>(Action<WorkerCreationConfiguration>? creationConfiguration = null,
+                                                  Action<ulong>? onInitStarted = null,
+                                                  Action<ulong>? onWorkerCreated = null)
             where T : class, IWorkerStartup, new()
         {
-            _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
+            WorkerCreationConfiguration workerCreationConfiguration = new();
+            creationConfiguration?.Invoke(workerCreationConfiguration);
+
+            workerCreationConfiguration.ExcludedAssemblied ??= Array.Empty<string>(); //just in case user set it to null
+
+            if (!(workerCreationConfiguration.IncludedAssemblies?.Any() ?? false))
+            {
+                _assemblies ??= await GetAssembliesToLoad() ?? throw new ApplicationException("Failed to fetch assemblies list.");
+                workerCreationConfiguration.IncludedAssemblies = _assemblies;
+            }
 
             ulong workerId = _idProvider.Next();
             Worker<T> worker = new Worker<T>(workerId,
@@ -50,7 +61,7 @@
                                              _jsRuntime,
                                              _messagingService,
                                              _messagingProvider,
-                                             _assemblies,
+                                             workerCreationConfiguration,
                                              _logger);
 
             onInitStarted?.Invoke(workerId);

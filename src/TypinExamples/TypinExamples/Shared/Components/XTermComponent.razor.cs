@@ -38,6 +38,33 @@ namespace TypinExamples.Shared.Components
         private bool IsInitialized => TerminalRepository.Contains(Id) && WorkerInstance is not null;
         private TaskCompletionSource WorkerInitSource { get; set; } = new();
 
+        private Action<WorkerCreationConfiguration> WorkerCreationConfiguration { get; }
+
+        public XTermComponent()
+        {
+            WorkerCreationConfiguration = (cfg) =>
+            {
+                cfg.ExcludedAssemblied = new string[]
+                {
+                    "TypinExamples.dll",
+
+                    "Serilog.Sinks.BrowserConsole.dll",
+                    "Blazored.Toast.dll",
+                    "Markdig.dll",
+
+                    "Microsoft.AspNetCore.Authorization.dll",
+                    "Microsoft.AspNetCore.Components.dll",
+                    "Microsoft.AspNetCore.Components.Forms.dll",
+                    "Microsoft.AspNetCore.Components.Web.dll",
+                    "Microsoft.AspNetCore.Components.WebAssembly.dll",
+                    "Microsoft.AspNetCore.Metadata.dll",
+
+                    "Microsoft.JSInterop.dll",
+                    "Microsoft.JSInterop.WebAssembly.dll"
+                };
+            };
+        }
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -45,7 +72,7 @@ namespace TypinExamples.Shared.Components
             if (LoggerDestination is not null)
                 LoggerDestinationRepository.Add(Id, LoggerDestination);
 
-            WorkerInstance ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
+            WorkerInstance ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(WorkerCreationConfiguration, onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
             WorkerInitSource.SetResult();
         }
 
@@ -91,7 +118,7 @@ namespace TypinExamples.Shared.Components
                 ToastService.ShowSuccess($"Disposed worker ({worker.Id}).");
 
                 //Create a new worker
-                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
+                worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(WorkerCreationConfiguration, onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
 
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
                 WorkerInstance = worker;
