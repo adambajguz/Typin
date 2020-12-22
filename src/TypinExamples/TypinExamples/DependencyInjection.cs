@@ -8,10 +8,10 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Serilog;
+    using TypinExamples.Application.Extensions;
     using TypinExamples.Application.Handlers.Commands.Terminal;
     using TypinExamples.Application.Handlers.Notifications.LogViewer;
     using TypinExamples.Application.Services.TypinWeb;
-    using TypinExamples.Common.Extensions;
     using TypinExamples.Configurations;
     using TypinExamples.Infrastructure.WebWorkers.Core;
     using TypinExamples.Services;

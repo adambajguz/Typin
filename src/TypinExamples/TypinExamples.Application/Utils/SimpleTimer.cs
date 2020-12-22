@@ -1,9 +1,9 @@
-﻿namespace TypinExamples.Application.Services
+﻿namespace TypinExamples.Application.Utils
 {
     using System;
     using System.Timers;
 
-    public sealed class TimerService : IDisposable
+    public sealed class SimpleTimer : IDisposable
     {
         private Timer? _timer = new Timer();
 
@@ -11,7 +11,7 @@
 
         public event Action? Elapsed;
 
-        public TimerService()
+        public SimpleTimer()
         {
 
         }

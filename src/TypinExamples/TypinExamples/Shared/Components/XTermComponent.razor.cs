@@ -34,8 +34,8 @@ namespace TypinExamples.Shared.Components
         [Inject] private ILogger<XTermComponent> Logger { get; init; } = default!;
         [Inject] private IToastService ToastService { get; init; } = default!;
 
-        private IWorker? _worker { get; set; }
-        private bool IsInitialized => TerminalRepository.Contains(Id) && _worker is not null;
+        private IWorker? WorkerInstance { get; set; }
+        private bool IsInitialized => TerminalRepository.Contains(Id) && WorkerInstance is not null;
         private TaskCompletionSource WorkerInitSource { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
@@ -45,13 +45,13 @@ namespace TypinExamples.Shared.Components
             if (LoggerDestination is not null)
                 LoggerDestinationRepository.Add(Id, LoggerDestination);
 
-            _worker ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
+            WorkerInstance ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
             WorkerInitSource.SetResult();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (!TerminalRepository.Contains(Id) && _worker is IWorker worker)
+            if (!TerminalRepository.Contains(Id) && WorkerInstance is IWorker worker)
             {
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
 
@@ -59,13 +59,13 @@ namespace TypinExamples.Shared.Components
 
                 ToastService.ShowSuccess($"Terminal emulation ready on worker ({worker.Id}).");
 
-                await _worker.RunAsync();
+                await WorkerInstance.RunAsync();
             }
         }
 
         public async Task TerminateTerminal()
         {
-            if (TerminalRepository.Contains(Id) && _worker is IWorker worker)
+            if (TerminalRepository.Contains(Id) && WorkerInstance is IWorker worker)
             {
                 WorkerInitSource = new();
 
@@ -82,7 +82,7 @@ namespace TypinExamples.Shared.Components
                     ToastService.ShowWarning($"Worker {worker.Id} does not respond. Executing forced disposal...");
                 }
 
-                _worker = null;
+                WorkerInstance = null;
                 await TerminalRepository.UnregisterAndDisposeTerminalAsync(Id);
                 StateHasChanged();
 
@@ -94,7 +94,7 @@ namespace TypinExamples.Shared.Components
                 worker = await WorkerFactory.CreateAsync<TypinWorkerStartup>(onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
 
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
-                _worker = worker;
+                WorkerInstance = worker;
                 StateHasChanged();
 
                 WorkerInitSource.SetResult();
@@ -118,10 +118,10 @@ namespace TypinExamples.Shared.Components
             await WorkerInitSource.Task;
 
             ulong? id = null;
-            if (_worker is not null)
+            if (WorkerInstance is not null)
             {
-                id = _worker.Id;
-                await _worker.DisposeAsync();
+                id = WorkerInstance.Id;
+                await WorkerInstance.DisposeAsync();
             }
 
             await TerminalRepository.UnregisterAndDisposeTerminalAsync(Id);

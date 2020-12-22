@@ -1,4 +1,4 @@
-﻿namespace TypinExamples.Common.Extensions
+﻿namespace TypinExamples.Application.Extensions
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

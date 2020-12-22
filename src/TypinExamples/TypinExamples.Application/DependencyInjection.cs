@@ -3,8 +3,8 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Configurations;
-    using TypinExamples.Application.Services;
-    using TypinExamples.Common.Extensions;
+    using TypinExamples.Application.Extensions;
+    using TypinExamples.Application.Utils;
 
     public static class DependencyInjection
     {
@@ -12,7 +12,7 @@
         {
             services.AddConfiguration<ExamplesConfiguration>(configuration);
 
-            services.AddTransient<TimerService>();
+            services.AddTransient<SimpleTimer>();
 
             return services;
         }

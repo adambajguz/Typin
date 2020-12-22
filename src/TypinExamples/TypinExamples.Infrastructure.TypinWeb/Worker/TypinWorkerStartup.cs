@@ -2,7 +2,7 @@
 {
     using Microsoft.Extensions.DependencyInjection;
     using TypinExamples.Application.Handlers.Commands;
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Utils;
     using TypinExamples.Infrastructure.TypinWeb.Handlers.Commands;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
@@ -15,7 +15,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<TimerService>();
+            services.AddTransient<SimpleTimer>();
         }
     }
 }

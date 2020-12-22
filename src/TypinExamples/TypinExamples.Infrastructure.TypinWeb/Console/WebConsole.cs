@@ -6,13 +6,13 @@
     using Typin.Console;
     using Typin.Console.IO;
     using TypinExamples.Application.Handlers.Commands.Terminal;
-    using TypinExamples.Application.Services;
+    using TypinExamples.Application.Utils;
     using TypinExamples.Infrastructure.TypinWeb.Console.IO;
     using TypinExamples.Infrastructure.WebWorkers.Abstractions;
 
     public sealed class WebConsole : IConsole
     {
-        private readonly TimerService _flushTimer = new TimerService();
+        private readonly SimpleTimer _flushTimer = new SimpleTimer();
 
         private readonly IWorker _worker;
         private readonly string _terminalId;
