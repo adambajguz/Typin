@@ -55,10 +55,11 @@
 
             onInitStarted?.Invoke(workerId);
 
+            _logger.LogInformation("Initializing worker ({Id})", worker.Id);
             await worker.InitAsync();
             _workerManager.AddWorker(worker);
 
-            _logger.LogInformation("Created worker {Id}", worker.Id);
+            _logger.LogInformation("Created worker ({Id})", worker.Id);
             onWorkerCreated?.Invoke(workerId);
 
             return worker;
