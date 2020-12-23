@@ -23,8 +23,8 @@ jobs:
       run: sed -i 's/<base href="\/" \/>/<base href="\/Typin\/" \/>/g' src/TypinExamples/TypinExamples/wwwroot/index.html  
      
     # copy index.html to 404.html to serve the same file when a file is not found
-    #- name: Copy index.html to 404.html
-    #  run: cp src/TypinExamples/TypinExamples/wwwroot/index.html src/TypinExamples/TypinExamples/wwwroot/404.html
+    - name: Copy index.html to 404.html
+      run: cp src/TypinExamples/TypinExamples/wwwroot/index.html src/TypinExamples/TypinExamples/wwwroot/404.html
       
     # remove appsettings.Development.json
     - name: Remove appsettings.Development.json
