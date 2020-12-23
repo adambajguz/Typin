@@ -16,18 +16,18 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0.100
+        dotnet-version: 5.0.101
      
     # changes the base-tag in index.html from '/' to '/Typin/' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from '/ to '/Typin/'
       run: sed -i 's/<base href="\/" \/>/<base href="\/Typin\/" \/>/g' src/TypinExamples/TypinExamples/wwwroot/index.html  
      
     # copy index.html to 404.html to serve the same file when a file is not found
-    - name: Copy index.html to 404.html
-      run: cp src/TypinExamples/TypinExamples/wwwroot/index.html src/TypinExamples/TypinExamples/wwwroot/404.html
+    #- name: Copy index.html to 404.html
+    #  run: cp src/TypinExamples/TypinExamples/wwwroot/index.html src/TypinExamples/TypinExamples/wwwroot/404.html
       
     # remove appsettings.Development.json
-    - name: Copy index.html to 404.html
+    - name: Remove appsettings.Development.json
       run: rm src/TypinExamples/TypinExamples/wwwroot/appsettings.Development.json
         
     # publishes Blazor project to the release-folder
