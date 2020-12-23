@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\assets\files\src\" />
     <Folder Include="wwwroot\assets\images\" />
   </ItemGroup>
 
@@ -55,5 +56,9 @@
     <ProjectReference Include="..\Examples\TypinExamples.Validation\TypinExamples.Validation.csproj" />
     <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="start XCOPY /Y /R &quot;$(SolutionDir)SomeConsoleApp\bin\$(ConfigurationName)\*&quot; &quot;$(ProjectDir)App_Data\Consoles\SomeConsoleApp\&quot;" />
+  </Target>
 
 </Project>

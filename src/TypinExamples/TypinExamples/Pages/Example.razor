@@ -52,16 +52,7 @@ else
                             <i class="fas fa-code"></i> Code
                         </TabContent>
                         <ChildContent>
-                            <section id="features">
-                                <div class="card">
-                                    <ul>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                    </ul>
-                                </div>
-                            </section>
+                            <FileBrowser Root="@(ExamplesConfiguration?.Value?.SrcFilesRoot)" SrcFiles="@Descriptor?.SrcFiles" />
                         </ChildContent>
                     </Tab>
                     <Tab>
