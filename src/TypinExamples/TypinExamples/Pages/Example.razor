@@ -52,7 +52,7 @@ else
                             <i class="fas fa-code"></i> Source code
                         </TabContent>
                         <ChildContent>
-                            <FileBrowser Root="@(ExamplesConfiguration?.Value?.SrcFilesRoot)" SrcFiles="@Descriptor?.SrcFiles" />
+                            <FileBrowser Root="@(System.IO.Path.Combine(ExamplesConfiguration?.Value?.SrcFilesRoot ?? string.Empty, Descriptor?.SrcRoot ?? string.Empty))" SrcFiles="@Descriptor?.SrcFiles" />
                         </ChildContent>
                     </Tab>
                     <Tab>

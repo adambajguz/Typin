@@ -1,14 +1,21 @@
 ﻿namespace TypinExamples.Shared.Components
 {
+    using System.IO;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
+    using Microsoft.Extensions.Logging;
     using TypinExamples.Services;
 
     public partial class FileBrowser : ComponentBase
     {
         private bool IsInitialized { get; set; }
 
+        [Inject] private ILogger<FileBrowser> Logger { get; init; } = default!;
         [Inject] private MonacoEditorService Editor { get; init; } = default!;
+        [Inject] private HttpClient HttpClient { get; init; } = default!;
 
         [Parameter]
         public string? Root { get; init; }
@@ -22,11 +29,36 @@
 
             if (firstRender)
             {
-                await Editor.InitializeAsync("container", "test", "csharp", "vs-dark", true, true);
+                await Editor.InitializeAsync("container", string.Empty, "csharp", "vs-dark", true, true);
 
                 await Task.Delay(1100);
                 IsInitialized = true;
                 StateHasChanged();
+
+                await ChangeFile(SrcFiles?.First() ?? string.Empty);
+            }
+        }
+
+        private async Task ChangeFile(string filename)
+        {
+            if (Root is not null && !string.IsNullOrWhiteSpace(filename))
+            {
+                string requestUri = Path.Combine(Root, filename);
+                HttpResponseMessage response = await HttpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string sourceCode = await response.Content.ReadAsStringAsync();
+                    await Editor.SetTextAsync("container", sourceCode);
+                }
+                else
+                {
+                    Logger.LogError("Failed to fetch file {File}", requestUri);
+                }
+            }
+            else
+            {
+                Logger.LogError($"Invalid example configuration - {nameof(Root)} or {nameof(SrcFiles)} not set.");
             }
         }
     }
