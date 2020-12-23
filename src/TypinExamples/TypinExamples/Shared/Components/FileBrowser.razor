@@ -1,18 +1,14 @@
-﻿<section id="features">
-    <div class="card">
-        <ul>
-            <li>📁&nbsp; File</li>
-            <li>📁&nbsp; File</li>
-            <li>📁&nbsp; File</li>
-            <li>📁&nbsp; File</li>
-        </ul>
+﻿@if (!IsInitialized)
+{
+    <div class="row">
+        <div class="col">
+        </div>
     </div>
-</section>
-
-@code {
-    [Parameter]
-    public string? Root { get; init; }
-
-    [Parameter]
-    public string[]? SrcFiles { get; init; }
+    <div class="row">
+        <div class="col">
+            <WaveLoader IsAlternativeColor="true" />
+        </div>
+    </div>
 }
+
+<div id="container" style="height: 75vh;"></div>

@@ -46,6 +46,10 @@ body {
         --color-warning: #ffa500;
     }
 
+.is-invisible {
+    visibility: hidden;
+}
+
 .container {
     padding: 0;
 }
