@@ -11,6 +11,8 @@
 
     public partial class FileBrowser : ComponentBase
     {
+        private const string EditorId = "m-filebrowser--monaco-container";
+
         private bool IsInitialized { get; set; }
 
         [Inject] private ILogger<FileBrowser> Logger { get; init; } = default!;
@@ -29,7 +31,7 @@
 
             if (firstRender)
             {
-                await Editor.InitializeAsync("container", string.Empty, "csharp", "vs-dark", true, true);
+                await Editor.InitializeAsync(EditorId, string.Empty, "csharp", "vs-dark", true, true);
 
                 await Task.Delay(1100);
                 IsInitialized = true;
@@ -37,6 +39,11 @@
 
                 await ChangeFile(SrcFiles?.First() ?? string.Empty);
             }
+        }
+
+        private async Task ToggleLineAsync()
+        {
+            await Editor.ToggleLineNumbersVisibility(EditorId);
         }
 
         private async Task ChangeFile(string filename)
@@ -49,7 +56,7 @@
                 if (response.IsSuccessStatusCode)
                 {
                     string sourceCode = await response.Content.ReadAsStringAsync();
-                    await Editor.SetTextAsync("container", sourceCode);
+                    await Editor.SetTextAsync(EditorId, sourceCode);
                 }
                 else
                 {
