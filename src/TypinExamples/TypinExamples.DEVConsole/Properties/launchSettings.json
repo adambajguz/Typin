@@ -2,28 +2,28 @@
   "profiles": {
     "Run: HelloWorld": {
       "commandName": "Project",
-      "commandLineArgs": "[interactive] world end \"08/18/2018 07:22:16\" --CONFIRM false -f -h",
+      "commandLineArgs": "world end \"08/18/2018 07:22:16\" --CONFIRM false -f -h",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.HelloWorld.Program"
       }
     },
     "Run: CalculatOR": {
       "commandName": "Project",
-      "commandLineArgs": "[interactive] add 0x15 5 2 1 0xFA 0b110111 -s -h",
+      "commandLineArgs": "add 0x15 5 2 1 0xFA 0b110111 -s -h",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.CalculatOR.Program"
       }
     },
     "Run: Timer": {
       "commandName": "Project",
-      "commandLineArgs": "[interactive]",
+      "commandLineArgs": "--help",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.Timer.Program"
       }
     },
     "Run: Validation": {
       "commandName": "Project",
-      "commandLineArgs": "interactive",
+      "commandLineArgs": "--help",
       "environmentVariables": {
         "TARGET_TYPIN_PROJECT": "TypinExamples.Validation.Program"
       }

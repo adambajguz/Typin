@@ -51,6 +51,10 @@
                     throw new ValidationException(validationResult.Errors);
                 }
             }
+            else
+            {
+                _logger.LogDebug("No validator for {Type}.", validatorType);
+            }
         }
 
         private static void PrintValidationResults(ICliContext context, ValidationException ex)

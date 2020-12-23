@@ -18,8 +18,7 @@
                .AddDirective<PreviewDirective>()
                .AddCommand<PipelineCommand>()
                .AddCommand<ServicesCommand>()
-               .UseMiddleware<FluentValidationMiddleware>()
-               .UseInteractiveMode(options: (cfg) => cfg.IsAdvancedInputAvailable = false);
+               .UseMiddleware<FluentValidationMiddleware>();
         }
 
         public void ConfigureServices(IServiceCollection services)

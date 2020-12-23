@@ -156,3 +156,15 @@ button:focus {
 .bg-warning {
     background-color: var(--color-warning) !important;
 }
+
+.break-word {
+    word-break: break-word;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.break-anywhere {
+    line-break: anywhere;
+}
