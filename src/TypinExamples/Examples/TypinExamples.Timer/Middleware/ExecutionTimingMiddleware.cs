@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Typin;
     using Typin.Console;
     using TypinExamples.Timer.Directives;
@@ -13,10 +14,12 @@
     public sealed class ExecutionTimingMiddleware : IMiddleware
     {
         private readonly IPerformanceLogsRepository _performanceLogsRepository;
+        private readonly ILogger _logger;
 
-        public ExecutionTimingMiddleware(IPerformanceLogsRepository performanceLogsRepository)
+        public ExecutionTimingMiddleware(IPerformanceLogsRepository performanceLogsRepository, ILogger<ExecutionTimingMiddleware> logger)
         {
             _performanceLogsRepository = performanceLogsRepository;
+            _logger = logger;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
@@ -50,6 +53,11 @@
                     Time = stopwatch.Elapsed
                 };
                 _performanceLogsRepository.Insert(log);
+
+                _logger.LogInformation("Command '{Command}' finished with exit code {ExitCode} after {Duration} ms.",
+                                       string.Join(' ', context.Input.Arguments),
+                                       context.ExitCode ?? ExitCodes.Error,
+                                       stopwatch.Elapsed.TotalMilliseconds);
             }
 
             if (hasPrintPerfDirective)

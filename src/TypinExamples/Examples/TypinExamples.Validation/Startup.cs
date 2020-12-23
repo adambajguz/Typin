@@ -4,7 +4,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
-    using Typin.Modes;
     using TypinExamples.Infrastructure.TypinWeb.Commands;
     using TypinExamples.Validation.Middleware;
 
@@ -18,8 +17,7 @@
                .AddDirective<PreviewDirective>()
                .AddCommand<PipelineCommand>()
                .AddCommand<ServicesCommand>()
-               .UseMiddleware<FluentValidationMiddleware>()
-               .UseInteractiveMode(options: (cfg) => cfg.IsAdvancedInputAvailable = false);
+               .UseMiddleware<FluentValidationMiddleware>();
         }
 
         public void ConfigureServices(IServiceCollection services)

@@ -14,7 +14,7 @@ __customBlazorLoader.callback = (config, keys, name, response) => {
         if (c.total <= 0) {
             const res = config.bootConfig.resources;
             const atl = Object.keys(res.assembly).length;
-            const ptl = Object.keys(res.pdb).length;
+            const ptl = res.pdb ? Object.keys(res.pdb).length : 0;
             p.max = c.total = atl + ptl;
 
             console.log(`[__customBlazorLoader] ${atl} .dll & ${ptl} .pdb to load`);

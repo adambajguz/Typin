@@ -1,13 +1,13 @@
-﻿@implements IWebLoggerDestination
+@implements IWebLoggerDestination
 
 <div class="m-log-viewer overflow">
     <table class="striped condensed">
         <caption class="text-right text-primary">
             (Total: @logs.Count)
         </caption>
-        <thead class="text-uppercase">
+        <thead class="text-uppercase text-small">
             <tr>
-                <th>Timestamp</th>
+                <th>Time</th>
                 <th>Level</th>
                 <th>Category</th>
                 <th>Message</th>
@@ -17,10 +17,23 @@
             <Virtualize Items="@logs">
                 <ItemContent>
                     <tr>
-                        <td class="text-grey">@context.TimestampUtc.ToLocalTime().ToString()</td>
-                        <td class="@HtmlHelpers.GetLogLevelCSSClasses(context.Level)">@HtmlHelpers.GetLogLevelAlias(context.Level)</td>
-                        <td class="text-grey">@context.Category</td>
-                        <td>@context.Text</td>
+                        <td class="text-grey no-wrap">@context.TimestampUtc.ToLocalTime().ToString("T")</td>
+                        <td class="no-wrap @HtmlHelpers.GetLogLevelCSSClasses(context.Level)">@HtmlHelpers.GetLogLevelAlias(context.Level)</td>
+                        <td class="text-grey break-anywhere">@context.Category</td>
+                        <td class="break-anywhere">
+                            @{
+                                string[] lines = context.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
+
+                                @foreach (string line in lines)
+                                {
+                                    @line
+                                    if (lines.Last() != line)
+                                    {
+                                        <br />
+                                    }
+                                }
+                            }
+                        </td>
                     </tr>
                 </ItemContent>
                 <Placeholder>
@@ -52,17 +65,16 @@
 
             RenderFragment message =
                 @<text>
-                <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
+                    <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
 
-                @foreach(string line in lines)
-                {
-                    @line
-
-                    if (lines.Last() != line)
+                    @foreach (string line in lines)
                     {
-                        <br />
+                        @line
+                        if (lines.Last() != line)
+                        {
+                            <br />
+                        }
                     }
-                }
 
                 </text>;
 
