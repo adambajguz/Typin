@@ -57,8 +57,4 @@
     <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="start XCOPY /Y /R &quot;$(SolutionDir)SomeConsoleApp\bin\$(ConfigurationName)\*&quot; &quot;$(ProjectDir)App_Data\Consoles\SomeConsoleApp\&quot;" />
-  </Target>
-
 </Project>
