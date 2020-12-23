@@ -5,12 +5,12 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command]
-    public class SampleCommand : ICommand
+    [Command(Description = "Default command that has a 100ms delay.")]
+    public class DefaultCommand : ICommand
     {
         public async ValueTask ExecuteAsync(IConsole console)
         {
-            await console.Output.WriteLineAsync(typeof(SampleCommand).AssemblyQualifiedName);
+            await console.Output.WriteLineAsync(typeof(DefaultCommand).AssemblyQualifiedName);
             await Task.Delay(100);
         }
     }

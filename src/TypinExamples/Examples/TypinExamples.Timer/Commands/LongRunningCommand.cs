@@ -5,10 +5,10 @@
     using Typin.Attributes;
     using Typin.Console;
 
-    [Command("long")]
+    [Command("long", Description = "Command to simulate long runnig task by passing a ms delay.")]
     public class LongRunningCommand : ICommand
     {
-        [CommandParameter(0)]
+        [CommandParameter(0, Description = "Delay in ms.")]
         public int? Time { get; set; }
 
         public async ValueTask ExecuteAsync(IConsole console)

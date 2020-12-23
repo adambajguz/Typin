@@ -86,6 +86,11 @@ kbd {
     color: var(--color-accent);
 }
 
+blockquote code,
+blockquote kbd {
+    background-color: var(--page-column-bg-color);
+}
+
 #grid .card {
     padding: 1rem 0rem;
     -webkit-box-shadow: none;
