@@ -8,6 +8,7 @@
         public string[]? Modes { get; init; }
 
         public string? DownloadPath { get; init; }
+        public string? DownloadFile { get; init; }
 
         public string? ProgramClass { get; init; }
         public string? WebProgramClass { get; init; }

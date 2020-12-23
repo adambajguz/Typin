@@ -22,7 +22,9 @@ else
             </div>
             <div class="col is-vertical-align is-right">
                 <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
-                <a href="@(Descriptor?.DownloadPath ?? string.Empty)" target="_top" class="button outline accent">Download <i class="fas fa-download"></i></a>
+                <FileDownload FilePath="@((Descriptor?.DownloadPath ?? string.Empty) + (Descriptor?.DownloadFile ?? string.Empty))" title="Download" class="button outline accent">
+                    Download <i class="fas fa-download"></i>
+                </FileDownload>
             </div>
         </div>
 
