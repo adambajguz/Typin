@@ -1,4 +1,4 @@
-﻿@implements IWebLoggerDestination
+@implements IWebLoggerDestination
 
 <div class="m-log-viewer overflow">
     <table class="striped condensed">
@@ -20,7 +20,20 @@
                         <td class="text-grey no-wrap">@context.TimestampUtc.ToLocalTime().ToString("T")</td>
                         <td class="no-wrap @HtmlHelpers.GetLogLevelCSSClasses(context.Level)">@HtmlHelpers.GetLogLevelAlias(context.Level)</td>
                         <td class="text-grey break-anywhere">@context.Category</td>
-                        <td class="break-anywhere">@context.Text</td>
+                        <td class="break-anywhere">
+                            @{
+                                string[] lines = context.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
+
+                                @foreach (string line in lines)
+                                {
+                                    @line
+                                    if (lines.Last() != line)
+                                    {
+                                        <br />
+                                    }
+                                }
+                            }
+                        </td>
                     </tr>
                 </ItemContent>
                 <Placeholder>
@@ -52,17 +65,16 @@
 
             RenderFragment message =
                 @<text>
-                <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
+                    <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
 
-                @foreach(string line in lines)
-                {
-                    @line
-
-                    if (lines.Last() != line)
+                    @foreach (string line in lines)
                     {
-                        <br />
+                        @line
+                        if (lines.Last() != line)
+                        {
+                            <br />
+                        }
                     }
-                }
 
                 </text>;
 

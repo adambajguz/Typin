@@ -4,7 +4,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
     using Typin.Directives;
-    using Typin.Modes;
     using TypinExamples.Infrastructure.TypinWeb.Commands;
     using TypinExamples.Validation.Middleware;
 

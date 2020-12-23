@@ -71,15 +71,20 @@
 
                 // well, you never know what it really is
                 if (state is string s)
+                {
                     entry.StateText = s;
+                }
                 // in case we have to do with a message template, lets get the keys and values (for Structured Logging providers)
                 // SEE: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging#log-message-template
                 // SEE: https://softwareengineering.stackexchange.com/questions/312197/benefits-of-structured-logging-vs-basic-logging
                 else if (state is IEnumerable<KeyValuePair<string, object>> stateProps)
+                {
                     entry.StateProperties = stateProps.ToDictionary(x => x.Key, x => x.Value);
+                }
 
                 // gather info about scope(s), if any
                 if (Provider.ScopeProvider is not null)
+                {
                     Provider.ScopeProvider.ForEachScope((value, loggingProps) =>
                     {
                         entry.Scopes ??= new List<LogScopeInfo>();
@@ -92,6 +97,7 @@
                         else if (value is IEnumerable<KeyValuePair<string, object>> props)
                             Scope.Properties = props.ToDictionary(x => x.Key, x => x.Value);
                     }, state);
+                }
 
                 Provider.WriteLog(entry);
             }
