@@ -1,0 +1,15 @@
+﻿<a href="@(FilePath ?? string.Empty)" download="@FileName" target="_blank" @attributes=AllOtherAttributes>@ChildContent</a>
+
+@code{
+    [Parameter]
+    public string? FilePath { get; init; }
+
+    [Parameter]
+    public string? FileName { get; init; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AllOtherAttributes { get; init; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+}
