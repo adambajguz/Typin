@@ -19,6 +19,10 @@ __customBlazorLoader.callback = (config, keys, name, response) => {
 
             console.log(`[__customBlazorLoader] ${atl} .dll & ${ptl} .pdb to load`);
         }
+
+        //if (c.total == c.counter) {
+        //    p.className = "is-hidden";
+        //}
     }
 
     const cp = Math.ceil((c.counter * 100.0) / c.total);

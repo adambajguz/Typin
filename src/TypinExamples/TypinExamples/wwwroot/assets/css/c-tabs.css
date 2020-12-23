@@ -15,3 +15,7 @@
 .tabs.tabs-bg {
     background-color: var(--bg-secondary-color);
 }
+
+.tabs ~ .tabs-content {
+
+}

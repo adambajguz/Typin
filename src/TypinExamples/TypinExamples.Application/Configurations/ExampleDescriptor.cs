@@ -6,6 +6,8 @@
         public string? Name { get; init; }
         public bool IsNew { get; init; }
         public string[]? Modes { get; init; }
+        public string? SrcRoot { get; init; }
+        public string[]? SrcFiles { get; init; }
 
         public string? DownloadPath { get; init; }
         public string? DownloadFile { get; init; }

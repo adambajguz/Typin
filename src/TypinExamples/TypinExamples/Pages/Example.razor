@@ -49,19 +49,10 @@ else
                     </Tab>
                     <Tab>
                         <TabContent>
-                            <i class="fas fa-code"></i> Code
+                            <i class="fas fa-code"></i> Source code
                         </TabContent>
                         <ChildContent>
-                            <section id="features">
-                                <div class="card">
-                                    <ul>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                        <li>📁&nbsp; File</li>
-                                    </ul>
-                                </div>
-                            </section>
+                            <FileBrowser Root="@(System.IO.Path.Combine(ExamplesConfiguration?.Value?.SrcFilesRoot ?? string.Empty, Descriptor?.SrcRoot ?? string.Empty))" SrcFiles="@Descriptor?.SrcFiles" />
                         </ChildContent>
                     </Tab>
                     <Tab>

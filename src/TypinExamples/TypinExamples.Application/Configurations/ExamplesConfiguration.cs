@@ -4,6 +4,7 @@
 
     public sealed class ExamplesConfiguration
     {
+        public string? SrcFilesRoot { get; init; }
         public ExampleDescriptor[] Descriptors { get; init; } = Array.Empty<ExampleDescriptor>();
     }
 }
