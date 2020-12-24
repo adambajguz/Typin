@@ -1,8 +1,9 @@
-name: CD-Examples
+name: TypinExamples-CD
 
 on:
   push:
-    branches: [ develop-examples-app ]
+    tags:
+    - 'TypinExamples-[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   deploy-to-github-pages:
