@@ -32,8 +32,8 @@
              </div>
 
             <div class="c-box--content text-light">
-                @Markdown.ToHtml(descriptor.Description ?? string.Empty)
-                @if (descriptor.Modes is not null)
+                @Markdown.ToHtml(descriptor?.Description ?? string.Empty)
+                @if (descriptor?.Modes is not null)
                 {
                     <p>
                         @foreach (string mode in descriptor.Modes)

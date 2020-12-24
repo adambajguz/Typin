@@ -36,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		..\..\.github\workflows\CI-Examples.yml = ..\..\.github\workflows\CI-Examples.yml
 		clean.ps1 = clean.ps1
 		..\..\codecov.yml = ..\..\codecov.yml
+		TypinExamples.props = TypinExamples.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypinExamples.CalculatOR", "Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj", "{32C43CA4-B590-4B62-81AC-36FB1132C709}"
