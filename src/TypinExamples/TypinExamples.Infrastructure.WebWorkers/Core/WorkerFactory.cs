@@ -11,6 +11,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Abstractions.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.BlazorBoot;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
 
     public sealed class WorkerFactory : IWorkerFactory
     {
@@ -22,6 +23,7 @@
         private readonly IWorkerManager _workerManager;
         private readonly IMessagingService _messagingService;
         private readonly IMessagingProvider _messagingProvider;
+        private readonly IScriptLoader _scriptLoader;
         private readonly ILogger _logger;
 
         public WorkerFactory(IJSRuntime jsRuntime,
@@ -29,6 +31,7 @@
                              IWorkerManager workerManager,
                              IMessagingService messagingService,
                              IMessagingProvider messagingProvider,
+                             IScriptLoader scriptLoader,
                              ILogger<WorkerFactory> logger)
         {
             _jsRuntime = jsRuntime;
@@ -36,6 +39,7 @@
             _workerManager = workerManager;
             _messagingService = messagingService;
             _messagingProvider = messagingProvider;
+            _scriptLoader = scriptLoader;
             _logger = logger;
         }
 
@@ -62,6 +66,7 @@
                                              _messagingService,
                                              _messagingProvider,
                                              workerCreationConfiguration,
+                                             _scriptLoader,
                                              _logger);
 
             onInitStarted?.Invoke(workerId);

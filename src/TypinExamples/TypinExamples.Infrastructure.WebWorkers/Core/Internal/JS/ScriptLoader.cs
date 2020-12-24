@@ -2,26 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
-    internal class ScriptLoader
+    public class ScriptLoader : IScriptLoader
     {
-        public const string MODULE_NAME = "BlazorWebWorker";
-        private const string JS_FILE = "BlazorWebWorker.js";
+        public const string ModuleName = "BlazorWebWorker";
+        private const string JSFileName = "BlazorWebWorker.js";
 
         private static readonly IReadOnlyDictionary<string, string> escapeScriptTextReplacements =
             new Dictionary<string, string> { { @"\", @"\\" }, { "\r", @"\r" }, { "\n", @"\n" }, { "'", @"\'" }, { "\"", @"\""" } };
 
-        private readonly IJSRuntime jsRuntime;
+        private readonly IJSRuntime _jsRuntime;
+        private readonly ILogger _logger;
 
-        public ScriptLoader(IJSRuntime jSRuntime)
+        public ScriptLoader(IJSRuntime jSRuntime, ILogger<ScriptLoader> logger)
         {
-            jsRuntime = jSRuntime;
+            _jsRuntime = jSRuntime;
+            _logger = logger;
         }
 
         public async Task InitScript()
@@ -30,9 +35,9 @@
                 return;
 
             Assembly assembly = typeof(ScriptLoader).Assembly;
-            string assemblyName = assembly.GetName().Name ?? throw new NullReferenceException($"Unable to initialize {JS_FILE}");
+            string assemblyName = assembly.GetName().Name ?? throw new NullReferenceException($"Unable to initialize {JSFileName}.");
 
-            using (Stream stream = assembly.GetManifestResourceStream($"{assemblyName}.{JS_FILE}") ?? throw new InvalidOperationException($"Unable to get {JS_FILE}"))
+            using (Stream stream = assembly.GetManifestResourceStream($"{assemblyName}.{JSFileName}") ?? throw new InvalidOperationException($"Unable to get {JSFileName}"))
             using (StreamReader streamReader = new StreamReader(stream))
             {
                 string scriptContent = await streamReader.ReadToEndAsync();
@@ -40,21 +45,36 @@
                 await ExecuteRawScriptAsync(scriptContent);
             }
 
-            DateTimeOffset startedOn = DateTimeOffset.UtcNow;
-            DateTimeOffset shouldFinishOn = startedOn.AddSeconds(4);
-            while (!await IsLoaded())
+            // Fail after 4s not to block and hide any other possible error
+            using (CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromSeconds(6)))
             {
-                await Task.Delay(100);
+                Stopwatch stopwatch = new();
+                stopwatch.Start();
 
-                // Fail after 4s not to block and hide any other possible error
-                if (DateTimeOffset.UtcNow > shouldFinishOn)
-                    throw new InvalidOperationException($"Unable to initialize {JS_FILE}. Operation started on {startedOn} and was expected to finish {shouldFinishOn}.");
+                bool isLoaded;
+                do
+                {
+                    isLoaded = await IsLoaded();
+                    await Task.Delay(50);
+                }
+                while (!isLoaded && !cancellationTokenSource.IsCancellationRequested);
+
+                stopwatch.Stop();
+
+                if (isLoaded)
+                {
+                    _logger.LogDebug($"Initialized {JSFileName} with module {ModuleName} after {{Elapsed}}.", stopwatch.Elapsed);
+                }
+                else if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    _logger.LogCritical($"Unable to initialize {JSFileName} with module {ModuleName}. Operation cancelled after about 6 seconds {{Elapsed}}.", stopwatch.Elapsed);
+                }
             }
         }
 
         private async Task<bool> IsLoaded()
         {
-            return await jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", MODULE_NAME);
+            return await _jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", ModuleName);
         }
 
         private async Task ExecuteRawScriptAsync(string scriptContent)
@@ -69,7 +89,7 @@
 
             string script = builder.ToString();
 
-            await jsRuntime.InvokeVoidAsync("eval", script);
+            await _jsRuntime.InvokeVoidAsync("eval", script);
         }
     }
 }

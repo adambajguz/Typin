@@ -27,7 +27,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         private readonly IJSRuntime _jsRuntime;
         private readonly IMessagingService _messagingService;
         private readonly IMessagingProvider _messagingProvider;
-        private readonly ScriptLoader _scriptLoader;
+        private readonly IScriptLoader _scriptLoader;
         private readonly ILogger _logger;
 
         public ulong Id { get; }
@@ -41,6 +41,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
                       IMessagingService messagingService,
                       IMessagingProvider messagingProvider,
                       WorkerCreationConfiguration workerCreationConfiguration,
+                      IScriptLoader scriptLoader,
                       ILogger logger)
         {
             Id = id;
@@ -51,7 +52,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             _messagingService = messagingService;
             _messagingProvider = messagingProvider;
 
-            _scriptLoader = new ScriptLoader(_jsRuntime);
+            _scriptLoader = scriptLoader;
             _serializer = new DefaultSerializer();
 
             _logger = logger;
@@ -89,7 +90,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             string[] dependentAssemblyFilenames = _workerCreationConfiguration.IncludedAssemblies.Except(_workerCreationConfiguration.ExcludedAssemblied).ToArray();
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.initWorker",
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.initWorker",
                                              Id,
                                              DotNetObjectReference.Create((MainThreadMessagingProvider)_messagingProvider),
                                              new WorkerInitOptions
@@ -150,7 +151,7 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
 
             IsDisposed = true;
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.disposeWorker", Id);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.disposeWorker", Id);
 
             _messagingService.CleanMessageRegistry(Id);
 

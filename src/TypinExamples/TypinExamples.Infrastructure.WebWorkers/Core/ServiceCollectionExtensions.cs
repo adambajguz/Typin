@@ -9,6 +9,7 @@
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging;
     using TypinExamples.Infrastructure.WebWorkers.Common.Messaging.Handlers;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal;
+    using TypinExamples.Infrastructure.WebWorkers.Core.Internal.JS;
     using TypinExamples.Infrastructure.WebWorkers.Core.Internal.Messaging;
 
     public static class ServiceCollectionExtensions
@@ -23,6 +24,7 @@
             services.AddScoped<IWorkerFactory, WorkerFactory>()
                     .AddScoped<IWorkerManager, WorkerManager>()
                     .AddScoped<ISerializer, DefaultSerializer>()
+                    .AddScoped<IScriptLoader, ScriptLoader>()
                     .AddSingleton(new WorkerIdAccessor())
                     .AddTransient(typeof(NotificationHandlerWrapper<>))
                     .AddTransient(typeof(CommandHandlerWrapper<>))

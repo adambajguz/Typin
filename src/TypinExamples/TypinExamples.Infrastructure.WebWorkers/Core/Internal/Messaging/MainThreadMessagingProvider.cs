@@ -43,7 +43,7 @@
             if (targetWorkerId is null)
                 throw new ArgumentNullException(nameof(targetWorkerId));
 
-            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.MODULE_NAME}.postMessage", targetWorkerId, rawMessage);
+            await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.postMessage", targetWorkerId, rawMessage);
         }
 
         public void Dispose()
