@@ -63,7 +63,7 @@
         }
 
         /// <summary>
-        /// Whether command can be executed in mode T.
+        /// Whether directive can be executed in mode T.
         /// </summary>
         public bool CanBeExecutedInMode<T>()
             where T : ICliMode
@@ -72,14 +72,14 @@
         }
 
         /// <summary>
-        /// Whether command can be executed in mode provided in parameter.
+        /// Whether directive can be executed in mode provided in parameter.
         /// </summary>
         public bool CanBeExecutedInMode(Type type)
         {
             if (!KnownTypesHelpers.IsCliModeType(type))
                 throw AttributesExceptions.InvalidModeType(type);
 
-            if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
+            if (!HasModeRestrictions())
                 return true;
 
             if (SupportedModes != null && !SupportedModes!.Contains(type))
@@ -89,6 +89,14 @@
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Whether directive has mode restrictions.
+        /// </summary>
+        public bool HasModeRestrictions()
+        {
+            return (SupportedModes?.Count ?? 0) > 0 || (ExcludedModes?.Count ?? 0) > 0;
         }
 
         /// <inheritdoc/>
