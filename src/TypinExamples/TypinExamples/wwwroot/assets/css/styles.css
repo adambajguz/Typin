@@ -104,6 +104,26 @@ blockquote kbd {
     font-size: 1.2rem;
 }
 
+.dropdown + .button {
+    margin-left: 1rem
+}
+
+    .dropdown + .button.is-small,
+    .dropdown + .button.is-medium,
+    .dropdown + .button.is-large {
+        margin-left: 0.5rem
+    }
+
+.button + .button {
+    margin-left: 1rem
+}
+
+    .button + .button.is-small,
+    .button + .button.is-medium,
+    .button + .button.is-large {
+        margin-left: 0.5rem
+    }
+
 button:focus {
     outline: none;
 }
