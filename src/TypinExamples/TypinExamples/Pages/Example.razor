@@ -33,6 +33,40 @@ else
                 @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
             </div>
         </div>
+
+        <div class="row">
+            <div class="col">
+                <span class="text-grey"><i>Scroll down for quick start, source code, and log viewer.</i></span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="row">
+            <div class="col">
+                <TabContainer>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-terminal"></i> Terminal
+                            <div class="pull-right">
+                                <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
+                                    <i class="fas fa-level-down-alt fa-flip-horizontal"></i>
+                                </button>
+                                <button type="button" title="Clear screen" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
+                                    <i class="fas fa-power-off"></i> Restart
+                                </button>
+                            </div>
+                        </TabContent>
+                        <ChildContent>
+                            <XTermComponent ExampleKey="@(Descriptor?.Key)" @ref="XTermInstance" />
+                        </ChildContent>
+                    </Tab>
+                </TabContainer>
+            </div>
+        </div>
     </section>
 
     <section>
@@ -67,34 +101,6 @@ else
             </div>
         </div>
     </section>
-
-    <section>
-        <div class="row">
-            <div class="col">
-                <TabContainer>
-                    <Tab>
-                        <TabContent>
-                            <i class="fas fa-terminal"></i> Terminal
-                            <div class="pull-right">
-                                <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
-                                    <i class="fas fa-level-down-alt fa-flip-horizontal"></i>
-                                </button>
-                                <button type="button" title="Clear screen" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
-                                    <i class="fas fa-eraser"></i>
-                                </button>
-                                <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
-                                    <i class="fas fa-power-off"></i> Restart
-                                </button>
-                            </div>
-                        </TabContent>
-                        <ChildContent>
-                            <XTermComponent ExampleKey="@(Descriptor?.Key)" LoggerDestination="@LogViewerInstance" @ref="XTermInstance" />
-                        </ChildContent>
-                    </Tab>
-                </TabContainer>
-            </div>
-        </div>
-    </section>
 }
 
 @code
@@ -114,9 +120,22 @@ else
 
     [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
 
+    [Inject] private ILoggerDestinationRepository LoggerDestinationRepository { get; init; } = default!;
+
     protected override void OnInitialized()
     {
         Descriptor ??= GetDescriptor();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (LogViewerInstance is not null && XTermInstance is not null)
+                LoggerDestinationRepository.Add(XTermInstance.Id, LogViewerInstance);
+        }
+
+        base.OnAfterRender(firstRender);
     }
 
     private ExampleDescriptor? GetDescriptor()

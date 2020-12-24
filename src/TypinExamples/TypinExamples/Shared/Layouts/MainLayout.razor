@@ -39,6 +39,8 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
+        base.OnAfterRender(firstRender);
+
         if (firstRender)
         {
             RenderFragment message = @<text><span>Welcome to TypinExamples</span> <NavLinkExtended href="example/hello-world" class="button is-small primary text-uppercase">Start <i class="fas fa-caret-right"></i></NavLinkExtended></text>;

@@ -20,7 +20,7 @@
 
         public static string GetLogLevelAlias(LogLevel level)
         {
-            return level switch
+            return (level switch
             {
                 LogLevel.Trace => "trace",
                 LogLevel.Debug => "debug",
@@ -29,7 +29,7 @@
                 LogLevel.Error => "error",
                 LogLevel.Critical => "critical",
                 _ => level.ToString(),
-            };
+            }).ToUpper();
         }
     }
 }

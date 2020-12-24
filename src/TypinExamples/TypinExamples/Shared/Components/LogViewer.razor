@@ -5,7 +5,7 @@
     </div>
 </div>
 
-<div class="m-log-viewer overflow" style="min-height: @(logs.Count == 0 ? "unset" : "12rem");">
+<div class="m-log-viewer overflow" style="min-height: @(logs.Count == 0 ? "unset" : "300px");">
     <table class="striped condensed">
 
         <caption class="text-right text-primary">
@@ -18,15 +18,19 @@
                 {
                     <details class="dropdown">
                         <summary class="button accent is-medium outline">Filter (@filteredLogs.Count / @logs.Count)</summary>
-                        <div class="card bd-accent" style="z-index: 999; right: 0; left: unset; margin-top: 1rem;">
+                        <div class="card bd-accent text-small" style="z-index: 999; right: 0; left: unset; margin-top: 1rem;">
 
-                            @foreach (var level in VisibleLevels)
-                            {
-                                <label for="log-viewer--checkbox-@level.Key.ToString().ToLower()">
-                                    <input id="log-viewer--checkbox-@level.Key.ToString().ToLower()" name="checkbox" type="checkbox" checked="@level.Value" @onchange="(e) => FilterChanged(level.Key, e)">
-                                    <span class="@HtmlHelpers.GetLogLevelCSSClasses(level.Key)">@HtmlHelpers.GetLogLevelAlias(level.Key)</span>
-                                </label>
-                            }
+                            <div class="row text-left">
+                                @foreach (var level in VisibleLevels)
+                                {
+                                    <div class="col">
+                                        <label for="log-viewer--checkbox-@level.Key.ToString().ToLower()">
+                                            <input id="log-viewer--checkbox-@level.Key.ToString().ToLower()" name="checkbox" type="checkbox" checked="@level.Value" @onchange="(e) => FilterChanged(level.Key, e)">
+                                            <span class="@HtmlHelpers.GetLogLevelCSSClasses(level.Key)">@HtmlHelpers.GetLogLevelAlias(level.Key)</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
 
                         </div>
                     </details>
@@ -88,13 +92,13 @@
 @code {
     private Dictionary<LogLevel, bool> VisibleLevels = new()
     {
-        { LogLevel.Trace, true },
-        { LogLevel.Debug, true },
-        { LogLevel.Information, true },
-        { LogLevel.Warning, true },
-        { LogLevel.Error, true },
-        { LogLevel.Critical, true }
-    };
+            { LogLevel.Trace, true },
+            { LogLevel.Debug, true },
+            { LogLevel.Information, true },
+            { LogLevel.Warning, true },
+            { LogLevel.Error, true },
+            { LogLevel.Critical, true }
+        };
 
     private bool ShowTrace { get; set; } = true;
     private bool ShowDebug { get; set; } = true;
@@ -142,18 +146,18 @@
             string[] lines = entry.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
 
             RenderFragment message =
-            @<text>
-                <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
+                @<text>
+                    <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
 
-                @foreach (string line in lines)
-                {
-                    @line
-                    if (lines.Last() != line)
+                    @foreach (string line in lines)
                     {
-                        <br />
+                        @line
+                        if (lines.Last() != line)
+                        {
+                            <br />
+                        }
                     }
-                }
-            </text>;
+                </text>;
 
             ToastService.ShowError(message, "Typin Log Viewer");
         }

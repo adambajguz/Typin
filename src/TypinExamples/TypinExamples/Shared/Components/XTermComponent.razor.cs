@@ -25,10 +25,6 @@ namespace TypinExamples.Shared.Components
         //[Parameter]
         //public TerminalOptions Options { get; init; } = new TerminalOptions();
 
-        [Parameter]
-        public IWebLoggerDestination? LoggerDestination { get; init; }
-
-        [Inject] private ILoggerDestinationRepository LoggerDestinationRepository { get; init; } = default!;
         [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
         [Inject] private IWorkerFactory WorkerFactory { get; init; } = default!;
         [Inject] private ILogger<XTermComponent> Logger { get; init; } = default!;
@@ -69,15 +65,14 @@ namespace TypinExamples.Shared.Components
         {
             await base.OnInitializedAsync();
 
-            if (LoggerDestination is not null)
-                LoggerDestinationRepository.Add(Id, LoggerDestination);
-
             WorkerInstance ??= await WorkerFactory.CreateAsync<TypinWorkerStartup>(WorkerCreationConfiguration, onInitStarted: (id) => ToastService.ShowInfo($"Initializing worker ({id})..."));
             WorkerInitSource.SetResult();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (!TerminalRepository.Contains(Id) && WorkerInstance is IWorker worker)
             {
                 await TerminalRepository.CreateTerminalAsync(Id, ExampleKey ?? string.Empty, worker);
