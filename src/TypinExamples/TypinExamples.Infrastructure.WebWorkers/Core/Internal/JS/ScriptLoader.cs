@@ -46,7 +46,7 @@
             }
 
             // Fail after 4s not to block and hide any other possible error
-            using (CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromSeconds(6)))
+            using (CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromSeconds(10)))
             {
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
@@ -54,8 +54,8 @@
                 bool isLoaded;
                 do
                 {
-                    isLoaded = await IsLoaded();
                     await Task.Delay(50);
+                    isLoaded = await IsLoaded();
                 }
                 while (!isLoaded && !cancellationTokenSource.IsCancellationRequested);
 
@@ -74,7 +74,15 @@
 
         private async Task<bool> IsLoaded()
         {
-            return await _jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", ModuleName);
+            try
+            {
+                return await _jsRuntime.InvokeAsync<bool>("window.hasOwnProperty", ModuleName);
+            }
+            catch (JSException ex)
+            {
+                _logger.LogInformation(ex, "Unable to check if WebWorker script was loaded. Assuming 'window.hasOwnProperty' does not exist.");
+                return false;
+            }
         }
 
         private async Task ExecuteRawScriptAsync(string scriptContent)
