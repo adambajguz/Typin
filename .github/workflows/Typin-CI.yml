@@ -41,7 +41,7 @@ jobs:
         dotnet-version: 5.0.101
 
     - name: Build & test
-      run: dotnet test src/Typin/Typin.sln --configuration Release #--logger GitHubActions
+      run: dotnet test src/Typin/Typin.sln --configuration Release
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1.0.14
