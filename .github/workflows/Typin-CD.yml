@@ -1,9 +1,10 @@
-name: CD
+name: Typin-CD
 
 on:
   push:
     tags:
-    - '*'
+    - 'Typin-[0-9]+.[0-9]+.[0-9]+'
+    - 'Typin-[0-9]+.[0-9]+.[0-9]+-dev-*'
 
 jobs:
   build:
