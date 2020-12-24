@@ -21,8 +21,10 @@ else
                 <h1>@(Descriptor?.Name ?? string.Empty)</h1>
             </div>
             <div class="col is-vertical-align is-right">
+                @{ string filename = Descriptor?.DownloadFile ?? string.Empty; }
+
                 <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
-                <FileDownload FilePath="@((Descriptor?.DownloadPath ?? string.Empty) + (Descriptor?.DownloadFile ?? string.Empty))" title="Download" class="button outline accent">
+                <FileDownload FilePath="@((Descriptor?.DownloadPath ?? string.Empty) + filename)" title="@($"Download {filename}")" class="button outline accent">
                     Download <i class="fas fa-download"></i>
                 </FileDownload>
             </div>

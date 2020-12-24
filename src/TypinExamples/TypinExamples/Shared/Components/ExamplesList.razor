@@ -21,7 +21,9 @@
                         }
                     </div>
                     <div class="col-4 is-vertical-align is-right">
-                        <FileDownload FilePath="@((descriptor?.DownloadPath ?? string.Empty) + (descriptor?.DownloadFile ?? string.Empty))" title="Download" class="button outline accent icon-only">
+                        @{ string filename = descriptor?.DownloadFile ?? string.Empty; }
+
+                        <FileDownload FilePath="@((descriptor?.DownloadPath ?? string.Empty) + filename)" title="@($"Download {filename}")" class="button outline accent icon-only">
                             <i class="fas fa-download"></i>
                         </FileDownload>
                         <NavLinkExtended href="@("example/" + descriptor?.Key ?? string.Empty)" class="button primary">Run <i class="fas fa-chevron-right"></i></NavLinkExtended>

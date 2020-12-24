@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net.Http;
+    using BlazorDownloadFile;
     using Blazored.Toast;
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -23,6 +24,8 @@
         {
             services.AddOptions();
             services.AddBlazoredToast();
+
+            services.AddBlazorDownloadFile();
 
             services.AddWebWorkers()
                     .RegisterCommandHandler<ClearCommand, ClearCommand.Handler>()
