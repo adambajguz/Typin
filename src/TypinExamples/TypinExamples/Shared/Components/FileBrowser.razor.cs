@@ -47,24 +47,23 @@
 
         private async Task ChangeFile(string filename)
         {
-            if (Root is not null && !string.IsNullOrWhiteSpace(filename))
+            if (string.IsNullOrWhiteSpace(Root) || string.IsNullOrWhiteSpace(filename))
             {
-                string requestUri = Path.Combine(Root, filename);
-                HttpResponseMessage response = await HttpClient.GetAsync(requestUri);
+                Logger.LogError($"Invalid download file - {nameof(Root)} {{Root}} or {nameof(filename)} {{FileName}} not set.", Root, filename);
+                return;
+            }
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string sourceCode = await response.Content.ReadAsStringAsync();
-                    await Editor.SetTextAsync(EditorId, sourceCode);
-                }
-                else
-                {
-                    Logger.LogError("Failed to fetch file {File}", requestUri);
-                }
+            string requestUri = Path.Combine(Root, filename);
+            HttpResponseMessage response = await HttpClient.GetAsync(requestUri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string sourceCode = await response.Content.ReadAsStringAsync();
+                await Editor.SetTextAsync(EditorId, sourceCode);
             }
             else
             {
-                Logger.LogError($"Invalid example configuration - {nameof(Root)} or {nameof(SrcFiles)} not set.");
+                Logger.LogError("Failed to fetch file {File}.", requestUri);
             }
         }
     }
