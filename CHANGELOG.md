@@ -27,6 +27,7 @@
 - Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
 - Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
+- Added `ExceptionFormatter` util and used it as a default exception printer in `DefaultExceptionHandler`.
 
 ### v2.1.1 (18-Oct-2020)
 

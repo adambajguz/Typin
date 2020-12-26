@@ -5,6 +5,11 @@
 
     internal static class InternalStringExtensions
     {
+        public static string? NullIfWhiteSpace(this string str)
+        {
+            return string.IsNullOrWhiteSpace(str) ? null : str;
+        }
+
         public static string Quote(this string str)
         {
             return string.Concat("\"", str, "\"");

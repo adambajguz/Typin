@@ -182,6 +182,10 @@ namespace Typin
 
                 _logger.LogCritical(ex, "Unhandled Typin exception caused app to terminate.");
 
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Unhandled Typin exception caused app to terminate."));
+                _console.Error.WriteLine();
+                _console.Error.WriteException(ex);
+
                 return ExitCodes.FromException(ex);
             }
             // To prevent the app from showing the annoying Windows troubleshooting dialog,
@@ -193,10 +197,8 @@ namespace Typin
                 _logger.LogCritical(ex, "Unhandled exception caused app to terminate.");
 
                 _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
-
                 _console.Error.WriteLine();
-                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine(ex.ToString()));
-                _console.Error.WriteLine();
+                _console.Error.WriteException(ex);
 
                 return ExitCodes.FromException(ex);
             }

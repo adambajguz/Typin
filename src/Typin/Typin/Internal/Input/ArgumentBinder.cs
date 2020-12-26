@@ -14,30 +14,27 @@
     {
         private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
 
-        private static readonly IReadOnlyDictionary<Type, Func<string?, object?>> PrimitiveConverters =
-            new Dictionary<Type, Func<string?, object?>>
+        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
+            new Dictionary<Type, Func<string, object?>>
             {
-                [typeof(object)] = v => v,
-                [typeof(string)] = v => v,
-                [typeof(bool)] = v => string.IsNullOrWhiteSpace(v) || bool.Parse(v),
                 [typeof(char)] = v => TextUtils.UnescapeChar(v),
-                [typeof(sbyte)] = v => sbyte.Parse(v!, FormatProvider),
-                [typeof(byte)] = v => byte.Parse(v!, FormatProvider),
-                [typeof(short)] = v => short.Parse(v!, FormatProvider),
-                [typeof(ushort)] = v => ushort.Parse(v!, FormatProvider),
-                [typeof(int)] = v => int.Parse(v!, FormatProvider),
-                [typeof(uint)] = v => uint.Parse(v!, FormatProvider),
-                [typeof(long)] = v => long.Parse(v!, FormatProvider),
-                [typeof(ulong)] = v => ulong.Parse(v!, FormatProvider),
+                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
+                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
+                [typeof(short)] = v => short.Parse(v, FormatProvider),
+                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
+                [typeof(int)] = v => int.Parse(v, FormatProvider),
+                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
+                [typeof(long)] = v => long.Parse(v, FormatProvider),
+                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
 #if NET5_0
-                [typeof(Half)] = v => Half.Parse(v!, FormatProvider),
+                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
 #endif
-                [typeof(float)] = v => float.Parse(v!, FormatProvider),
-                [typeof(double)] = v => double.Parse(v!, FormatProvider),
-                [typeof(decimal)] = v => decimal.Parse(v!, FormatProvider),
-                [typeof(DateTime)] = v => DateTime.Parse(v!, FormatProvider),
-                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v!, FormatProvider),
-                [typeof(TimeSpan)] = v => TimeSpan.Parse(v!, FormatProvider),
+                [typeof(float)] = v => float.Parse(v, FormatProvider),
+                [typeof(double)] = v => double.Parse(v, FormatProvider),
+                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
+                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
+                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
+                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
             };
 
         #region Value Converter
@@ -45,16 +42,24 @@
         {
             try
             {
-                // Primitive
-                Func<string?, object?>? primitiveConverter = PrimitiveConverters.GetValueOrDefault(targetType);
-                if (primitiveConverter != null)
+                // No conversion necessary
+                if (targetType == typeof(object) || targetType == typeof(string))
+                    return value;
+
+                // Bool conversion (special case)
+                if (targetType == typeof(bool))
+                    return string.IsNullOrWhiteSpace(value) || bool.Parse(value);
+
+                // Primitive conversion
+                Func<string, object?>? primitiveConverter = PrimitiveConverters.GetValueOrDefault(targetType);
+                if (primitiveConverter != null && !string.IsNullOrWhiteSpace(value))
                     return primitiveConverter(value);
 
-                // Enum
-                if (targetType.IsEnum)
+                // Enum conversion conversion
+                if (targetType.IsEnum && !string.IsNullOrWhiteSpace(value))
                     return Enum.Parse(targetType, value ?? string.Empty, true);
 
-                // Nullable
+                // Nullable<T> conversion
                 Type? nullableUnderlyingType = targetType.TryGetNullableUnderlyingType();
                 if (nullableUnderlyingType != null)
                 {
@@ -63,18 +68,18 @@
                         : null;
                 }
 
-                // String-constructible
+                // String-constructible conversion
                 ConstructorInfo? stringConstructor = targetType.GetConstructor(new[] { typeof(string) });
                 if (stringConstructor != null)
                     return stringConstructor.Invoke(new object?[] { value });
 
-                // String-parseable (with format provider)
-                MethodInfo? parseMethodWithFormatProvider = targetType.GetStaticParseMethod(true);
+                // String-parseable (with format provider) conversion
+                MethodInfo? parseMethodWithFormatProvider = targetType.TryGetStaticParseMethod(true);
                 if (parseMethodWithFormatProvider != null)
                     return parseMethodWithFormatProvider.Invoke(null, new object[] { value!, FormatProvider });
 
-                // String-parseable (without format provider)
-                MethodInfo? parseMethod = targetType.GetStaticParseMethod();
+                // String-parsable (without format provider) conversion
+                MethodInfo? parseMethod = targetType.TryGetStaticParseMethod();
                 if (parseMethod != null)
                     return parseMethod.Invoke(null, new object?[] { value });
             }
