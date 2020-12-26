@@ -103,7 +103,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll("Default command description", "Usage");
+            stdOut.GetString().Should().ContainAll("Default command description", "Usage".ToUpperInvariant());
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
@@ -141,7 +141,7 @@
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named command description",
-                "Usage",
+                "Usage".ToUpperInvariant(),
                 "named"
             );
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -163,7 +163,7 @@
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named sub command description",
-                "Usage",
+                "Usage".ToUpperInvariant(),
                 "named", "sub"
             );
             stdErr.GetString().Should().BeNullOrWhiteSpace();

@@ -28,7 +28,7 @@ Parameters must have unique order.";
 Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} parameters with the same name ('{name}'):
 {invalidParameters.JoinToString(Environment.NewLine)}
 
-Parameters must have unique names to avoid potential confusion in the help text (names are case-insensitive).";
+Parameters must have unique names to avoid potential confusion in the help text (names are case-sensitive).";
 
             return new TypinException(message.Trim());
         }

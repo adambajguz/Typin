@@ -8,9 +8,9 @@
     public class NonLastNonScalarParameterCommand : SelfSerializeCommandBase
     {
         [CommandParameter(0)]
-        public IReadOnlyList<string>? ParamA { get; set; }
+        public IReadOnlyList<string>? ParamA { get; init; }
 
         [CommandParameter(1)]
-        public string? ParamB { get; set; }
+        public string? ParamB { get; init; }
     }
 }

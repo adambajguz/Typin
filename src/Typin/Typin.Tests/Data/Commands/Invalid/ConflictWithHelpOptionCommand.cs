@@ -7,6 +7,6 @@
     public class ConflictWithHelpOptionCommand : SelfSerializeCommandBase
     {
         [CommandOption("option-h", 'h')]
-        public string? OptionH { get; set; }
+        public string? OptionH { get; init; }
     }
 }

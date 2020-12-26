@@ -12,7 +12,7 @@
     {
         /// <summary>
         /// Option name (must be longer than a single character). Starting dashes are trimed automatically.
-        /// All options in a command must have different names (comparison is not case-sensitive).
+        /// All options in a command must have different names (comparison is case-sensitive).
         /// If this isn't specified, kebab-cased property name is used instead.
         /// </summary>
         public string? Name { get; }
@@ -26,17 +26,17 @@
         /// <summary>
         /// Whether an option is required.
         /// </summary>
-        public bool IsRequired { get; set; }
+        public bool IsRequired { get; init; }
 
         /// <summary>
         /// Option description, which is used in help text.
         /// </summary>
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
         /// <summary>
         /// Fallback variable that will be used as fallback if no option value is specified.
         /// </summary>
-        public string? FallbackVariableName { get; set; }
+        public string? FallbackVariableName { get; init; }
 
 
         /// <summary>

@@ -53,13 +53,14 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Build-in options support with `Microsoft.Extensions.Options`,
 - Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
 - DI injectable `ICliContext` with lots of useful data,
-- Negative numbers handling,
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
+- Custom help writer.
 - Custom modes support.
-- Logging.
+- Logging with `Microsoft.Extensions.Logging`.
 - Optional option names by providing a kebab case name.
-- Added support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\\\') during char parsing.
-- (more coming soon).
+- Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
+
+Overall, Typin is a framework that is much more flexible and rich with both features and metadata about defined commands etc.
 
 > See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.
 

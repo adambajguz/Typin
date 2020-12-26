@@ -8,12 +8,12 @@
     public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [CommandOption("str-non-initializable-class")]
-        public NonInitializableClassType? StringNonInitializable { get; set; }
+        public NonInitializableClassType? StringNonInitializable { get; init; }
 
         [CommandOption("str-non-initializable-struct")]
-        public NonInitializableStructType? StringNonInitializableStruct { get; set; }
+        public NonInitializableStructType? StringNonInitializableStruct { get; init; }
 
         [CommandOption("str-enumerable-non-initializable")]
-        public NonInitializableEnumerable<string>? StringEnumerableNonInitializable { get; set; }
+        public NonInitializableEnumerable<string>? StringEnumerableNonInitializable { get; init; }
     }
 }

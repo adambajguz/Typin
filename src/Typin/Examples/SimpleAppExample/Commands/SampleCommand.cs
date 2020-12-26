@@ -10,22 +10,22 @@
     public class SampleCommand : ICommand
     {
         [CommandParameter(0)]
-        public int? ParamB { get; set; }
+        public int? ParamB { get; init; }
 
         [CommandOption("str", 's')]
-        public string? StrOption { get; set; }
+        public string? StrOption { get; init; }
 
         [CommandOption("int", 'i')]
-        public int IntOption { get; set; }
+        public int IntOption { get; init; }
 
         [CommandOption("bool", 'b')]
-        public bool BoolOption { get; set; }
+        public bool BoolOption { get; init; }
 
         [CommandOption('v')]
-        public bool VOption { get; set; }
+        public bool VOption { get; init; }
 
         [CommandOption('x')]
-        public bool XOption { get; set; }
+        public bool XOption { get; init; }
 
         public async ValueTask ExecuteAsync(IConsole console)
         {

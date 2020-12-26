@@ -4,7 +4,7 @@
 
     public class NonInitializableClassType
     {
-        public int Value { get; set; }
-        public DayOfWeek Day { get; set; }
+        public int Value { get; init; }
+        public DayOfWeek Day { get; init; }
     }
 }

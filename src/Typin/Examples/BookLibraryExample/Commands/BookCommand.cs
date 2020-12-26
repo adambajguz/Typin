@@ -16,7 +16,7 @@
         private readonly LibraryService _libraryService;
 
         [CommandParameter(0, Name = "title", Description = "Book title.")]
-        public string Title { get; set; } = "";
+        public string Title { get; init; } = "";
 
         public BookCommand(LibraryService libraryService)
         {

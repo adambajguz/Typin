@@ -81,7 +81,7 @@
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             stdOut.GetString().Should().ContainAll(
-                "Options",
+                "Options".ToUpperInvariant(),
                 "--apple",
                 "--blackberries",
                 "--west-indian-cherry",

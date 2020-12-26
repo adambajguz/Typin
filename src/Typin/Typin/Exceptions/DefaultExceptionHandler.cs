@@ -1,4 +1,4 @@
-﻿namespace Typin.Exceptions
+namespace Typin.Exceptions
 {
     using System;
     using Typin.Console;
@@ -35,7 +35,9 @@
                         console.Error.WriteLine();
 
                         if (cx.ShowHelp)
+                        {
                             (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
                     }
                     return true;
 
@@ -46,13 +48,17 @@
                         console.Error.WriteLine();
 
                         if (dx.ShowHelp)
+                        {
                             (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
                     }
                     return true;
 
                 // This may throw exceptions which are useful only to the end-user
                 case TypinException tx:
                     WriteError(console, tx.ToString());
+                    console.Error.WriteLine();
+
                     return true;
 
                 default:

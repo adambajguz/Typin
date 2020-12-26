@@ -38,9 +38,10 @@
                        .FirstOrDefault();
         }
 
-        public static MethodInfo? GetToStringMethod(this Type type)
+        public static MethodInfo GetToStringMethod(this Type type)
         {
-            return type.GetMethod(nameof(ToString), Type.EmptyTypes);
+            // ToString() with no params always exists
+            return type.GetMethod(nameof(ToString), Type.EmptyTypes)!;
         }
 
         public static bool IsToStringOverriden(this Type type)
@@ -48,7 +49,7 @@
             return type.GetToStringMethod() != typeof(object).GetToStringMethod();
         }
 
-        public static MethodInfo? GetStaticParseMethod(this Type type, bool withFormatProvider = false)
+        public static MethodInfo? TryGetStaticParseMethod(this Type type, bool withFormatProvider = false)
         {
             Type[] argumentTypes = withFormatProvider
                 ? new[] { typeof(string), typeof(IFormatProvider) }

@@ -119,8 +119,8 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage",
-                "Options",
+                "Usage".ToUpperInvariant(),
+                "Options".ToUpperInvariant(),
                 "-h|--help"
             );
             stdErr.GetString().Trim().Should().Be("ErrorTest");

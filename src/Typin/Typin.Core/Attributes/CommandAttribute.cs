@@ -19,24 +19,24 @@
         /// <summary>
         /// Command description, which is used in help text.
         /// </summary>
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
         /// <summary>
         /// Command manual text, which is used in help text.
         /// </summary>
-        public string? Manual { get; set; }
+        public string? Manual { get; init; }
 
         /// <summary>
         /// List of CLI mode types, in which the command can be executed.
         /// If null (default) or empty, command can be executed in every registered mode in the app.
         /// </summary>
-        public Type[]? SupportedModes { get; set; }
+        public Type[]? SupportedModes { get; init; }
 
         /// <summary>
         /// List of CLI mode types, in which the command cannot be executed.
         /// If null (default) or empty, command can be executed in every registered mode in the app.
         /// </summary>
-        public Type[]? ExcludedModes { get; set; }
+        public Type[]? ExcludedModes { get; init; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandAttribute"/>.

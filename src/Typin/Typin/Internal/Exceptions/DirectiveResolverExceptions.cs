@@ -49,7 +49,7 @@ In order to be a valid directive type, it must:
 Application configuration is invalid because there are {invalidDirectives.Count} directives with the same name ('[{name}]'):
 {invalidDirectives.JoinToString(Environment.NewLine)}
 
-Directives must have unique name (names are case-insensitive).";
+Directives must have unique name (names are case-sensitive).";
 
             return new TypinException(message.Trim());
         }
