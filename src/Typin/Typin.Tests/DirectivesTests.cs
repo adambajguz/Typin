@@ -318,8 +318,8 @@
                 "  [custom-throwable-with-message-and-show-help]",
                 "@ [custom-interactive]",
                 "Description".ToUpperInvariant(),
-                "Usage".ToUpperInvariant(), 
-                "Directives".ToUpperInvariant(), 
+                "Usage".ToUpperInvariant(),
+                "Directives".ToUpperInvariant(),
                 "[custom]"
             );
         }

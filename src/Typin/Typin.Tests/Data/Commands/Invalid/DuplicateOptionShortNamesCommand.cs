@@ -7,9 +7,9 @@
     public class DuplicateOptionShortNamesCommand : SelfSerializeCommandBase
     {
         [CommandOption('x')]
-        public string? OptionA { get; set; }
+        public string? OptionA { get; init; }
 
         [CommandOption('x')]
-        public string? OptionB { get; set; }
+        public string? OptionB { get; init; }
     }
 }

@@ -3,7 +3,6 @@ namespace Typin.Exceptions
     using System;
     using Typin.Console;
     using Typin.Help;
-    using Typin.Utilities;
 
     /// <summary>
     /// Implementation of <see cref="ICliExceptionHandler"/> that prints all exceptions to console.

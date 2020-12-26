@@ -22,7 +22,7 @@
             }
         }
 
-        public void Throw()
+        public static void Throw()
         {
             throw new ApplicationException("Demo inner exception");
         }

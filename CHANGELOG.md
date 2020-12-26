@@ -17,7 +17,7 @@
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
-- Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added logging with `Microsoft.Extensions.Logging` (default logger is Debug).
 - Added `IConsole.ReadKeyAsync()`.
 - Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).

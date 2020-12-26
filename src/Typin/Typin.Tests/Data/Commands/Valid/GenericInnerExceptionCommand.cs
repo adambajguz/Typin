@@ -9,10 +9,10 @@
     public class GenericInnerExceptionCommand : ICommand
     {
         [CommandOption("msg", 'm')]
-        public string? Message { get; set; }
+        public string? Message { get; init; }
 
         [CommandOption("inner-msg", 'i')]
-        public string? InnerMessage { get; set; }
+        public string? InnerMessage { get; init; }
 
         public ValueTask ExecuteAsync(IConsole console)
         {

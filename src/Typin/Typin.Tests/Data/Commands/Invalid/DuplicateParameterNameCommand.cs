@@ -7,9 +7,9 @@
     public class DuplicateParameterNameCommand : SelfSerializeCommandBase
     {
         [CommandParameter(0, Name = "param")]
-        public string? ParamA { get; set; }
+        public string? ParamA { get; init; }
 
         [CommandParameter(1, Name = "param")]
-        public string? ParamB { get; set; }
+        public string? ParamB { get; init; }
     }
 }

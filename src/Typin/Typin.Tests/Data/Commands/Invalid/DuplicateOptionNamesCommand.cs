@@ -7,9 +7,9 @@
     public class DuplicateOptionNamesCommand : SelfSerializeCommandBase
     {
         [CommandOption("fruits")]
-        public string? Apples { get; set; }
+        public string? Apples { get; init; }
 
         [CommandOption("fruits")]
-        public string? Oranges { get; set; }
+        public string? Oranges { get; init; }
     }
 }

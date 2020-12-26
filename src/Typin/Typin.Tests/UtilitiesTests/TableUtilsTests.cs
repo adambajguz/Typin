@@ -12,9 +12,9 @@
     {
         private class Data
         {
-            public int Integer { get; set; }
-            public string? Str { get; set; }
-            public string? Group { get; set; }
+            public int Integer { get; init; }
+            public string? Str { get; init; }
+            public string? Group { get; init; }
         }
 
         private readonly List<Data> _testData = new List<Data>

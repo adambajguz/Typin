@@ -8,6 +8,6 @@
     public class ConflictWithVersionOptionCommand : SelfSerializeCommandBase
     {
         [CommandOption("version")]
-        public string? Version { get; set; }
+        public string? Version { get; init; }
     }
 }

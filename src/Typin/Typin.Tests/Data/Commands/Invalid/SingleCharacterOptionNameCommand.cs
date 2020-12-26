@@ -7,6 +7,6 @@
     public class SingleCharacterOptionNameCommand : SelfSerializeCommandBase
     {
         [CommandOption("a")]
-        public string? Apples { get; set; }
+        public string? Apples { get; init; }
     }
 }
