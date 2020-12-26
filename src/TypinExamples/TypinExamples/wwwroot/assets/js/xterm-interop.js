@@ -69,10 +69,14 @@ xtermInterop.initialize = function (id) {
                     terminal.cmd = '';
                     terminal.prompt();
                 }
-                else if (terminal.cmd.startsWith("./run") || //".\\run.exe" does not work
-                    terminal.cmd.startsWith("run.exe") ||
-                    terminal.cmd.startsWith("./run.exe") ||
-                    terminal.cmd.startsWith("run")) {
+                else if (terminal.cmd.startsWith("./run ") || //".\\run.exe" does not work
+                    terminal.cmd.startsWith("run.exe ") ||
+                    terminal.cmd.startsWith("./run.exe ") ||
+                    terminal.cmd.startsWith("run ") ||
+                    terminal.cmd == "./run" ||
+                    terminal.cmd == "run.exe" ||
+                    terminal.cmd == "./run.exe" ||
+                    terminal.cmd == "run") {
 
                     terminal.writeln("");
 
