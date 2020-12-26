@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using BookLibraryExample.Internal;
+    using BookLibraryExample.Models;
     using BookLibraryExample.Services;
     using Typin;
     using Typin.Attributes;
@@ -20,10 +21,10 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            var library = _libraryService.GetLibrary();
+            Library library = _libraryService.GetLibrary();
 
-            var isFirst = true;
-            foreach (var book in library.Books)
+            bool isFirst = true;
+            foreach (Book book in library.Books)
             {
                 // Margin
                 if (!isFirst)
