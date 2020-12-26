@@ -263,7 +263,7 @@
             exitCode.Should().Be(CustomThrowableDirective.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirective.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(
-                "Typin.Exceptions.DirectiveException: Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
+                "Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
             );
         }
 
