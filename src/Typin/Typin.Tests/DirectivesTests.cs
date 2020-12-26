@@ -138,8 +138,8 @@
                 .AddCommand<NamedCommand>()
                 .UseInteractiveMode()
                 .AddDirective<PreviewDirective>()
-                .AddDirective<DebugDirective>(); //TODO: add test when UseInteractiv and AddDirective<ScopeUp> are used and check if error is thrown
-            //TODO: what if unknown directive is passed after [preview]?
+                .AddDirective<DebugDirective>(); //TODO: add test when UseInteractive and AddDirective<ScopeUp> are used and check if error is thrown
+            //TODO: what if unknown directive is passed after [preview]? app wil throw ex => maybe some propery in app config to allow relaxed directive handling?
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,

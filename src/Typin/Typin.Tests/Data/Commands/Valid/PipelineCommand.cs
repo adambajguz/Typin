@@ -21,14 +21,14 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            DebugPrintServices(console, _cliContext.Configuration.MiddlewareTypes);
+            DebugPrintPipeline(console, _cliContext.Configuration.MiddlewareTypes);
 
             return default;
         }
 
-        private void DebugPrintServices(IConsole console, IReadOnlyCollection<Type> middlewares)
+        private static void DebugPrintPipeline(IConsole console, IReadOnlyCollection<Type> middlewares)
         {
-            TableUtils.Write(console,
+            TableUtils.Write(console.Output,
                              middlewares.Reverse()
                                         .Concat(new Type?[] { null })
                                         .Concat(middlewares),

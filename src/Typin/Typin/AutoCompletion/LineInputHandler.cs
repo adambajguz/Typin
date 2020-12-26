@@ -211,7 +211,7 @@
             {
                 _text.Append(c);
                 _console.Output.Write(c);
-                CursorPosition++;
+                ++CursorPosition;
             }
             else
             {

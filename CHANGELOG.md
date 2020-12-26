@@ -28,6 +28,7 @@
 - Advanced interactive input is disabled when input is redirected.
 - Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
 - Added `ExceptionFormatter` util and used it as a default exception printer in `DefaultExceptionHandler`.
+- `[!]` directive is now required only to execute command without parameters and options.
 
 ### v2.1.1 (18-Oct-2020)
 

@@ -14,10 +14,12 @@
     internal sealed class ResolveCommandSchemaAndInstance : IMiddleware
     {
         private readonly IServiceProvider _serviceProvider;
+        //private readonly ICliApplicationLifetime _applicationLifetime;
 
         public ResolveCommandSchemaAndInstance(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            //_applicationLifetime = applicationLifetime;
         }
 
         public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
@@ -36,12 +38,13 @@
             bool hasDefaultDirective = input.HasDirective(BuiltInDirectives.Default);
             CommandSchema commandSchema = root.TryFindCommand(input.CommandName, hasDefaultDirective) ?? StubDefaultCommand.Schema;
 
+            // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
             // Forbid to execute real default command in interactive mode without [!] directive.
-            //if (!(command.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
-            //    context.ModeSwitcher.Current == CliModes.Interactive &&
-            //    command.IsDefault && !hasDefaultDirective)
+            //if (!(commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
+            //    _applicationLifetime.CurrentModeType == typeof(InteractiveMode) &&
+            //    commandSchema.IsDefault && !hasDefaultDirective)
             //{
-            //    command = StubDefaultCommand.Schema;
+            //    commandSchema = StubDefaultCommand.Schema;
             //}
 
             // Update CommandSchema
