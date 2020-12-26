@@ -6,12 +6,12 @@
     public class BenchmarkDefaultCommand : SelfSerializeCommandBase
     {
         [CommandOption("str", 's')]
-        public string? StrOption { get; set; }
+        public string? StrOption { get; init; }
 
         [CommandOption("int", 'i')]
-        public int IntOption { get; set; }
+        public int IntOption { get; init; }
 
         [CommandOption("bool", 'b')]
-        public bool BoolOption { get; set; }
+        public bool BoolOption { get; init; }
     }
 }

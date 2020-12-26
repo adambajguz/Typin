@@ -26,7 +26,7 @@ In order to be a valid CLI mode type, it must:
 Directive name '[{name}]' is invalid.
 
 Directives must have unique, non-empty names without whitespaces.
-Names are not case-sensitive.";
+Names are case-sensitive.";
 
             return new TypinException(message.Trim());
         }

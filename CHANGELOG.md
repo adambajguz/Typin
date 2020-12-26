@@ -17,7 +17,7 @@
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
-- Added experimetnal logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added logging with `Microsoft.Extensions.Logging` (default logger is Debug).
 - Added `IConsole.ReadKeyAsync()`.
 - Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).
@@ -27,6 +27,9 @@
 - Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
 - Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
+- Added `ExceptionFormatter` util and used it as a default exception printer in `DefaultExceptionHandler`.
+- `TableUtils` refactory and fix for proper handling of empty collection.
+- `[!]` directive is now required only to execute command without parameters and options.
 
 ### v2.1.1 (18-Oct-2020)
 

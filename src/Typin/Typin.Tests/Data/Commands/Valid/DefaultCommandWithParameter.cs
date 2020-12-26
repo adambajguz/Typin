@@ -11,7 +11,7 @@
         public const string ExpectedOutputText = nameof(DefaultCommandWithParameter);
 
         [CommandParameter(0)]
-        public string? ParamA { get; set; }
+        public string? ParamA { get; init; }
 
         public ValueTask ExecuteAsync(IConsole console)
         {

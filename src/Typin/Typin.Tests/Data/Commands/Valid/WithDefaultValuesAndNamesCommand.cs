@@ -12,36 +12,36 @@
         public enum CustomEnum { Value1, Value2, Value3 };
 
         [CommandOption]
-        public object? Object { get; set; } = 42;
+        public object? Object { get; init; } = 42;
 
         [CommandOption]
-        public string? String { get; set; } = "foo";
+        public string? String { get; init; } = "foo";
 
         [CommandOption]
-        public string StringEmpty { get; set; } = "";
+        public string StringEmpty { get; init; } = "";
 
         [CommandOption]
-        public string[]? StringArray { get; set; } = { "foo", "bar", "baz" };
+        public string[]? StringArray { get; init; } = { "foo", "bar", "baz" };
 
         [CommandOption]
-        public bool Bool { get; set; } = true;
+        public bool Bool { get; init; } = true;
 
         [CommandOption]
-        public char Char { get; set; } = 't';
+        public char Char { get; init; } = 't';
 
         [CommandOption]
-        public int Int { get; set; } = 1337;
+        public int Int { get; init; } = 1337;
 
         [CommandOption]
-        public int? IntNullable { get; set; } = 1337;
+        public int? IntNullable { get; init; } = 1337;
 
         [CommandOption]
-        public int[]? IntArray { get; set; } = { 1, 2, 3 };
+        public int[]? IntArray { get; init; } = { 1, 2, 3 };
 
         [CommandOption]
-        public TimeSpan TimeSpan { get; set; } = TimeSpan.FromMinutes(123);
+        public TimeSpan TimeSpan { get; init; } = TimeSpan.FromMinutes(123);
 
         [CommandOption]
-        public CustomEnum Enum { get; set; } = CustomEnum.Value2;
+        public CustomEnum Enum { get; init; } = CustomEnum.Value2;
     }
 }

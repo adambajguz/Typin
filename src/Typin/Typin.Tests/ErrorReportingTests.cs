@@ -94,16 +94,12 @@
                 .AddCommand<CommandExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd");
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().BeEmpty();
-            stdErr.GetString().Should().ContainAll(
-                "Typin.Exceptions.CommandException:",
-                "at",
-                "Typin.Tests"
-            );
+            stdErr.GetString().Trim().Should().Be("Exception of type 'Typin.Exceptions.CommandException' was thrown.");
         }
 
         [Fact]
@@ -119,8 +115,8 @@
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage",
-                "Options",
+                "Usage".ToUpperInvariant(),
+                "Options".ToUpperInvariant(),
                 "-h|--help"
             );
             stdErr.GetString().Trim().Should().Be("ErrorTest");

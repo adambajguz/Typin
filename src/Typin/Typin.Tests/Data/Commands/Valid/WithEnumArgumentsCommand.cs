@@ -9,12 +9,12 @@
         public enum CustomEnum { Value1, Value2, Value3 };
 
         [CommandParameter(0, Name = "enum")]
-        public CustomEnum EnumParameter { get; set; }
+        public CustomEnum EnumParameter { get; init; }
 
         [CommandOption("enum")]
-        public CustomEnum? EnumOption { get; set; }
+        public CustomEnum? EnumOption { get; init; }
 
         [CommandOption("required-enum", IsRequired = true)]
-        public CustomEnum RequiredEnumOption { get; set; }
+        public CustomEnum RequiredEnumOption { get; init; }
     }
 }

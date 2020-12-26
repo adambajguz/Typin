@@ -138,8 +138,8 @@
                 .AddCommand<NamedCommand>()
                 .UseInteractiveMode()
                 .AddDirective<PreviewDirective>()
-                .AddDirective<DebugDirective>(); //TODO: add test when UseInteractiv and AddDirective<ScopeUp> are used and check if error is thrown
-            //TODO: what if unknown directive is passed after [preview]?
+                .AddDirective<DebugDirective>(); //TODO: add test when UseInteractive and AddDirective<ScopeUp> are used and check if error is thrown
+            //TODO: what if unknown directive is passed after [preview]? app wil throw ex => maybe some propery in app config to allow relaxed directive handling?
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -263,7 +263,7 @@
             exitCode.Should().Be(CustomThrowableDirective.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirective.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(
-                "Typin.Exceptions.DirectiveException: Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
+                "Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
             );
         }
 
@@ -307,8 +307,7 @@
                 .UseInteractiveMode();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom-throwable-with-message-and-show-help] named param -abc --option foo");
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
@@ -316,7 +315,12 @@
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExceptionMessage);
 
             stdOut.GetString().Should().ContainAll(
-                "  [custom-throwable-with-message-and-show-help]", "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
+                "  [custom-throwable-with-message-and-show-help]",
+                "@ [custom-interactive]",
+                "Description".ToUpperInvariant(),
+                "Usage".ToUpperInvariant(),
+                "Directives".ToUpperInvariant(),
+                "[custom]"
             );
         }
 

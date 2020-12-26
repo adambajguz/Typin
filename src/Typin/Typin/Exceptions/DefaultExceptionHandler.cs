@@ -1,4 +1,4 @@
-﻿namespace Typin.Exceptions
+namespace Typin.Exceptions
 {
     using System;
     using Typin.Console;
@@ -31,28 +31,31 @@
                 // Swallow directive exceptions and route them to the console
                 case CommandException cx:
                     {
-                        WriteError(console, cx.ToString());
-                        console.Error.WriteLine();
+                        WriteError(console, cx.Message);
 
                         if (cx.ShowHelp)
+                        {
                             (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
                     }
                     return true;
 
                 // Swallow command exceptions and route them to the console
                 case DirectiveException dx:
                     {
-                        WriteError(console, dx.ToString());
-                        console.Error.WriteLine();
+                        WriteError(console, dx.Message);
 
                         if (dx.ShowHelp)
+                        {
                             (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
                     }
                     return true;
 
                 // This may throw exceptions which are useful only to the end-user
                 case TypinException tx:
-                    WriteError(console, tx.ToString());
+                    WriteError(console, tx.Message);
+
                     return true;
 
                 default:
@@ -66,6 +69,7 @@
         private static void WriteError(IConsole console, string message)
         {
             console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine(message));
+            console.Error.WriteLine();
         }
     }
 }

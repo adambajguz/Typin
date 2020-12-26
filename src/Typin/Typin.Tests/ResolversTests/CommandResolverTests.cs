@@ -41,9 +41,8 @@
         public async Task At_least_one_command_must_be_defined_in_an_application()
         {
             // Arrange
-            var builder = new CliApplicationBuilder();
-#warning Startup message should not show until root shema is resolved
-            //.UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
+            var builder = new CliApplicationBuilder()
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
@@ -59,9 +58,8 @@
         {
             // Arrange
             var builder = new CliApplicationBuilder()
-                .AddCommand(typeof(NonImplementedCommand));
-#warning Startup message should not show until root shema is resolved
-            //.UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
+                .AddCommand(typeof(NonImplementedCommand))
+                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);

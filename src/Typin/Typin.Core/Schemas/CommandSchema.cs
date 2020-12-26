@@ -111,7 +111,7 @@
             if (!KnownTypesHelpers.IsCliModeType(type))
                 throw AttributesExceptions.InvalidModeType(type);
 
-            if ((SupportedModes?.Count ?? 0) == 0 && (ExcludedModes?.Count ?? 0) == 0)
+            if (!HasModeRestrictions())
                 return true;
 
             if (SupportedModes != null && !SupportedModes!.Contains(type))
@@ -121,6 +121,14 @@
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Whether command has mode restrictions.
+        /// </summary>
+        public bool HasModeRestrictions()
+        {
+            return (SupportedModes?.Count ?? 0) > 0 || (ExcludedModes?.Count ?? 0) > 0;
         }
 
         /// <summary>

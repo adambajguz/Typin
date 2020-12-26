@@ -19,12 +19,12 @@
         /// Parameter name, which is only used in help text.
         /// If this isn't specified, kebab-cased property name is used instead.
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; init; }
 
         /// <summary>
         /// Parameter description, which is used in help text.
         /// </summary>
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
         /// <summary>
         /// Whether option has auto generated name.

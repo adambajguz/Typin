@@ -9,13 +9,13 @@
     public class TestCommand : ICommand
     {
         [CommandOption("xe", 'a')]
-        public string Author { get; set; } = string.Empty;
+        public string Author { get; init; } = string.Empty;
 
         [CommandOption('x')]
-        public string AuthorX { get; set; } = string.Empty;
+        public string AuthorX { get; init; } = string.Empty;
 
         [CommandOption("char", 'c')]
-        public char Ch { get; set; }
+        public char Ch { get; init; }
 
         public ValueTask ExecuteAsync(IConsole console)
         {

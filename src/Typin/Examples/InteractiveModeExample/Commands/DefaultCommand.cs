@@ -11,7 +11,7 @@
     public class DefaultCommand : ICommand
     {
         [CommandParameter(0)]
-        public IReadOnlyList<string> Values { get; set; } = default!;
+        public IReadOnlyList<string> Values { get; init; } = default!;
 
         public DefaultCommand()
         {

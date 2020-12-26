@@ -9,7 +9,7 @@
     public class GenericExceptionCommand : ICommand
     {
         [CommandOption("msg", 'm')]
-        public string? Message { get; set; }
+        public string? Message { get; init; }
 
         public ValueTask ExecuteAsync(IConsole console)
         {

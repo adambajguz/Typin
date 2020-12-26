@@ -25,9 +25,10 @@
         private const ConsoleColor ParametersColor = ConsoleColor.White;
         private const ConsoleColor OptionsPlaceholderColor = ConsoleColor.White;
         private const ConsoleColor RequiredColor = ConsoleColor.Red;
-        private const ConsoleColor InteractiveOnlyColor = ConsoleColor.Magenta;
+        private const ConsoleColor ModeRestrictedColor = ConsoleColor.DarkYellow;
         private const ConsoleColor RequiredParameterNameColor = ConsoleColor.White;
         private const ConsoleColor OptionNameColor = ConsoleColor.White;
+        private const ConsoleColor CommentColor = ConsoleColor.DarkGray;
 
         private readonly ICliContext _context;
         private readonly IConsole _console;
@@ -72,9 +73,12 @@
             WriteCommandUsage(root.Directives, command, childCommands);
             WriteCommandParameters(command);
             WriteCommandOptions(command, defaultValues);
+            WriteModeRestrictionsManual(command);
             WriteCommandChildren(command, childCommands);
             WriteDirectivesManual(root.Directives);
             WriteCommandManual(command);
+
+            WriteLine();
         }
 
         #region Console Output Helpers
@@ -123,7 +127,7 @@
 
         private void WriteHeader(string text)
         {
-            Write(HeaderColor, text);
+            Write(HeaderColor, text.ToUpperInvariant());
             WriteLine();
         }
         #endregion
@@ -149,6 +153,41 @@
         }
         #endregion
 
+        #region Mode restrictions
+        private void WriteModeRestrictionsManual(CommandSchema command)
+        {
+            IReadOnlyList<Type> modesInApplication = _context.Configuration.ModeTypes;
+
+            if (modesInApplication.Count == 1)
+                return;
+
+            if (!IsEmpty)
+                WriteVerticalMargin();
+
+            IEnumerable<Type> commandModes = (command.SupportedModes?.Count ?? 0) > 0 ? command.SupportedModes! : modesInApplication;
+
+            if ((command.ExcludedModes?.Count ?? 0) > 0)
+            {
+                commandModes = commandModes.Except(command.SupportedModes!);
+            }
+
+            WriteHeader("Supported modes");
+
+            foreach (Type mode in commandModes)
+            {
+                WriteHorizontalMargin();
+                Write(ModeRestrictedColor, mode.FullName ?? mode.Name);
+                WriteLine();
+            }
+            WriteLine();
+
+            Write(CommentColor, "TIP: Commands and directives marked with ");
+            Write(ModeRestrictedColor, "@");
+            Write(CommentColor, " cannot be executed in every mode in the app.");
+            WriteLine();
+        }
+        #endregion
+
         #region Directives
         private void WriteDirectivesManual(IReadOnlyDictionary<string, DirectiveSchema> directives)
         {
@@ -165,9 +204,9 @@
                 DirectiveSchema schema = directive.Value;
 
                 // Name
-                if (!schema.CanBeExecutedInMode<DirectMode>())
+                if (schema.HasModeRestrictions())
                 {
-                    Write(InteractiveOnlyColor, "@");
+                    Write(ModeRestrictedColor, "@");
                     WriteHorizontalMargin(1);
                 }
                 else
@@ -236,22 +275,21 @@
             WriteHeader("Usage");
 
             // Exe name
-            if (!command.CanBeExecutedInMode<DirectMode>())
+            if (command.HasModeRestrictions())
             {
-                Write(InteractiveOnlyColor, "@");
+                Write(ModeRestrictedColor, "@");
                 WriteHorizontalMargin(1);
             }
             else
                 WriteHorizontalMargin();
 
-            if (_applicationLifetime.CurrentMode is DirectMode)
-                Write(_context.Metadata.ExecutableName);
+            Write(CommentColor, _context.Metadata.ExecutableName);
 
             // Child command placeholder
             if (directives.Any())
             {
                 Write(' ');
-                Write(DirectiveNameColor, "[directive]");
+                Write(DirectiveNameColor, "[directives]");
             }
 
             // Command name
@@ -427,9 +465,9 @@
                     : childCommand.Name!;
 
                 // Name
-                if (!childCommand.CanBeExecutedInMode<DirectMode>())
+                if (childCommand.HasModeRestrictions())
                 {
-                    Write(InteractiveOnlyColor, "@");
+                    Write(ModeRestrictedColor, "@");
                     WriteHorizontalMargin(1);
                 }
                 else
@@ -449,7 +487,7 @@
 
             // Child command help tip
             WriteVerticalMargin();
-            Write("You can run `");
+            Write(CommentColor, "TIP: You can run `");
 
             bool isDirectMode = _applicationLifetime.CurrentMode is DirectMode;
             if (isDirectMode)
@@ -471,7 +509,7 @@
             Write(' ');
             Write(ConsoleColor.White, "--help");
 
-            Write("` to show help on a specific command.");
+            Write(CommentColor, "` to show help on a specific command.");
 
             WriteLine();
         }

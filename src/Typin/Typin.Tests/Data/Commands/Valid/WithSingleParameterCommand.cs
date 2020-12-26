@@ -7,6 +7,6 @@
     public class WithSingleParameterCommand : SelfSerializeCommandBase
     {
         [CommandParameter(0)]
-        public string? ParamA { get; set; }
+        public string? ParamA { get; init; }
     }
 }

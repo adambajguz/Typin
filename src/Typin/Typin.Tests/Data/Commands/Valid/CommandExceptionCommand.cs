@@ -9,13 +9,13 @@
     public class CommandExceptionCommand : ICommand
     {
         [CommandOption("code", 'c')]
-        public int ExitCode { get; set; } = 133;
+        public int ExitCode { get; init; } = 133;
 
         [CommandOption("msg", 'm')]
-        public string? Message { get; set; }
+        public string? Message { get; init; }
 
         [CommandOption("show-help")]
-        public bool ShowHelp { get; set; }
+        public bool ShowHelp { get; init; }
 
         public ValueTask ExecuteAsync(IConsole console)
         {

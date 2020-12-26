@@ -8,9 +8,9 @@
     public class MultipleNonScalarParametersCommand : SelfSerializeCommandBase
     {
         [CommandParameter(0)]
-        public IReadOnlyList<string>? ParamA { get; set; }
+        public IReadOnlyList<string>? ParamA { get; init; }
 
         [CommandParameter(1)]
-        public IReadOnlyList<string>? ParamB { get; set; }
+        public IReadOnlyList<string>? ParamB { get; init; }
     }
 }

@@ -70,7 +70,7 @@ Other commands must have unique non-empty names that identify them.";
 Application configuration is invalid because there are {invalidCommands.Count} commands with the same name ('{name}'):
 {invalidCommands.JoinToString(Environment.NewLine)}
 
-Commands must have unique names (names are case-insensitive).";
+Commands must have unique names (names are case-sensitive).";
 
             return new TypinException(message.Trim());
         }
