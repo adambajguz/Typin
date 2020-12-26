@@ -17,7 +17,6 @@
         private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
             new Dictionary<Type, Func<string, object?>>
             {
-                [typeof(char)] = v => TextUtils.UnescapeChar(v),
                 [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
                 [typeof(byte)] = v => byte.Parse(v, FormatProvider),
                 [typeof(short)] = v => short.Parse(v, FormatProvider),
@@ -49,6 +48,10 @@
                 // Bool conversion (special case)
                 if (targetType == typeof(bool))
                     return string.IsNullOrWhiteSpace(value) || bool.Parse(value);
+
+                // Char conversion (special case)
+                if (targetType == typeof(char))
+                    return TextUtils.UnescapeChar(value);
 
                 // Primitive conversion
                 Func<string, object?>? primitiveConverter = PrimitiveConverters.GetValueOrDefault(targetType);

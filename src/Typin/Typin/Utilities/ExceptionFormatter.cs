@@ -55,7 +55,7 @@
                 {
                     output.Write(indentationShared);
                     output.Write(indentationLocal);
-                    output.Write("at ");
+                    output.WithForegroundColor(ConsoleColor.Green, (o) => o.Write("at "));
 
                     // "Typin.Demo.Commands.BookAddCommand."
                     output.WithForegroundColor(ConsoleColor.DarkGray, (o) =>
@@ -96,7 +96,7 @@
                     // Location
                     if (!string.IsNullOrWhiteSpace(stackFrame.FilePath))
                     {
-                        output.Write("in");
+                        output.WithForegroundColor(ConsoleColor.Magenta, (o) => o.Write("in"));
                         output.WriteLine();
                         output.Write(indentationShared);
                         output.Write(indentationLocal);
@@ -112,14 +112,14 @@
 
                         // "BookAddCommand.cs"
                         string stackFrameFileName = Path.GetFileName(stackFrame.FilePath) ?? string.Empty;
-                        output.WithForegroundColor(ConsoleColor.Yellow, (o) => o.Write(stackFrameFileName));
+                        output.WithForegroundColor(ConsoleColor.Cyan, (o) => o.Write(stackFrameFileName));
 
                         if (!string.IsNullOrWhiteSpace(stackFrame.LineNumber))
                         {
                             output.Write(':');
 
                             // "35"
-                            output.WithForegroundColor(ConsoleColor.Cyan, (o) => o.Write(stackFrame.LineNumber));
+                            output.WithForegroundColor(ConsoleColor.Magenta, (o) => o.Write(stackFrame.LineNumber));
                         }
                     }
 

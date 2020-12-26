@@ -11,7 +11,20 @@
     {
         public ValueTask ExecuteAsync(IConsole console)
         {
-            throw new OverflowException("Demo exception.", new ApplicationException("Demo inner exception"));
+            try
+            {
+                Throw();
+                return default;
+            }
+            catch (ApplicationException ex)
+            {
+                throw new OverflowException("Demo exception.", ex);
+            }
+        }
+
+        public void Throw()
+        {
+            throw new ApplicationException("Demo inner exception");
         }
     }
 }

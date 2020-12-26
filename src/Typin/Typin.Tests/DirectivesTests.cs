@@ -307,8 +307,7 @@
                 .UseInteractiveMode();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "[custom-throwable-with-message-and-show-help]", "named", "param", "-abc", "--option", "foo" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom-throwable-with-message-and-show-help] named param -abc --option foo");
 
             // Assert
             exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
@@ -316,7 +315,12 @@
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExceptionMessage);
 
             stdOut.GetString().Should().ContainAll(
-                "  [custom-throwable-with-message-and-show-help]", "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
+                "  [custom-throwable-with-message-and-show-help]",
+                "@ [custom-interactive]",
+                "Description".ToUpperInvariant(),
+                "Usage".ToUpperInvariant(), 
+                "Directives".ToUpperInvariant(), 
+                "[custom]"
             );
         }
 

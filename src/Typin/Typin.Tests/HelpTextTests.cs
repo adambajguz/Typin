@@ -29,7 +29,8 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage",
+                "Usage".ToUpperInvariant(),
+                "Parameters".ToUpperInvariant(),
                 "cmd", "<param-a>", "<param-b>", "<param-c...>"
             );
         }
@@ -47,9 +48,9 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage",
+                "Usage".ToUpperInvariant(),
                 "cmd", "--opt-a <value>", "--opt-c <values...>", "[options]",
-                "Options",
+                "Options".ToUpperInvariant(),
                 "* -a|--opt-a",
                 "-b|--opt-b",
                 "* -c|--opt-c"
@@ -69,9 +70,9 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Parameters",
+                "Parameters".ToUpperInvariant(),
                 "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
-                "Options",
+                "Options".ToUpperInvariant(),
                 "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
                 "* --required-enum", "Valid values: \"Value1\", \"Value2\", \"Value3\"."
             );
@@ -90,7 +91,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options",
+                "Options".ToUpperInvariant(),
                 "-a|--opt-a", "Environment variable:", "ENV_OPT_A",
                 "-b|--opt-b", "Environment variable:", "ENV_OPT_B"
             );
@@ -109,7 +110,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options",
+                "Options".ToUpperInvariant(),
                 "--obj", "Default: \"42\"",
                 "--str", "Default: \"foo\"",
                 "--str-empty", "Default: \"\"",
@@ -137,7 +138,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options",
+                "Options".ToUpperInvariant(),
                 "--object", "Default: \"42\"",
                 "--string", "Default: \"foo\"",
                 "--string-empty", "Default: \"\"",

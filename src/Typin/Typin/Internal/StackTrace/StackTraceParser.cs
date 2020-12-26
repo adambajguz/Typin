@@ -59,11 +59,11 @@
                 throw new FormatException("Could not parse stack trace.");
             }
 
-            foreach (var m in matches)
+            foreach (Match m in matches)
             {
                 GroupCollection groups = m.Groups;
-                var pt = groups["pt"].Captures;
-                var pn = groups["pn"].Captures;
+                CaptureCollection pt = groups["pt"].Captures;
+                CaptureCollection pn = groups["pn"].Captures;
 
                 yield return new StackFrame(
                     groups["type"].Value,
