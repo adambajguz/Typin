@@ -26,9 +26,9 @@
             return default;
         }
 
-        private void DebugPrintServices(IConsole console, IEnumerable<ServiceDescriptor> serviceDescriptors)
+        private static void DebugPrintServices(IConsole console, IEnumerable<ServiceDescriptor> serviceDescriptors)
         {
-            TableUtils.Write(console,
+            TableUtils.Write(console.Output,
                              serviceDescriptors.OrderBy(x => x.Lifetime)
                                                .ThenBy(x => x.ServiceType.Name)
                                                .ThenBy(x => x.ImplementationType?.Name)
