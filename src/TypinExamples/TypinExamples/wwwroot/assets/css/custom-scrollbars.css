@@ -5,7 +5,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #00d5ff;
+    background: var(--color-accent);
     border-radius: 0px;
 }
 
@@ -14,6 +14,6 @@
     }
 
 ::-webkit-scrollbar-track {
-    visibility: hidden
-    border-radius: 0px;
+    visibility: hidden;
+    border-radius: 0;
 }
