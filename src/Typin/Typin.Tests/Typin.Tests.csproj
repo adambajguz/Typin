@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Typin.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -8,7 +7,7 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>opencover</CoverletOutputFormat>
     <CoverletOutput>bin/$(Configuration)/Coverage.xml</CoverletOutput>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Configurations>Debug;Release;Deploy;Release-CD</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-    <PackageReference Include="CliWrap" Version="3.2.4" />
+    <PackageReference Include="CliWrap" Version="3.3.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="GitHubActionsTestLogger" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
