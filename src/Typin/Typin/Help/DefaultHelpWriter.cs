@@ -164,14 +164,14 @@
             if (!IsEmpty)
                 WriteVerticalMargin();
 
+            WriteHeader("Supported modes");
+
             IEnumerable<Type> commandModes = (command.SupportedModes?.Count ?? 0) > 0 ? command.SupportedModes! : modesInApplication;
 
             if ((command.ExcludedModes?.Count ?? 0) > 0)
             {
-                commandModes = commandModes.Except(command.SupportedModes!);
+                commandModes = commandModes.Except(command.ExcludedModes!);
             }
-
-            WriteHeader("Supported modes");
 
             foreach (Type mode in commandModes)
             {
