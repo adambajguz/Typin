@@ -3,7 +3,7 @@ name: TypinExamples-CI
 on:
   push:
     branches:
-      - devlop-examples-app
+      - develop-examples-app
     tags-ignore:
       - '*'
     paths-ignore:
