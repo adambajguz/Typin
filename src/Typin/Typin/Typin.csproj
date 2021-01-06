@@ -16,7 +16,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <RootNamespace>Typin</RootNamespace>
-    <Configurations>Debug;Release;Deploy;Release-CD</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

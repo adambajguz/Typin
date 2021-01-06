@@ -7,7 +7,7 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>opencover</CoverletOutputFormat>
     <CoverletOutput>bin/$(Configuration)/Coverage.xml</CoverletOutput>
-    <Configurations>Debug;Release;Deploy;Release-CD</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
