@@ -29,7 +29,7 @@
 
             if (logs.Any())
             {
-                TableUtils.Write(console,
+                TableUtils.Write(console.Output,
                                  logs,
                                  new string[] { "Id", "Command name", "Arguments", "Started on", "Time (ms)" },
                                  footnotes: null,

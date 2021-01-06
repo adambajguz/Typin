@@ -44,7 +44,9 @@
             _logger.LogCritical($"Example critical message from Typin.{IntentionalErrorMessage}");
 
             if (Name is null && Surname is null)
+            {
                 await console.Output.WriteLineAsync("Hello World!");
+            }
             else if (Mail is null)
             {
                 await console.Output.WriteLineAsync($"Welcome {Name} {Surname}!");
