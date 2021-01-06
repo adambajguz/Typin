@@ -1,4 +1,4 @@
-### v3.0.0 (xx-Dec-2020)
+### v3.0.0 (xx-Jan-2021)
 
 - Added `Typin.Core` library.
 - Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`).
