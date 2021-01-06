@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 5.0.101
 
     - name: Pack
-      run: dotnet pack src/Typin/Typin.sln --configuration Release
+      run: dotnet pack src/Typin/Typin.sln --configuration Release-CD
 
     - name: Deploy
       run: dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
