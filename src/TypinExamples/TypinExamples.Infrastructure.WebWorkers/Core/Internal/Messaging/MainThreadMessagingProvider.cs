@@ -41,7 +41,9 @@
             _logger.LogDebug("{Class} -> {Method} {Message}", nameof(MainThreadMessagingProvider), nameof(PostAsync), rawMessage);
 
             if (targetWorkerId is null)
+            {
                 throw new ArgumentNullException(nameof(targetWorkerId));
+            }
 
             await _jsRuntime.InvokeVoidAsync($"{ScriptLoader.ModuleName}.postMessage", targetWorkerId, rawMessage);
         }

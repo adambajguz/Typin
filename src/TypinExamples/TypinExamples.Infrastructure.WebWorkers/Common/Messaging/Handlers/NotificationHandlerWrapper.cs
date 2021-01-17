@@ -25,7 +25,9 @@
             try
             {
                 if (!isNotification)
+                {
                     throw new InvalidOperationException("Cannot handle message that is not a notification call.");
+                }
 
                 Message<TNotification> casted = message as Message<TNotification> ?? throw new NullReferenceException("Invalid notification message type.");
                 await _handler.HandleAsync(casted.Payload, worker, cancellationToken);

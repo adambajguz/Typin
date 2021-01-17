@@ -54,7 +54,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             try
             {
                 if (string.IsNullOrWhiteSpace(startupType))
+                {
                     throw new ArgumentException($"'{nameof(startupType)}' cannot be null or whitespace", nameof(startupType));
+                }
 
                 //Create startup class
                 Type type = Type.GetType(startupType) ?? throw new InvalidOperationException("Invalid startup class type.");
@@ -91,7 +93,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
                 foreach (MessageMapping mapping in configuration.MessageMappings.Values)
                 {
                     if (corePayloads.Contains(mapping.PayloadType))
+                    {
                         continue;
+                    }
 
                     serviceCollection.TryAddTransient(mapping.HandlerInterfaceType, mapping.HandlerType);
                 }
@@ -124,7 +128,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TNotification : INotification
         {
             if (_messagingService is null || !IsInitialized || IsDisposed)
+            {
                 throw new InvalidOperationException($"{nameof(NotifyAsync)}<{typeof(TNotification).Name}>: Worker not initialized or disposed.");
+            }
 
             await _messagingService.NotifyAsync(null, payload);
         }
@@ -133,7 +139,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TCommand : ICommand
         {
             if (_messagingService is null || !IsInitialized || IsDisposed)
+            {
                 throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}>: Worker not initialized or disposed.");
+            }
 
             await _messagingService.CallCommandAsync<TCommand, CommandFinished>(null, payload);
         }
@@ -142,7 +150,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
             where TCommand : ICommand<TResult>
         {
             if (_messagingService is null || !IsInitialized || IsDisposed)
+            {
                 throw new InvalidOperationException($"{nameof(CallCommandAsync)}<{typeof(TCommand).Name}, {typeof(TResult).Name}>: Worker not initialized or disposed.");
+            }
 
             return await _messagingService.CallCommandAsync<TCommand, TResult>(null, payload);
         }
@@ -187,9 +197,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.WorkerCore
         async ValueTask<CommandFinished> ICommandHandler<CancelCommand, CommandFinished>.HandleAsync(CancelCommand request, IWorker worker, CancellationToken cancellationToken)
         {
             if (request.Delay == TimeSpan.Zero)
+            {
                 await CancelAsync();
+            }
             else
+            {
                 await CancelAsync(request.Delay);
+            }
 
             IsCancelled = true;
 

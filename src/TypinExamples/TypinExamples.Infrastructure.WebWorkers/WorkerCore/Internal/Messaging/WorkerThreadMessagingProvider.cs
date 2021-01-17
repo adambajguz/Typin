@@ -44,7 +44,9 @@
             Console.WriteLine($"{nameof(WorkerThreadMessagingProvider)}.{nameof(PostAsync)}({targetWorkerId}, {rawMessage})");
 #endif
             if (targetWorkerId is not null)
+            {
                 throw new ArgumentException("Id must be null. Cross-worker communication is not supported.", nameof(targetWorkerId));
+            }
 
             _self.Invoke("postMessage", rawMessage);
 

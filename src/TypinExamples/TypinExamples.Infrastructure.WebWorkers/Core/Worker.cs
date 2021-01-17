@@ -79,7 +79,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         public async Task InitAsync()
         {
             if (IsInitialized)
+            {
                 return;
+            }
 
             await _scriptLoader.InitScript();
 
@@ -136,7 +138,9 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
         public async ValueTask DisposeAsync()
         {
             if (IsDisposed)
+            {
                 return;
+            }
 
             const int miliseconds = 3000;
             TaskAwaiter awaiter = DisposeWorkerAsync().GetAwaiter();
@@ -156,9 +160,13 @@ namespace TypinExamples.Infrastructure.WebWorkers.Core
             _messagingService.CleanMessageRegistry(Id);
 
             if (forcedToDispose)
+            {
                 _logger.LogInformation("Worker {Id} was forced to dispose.", Id);
+            }
             else
+            {
                 _logger.LogInformation("Worker {Id} was disposed.", Id);
+            }
 
             _disposeCallback();
         }

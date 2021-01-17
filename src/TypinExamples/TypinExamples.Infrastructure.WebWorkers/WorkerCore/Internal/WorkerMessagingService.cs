@@ -68,7 +68,9 @@
                 IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
                 if (message.TargetWorkerId != _workerIdAccessor.Id)
+                {
                     throw new InvalidOperationException($"Message '{message}' is not for this worker.");
+                }
 
                 _ = _serviceScopeFactory ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_serviceScopeFactory)} is null).");
                 _ = _configuration ?? throw new InvalidOperationException($"Worker not initialized ({nameof(_configuration)} is null).");
@@ -76,7 +78,9 @@
                 if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
                 {
                     if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
+                    {
                         throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
+                    }
 
                     if (message.Error is not null)
                     {
@@ -89,7 +93,9 @@
                         Console.WriteLine($"Unknown error in message {message.Id}");
                     }
                     else
+                    {
                         taskCompletionSource.SetResult(message);
+                    }
 
                     messageRegister.Remove(message.Id);
                 }
@@ -110,13 +116,19 @@
                             await PostAsync(result.TargetWorkerId, result);
                         }
                         else if (message.Type.HasFlags(MessageTypes.Notification) && service is INotificationHandlerWrapper notification)
+                        {
                             await notification.Handle(message, _worker, _cancellationToken);
+                        }
                         else
+                        {
                             throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
+                        }
                     }
                 }
                 else
+                {
                     Console.WriteLine($"Unknown message type {message.Type}");
+                }
             }
             catch (Exception ex)
             {
@@ -161,10 +173,14 @@
             await PostAsync(targetWorkerId, message);
 
             if (await task is not Message<TResultPayload> returnMessage)
+            {
                 throw new InvalidOperationException("Invalid message.");
+            }
 
             if (returnMessage?.Error is not null)
+            {
                 throw new WorkerException(returnMessage.Error);
+            }
 
             return returnMessage!.Payload!;
         }

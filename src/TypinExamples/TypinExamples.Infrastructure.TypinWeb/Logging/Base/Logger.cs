@@ -93,9 +93,13 @@
                         entry.Scopes.Add(Scope);
 
                         if (value is string s)
+                        {
                             Scope.Text = s;
+                        }
                         else if (value is IEnumerable<KeyValuePair<string, object>> props)
+                        {
                             Scope.Properties = props.ToDictionary(x => x.Key, x => x.Value);
+                        }
                     }, state);
                 }
 

@@ -32,7 +32,9 @@
         public async Task InitScript()
         {
             if (await IsLoaded())
+            {
                 return;
+            }
 
             Assembly assembly = typeof(ScriptLoader).Assembly;
             string assemblyName = assembly.GetName().Name ?? throw new NullReferenceException($"Unable to initialize {JSFileName}.");

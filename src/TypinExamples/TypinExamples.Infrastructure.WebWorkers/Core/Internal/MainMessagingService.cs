@@ -66,12 +66,16 @@
             IMessage message = _serializer.Deserialize<IMessage>(rawMessage);
 
             if (message.TargetWorkerId != null)
+            {
                 throw new InvalidOperationException($"Message '{message}' is not for this worker.");
+            }
 
             if (message.Type.HasFlags(MessageTypes.Result) || message.Type.HasFlags(MessageTypes.Exception))
             {
                 if (!messageRegister.TryGetValue(message.Id, out TaskCompletionSource<object>? taskCompletionSource))
+                {
                     throw new InvalidOperationException($"Invalid message with call id {message.Id} from {message.TargetWorkerId}.");
+                }
 
                 if (message.WorkerId is ulong wId && workerToMessagesRegister.TryGetValue(wId, out HashSet<ulong>? set))
                 {
@@ -89,7 +93,9 @@
                     throw new InvalidOperationException($"Unknown error in message {message.Id}");
                 }
                 else
+                {
                     taskCompletionSource.SetResult(message);
+                }
 
                 messageRegister.Remove(message.Id);
             }
@@ -114,10 +120,14 @@
                     await notification.Handle(message, worker, _cancellationToken);
                 }
                 else
+                {
                     throw new InvalidOperationException($"Unknown message handler {service.GetType()}");
+                }
             }
             else
+            {
                 throw new InvalidOperationException($"Unknown message type {message.Type}");
+            }
         }
 
         public async Task NotifyAsync<TPayload>(ulong? targetWorkerId, TPayload payload)
@@ -157,10 +167,14 @@
             await PostAsync(targetWorkerId, message);
 
             if (await task is not Message<TResultPayload> returnMessage)
+            {
                 throw new InvalidOperationException("Invalid message.");
+            }
 
             if (returnMessage?.Error is not null)
+            {
                 throw new WorkerException(returnMessage.Error);
+            }
 
             return returnMessage!.Payload!;
         }

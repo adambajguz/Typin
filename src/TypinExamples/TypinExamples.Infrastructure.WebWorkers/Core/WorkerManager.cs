@@ -33,7 +33,9 @@
         public async Task<bool> TryDisposeWorker(ulong id)
         {
             if (!_workers.TryGetValue(id, out IWorker? value))
+            {
                 return false;
+            }
 
             await value.DisposeAsync();
 
@@ -43,7 +45,9 @@
         public async ValueTask DisposeAsync()
         {
             foreach (var worker in _workers)
+            {
                 await worker.Value.DisposeAsync();
+            }
 
             _workers.Clear();
         }

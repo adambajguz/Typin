@@ -18,7 +18,9 @@
         private static ExampleDescriptor? LoadConfiguration(string exampleName)
         {
             if (!File.Exists(CONFIGURATION_FILE))
+            {
                 return null;
+            }
 
             string configuration = File.ReadAllText(CONFIGURATION_FILE);
             Configuration? options = JsonSerializer.Deserialize<Configuration>(configuration);
@@ -33,7 +35,9 @@
         public static async Task<int?> RunExample(ExampleDescriptor? descriptor)
         {
             if (string.IsNullOrWhiteSpace(descriptor?.ProgramClass))
+            {
                 return null;
+            }
 
             Type? type = Type.GetType(descriptor.ProgramClass);
 

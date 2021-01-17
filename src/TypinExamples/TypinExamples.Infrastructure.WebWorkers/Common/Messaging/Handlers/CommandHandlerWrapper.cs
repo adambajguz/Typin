@@ -38,7 +38,9 @@
             try
             {
                 if (!isCommand)
+                {
                     throw new InvalidOperationException("Cannot handle message that is not a command call.");
+                }
 
                 Message<TCommand> casted = message as Message<TCommand> ?? throw new NullReferenceException("Invalid command message type.");
                 _ = casted.Payload ?? throw new NullReferenceException($"Invalid payload type in {casted.Type}");

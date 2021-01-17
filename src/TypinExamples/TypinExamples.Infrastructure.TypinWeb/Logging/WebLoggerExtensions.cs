@@ -37,7 +37,9 @@
         public static ILoggingBuilder AddWebLogger(this ILoggingBuilder builder, IWebLoggerDestination webLoggerDestination, Action<WebLoggerOptions> configure)
         {
             if (configure is null)
+            {
                 throw new ArgumentNullException(nameof(configure));
+            }
 
             builder.AddWebLogger(webLoggerDestination);
             builder.Services.Configure(configure);

@@ -80,7 +80,9 @@
 
             // If cancellation was requested, bail early
             if (cancellationToken.IsCancellationRequested)
+            {
                 return Task.FromCanceled<int>(cancellationToken);
+            }
 
             try
             {
@@ -136,16 +138,24 @@
         private static void ValidateReadParameters(byte[] buffer, int offset, int count)
         {
             if (buffer is null)
+            {
                 throw new ArgumentNullException(nameof(buffer), "Buffer cannot be null.");
+            }
 
             if (count < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
+            }
 
             if (offset < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset), "Non-negative number required.");
+            }
 
             if ((uint)count > buffer.Length - offset)
+            {
                 throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+            }
         }
     }
 }

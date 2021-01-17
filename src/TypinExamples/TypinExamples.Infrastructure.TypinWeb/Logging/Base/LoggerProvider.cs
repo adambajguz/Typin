@@ -35,7 +35,9 @@
         ~LoggerProvider()
         {
             if (!IsDisposed)
+            {
                 Dispose(false);
+            }
         }
 
         /// <summary>
@@ -114,7 +116,9 @@
             get
             {
                 if (_externalScopeProvider is null)
+                {
                     _externalScopeProvider = new LoggerExternalScopeProvider();
+                }
 
                 return _externalScopeProvider;
             }

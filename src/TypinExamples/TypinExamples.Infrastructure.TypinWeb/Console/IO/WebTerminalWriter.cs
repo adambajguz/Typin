@@ -44,7 +44,9 @@
         public override void Flush()
         {
             if (_buffer.Length == 0)
+            {
                 return;
+            }
 
             string text = _buffer.ToString();
             _buffer.Clear();
@@ -60,7 +62,9 @@
         public override async Task FlushAsync(CancellationToken cancellationToken)
         {
             if (_buffer.Length == 0)
+            {
                 return;
+            }
 
             string text = _buffer.ToString();
             _buffer.Clear();

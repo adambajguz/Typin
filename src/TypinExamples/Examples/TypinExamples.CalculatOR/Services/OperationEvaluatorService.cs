@@ -31,7 +31,9 @@
             int pad = printSteps ? CalculateMaxDigitsLength(a, b, @base) : 0;
 
             if (printSteps)
+            {
                 await _console.Output.WriteLineAsync($"{new string(' ', operationSymbol.Length)} {result.ToString(@base ?? a.Base).PadLeft(pad)}");
+            }
 
             foreach (Number x in b)
             {
@@ -58,7 +60,9 @@
                 PrintColored(result, @base ?? a.Base, pad, ConsoleColor.Green);
             }
             else
+            {
                 _console.Output.WithForegroundColor(ConsoleColor.Green, (output) => _console.Output.WriteLine(result.ToString(@base ?? a.Base)));
+            }
 
             await _console.Output.WriteLineAsync();
 
@@ -75,7 +79,9 @@
         private static int CalculateDigitsLength(BigInteger value, NumberBase @base)
         {
             if (@base == NumberBase.DEC && value > 0)
+            {
                 return (int)Math.Floor(BigInteger.Log10(value) + 1);
+            }
 
             return value.ToString(@base).Length;
         }
