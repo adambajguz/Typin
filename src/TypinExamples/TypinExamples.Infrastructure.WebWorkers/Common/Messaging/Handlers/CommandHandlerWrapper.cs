@@ -18,12 +18,12 @@
         }
     }
 
-    internal class CommandHandlerWrapper<TCommmand, TResult> : ICommandHandlerWrapper
-        where TCommmand : ICommand<TResult>
+    internal class CommandHandlerWrapper<TCommand, TResult> : ICommandHandlerWrapper
+        where TCommand : ICommand<TResult>
     {
-        private readonly ICommandHandler<TCommmand, TResult> _handler;
+        private readonly ICommandHandler<TCommand, TResult> _handler;
 
-        public CommandHandlerWrapper(ICommandHandler<TCommmand, TResult> handler)
+        public CommandHandlerWrapper(ICommandHandler<TCommand, TResult> handler)
         {
             _handler = handler;
         }
@@ -40,7 +40,9 @@
                 if (!isCommand)
                     throw new InvalidOperationException("Cannot handle message that is not a command call.");
 
-                Message<TCommmand> casted = message as Message<TCommmand> ?? throw new NullReferenceException("Invalid command message type."); ;
+                Message<TCommand> casted = message as Message<TCommand> ?? throw new NullReferenceException("Invalid command message type.");
+                _ = casted.Payload ?? throw new NullReferenceException($"Invalid payload type in {casted.Type}");
+
                 TResult response = await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
 
                 return new Message<TResult>
