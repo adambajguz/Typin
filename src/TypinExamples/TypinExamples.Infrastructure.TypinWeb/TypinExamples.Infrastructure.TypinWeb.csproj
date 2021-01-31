@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\TypinExamples.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
+    <PackageReference Include="Typin" Version="3.0.0-dev-00013" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers.Abstractions\TypinExamples.Infrastructure.WebWorkers.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

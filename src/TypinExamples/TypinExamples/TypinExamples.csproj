@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <Import Project="..\TypinExamples.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <UseBlazorWebAssembly>true</UseBlazorWebAssembly>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BlazorCacheBootResources>false</BlazorCacheBootResources>
+    <UserSecretsId>80f789dd-a769-4b6c-ba5b-517081432d5c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorDownloadFile" Version="2.1.2" />
+    <PackageReference Include="Blazored.Toast" Version="3.1.2" />
+    <PackageReference Include="Markdig" Version="0.23.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="6.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+    <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="1.0.0-dev-00019" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\files\src\" />
+    <Folder Include="wwwroot\assets\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".\wwwroot\appsettings.json" Link="appsettings.json" />
+    <None Include=".\wwwroot\appsettings.Development.json" Link="appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TypinExamples.Application\TypinExamples.Application.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.TypinWeb\TypinExamples.Infrastructure.TypinWeb.csproj" />
+    <ProjectReference Include="..\TypinExamples.Infrastructure.WebWorkers\TypinExamples.Infrastructure.WebWorkers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Examples\TypinExamples.HelloWorld\TypinExamples.HelloWorld.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.CalculatOR\TypinExamples.CalculatOR.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Validation\TypinExamples.Validation.csproj" />
+    <ProjectReference Include="..\Examples\TypinExamples.Timer\TypinExamples.Timer.csproj" />
+  </ItemGroup>
+
+</Project>

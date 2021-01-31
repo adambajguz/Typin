@@ -1,0 +1,57 @@
+﻿<div class="c-box--container">
+    @foreach (ExampleDescriptor descriptor in ExamplesConfiguration.Descriptors)
+    {
+        <div class="c-box">
+
+            <div class="c-box--top">
+                <div class="row">
+                    <div class="col-8 is-vertical-align">
+                        @if (descriptor.IsNew)
+                        {
+                            <h2 class="is-vertical-align">
+                                <span class="tag is-small text-success bd-success new-example-tag">New</span>
+                                <span>@descriptor.Name</span>
+                            </h2>
+                        }
+                        else
+                        {
+                            <h2>
+                                <span>@descriptor.Name</span>
+                            </h2>
+                        }
+                    </div>
+                    <div class="col-4 is-vertical-align is-right">
+                        @{ string filename = descriptor?.DownloadFile ?? string.Empty; }
+
+                        <FileDownload FilePath="@((descriptor?.DownloadPath ?? string.Empty) + filename)" title="@($"Download {filename}")" class="button outline accent icon-only">
+                            <i class="fas fa-download"></i>
+                        </FileDownload>
+                        <NavLinkExtended href="@("example/" + descriptor?.Key ?? string.Empty)" class="button primary">Run <i class="fas fa-chevron-right"></i></NavLinkExtended>
+                    </div>
+                </div>
+             </div>
+
+            <div class="c-box--content text-light">
+                @Markdown.ToHtml(descriptor?.Description ?? string.Empty)
+                @if (descriptor?.Modes is not null)
+                {
+                    <p>
+                        @foreach (string mode in descriptor.Modes)
+                        {
+                            <span class="tag is-small text-accent bd-accent">@mode mode</span>
+                        }
+                    </p>
+                }
+            </div>
+
+        </div>
+    }
+</div>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; init; } = default!;
+
+    [Inject] private IOptions<ExamplesConfiguration> _ExamplesConfiguration { get; init; } = default!;
+    private ExamplesConfiguration ExamplesConfiguration => _ExamplesConfiguration.Value;
+}

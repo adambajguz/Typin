@@ -1,0 +1,174 @@
+﻿@page "/example/{ExampleKey}"
+
+@if (Descriptor is null)
+{
+    <section>
+        <div class="row">
+            <div class="col-8">
+                <p class="text-error"><b>Error:</b> not found any example for key '@(ExampleKey)'.</p>
+            </div>
+            <div class="col is-vertical-align is-right">
+                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section>
+        <div class="row">
+            <div class="col-8">
+                <h1>@(Descriptor?.Name ?? string.Empty)</h1>
+            </div>
+            <div class="col is-vertical-align is-right">
+                @{ string filename = Descriptor?.DownloadFile ?? string.Empty; }
+
+                <NavLinkExtended href="" ActiveClass="active" Match="NavLinkExtendedMatch.Path" class="button primary"><i class="fas fa-chevron-left"></i> Go back</NavLinkExtended>
+                <FileDownload FilePath="@((Descriptor?.DownloadPath ?? string.Empty) + filename)" title="@($"Download {filename}")" class="button outline accent">
+                    Download <i class="fas fa-download"></i>
+                </FileDownload>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                @Markdown.ToHtml(Descriptor?.Description ?? string.Empty)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <span class="text-grey"><i>Scroll down for quick start, source code, and log viewer.</i></span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="row">
+            <div class="col">
+                <TabContainer>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-terminal"></i> Terminal
+                            <div class="pull-right">
+                                <button type="button" title="Scroll to bottom" class="button accent outline is-medium" @onclick="ScrollToBottomAsync">
+                                    <i class="fas fa-level-down-alt fa-flip-horizontal"></i>
+                                </button>
+                                <button type="button" title="Clear screen" class="button accent outline is-medium" @onclick="ClearTerminalAsync">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <button type="button" class="button error outline is-medium" @onclick="TerminateTerminalAsync">
+                                    <i class="fas fa-power-off"></i> Restart
+                                </button>
+                            </div>
+                        </TabContent>
+                        <ChildContent>
+                            <XTermComponent ExampleKey="@(Descriptor?.Key)" @ref="XTermInstance" />
+                        </ChildContent>
+                    </Tab>
+                </TabContainer>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="row">
+            <div class="col">
+                <TabContainer>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-alt"></i> Quick start
+                        </TabContent>
+                        <ChildContent>
+                            @Markdown.ToHtml(Descriptor?.QuickStartText ?? string.Empty)
+                        </ChildContent>
+                    </Tab>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-code"></i> Source code
+                        </TabContent>
+                        <ChildContent>
+                            <FileBrowser Root="@(System.IO.Path.Combine(ExamplesConfiguration?.Value?.SrcFilesRoot ?? string.Empty, Descriptor?.SrcRoot ?? string.Empty))" SrcFiles="@Descriptor?.SrcFiles" />
+                        </ChildContent>
+                    </Tab>
+                    <Tab>
+                        <TabContent>
+                            <i class="fas fa-file-contract"></i> Typin Log Viewer
+                        </TabContent>
+                        <ChildContent>
+                            <LogViewer @ref="LogViewerInstance" />
+                        </ChildContent>
+                    </Tab>
+                </TabContainer>
+            </div>
+        </div>
+    </section>
+}
+
+@code
+{
+    public LogViewer? LogViewerInstance { get; set; }
+    public XTermComponent? XTermInstance { get; set; }
+
+    [Parameter]
+    public ExampleDescriptor? Descriptor { get; set; }
+
+    [Parameter]
+    public string? ExampleKey { get; init; }
+
+    [Inject] private IMarkdownService Markdown { get; init; } = default!;
+
+    [Inject] private IOptions<ExamplesConfiguration> ExamplesConfiguration { get; init; } = default!;
+
+    [Inject] private ITerminalRepository TerminalRepository { get; init; } = default!;
+
+    [Inject] private ILoggerDestinationRepository LoggerDestinationRepository { get; init; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Descriptor ??= GetDescriptor();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (LogViewerInstance is not null && XTermInstance is not null)
+                LoggerDestinationRepository.Add(XTermInstance.Id, LogViewerInstance);
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+
+    private ExampleDescriptor? GetDescriptor()
+    {
+        string key = ExampleKey ?? string.Empty;
+
+        ExampleDescriptor? descriptor = ExamplesConfiguration.Value.Descriptors.Where(x => x.Key == key)
+                                                                               .FirstOrDefault();
+
+        return descriptor;
+    }
+
+    async Task TerminateTerminalAsync()
+    {
+        if (XTermInstance is not null)
+            await XTermInstance.TerminateTerminal();
+    }
+
+    async Task ClearTerminalAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ClearAsync();
+        }
+    }
+
+    async Task ScrollToBottomAsync()
+    {
+        if (XTermInstance is XTermComponent xc && TerminalRepository.GetOrDefault(xc.Id) is IWebTerminal terminal)
+        {
+            await terminal.ScrollToBottomAsync();
+        }
+    }
+}
