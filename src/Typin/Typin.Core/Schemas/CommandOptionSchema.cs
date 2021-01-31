@@ -63,7 +63,7 @@
         /// </summary>
         public bool MatchesName(string name)
         {
-            return !string.IsNullOrWhiteSpace(Name) && string.Equals(Name, name, StringComparison.OrdinalIgnoreCase);
+            return !string.IsNullOrWhiteSpace(Name) && string.Equals(Name, name, StringComparison.Ordinal);
         }
 
         /// <summary>

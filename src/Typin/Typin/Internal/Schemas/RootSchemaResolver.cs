@@ -66,7 +66,7 @@
             if (invalidCommands.Count > 0)
             {
                 IGrouping<string, CommandSchema> duplicateNameGroup = invalidCommands.Union(commands.Values)
-                                                                                     .GroupBy(c => c.Name!, StringComparer.OrdinalIgnoreCase)
+                                                                                     .GroupBy(c => c.Name!, StringComparer.Ordinal)
                                                                                      .First();
 
                 throw CommandResolverExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
@@ -92,7 +92,7 @@
             if (invalidDirectives.Count > 0)
             {
                 IGrouping<string, DirectiveSchema> duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                                                         .GroupBy(c => c.Name, StringComparer.OrdinalIgnoreCase)
+                                                                                         .GroupBy(c => c.Name, StringComparer.Ordinal)
                                                                                          .First();
 
                 throw DirectiveResolverExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());

@@ -130,21 +130,19 @@
 
         private void NextAutoComplete()
         {
-            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
-
             if (++_completionsIndex == _completions.Length)
                 _completionsIndex = 0;
 
+            _lineInputHandler.ClearLine();
             _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
         private void PreviousAutoComplete()
         {
-            _lineInputHandler.Backspace(_lineInputHandler.CursorPosition - _completionStart);
-
             if (--_completionsIndex == -1)
                 _completionsIndex = _completions.Length - 1;
 
+            _lineInputHandler.ClearLine();
             _lineInputHandler.Write(_completions[_completionsIndex]);
         }
 
