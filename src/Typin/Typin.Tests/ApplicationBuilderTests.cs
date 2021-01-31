@@ -65,7 +65,7 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(new VirtualConsole(Stream.Null))
-                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+                .UseStartupMessage($"Startup message")
                 .Build();
 
             // Assert
@@ -93,7 +93,7 @@
                 .UseVersionText("test")
                 .UseDescription("test")
                 .UseConsole(new VirtualConsole(Stream.Null))
-                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+                .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
                 .Build();
 
             // Assert
@@ -120,7 +120,7 @@
                 .RegisterMode<ValidCustomMode>()
                 .RegisterMode(typeof(ValidCustomMode))
                 .UseInteractiveMode()
-                .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+                .UseStartupMessage((metadata, console) => { console.Output.WriteLine($"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description})"); })
                 .UseConsole(new VirtualConsole(Stream.Null))
                 .Build();
 
@@ -146,7 +146,7 @@
                .UseVersionText("test")
                .UseDescription("test")
                .UseInteractiveMode()
-               .UseStartupMessage("Startup message {{title}} {title} {version} {executable} {description}")
+                .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
                .UseConsole<SystemConsole>()
                .Build();
 
@@ -237,6 +237,8 @@
                        .AddDirective<PreviewDirective>()
                        .AddDirective<CustomInteractiveModeOnlyDirective>()
                        .AddDirective<CustomDirective>();
+
+                    cfg.UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}");
                 })
                 .Configure(cfg =>
                 {

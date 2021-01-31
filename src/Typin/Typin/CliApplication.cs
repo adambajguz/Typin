@@ -29,6 +29,7 @@ namespace Typin
         private readonly CliApplicationLifetime _applicationLifetime;
         private readonly EnvironmentVariablesAccessor _environmentVariablesAccessor;
         private readonly ILogger _logger;
+        private readonly Action<ApplicationMetadata, IConsole>? _startupMessage;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
@@ -36,29 +37,20 @@ namespace Typin
         internal CliApplication(IServiceProvider serviceProvider,
                                 IConsole console,
                                 EnvironmentVariablesAccessor environmentVariablesAccessor,
-                                ApplicationMetadata metadata)
+                                ApplicationMetadata metadata,
+                                Action<ApplicationMetadata, IConsole>? startupMessage)
         {
             _serviceProvider = serviceProvider;
 
             _environmentVariablesAccessor = environmentVariablesAccessor;
             _metadata = metadata;
+            _startupMessage = startupMessage;
             _console = console;
 
             _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
             _rootSchemaAccessor = serviceProvider.GetRequiredService<IRootSchemaAccessor>();
             _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
-        }
-
-        /// <summary>
-        /// Prints the startup message if availble.
-        /// </summary>
-        private void PrintStartupMessage()
-        {
-            if (_metadata.StartupMessage is null)
-                return;
-
-            _console.Output.WithForegroundColor(ConsoleColor.Blue, (output) => output.WriteLine(_metadata.StartupMessage));
         }
 
         /// <summary>
@@ -155,7 +147,7 @@ namespace Typin
 
                 //TODO: OnStart()
 
-                PrintStartupMessage();
+                _startupMessage?.Invoke(_metadata, _console);
 
                 int exitCode = await StartAppAsync(commandLineArguments);
 

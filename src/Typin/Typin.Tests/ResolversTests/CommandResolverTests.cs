@@ -42,7 +42,7 @@
         {
             // Arrange
             var builder = new CliApplicationBuilder()
-                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
+                .UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description} Test");
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
@@ -59,7 +59,7 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand(typeof(NonImplementedCommand))
-                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}");
+                .UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description} Test");
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
