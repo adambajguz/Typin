@@ -396,7 +396,7 @@ namespace Typin
         /// Adds a middleware to the command execution pipeline.
         /// </summary>
         public CliApplicationBuilder UseMiddleware<TMiddleware>()
-            where TMiddleware : class
+            where TMiddleware : class, IMiddleware
         {
             return UseMiddleware(typeof(TMiddleware));
         }
