@@ -31,8 +31,8 @@
 - `TableUtils` refactory and fix for proper handling of empty collection.
 - `[!]` directive is now required only to execute command without parameters and options.
 - Added startup message color personalization, and replaced string formating based on macros with `Func<ApplicationMetadata, string>` and `Action<ApplicationMetadata, IConsole>`.
-- Fixed case-sensitivity of command and option names.
-- Fixed interactive mode autocompletion results.
+- Fixed case-sensitivity of command and option names (always case-sesitive).
+- Fixed interactive mode autocompletion results (fo 'column chan' TAB TAB result was 'column column change-range' instead of 'column change-range').
 
 ### v2.1.1 (18-Oct-2020)
 
