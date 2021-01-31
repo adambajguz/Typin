@@ -4,7 +4,8 @@ on:
   push:
     tags:
     - 'Typin-[0-9]+.[0-9]+.[0-9]+'
-    - 'Typin-[0-9]+.[0-9]+.[0-9]+-dev-*'
+    - 'Typin-[0-9]+.[0-9]+.[0-9]+-dev-[0-9]+'
+    - 'Typin-[0-9]+.[0-9]+.[0-9]+-rc[0-9]+'
 
 jobs:
   build:
@@ -17,7 +18,7 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0.101
+        dotnet-version: 5.0.102
 
     - name: Pack
       run: dotnet pack src/Typin/Typin.sln --configuration Release-CD
