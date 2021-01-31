@@ -44,8 +44,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Benchmarks.Frameworks
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{BCD6C3DD-672D-40DF-8612-09A0F1377291}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\.github\workflows\CD.yml = ..\..\.github\workflows\CD.yml
-		..\..\.github\workflows\CI.yml = ..\..\.github\workflows\CI.yml
+		..\..\.github\workflows\codeql-analysis.yml = ..\..\.github\workflows\codeql-analysis.yml
+		..\..\.github\workflows\Typin-CD.yml = ..\..\.github\workflows\Typin-CD.yml
+		..\..\.github\workflows\Typin-CI.yml = ..\..\.github\workflows\Typin-CI.yml
+		..\..\.github\workflows\TypinExamples-CD.yml = ..\..\.github\workflows\TypinExamples-CD.yml
+		..\..\.github\workflows\TypinExamples-CI.yml = ..\..\.github\workflows\TypinExamples-CI.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Core", "Typin.Core\Typin.Core.csproj", "{AB0DFBE4-052D-4F33-803E-E2DC5AC70D11}"
