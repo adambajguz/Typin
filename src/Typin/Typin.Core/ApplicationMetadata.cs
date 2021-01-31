@@ -26,24 +26,17 @@
         public string? Description { get; }
 
         /// <summary>
-        /// Application startup message.
-        /// </summary>
-        public string? StartupMessage { get; }
-
-        /// <summary>
         /// Initializes an instance of <see cref="ApplicationMetadata"/>.
         /// </summary>
         public ApplicationMetadata(string title,
                                    string executableName,
                                    string versionText,
-                                   string? description,
-                                   string? startupMessage)
+                                   string? description)
         {
             Title = title;
             ExecutableName = executableName;
             VersionText = versionText;
             Description = description;
-            StartupMessage = startupMessage;
         }
     }
 }

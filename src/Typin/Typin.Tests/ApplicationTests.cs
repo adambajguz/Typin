@@ -17,6 +17,69 @@
             _output = output;
         }
 
+        [Fact]
+        public async Task Application_should_print_startup_message_from_simple_string()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .UseTitle("tITle")
+                .UseExecutableName("eXe")
+                .UseVersionText("veRSion")
+                .UseDescription("DesC")
+                .UseStartupMessage($"[Startup message]");
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().Contain("[Startup message]");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task Application_should_print_startup_message_from_func()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .UseTitle("tITle")
+                .UseExecutableName("eXe")
+                .UseVersionText("veRSion")
+                .UseDescription("DesC")
+                .UseStartupMessage((metadata) => $"[Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}]");
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().Contain("[Startup message tITle veRSion eXe DesC]");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task Application_should_print_startup_message_from_action()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .UseTitle("tITle")
+                .UseExecutableName("eXe")
+                .UseVersionText("veRSion")
+                .UseDescription("DesC")
+                .UseStartupMessage((metadata, console) => { console.Output.WriteLine($"[Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}]"); });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().Contain("[Startup message tITle veRSion eXe DesC]");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
         [Theory]
         [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", false)]
         [InlineData(new string[] { "--str", "hello \\ world", "-i", "13", "-b" }, "{\"StrOption\":\"hello \\\\ world\",\"IntOption\":13,\"BoolOption\":true}", true)]

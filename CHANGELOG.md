@@ -30,6 +30,7 @@
 - Added `ExceptionFormatter` util and used it as a default exception printer in `DefaultExceptionHandler`.
 - `TableUtils` refactory and fix for proper handling of empty collection.
 - `[!]` directive is now required only to execute command without parameters and options.
+- Added startup message color personalization, and replaced string formating based on macros with `Func<ApplicationMetadata, string>` and `Action<ApplicationMetadata, IConsole>`.
 
 ### v2.1.1 (18-Oct-2020)
 

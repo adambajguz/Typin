@@ -32,7 +32,7 @@
                 {
                     cfg.SetMinimumLevel(LogLevel.Debug);
                 })
-                .UseStartupMessage("{title} CLI {version} {{title}} {executable} {{{description}}} {test}")
+                .UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
                 .Build()
                 .RunAsync();
         }

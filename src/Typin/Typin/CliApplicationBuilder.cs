@@ -4,7 +4,6 @@ namespace Typin
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text.RegularExpressions;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
@@ -34,7 +33,7 @@ namespace Typin
         private string? _executableName;
         private string? _versionText;
         private string? _description;
-        private string? _startupMessage;
+        private Action<ApplicationMetadata, IConsole>? _startupMessage;
 
         //Console
         private IConsole? _console;
@@ -241,19 +240,41 @@ namespace Typin
 
             return this;
         }
+        #endregion
+
+        #region Startup message
+        /// <summary>
+        /// Sets application startup message, which appears just after starting the app.
+        /// </summary>
+        public CliApplicationBuilder UseStartupMessage(string message, ConsoleColor messageColor = ConsoleColor.DarkYellow)
+        {
+            _startupMessage = (metadata, console) =>
+            {
+                console.Output.WithForegroundColor(messageColor, (output) => output.WriteLine(message));
+            };
+
+            return this;
+        }
 
         /// <summary>
         /// Sets application startup message, which appears just after starting the app.
-        ///
-        /// You can use the following macros:
-        ///     `{title}` for application title,
-        ///     `{executable}` for executable name,
-        ///     `{version}` for application version,
-        ///     `{description}` for application description.
-        ///
-        /// Double braces can be used to escape macro replacement, while unknown macros will simply act as if they were escaped.
         /// </summary>
-        public CliApplicationBuilder UseStartupMessage(string? message)
+        public CliApplicationBuilder UseStartupMessage(Func<ApplicationMetadata, string> message, ConsoleColor messageColor = ConsoleColor.DarkYellow)
+        {
+            _startupMessage = (metadata, console) =>
+            {
+                string tmp = message(metadata);
+
+                console.Output.WithForegroundColor(messageColor, (output) => output.WriteLine(tmp));
+            };
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets application startup message, which appears just after starting the app.
+        /// </summary>
+        public CliApplicationBuilder UseStartupMessage(Action<ApplicationMetadata, IConsole> message)
         {
             _startupMessage = message;
 
@@ -526,31 +547,13 @@ namespace Typin
             if (_startupMode is null || _modeTypes.Count == 0)
                 this.UseDirectMode(true);
 
-            // Format startup message
-            if (_startupMessage != null)
-            {
-                _startupMessage = Regex.Replace(_startupMessage, @"{(?<x>[^}]+)}", match =>
-                {
-                    string value = match.Groups["x"].Value;
-
-                    return value.ToLower() switch
-                    {
-                        "title" => _title,
-                        "executable" => _executableName,
-                        "version" => _versionText,
-                        "description" => _description ?? string.Empty,
-                        _ => string.Concat("{", value, "}")
-                    };
-                });
-            }
-
             // Add core middlewares to the end of the pipeline
             this.AddAfterUserMiddlewares();
 
             // Create context
             var _serviceCollection = new ServiceCollection();
 
-            var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description, _startupMessage);
+            var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description);
             var configuration = new ApplicationConfiguration(_modeTypes,
                                                              _commandTypes,
                                                              _directivesTypes,
@@ -590,7 +593,7 @@ namespace Typin
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            return new CliApplication(serviceProvider, _console, environmentVariablesAccessor, metadata);
+            return new CliApplication(serviceProvider, _console, environmentVariablesAccessor, metadata, _startupMessage);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
