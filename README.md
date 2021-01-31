@@ -10,6 +10,8 @@
 
 </p>
 
+**See [TypinExamples](https://adambajguz.github.io/Typin/) website for interective examples.**
+
 <table>
  <tr>
     <td>
