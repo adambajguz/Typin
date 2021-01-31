@@ -24,7 +24,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0617CE81-5BBD-4261-B9AF-3A6AE9CEE97D}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\LICENSE = ..\..\LICENSE
-		README-TE.md = README-TE.md
 		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject

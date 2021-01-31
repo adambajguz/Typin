@@ -4,7 +4,7 @@
   "libraries": [
     {
       "provider": "unpkg",
-      "library": "chota@latest",
+      "library": "chota@0.8.0",
       "destination": "wwwroot/assets/libraries/chota/"
     },
     {
@@ -14,12 +14,12 @@
     },
     {
       "provider": "cdnjs",
-      "library": "monaco-editor@0.21.2",
+      "library": "monaco-editor@0.22.1",
       "destination": "wwwroot/assets/libraries/monaco-editor/"
     },
     {
       "provider": "cdnjs",
-      "library": "font-awesome@5.15.1",
+      "library": "font-awesome@5.15.2",
       "destination": "wwwroot/assets/libraries/font-awesome/"
     }
   ]

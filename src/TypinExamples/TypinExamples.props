@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <Copyright>Copyright (C) Adam Bajguz, Paweł Halicki, Michał Kierzkowski, and Alan Bednarczyk</Copyright>
     <Nullable>enable</Nullable>
   </PropertyGroup>
