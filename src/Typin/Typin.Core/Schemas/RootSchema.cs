@@ -46,7 +46,7 @@
         /// </summary>
         public ISet<string> GetCommandNames()
         {
-            return (_commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
+            return (_commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.Ordinal));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@
         /// </summary>
         public ISet<string> GetDirectivesNames()
         {
-            return (_directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
+            return (_directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.Ordinal));
         }
 
         /// <summary>
@@ -103,7 +103,7 @@
         private IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
         {
             return potentialParentCommands.Where(c => string.IsNullOrWhiteSpace(parentCommandName) ||
-                                                 c.Name!.StartsWith(parentCommandName + ' ', StringComparison.OrdinalIgnoreCase));
+                                                 c.Name!.StartsWith(parentCommandName + ' ', StringComparison.Ordinal));
         }
 
         /// <summary>

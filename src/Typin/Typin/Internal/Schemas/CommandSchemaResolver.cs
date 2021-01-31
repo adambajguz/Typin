@@ -90,7 +90,7 @@
 
             IGrouping<string, CommandParameterSchema>? duplicateNameGroup = command.Parameters
                                                                                    .Where(a => !string.IsNullOrWhiteSpace(a.Name))
-                                                                                   .GroupBy(a => a.Name!, StringComparer.OrdinalIgnoreCase)
+                                                                                   .GroupBy(a => a.Name!, StringComparer.Ordinal)
                                                                                    .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateNameGroup != null)
@@ -132,7 +132,7 @@
         {
             IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.Name))
-                .GroupBy(o => o.Name!, StringComparer.OrdinalIgnoreCase)
+                .GroupBy(o => o.Name!, StringComparer.Ordinal)
                 .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateNameGroup != null)
