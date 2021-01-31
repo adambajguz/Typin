@@ -17,7 +17,7 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0.101
+        dotnet-version: 5.0.102
      
     # changes the base-tag in index.html from '/' to '/Typin/' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from '/ to '/Typin/'
