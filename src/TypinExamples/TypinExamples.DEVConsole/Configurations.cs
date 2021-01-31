@@ -2,8 +2,9 @@
 {
     using System;
 
-    public sealed class Configuration
+    public sealed class ExamplesRootConfiguration
     {
+        public string? SrcFilesRoot { get; init; }
         public ExamplesConfiguration? Examples { get; init; }
     }
 
@@ -16,5 +17,6 @@
     {
         public string? Name { get; init; }
         public string? ProgramClass { get; init; }
+        public string? WebProgramClass { get; init; }
     }
 }

@@ -23,10 +23,10 @@
             }
 
             string configuration = File.ReadAllText(CONFIGURATION_FILE);
-            Configuration? options = JsonSerializer.Deserialize<Configuration>(configuration);
+            ExamplesRootConfiguration? options = JsonSerializer.Deserialize<ExamplesRootConfiguration>(configuration);
 
             ExampleDescriptor? descriptor = options?.Examples?.Descriptors?.Where(x => (x.ProgramClass?.Contains(exampleName) ?? false) ||
-                                                                                            (x.Name?.Contains(exampleName) ?? false))
+                                                                                       (x.Name?.Contains(exampleName) ?? false))
                                                                                 .FirstOrDefault();
 
             return descriptor;
