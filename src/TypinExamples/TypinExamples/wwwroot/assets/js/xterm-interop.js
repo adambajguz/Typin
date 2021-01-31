@@ -4,10 +4,14 @@ xtermInterop.terminals = new Map();
 
 xtermInterop.initialize = function (id) {
     if (!xtermInterop.terminals.has(id)) {
+        Terminal.applyAddon(fit);
+
         const terminal = new Terminal();
+
         xtermInterop.terminals.set(id, terminal);
 
         terminal.open(document.getElementById(id));
+        terminal.fit();
 
         const shellprompt = '$ ';
         //terminal.on("data", (data) => {
