@@ -58,7 +58,9 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - DI injectable `ICliContext` with lots of useful data,
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
 - Custom help writer.
-- Custom modes support.
+- Custom modes support and application lifetime.
+- Startup message color personalization through a callback method.
+- Console IO wrapper classes (`StandardStreamReader` and `StandardStreamWriter`) and IO interfaces.
 - Logging with `Microsoft.Extensions.Logging`.
 - Optional option names by providing a kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
