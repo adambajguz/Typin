@@ -1,0 +1,42 @@
+﻿<header>
+    <div class="hero @(HeaderConfiguration.IsFullScreen ? "is-full-screen" : string.Empty)">
+        <div class="logo is-center is-vertical-align">
+            <div class="row is-center">
+                <div class="col-9-lg col-10-md col-11">
+                    <img src="@ApplicationConfiguration.LogoPath" alt="Logo">
+                </div>
+            </div>
+
+            @if (HeaderConfiguration.Heading is not null)
+            {
+                <div class="header-heading">@Markdown.ToHtml(HeaderConfiguration.Heading)</div>
+            }
+
+            @if (HeaderConfiguration.Subheading is not null)
+            {
+                <div class="header-subheading">@Markdown.ToHtml(HeaderConfiguration.SubheadingText)</div>
+            }
+        </div>
+
+        @if (HeaderConfiguration.Links is not null)
+        {
+            <nav class="tabs is-center is-full">
+                @foreach (LinkDefinition link in HeaderConfiguration.Links)
+                {
+                    <Link href="@link.Href" Title="@link.Title" IsExternal="@link.IsExternal" IsHtmlTitle="link.IsHtmlTitle" />
+                }
+            </nav>
+        }
+    </div>
+</header>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; init; } = default!;
+
+    [Inject] private IOptions<ApplicationConfiguration> _ApplicationConfiguration { get; init; } = default!;
+    private ApplicationConfiguration ApplicationConfiguration => _ApplicationConfiguration.Value;
+
+    [Inject] private IOptions<HeaderConfiguration> _HeaderConfiguration { get; init; } = default!;
+    private HeaderConfiguration HeaderConfiguration => _HeaderConfiguration.Value;
+}

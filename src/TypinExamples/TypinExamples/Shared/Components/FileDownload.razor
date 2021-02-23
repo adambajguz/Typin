@@ -1,0 +1,55 @@
+﻿@using System.IO
+
+<button data-uri="@(FilePath ?? string.Empty)" @attributes=AllOtherAttributes @onclick="DownloadFile">
+    @ChildContent
+</button>
+
+@code{
+    [Parameter]
+    public string? FilePath { get; init; }
+
+    [Parameter]
+    public string? FileName { get; init; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AllOtherAttributes { get; init; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+
+    [Inject] private IBlazorDownloadFileService DownloadFileService { get; init; } = default!;
+    [Inject] private HttpClient HttpClient { get; init; } = default!;
+    [Inject] private ILogger<FileDownload> Logger { get; init; } = default!;
+
+    private async Task DownloadFile()
+    {
+        if (string.IsNullOrWhiteSpace(FilePath))
+        {
+            Logger.LogError($"Invalid download file - {nameof(FilePath)} {{FilePath}} not set.", FilePath);
+            return;
+        }
+
+        string filename = FileName ?? Path.GetFileName(FilePath);
+        HttpResponseMessage response = await HttpClient.GetAsync(FilePath);
+
+        if (response.IsSuccessStatusCode)
+        {
+            byte[] file = await response.Content.ReadAsByteArrayAsync();
+
+            var result = await DownloadFileService.DownloadFile(filename, file, contentType: "application/octet-stream");
+
+            if (result.Succeeded)
+            {
+                Logger.LogDebug("Successfully downloaded file {File}.", FilePath);
+            }
+            else
+            {
+                Logger.LogError("Error while downloading file {File} {ErrorName} {ErrorMessage}", FilePath, result.ErrorName, result.ErrorMessage);
+            }
+        }
+        else
+        {
+            Logger.LogError("Failed to download file {File}.", FilePath);
+        }
+    }
+}

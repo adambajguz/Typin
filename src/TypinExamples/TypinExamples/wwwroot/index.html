@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TypinExamples</title>
+    <base href="/" />
+
+    <link href="manifest.json" rel="manifest" />
+
+    <link rel="shortcut icon" href="assets/images/typin-icon/typin-favicon-512px.png">
+    <link rel="icon" type="image/png" href="assets/images/typin-icon/typin-favicon-512px.png" sizes="512x512">
+    <link rel="apple-touch-icon" sizes="512x512" href="assets/images/typin-icon/typin-favicon-512px.png">
+
+    <link href="assets/css/c-blazor-error-ui.css" rel="stylesheet" />
+    <link href="assets/css/styles.css" rel="stylesheet" />
+    <link href="_content/Blazored.Toast/blazored-toast.min.css" rel="stylesheet" />
+</head>
+
+<body id="body" class="dark">
+    <app>
+        <header class="container">
+            <div class="hero is-full-screen">
+                <div class="logo is-center is-vertical-align">
+
+                    <div class="wave-loader">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+
+                    <div class="row is-center">
+                        <div class="col-3">
+                            <img class="img-zoom-in-out" src="./assets/images/typin-icon/typin-favicon-no-bg-256px.png" alt="Icon">
+                        </div>
+                    </div>
+
+                    <div class="row is-center">
+                        <div class="col" style="max-width: 50%;">
+                            <progress id="blazor-boot-bar" class="top" value="0" max="8"></progress>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+    </app>
+
+    <div class="c-blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <!--<script src="_framework/blazor.webassembly.js"></script>-->
+    <script src="assets/js/customBlazorLoader.js"></script>
+
+    <script src="assets/libraries/xterm/xterm.min.js" defer></script>
+    <script src="assets/libraries/xterm/addons/fit/fit.min.js" defer></script>
+    <script src="assets/libraries/monaco-editor/min/vs/loader.js" defer></script>
+    <script src="assets/js/js-extensions.js" defer></script>
+    <script src="assets/js/monaco-editor-interop.js" defer></script>
+    <script src="assets/js/xterm-interop.js" defer></script>
+
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+﻿@inherits LayoutComponentBase
+
+@using Blazored.Toast.Configuration
+
+<BlazoredToasts Position="ToastPosition.TopLeft"
+                IconType="IconType.FontAwesome"
+                Timeout="(ApplicationConfiguration.ToastDuration > 1 ? ApplicationConfiguration.ToastDuration : 5)"
+                ShowProgressBar="true"
+                InfoClass="bg-accent"
+                SuccessClass="bg-primary"
+                ErrorClass="bg-error"
+                WarningClass="bg-warning"
+                RemoveToastsOnNavigation="true" />
+
+@*
+    InfoIcon="fas fa-info fa-xs"
+    SuccessIcon="fas fa-check fa-xs"
+    ErrorIcon="fas fa-bug fa-xs"
+    WarningIcon="fas fa-exclamation fa-xs"
+*@
+
+<div class="container container-bg">
+    <PageHeader />
+
+    <main>
+        @Body
+    </main>
+</div>
+
+<PageFooter />
+<TopScroller />
+
+@code
+{
+    [Inject] private IToastService ToastService { get; init; } = default!;
+
+    [Inject] private IOptions<ApplicationConfiguration> _ApplicationConfiguration { get; init; } = default!;
+    private ApplicationConfiguration ApplicationConfiguration => _ApplicationConfiguration.Value;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            RenderFragment message = @<text><span>Welcome to TypinExamples</span> <NavLinkExtended href="example/hello-world" class="button is-small primary text-uppercase">Start <i class="fas fa-caret-right"></i></NavLinkExtended></text>;
+
+            ToastService.ShowInfo(message, "Hello, World!");
+        }
+    }
+}

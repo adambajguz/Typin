@@ -1,8 +1,9 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
 
@@ -10,7 +11,7 @@
     public class DefaultCommand : ICommand
     {
         [CommandParameter(0)]
-        public IReadOnlyList<string> Values { get; set; } = default!;
+        public IReadOnlyList<string> Values { get; init; } = default!;
 
         public DefaultCommand()
         {
@@ -19,11 +20,10 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            console.WithForegroundColor(ConsoleColor.DarkGreen, () => console.Output.WriteLine("Hello world from default command"));
+            console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
+
             foreach (var value in Values)
-            {
                 console.Output.WriteLine(value);
-            }
 
             return default;
         }

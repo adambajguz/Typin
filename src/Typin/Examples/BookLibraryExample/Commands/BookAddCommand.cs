@@ -17,16 +17,16 @@
         private readonly LibraryService _libraryService;
 
         [CommandParameter(0, Name = "title", Description = "Book title.")]
-        public string Title { get; set; } = "";
+        public string Title { get; init; } = "";
 
         [CommandOption("author", 'a', IsRequired = true, Description = "Book author.")]
-        public string Author { get; set; } = "";
+        public string Author { get; init; } = "";
 
         [CommandOption("published", 'p', Description = "Book publish date.")]
-        public DateTimeOffset Published { get; set; } = CreateRandomDate();
+        public DateTimeOffset Published { get; init; } = CreateRandomDate();
 
         [CommandOption("isbn", 'n', Description = "Book ISBN.")]
-        public Isbn Isbn { get; set; } = CreateRandomIsbn();
+        public Isbn Isbn { get; init; } = CreateRandomIsbn();
 
         public BookAddCommand(LibraryService libraryService)
         {
@@ -38,7 +38,7 @@
             if (_libraryService.GetBook(Title) != null)
                 throw new CommandException("Book already exists.", 1);
 
-            var book = new Book(Title, Author, Published, Isbn);
+            Book book = new(Title, Author, Published, Isbn);
             _libraryService.AddBook(book);
 
             console.Output.WriteLine("Book added.");

@@ -1,9 +1,10 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Utilities;
@@ -20,14 +21,14 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            DebugPrintServices(console, _cliContext.Services);
+            DebugPrintServices(console, _cliContext.Configuration.Services);
 
             return default;
         }
 
-        private void DebugPrintServices(IConsole console, IEnumerable<ServiceDescriptor> serviceDescriptors)
+        private static void DebugPrintServices(IConsole console, IEnumerable<ServiceDescriptor> serviceDescriptors)
         {
-            TableUtils.Write(console,
+            TableUtils.Write(console.Output,
                              serviceDescriptors.OrderBy(x => x.Lifetime)
                                                .ThenBy(x => x.ServiceType.Name)
                                                .ThenBy(x => x.ImplementationType?.Name)

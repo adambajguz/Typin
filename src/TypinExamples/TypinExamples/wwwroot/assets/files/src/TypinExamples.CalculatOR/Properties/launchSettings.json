@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TypinExamples.CalculatOR": {
+      "commandName": "Project",
+      "commandLineArgs": "add 12 12"
+    }
+  }
+}

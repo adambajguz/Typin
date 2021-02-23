@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Typin.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <Authors>$(Company)</Authors>
-    <Copyright>
-      Copyright for portions of project Typin are held by Alexey Golub, 2019-2020 as a part of project CliFx.
-      All other copyright for project Typin are held by Adam Bajguz, 2020.
-    </Copyright>
     <Description>Declarative framework for interactive CLI applications</Description>
     <PackageTags>command line executable interactive interface framework parser arguments net core terminal shell console</PackageTags>
     <PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
@@ -20,13 +15,8 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CopyAnalyzerToPackage</TargetsForTfmSpecificContentInPackage>
-    <Platforms>AnyCPU;x64;x86</Platforms>
-  </PropertyGroup>
-
-  <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <Nullable>annotations</Nullable>
+    <RootNamespace>Typin</RootNamespace>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,26 +29,28 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="[5.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="[5.0,]" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[3.0,]" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="[3.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="[3.0,]" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
-  <!-- The following item group and target ensure that the analyzer project is copied into the output NuGet package -->
   <ItemGroup>
-    <ProjectReference Include="..\Typin.Analyzers\Typin.Analyzers.csproj" ReferenceOutputAssembly="true" IncludeAssets="Typin.Analyzers.dll" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <Target Name="CopyAnalyzerToPackage">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutDir)/Typin.Analyzers.dll" PackagePath="analyzers/dotnet/cs" BuildAction="none" />
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
+  </ItemGroup>
 
 </Project>

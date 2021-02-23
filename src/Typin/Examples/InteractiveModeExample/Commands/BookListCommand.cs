@@ -1,9 +1,10 @@
-﻿namespace Typin.InteractiveModeDemo.Commands
+﻿namespace InteractiveModeExample.Commands
 {
     using System;
     using System.Threading.Tasks;
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
+    using Typin;
     using Typin.Attributes;
     using Typin.Console;
 
@@ -34,7 +35,7 @@
             }
 
             if (isFirst)
-                console.WithForegroundColor(ConsoleColor.Red, () => console.Output.WriteLine("No books"));
+                console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No books"));
 
             return default;
         }

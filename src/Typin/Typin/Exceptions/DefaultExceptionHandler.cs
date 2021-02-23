@@ -1,52 +1,66 @@
-﻿namespace Typin.Exceptions
+namespace Typin.Exceptions
 {
     using System;
     using Typin.Console;
-    using Typin.HelpWriter;
+    using Typin.Help;
 
     /// <summary>
     /// Implementation of <see cref="ICliExceptionHandler"/> that prints all exceptions to console.
     /// </summary>
     public class DefaultExceptionHandler : ICliExceptionHandler
     {
-        /// <inheritdoc/>
-        public void HandleTypinException(ICliContext context, TypinException ex)
-        {
-            WriteError(context.Console, ex.ToString());
+        private readonly IConsole _console;
+        private readonly IServiceProvider _serviceProvider;
 
-            //PrintHelp(context);
+        /// <summary>
+        /// Initializes an instance of <see cref="DefaultExceptionHandler"/>.
+        /// </summary>
+        public DefaultExceptionHandler(IConsole console, IServiceProvider serviceProvider)
+        {
+            _console = console;
+            _serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc/>
-        public void HandleDirectiveException(ICliContext context, DirectiveException ex)
+        public bool HandleException(Exception ex)
         {
-            WriteError(context.Console, ex.ToString());
-            context.Console.Error.WriteLine();
+            IConsole console = _console;
 
-            if (ex.ShowHelp)
-                PrintHelp(context);
-        }
+            switch (ex)
+            {
+                // Swallow directive exceptions and route them to the console
+                case CommandException cx:
+                    {
+                        WriteError(console, cx.Message);
 
-        /// <inheritdoc/>
-        public void HandleCommandException(ICliContext context, CommandException ex)
-        {
-            WriteError(context.Console, ex.ToString());
-            context.Console.Error.WriteLine();
+                        if (cx.ShowHelp)
+                        {
+                            (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
+                    }
+                    return true;
 
-            if (ex.ShowHelp)
-                PrintHelp(context);
-        }
+                // Swallow command exceptions and route them to the console
+                case DirectiveException dx:
+                    {
+                        WriteError(console, dx.Message);
 
-        /// <inheritdoc/>
-        public void HandleException(ICliContext context, Exception ex)
-        {
-            IConsole console = context.Console;
+                        if (dx.ShowHelp)
+                        {
+                            (_serviceProvider.GetService(typeof(IHelpWriter)) as IHelpWriter)?.Write();
+                        }
+                    }
+                    return true;
 
-            WriteFatalError(console, $"Fatal error occured in {context.Metadata.ExecutableName}.");
+                // This may throw exceptions which are useful only to the end-user
+                case TypinException tx:
+                    WriteError(console, tx.Message);
 
-            console.Error.WriteLine();
-            WriteFatalError(console, ex.ToString());
-            console.Error.WriteLine();
+                    return true;
+
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -54,21 +68,8 @@
         /// </summary>
         private static void WriteError(IConsole console, string message)
         {
-            console.WithForegroundColor(ConsoleColor.Red, () => console.Error.WriteLine(message));
-        }
-
-        /// <summary>
-        /// Write a fataal error message to the console.
-        /// </summary>
-        private static void WriteFatalError(IConsole console, string message)
-        {
-            console.WithForegroundColor(ConsoleColor.DarkRed, () => console.Error.WriteLine(message));
-        }
-
-        private static void PrintHelp(ICliContext context)
-        {
-            IHelpWriter helpTextWriter = new DefaultHelpWriter(context);
-            helpTextWriter.Write();
+            console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine(message));
+            console.Error.WriteLine();
         }
     }
 }

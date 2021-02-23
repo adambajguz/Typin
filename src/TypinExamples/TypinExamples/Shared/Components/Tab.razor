@@ -1,0 +1,28 @@
+<div class="@(Parent?.Active == this ? string.Empty : "is-hidden")">
+    @ChildContent
+</div>
+
+@code
+{
+    [CascadingParameter]
+    private TabContainer? Parent { get; init; }
+
+    [Parameter]
+    public RenderFragment? TabContent { get; init; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+
+    [Parameter]
+    public string Text { get; init; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        if (Parent is null)
+            throw new ArgumentNullException(nameof(Parent), $"{nameof(Tab)} must exist within a {nameof(TabContainer)}.");
+
+        base.OnInitialized();
+
+        Parent.AddTab(this);
+    }
+}

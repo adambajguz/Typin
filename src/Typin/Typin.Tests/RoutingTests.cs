@@ -3,8 +3,8 @@
     using System;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Console;
     using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -21,219 +21,171 @@
         public async Task Default_command_is_executed_if_provided_arguments_do_not_match_any_named_command()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(Array.Empty<string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(DefaultCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Specific_named_command_is_executed_if_provided_arguments_match_its_name()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "named" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Specific_named_sub_command_is_executed_if_provided_arguments_match_its_name()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "named", "sub" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be(NamedSubCommand.ExpectedOutputText);
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Help_text_is_printed_if_no_arguments_were_provided_and_default_command_is_not_defined()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
                 .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .UseDescription("This will be visible in help")
-                .Build();
+                .UseDescription("This will be visible in help");
 
             // Act
-            int exitCode = await application.RunAsync(Array.Empty<string>());
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Help_text_is_printed_if_provided_arguments_contain_the_help_option()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll(
-                "Default command description",
-                "Usage"
-            );
-
-            _output.WriteLine(stdOut.GetString());
+            stdOut.GetString().Should().ContainAll("Default command description", "Usage".ToUpperInvariant());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Help_text_is_printed_if_provided_arguments_contain_the_help_option_even_if_default_command_is_not_defined()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
                 .AddCommand<NamedSubCommand>()
-                .UseDescription("This will be visible in help")
-                .UseConsole(console)
-                .Build();
+                .UseDescription("This will be visible in help");
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Help_text_for_a_specific_named_command_is_printed_if_provided_arguments_match_its_name_and_contain_the_help_option()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "named", "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named command description",
-                "Usage",
+                "Usage".ToUpperInvariant(),
                 "named"
             );
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Help_text_for_a_specific_named_sub_command_is_printed_if_provided_arguments_match_its_name_and_contain_the_help_option()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
-                .AddCommand<NamedSubCommand>()
-                .UseConsole(console)
-                .Build();
+                .AddCommand<NamedSubCommand>();
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "named", "sub", "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub", "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named sub command description",
-                "Usage",
+                "Usage".ToUpperInvariant(),
                 "named", "sub"
             );
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
         public async Task Version_is_printed_if_the_only_provided_argument_is_the_version_option()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
-
-            var application = new CliApplicationBuilder()
+            var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedCommand>()
                 .AddCommand<NamedSubCommand>()
-                .UseVersionText("v6.9")
-                .UseConsole(console)
-                .Build();
+                .UseVersionText("v6.9");
 
             // Act
-            int exitCode = await application.RunAsync(new[] { "--version" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--version" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Trim().Should().Be("v6.9");
-
-            _output.WriteLine(stdOut.GetString());
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }

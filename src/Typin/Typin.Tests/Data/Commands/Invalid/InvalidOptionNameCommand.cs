@@ -7,9 +7,9 @@
     public class InvalidOptionNameCommand : SelfSerializeCommandBase
     {
         [CommandOption("1a")]
-        public string? Apples { get; set; }
+        public string? Apples { get; init; }
 
         [CommandOption("1", 'c')]
-        public string? Oranges { get; set; }
+        public string? Oranges { get; init; }
     }
 }

@@ -4,6 +4,9 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks;
+    using Typin.Console.IO;
+    using Typin.Extensions;
 
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
@@ -14,22 +17,13 @@
         private bool disposedValue;
 
         /// <inheritdoc />
-        public StreamReader Input { get; }
+        public StandardStreamReader Input { get; }
 
         /// <inheritdoc />
-        public bool IsInputRedirected => Console.IsInputRedirected;
+        public StandardStreamWriter Output { get; }
 
         /// <inheritdoc />
-        public StreamWriter Output { get; }
-
-        /// <inheritdoc />
-        public bool IsOutputRedirected => Console.IsOutputRedirected;
-
-        /// <inheritdoc />
-        public StreamWriter Error { get; }
-
-        /// <inheritdoc />
-        public bool IsErrorRedirected => Console.IsErrorRedirected;
+        public StandardStreamWriter Error { get; }
 
         /// <inheritdoc />
         public ConsoleColor ForegroundColor
@@ -51,9 +45,9 @@
         /// </summary>
         public SystemConsole()
         {
-            Input = WrapInput(Console.OpenStandardInput());
-            Output = WrapOutput(Console.OpenStandardOutput());
-            Error = WrapOutput(Console.OpenStandardError());
+            Input = WrapInput(this, Console.OpenStandardInput(), Console.IsInputRedirected);
+            Output = WrapOutput(this, Console.OpenStandardOutput(), Console.IsOutputRedirected);
+            Error = WrapOutput(this, Console.OpenStandardError(), Console.IsErrorRedirected);
         }
         #endregion
 
@@ -88,6 +82,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int WindowWidth
         {
             get => Console.WindowWidth;
@@ -96,6 +91,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int WindowHeight
         {
             get => Console.WindowHeight;
@@ -104,6 +100,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int BufferWidth
         {
             get => Console.BufferWidth;
@@ -112,6 +109,7 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public int BufferHeight
         {
             get => Console.BufferHeight;
@@ -126,7 +124,7 @@
 
             /* ====================================================================================================================
              *
-             *  This methods must  use local variable, because removing cts and using _cancellationTokenSource
+             *  This methods must use local variable, because removing cts and using _cancellationTokenSource
              *  would lead to very high RAM usage when many CliApplication were created in single process e.g. in benchmarks.
              *
              *  (Memory leak? - this needs further investigation)
@@ -181,8 +179,42 @@
         [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
+            //TODO: fix enter and maybe other
+            if (Input.IsRedirected)
+            {
+                int v = -1;
+                while (v < 0)
+                {
+                    v = Input.Read();
+                }
+
+                return ((char)v).ToConsoleKeyInfo();
+            }
+
             return Console.ReadKey(intercept);
-            //return Task.Run(() => Console.ReadKey(intercept)).Result;
+        }
+
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        {
+            char[] charsRead = new char[1];
+
+            //TODO: fix enter and maybe other
+            if (Input.IsRedirected)
+            {
+                int v = -1;
+                while (v < 0)
+                {
+                    v = await Input.ReadAsync(charsRead, 0, 1);
+                }
+
+                return (charsRead[0]).ToConsoleKeyInfo();
+            }
+
+            ConsoleKeyInfo consoleKey = await Task.Run(() => Console.ReadKey(intercept));
+
+            return consoleKey;
         }
 
         /// <summary>
@@ -212,20 +244,20 @@
         }
 
         #region Helpers
-        private static StreamReader WrapInput(Stream? stream)
+        private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamReader.Null;
+                return StandardStreamReader.CreateNull(console);
 
-            return new StreamReader(Stream.Synchronized(stream), Console.InputEncoding, false);
+            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
 
-        private static StreamWriter WrapOutput(Stream? stream)
+        private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
-                return StreamWriter.Null;
+                return StandardStreamWriter.CreateNull(console);
 
-            return new StreamWriter(Stream.Synchronized(stream), Console.OutputEncoding)
+            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {
                 AutoFlush = true
             };

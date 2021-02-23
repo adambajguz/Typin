@@ -8,17 +8,19 @@
 
     internal static class TypeExtensions
     {
-        public static bool Implements(this Type type, Type interfaceType)
+        public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
         {
-            return type.GetInterfaces().Contains(interfaceType);
+            return property != null && property.PropertyType != typeof(string)
+                       ? property.PropertyType.TryGetEnumerableUnderlyingType()
+                       : null;
         }
 
-        public static Type? GetNullableUnderlyingType(this Type type)
+        public static Type? TryGetNullableUnderlyingType(this Type type)
         {
             return Nullable.GetUnderlyingType(type);
         }
 
-        public static Type? GetEnumerableUnderlyingType(this Type type)
+        public static Type? TryGetEnumerableUnderlyingType(this Type type)
         {
             if (type.IsPrimitive)
                 return null;
@@ -30,7 +32,7 @@
                 return type.GetGenericArguments().FirstOrDefault();
 
             return type.GetInterfaces()
-                       .Select(GetEnumerableUnderlyingType)
+                       .Select(TryGetEnumerableUnderlyingType)
                        .Where(t => t != null)
                        .OrderByDescending(t => t != typeof(object)) // prioritize more specific types
                        .FirstOrDefault();
@@ -38,7 +40,8 @@
 
         public static MethodInfo GetToStringMethod(this Type type)
         {
-            return type.GetMethod(nameof(ToString), Type.EmptyTypes);
+            // ToString() with no params always exists
+            return type.GetMethod(nameof(ToString), Type.EmptyTypes)!;
         }
 
         public static bool IsToStringOverriden(this Type type)
@@ -46,7 +49,7 @@
             return type.GetToStringMethod() != typeof(object).GetToStringMethod();
         }
 
-        public static MethodInfo GetStaticParseMethod(this Type type, bool withFormatProvider = false)
+        public static MethodInfo? TryGetStaticParseMethod(this Type type, bool withFormatProvider = false)
         {
             Type[] argumentTypes = withFormatProvider
                 ? new[] { typeof(string), typeof(IFormatProvider) }

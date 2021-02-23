@@ -7,9 +7,9 @@
     public class WithSingleRequiredOptionCommand : SelfSerializeCommandBase
     {
         [CommandOption("opt-a")]
-        public string? OptA { get; set; }
+        public string? OptA { get; init; }
 
         [CommandOption("opt-b", IsRequired = true)]
-        public string? OptB { get; set; }
+        public string? OptB { get; init; }
     }
 }

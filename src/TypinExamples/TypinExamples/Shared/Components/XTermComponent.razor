@@ -1,0 +1,18 @@
+<div data-example-key="@ExampleKey">
+    @if (!IsInitialized)
+    {
+        <div class="row">
+            <div class="col">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <WaveLoader IsAlternativeColor="true" />
+            </div>
+        </div>
+    }
+
+    @*<div class="@(IsInitialized ? string.Empty : "is-hidden")">*@
+        <div id="@Id" @attributes="InputAttributes" style="height: 55vh; min-height: 400px;"></div>
+    @*</div>*@
+</div>

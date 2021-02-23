@@ -8,12 +8,12 @@
     public class WithParametersCommand : SelfSerializeCommandBase
     {
         [CommandParameter(0)]
-        public string? ParamA { get; set; }
+        public string? ParamA { get; init; }
 
         [CommandParameter(1)]
-        public int? ParamB { get; set; }
+        public int? ParamB { get; init; }
 
         [CommandParameter(2)]
-        public IReadOnlyList<string>? ParamC { get; set; }
+        public IReadOnlyList<string>? ParamC { get; init; }
     }
 }

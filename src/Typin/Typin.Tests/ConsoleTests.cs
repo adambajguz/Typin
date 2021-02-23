@@ -1,16 +1,28 @@
 ﻿namespace Typin.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using CliWrap;
     using CliWrap.Buffered;
     using FluentAssertions;
     using Typin.Console;
+    using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Data.Console;
+    using Typin.Tests.Extensions;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class ConsoleTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public ConsoleTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public async Task Real_implementation_of_console_maps_directly_to_system_console()
         {
@@ -86,12 +98,56 @@
             console.Output.Should().NotBeSameAs(Console.Out);
             console.Error.Should().NotBeSameAs(Console.Error);
 
-            console.IsInputRedirected.Should().BeTrue();
-            console.IsOutputRedirected.Should().BeTrue();
-            console.IsErrorRedirected.Should().BeTrue();
+            console.Input.IsRedirected.Should().BeTrue();
+            console.Output.IsRedirected.Should().BeTrue();
+            console.Error.IsRedirected.Should().BeTrue();
 
             console.ForegroundColor.Should().NotBe(Console.ForegroundColor);
             console.BackgroundColor.Should().NotBe(Console.BackgroundColor);
+        }
+
+        [Fact]
+        public async Task Console_color_extensions_should_work()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommand<WithColorsCommand>();
+
+            var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
+
+            CliApplication application = builder.UseConsole(console)
+                                                .Build();
+
+            int exitCode = await application.RunAsync("colors", new Dictionary<string, string>());
+
+            _output.WriteLine("Exit Code: {0}", exitCode);
+            _output.Print(stdOut, stdErr);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().Contain(WithColorsCommand.ExpectedOutputText);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task Console_color_extensions_should_work_after_colors_reset()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder().AddCommand<WithColorsAndResetCommand>();
+
+            var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
+
+            CliApplication application = builder.UseConsole(console)
+                                                .Build();
+
+            int exitCode = await application.RunAsync("colors-with-reset", new Dictionary<string, string>());
+
+            _output.WriteLine("Exit Code: {0}", exitCode);
+            _output.Print(stdOut, stdErr);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().Contain(WithColorsAndResetCommand.ExpectedOutputText);
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
     }
 }

@@ -2,10 +2,13 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
-    using Typin.Console;
+    using Typin.Input;
     using Typin.Internal.Extensions;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to ommit specified command name(s).
@@ -26,37 +29,47 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", InteractiveModeOnly = true)]
-    public sealed class ScopeDirective : IDirective
+    [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
+    public sealed class ScopeDirective : IPipelinedDirective
     {
-        private readonly CliContext _cliContext;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
+        private readonly InteractiveModeOptions _options;
+        private readonly ICliContext _cliContext;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(ICliContext cliContext)
+        public ScopeDirective(IOptions<InteractiveModeOptions> options, ICliContext cliContext)
         {
-            _cliContext = (CliContext)cliContext;
+            _options = options.Value;
+            _cliContext = cliContext;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
 
             if (name != null)
-                _cliContext.Scope = name;
+            {
+                _options.Scope = name;
+                context.ExitCode ??= ExitCodes.Success;
+            }
 
             return default;
         }
 
         private string? GetFallbackCommandName()
         {
-            string potentialName = _cliContext.Input.Arguments.Skip(_cliContext.Input.Directives.Count)
-                                                              .JoinToString(' ');
+            CommandInput input = _cliContext.Input;
+
+            string potentialName = input.Arguments.Skip(input.Directives.Count)
+                                                  .JoinToString(' ');
 
             if (_cliContext.RootSchema.IsCommandOrSubcommandPart(potentialName))
                 return potentialName;

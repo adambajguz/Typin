@@ -1,9 +1,11 @@
 ﻿namespace Typin.Directives
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
-    using Typin.Console;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode, this [..] directive can be used to reset current scope to default (global scope).
@@ -15,26 +17,30 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", InteractiveModeOnly = true)]
-    public sealed class ScopeResetDirective : IDirective
+    [Directive(BuiltInDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
+    public sealed class ScopeResetDirective : IPipelinedDirective
     {
-        private readonly CliContext _cliContext;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
+        private readonly InteractiveModeOptions _options;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeResetDirective"/>.
         /// </summary>
-        public ScopeResetDirective(ICliContext cliContext)
+        public ScopeResetDirective(IOptions<InteractiveModeOptions> options)
         {
-            _cliContext = (CliContext)cliContext;
+            _options = options.Value;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
         {
-            _cliContext.Scope = string.Empty;
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        {
+            _options.Scope = string.Empty;
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

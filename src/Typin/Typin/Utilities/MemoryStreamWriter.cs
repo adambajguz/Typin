@@ -2,53 +2,56 @@
 {
     using System.IO;
     using System.Text;
+    using Typin.Console;
 
-    namespace CliFx.Utilities
+    /// <summary>
+    /// Wrapper over a <see cref="MemoryStream"/> for <see cref="VirtualConsole"/>.
+    /// </summary>
+    public class MemoryStreamWriter
     {
         /// <summary>
-        /// Implementation of <see cref="StreamWriter"/> with a <see cref="MemoryStream"/> as a backing store.
+        /// Gets the stream that interfaces with a backing store.
         /// </summary>
-        public class MemoryStreamWriter : StreamWriter
+        public MemoryStream Stream { get; } = new MemoryStream();
+
+        /// <summary>
+        /// Gets the stream that interfaces with a backing store.
+        /// </summary>
+        public Encoding Encoding { get; }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
+        /// </summary>
+        public MemoryStreamWriter(Encoding encoding)
         {
-            /// <summary>
-            /// Gets the underlying stream that interfaces with a backing store.
-            /// </summary>
-            private new MemoryStream BaseStream => (MemoryStream)base.BaseStream;
+            Encoding = encoding;
+        }
 
-            /// <summary>
-            /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
-            /// </summary>
-            public MemoryStreamWriter(Encoding encoding)
-                : base(new MemoryStream(), encoding)
-            {
+        /// <summary>
+        /// Gets the bytes written to the underlying stream.
+        /// </summary>
+        public byte[] GetBytes()
+        {
+            Stream.Flush();
+            return Stream.ToArray();
+        }
 
-            }
+        /// <summary>
+        /// Gets the string written to the underlying stream.
+        /// </summary>
+        public string GetString()
+        {
+            byte[] bytes = GetBytes();
+            return Encoding.GetString(bytes);
+        }
 
-            /// <summary>
-            /// Initializes an instance of <see cref="MemoryStreamWriter"/>.
-            /// </summary>
-            public MemoryStreamWriter()
-                : base(new MemoryStream())
-            {
-
-            }
-
-            /// <summary>
-            /// Gets the bytes written to the underlying stream.
-            /// </summary>
-            public byte[] GetBytes()
-            {
-                Flush();
-                return BaseStream.ToArray();
-            }
-
-            /// <summary>
-            /// Gets the string written to the underlying stream.
-            /// </summary>
-            public string GetString()
-            {
-                return Encoding.GetString(GetBytes());
-            }
+        /// <summary>
+        /// Gets the string written to the underlying stream.
+        /// </summary>
+        public string GetString(Encoding encoding)
+        {
+            byte[] bytes = GetBytes();
+            return encoding.GetString(bytes);
         }
     }
 }

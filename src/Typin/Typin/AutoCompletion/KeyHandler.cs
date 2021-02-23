@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Typin.Console;
 
     internal sealed class KeyHandler
@@ -34,47 +35,50 @@
         /// <summary>
         /// Handles key input.
         /// </summary>
-        public void ReadKey()
+        public async Task ReadKeyAsync()
         {
-            ConsoleKeyInfo keyInfo = _console.ReadKey(true);
+            ConsoleKeyInfo keyInfo = await _console.ReadKeyAsync(true);
 
-            ReadKey(keyInfo);
+            await ReadKeyAsync(keyInfo);
         }
 
         /// <summary>
         /// Handles key input.
         /// </summary>
-        public void ReadKey(ConsoleKeyInfo keyInfo)
+        public async Task ReadKeyAsync(ConsoleKeyInfo keyInfo)
         {
-            ConsoleModifiers modifiers = keyInfo.Modifiers;
-            if (keyInfo.Key == ConsoleKey.Enter && modifiers == 0)
+            await Task.Run(() =>
             {
-                NewLineDetected?.Invoke();
-                InputModified?.Invoke();
+                ConsoleModifiers modifiers = keyInfo.Modifiers;
+                if (keyInfo.Key == ConsoleKey.Enter && modifiers == 0)
+                {
+                    NewLineDetected?.Invoke();
+                    InputModified?.Invoke();
 
-                return;
-            }
+                    return;
+                }
 
-            bool inputModified = false;
-            var input = new ShortcutDefinition(keyInfo.Key, keyInfo.Modifiers, () => { });
-            if (_shortcuts.TryGetValue(input, out ShortcutDefinition shortcutDefinition))
-            {
-                shortcutDefinition.Action.Invoke();
-                inputModified = shortcutDefinition.ModifiesInput;
-            }
-            else if (modifiers.HasFlag(ConsoleModifiers.Control) && !modifiers.HasFlag(ConsoleModifiers.Alt))
-            {
-                UnhandledControlSequenceDetected?.Invoke(ref keyInfo);
-                inputModified = true; //TODO refactor - this should not be there - having a KeyHandler instaed of only line handler is problematic
-            }
-            else
-            {
-                UnhandledKeyDetected?.Invoke(ref keyInfo);
-                inputModified = true; //TODO refactor - this should not be there
-            }
+                bool inputModified = false;
+                var input = new ShortcutDefinition(keyInfo.Key, keyInfo.Modifiers, () => { });
+                if (_shortcuts.TryGetValue(input, out ShortcutDefinition shortcutDefinition))
+                {
+                    shortcutDefinition.Action.Invoke();
+                    inputModified = shortcutDefinition.ModifiesInput;
+                }
+                else if (modifiers.HasFlag(ConsoleModifiers.Control) && !modifiers.HasFlag(ConsoleModifiers.Alt))
+                {
+                    UnhandledControlSequenceDetected?.Invoke(ref keyInfo);
+                    inputModified = true; //TODO: refactor - this should not be there - having a KeyHandler instaed of only line handler is problematic
+                }
+                else
+                {
+                    UnhandledKeyDetected?.Invoke(ref keyInfo);
+                    inputModified = true; //TODO: refactor - this should not be there
+                }
 
-            if (inputModified)
-                InputModified?.Invoke();
+                if (inputModified)
+                    InputModified?.Invoke();
+            });
         }
     }
 }

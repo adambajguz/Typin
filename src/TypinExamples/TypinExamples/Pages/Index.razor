@@ -1,0 +1,32 @@
+﻿@page "/"
+
+<section>
+    @if (ApplicationConfiguration.Description is not null)
+    {
+        <div class="row">
+            <div class="col">
+                @Markdown.ToHtml(ApplicationConfiguration.DescriptionText)
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col">
+            <h1>Available examples</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <ExamplesList />
+        </div>
+    </div>
+</section>
+
+@code
+{
+    [Inject] private IMarkdownService Markdown { get; init; } = default!;
+
+    [Inject] private IOptions<ApplicationConfiguration> _ApplicationConfiguration { get; init; } = default!;
+    private ApplicationConfiguration ApplicationConfiguration => _ApplicationConfiguration.Value;
+}

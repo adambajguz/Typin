@@ -1,0 +1,47 @@
+﻿<div class="row">
+    <div class="col">
+    </div>
+</div>
+
+@if (!IsInitialized)
+{
+    <div class="row">
+        <div class="col">
+            <WaveLoader IsAlternativeColor="true" />
+        </div>
+    </div>
+}
+
+@if (SrcFiles is not null)
+{
+    <div class="row">
+        <div class="col">
+
+            <div class="pull-right">
+                <details class="dropdown">
+                    <summary class="button outline accent is-medium">File browser</summary>
+                    <div class="card bd-accent" style="z-index: 999; right: 0; left: unset; margin-top: 1rem;">
+                        @foreach (string file in SrcFiles)
+                        {
+                            <button class="button clear is-small" @onclick="() => ChangeFile(file)">@file</button>
+                            <br>
+                        }
+                    </div>
+                </details>
+
+                <button type="button" title="Toggle line numbers" class="button accent outline is-medium" @onclick="ToggleLineAsync">
+                    <i class="fas fa-list-ol"></i>
+                </button>
+            </div>
+
+
+        </div>
+    </div>
+
+}
+
+<div class="row">
+    <div class="col">
+        <div id="@EditorId" style="height: 50vh;"></div>
+    </div>
+</div>

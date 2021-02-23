@@ -18,10 +18,13 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0.102
+        dotnet-version: 5.0.103
 
     - name: Pack
       run: dotnet pack src/Typin/Typin.sln --configuration Release-CD
 
     - name: Deploy
       run: dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+
+    - name: Deploy
+      run: dotnet nuget push src/Typin/Typin.Core/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}

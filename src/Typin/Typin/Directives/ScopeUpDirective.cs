@@ -2,9 +2,11 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
     using Typin.Attributes;
-    using Typin.Console;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode, this [.] directive can be used to remove one command from the scope.
@@ -16,35 +18,37 @@
     /// </example>
     /// </summary>
     [ExcludeFromCodeCoverage]
-    [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", InteractiveModeOnly = true)]
-    public sealed class ScopeUpDirective : IDirective
+    [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
+    public sealed class ScopeUpDirective : IPipelinedDirective
     {
-        private readonly CliContext _cliContext;
-
-        /// <inheritdoc/>
-        public bool ContinueExecution => false;
+        private readonly InteractiveModeOptions _options;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeUpDirective"/>.
         /// </summary>
-        public ScopeUpDirective(ICliContext cliContext)
+        public ScopeUpDirective(IOptions<InteractiveModeOptions> options)
         {
-            _cliContext = (CliContext)cliContext;
+            _options = options.Value;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(IConsole console)
+        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        {
+            return default;
+        }
+
+        /// <inheritdoc/>
+        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             // Scope up
-            if (_cliContext.Input.HasDirective(BuiltInDirectives.ScopeUp))
-            {
-                string[] splittedScope = _cliContext.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                if (splittedScope.Length > 1)
-                    _cliContext.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
-                else if (splittedScope.Length == 1)
-                    _cliContext.Scope = string.Empty;
-            }
+            if (splittedScope.Length > 1)
+                _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
+            else if (splittedScope.Length == 1)
+                _options.Scope = string.Empty;
+
+            context.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

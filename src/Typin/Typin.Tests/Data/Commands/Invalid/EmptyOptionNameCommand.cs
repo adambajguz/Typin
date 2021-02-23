@@ -6,7 +6,19 @@
     [Command("cmd")]
     public class EmptyOptionNameCommand : SelfSerializeCommandBase
     {
-        [CommandOption("")]
-        public string? Apples { get; set; }
+        [CommandOption]
+        public string? Apples { get; init; }
+
+        [CommandOption]
+        public string? Blackberries { get; init; }
+
+        [CommandOption]
+        public string? WestIndianCherry { get; init; }
+
+        [CommandOption]
+        public string? CoconutMeat_Or_PitayaDragonfruit { get; init; }
+
+        [CommandOption]
+        public string? CoconutMeat_or_Pitaya { get; init; }
     }
 }

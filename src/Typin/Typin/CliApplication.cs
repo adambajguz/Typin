@@ -1,87 +1,105 @@
-﻿namespace Typin
+namespace Typin
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Typin.Console;
     using Typin.Exceptions;
-    using Typin.Input;
-    using Typin.Input.Resolvers;
     using Typin.Internal;
     using Typin.Schemas;
-    using Typin.Schemas.Resolvers;
+    using Typin.Utilities;
 
     /// <summary>
     /// Command line application facade.
     /// </summary>
-    public class CliApplication
+    public sealed class CliApplication
     {
-        /// <summary>
-        /// Service scope factory.
-        /// <remarks>
-        /// A scope is defined as a lifetime of a command execution pipeline that includes directives handling.
-        /// </remarks>
-        /// </summary>
-        protected IServiceScopeFactory ServiceScopeFactory { get; }
-
-        /// <summary>
-        /// Cli Context instance.
-        /// </summary>
-        protected CliContext CliContext { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         private readonly ApplicationMetadata _metadata;
-        private readonly ApplicationConfiguration _configuration;
         private readonly IConsole _console;
+        private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
+        private readonly CliApplicationLifetime _applicationLifetime;
+        private readonly EnvironmentVariablesAccessor _environmentVariablesAccessor;
+        private readonly ILogger _logger;
+        private readonly Action<ApplicationMetadata, IConsole>? _startupMessage;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplication"/>.
         /// </summary>
-        public CliApplication(IServiceProvider serviceProvider,
-                              CliContext cliContext)
+        internal CliApplication(IServiceProvider serviceProvider,
+                                IConsole console,
+                                EnvironmentVariablesAccessor environmentVariablesAccessor,
+                                ApplicationMetadata metadata,
+                                Action<ApplicationMetadata, IConsole>? startupMessage)
         {
-            ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+            _serviceProvider = serviceProvider;
 
-            CliContext = cliContext;
+            _environmentVariablesAccessor = environmentVariablesAccessor;
+            _metadata = metadata;
+            _startupMessage = startupMessage;
+            _console = console;
 
-            _metadata = cliContext.Metadata;
-            _configuration = cliContext.Configuration;
-            _console = cliContext.Console;
+            _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
+            _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
+            _rootSchemaAccessor = serviceProvider.GetRequiredService<IRootSchemaAccessor>();
+            _applicationLifetime = (CliApplicationLifetime)serviceProvider.GetRequiredService<ICliApplicationLifetime>();
         }
 
-        /// <summary>
-        /// Prints the startup message if availble.
-        /// </summary>
-        protected void PrintStartupMessage()
-        {
-            if (_metadata.StartupMessage is null)
-                return;
-
-            _console.WithForegroundColor(ConsoleColor.Blue, () => _console.Output.WriteLine(_metadata.StartupMessage));
-        }
-
-        #region Run
         /// <summary>
         /// Runs the application and returns the exit code.
         /// Command line arguments and environment variables are retrieved automatically.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
         public async ValueTask<int> RunAsync()
         {
             string line = Environment.CommandLine;
 
-            string[] commandLineArguments = CommandLineSplitter.Split(line)
-                                                               .Skip(1)
-                                                               .ToArray();
+            return await RunAsync(line, true);
+        }
+
+        /// <summary>
+        /// Runs the application with specified command line and returns the exit code.
+        /// Environment variables are retrieved automatically.
+        /// </summary>
+        /// <remarks>
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
+        /// </remarks>
+        public async ValueTask<int> RunAsync(string commandLine, bool containsExecutable = false)
+        {
+            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                                          .Skip(containsExecutable ? 1 : 0);
 
             return await RunAsync(commandLineArguments);
+        }
+
+        /// <summary>
+        /// Runs the application with specified command line and environment variables, and returns the exit code.
+        /// </summary>
+        /// <remarks>
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
+        /// </remarks>
+        public async ValueTask<int> RunAsync(string commandLine, IReadOnlyDictionary<string, string> environmentVariables, bool containsExecutable = false)
+        {
+            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine)
+                                                                          .Skip(containsExecutable ? 1 : 0);
+
+            return await RunAsync(commandLineArguments, environmentVariables);
         }
 
         /// <summary>
@@ -89,54 +107,76 @@
         /// Environment variables are retrieved automatically.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments)
+        public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments)
         {
             // Environment variable names are case-insensitive on Windows but are case-sensitive on Linux and macOS
             Dictionary<string, string> environmentVariables = Environment.GetEnvironmentVariables()
                                                                          .Cast<DictionaryEntry>()
                                                                          .ToDictionary(x => (string)x.Key,
-                                                                                       x => (string)x.Value,
+                                                                                       x => (x.Value as string) ?? string.Empty,
                                                                                        StringComparer.Ordinal);
 
             return await RunAsync(commandLineArguments, environmentVariables);
         }
 
+
         /// <summary>
         /// Runs the application with specified command line arguments and environment variables, and returns the exit code.
         /// </summary>
         /// <remarks>
-        /// If a <see cref="CommandException"/> or <see cref="TypinException"/> is thrown during command execution, it will be handled and routed to the console.
-        /// Additionally, if the debugger is not attached (i.e. the app is running in production), all other exceptions thrown within
-        /// this method will be handled and routed to the console as well.
+        /// If a <see cref="CommandException"/>, <see cref="DirectiveException"/>, or <see cref="TypinException"/> is thrown during command execution,
+        /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
+        /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        public async ValueTask<int> RunAsync(IReadOnlyList<string> commandLineArguments,
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+        public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {
             try
             {
+                _logger.LogInformation("Starting CLI application...");
                 _console.ResetColor();
-                _console.ForegroundColor = ConsoleColor.Gray;
 
-                CliContext.EnvironmentVariables = environmentVariables;
+                _environmentVariablesAccessor.EnvironmentVariables = environmentVariables;
 
-                PrintStartupMessage();
+                RootSchema rootSchema = _rootSchemaAccessor.RootSchema; //Force root schema to resolve. TODO: find a solution to enable lazy root schema resolving.
 
-                RootSchema root = new RootSchemaResolver(_configuration).Resolve();
-                CliContext.RootSchema = root;
+                //TODO: OnStart()
 
-                //TODO: when in commandLineArguments is a string.Empty application crashes
-                int exitCode = await ParseInput(commandLineArguments, root);
+                _startupMessage?.Invoke(_metadata, _console);
+
+                int exitCode = await StartAppAsync(commandLineArguments);
+
+                //TODO: OnStop()
+                _logger.LogInformation("CLI application stopped.");
 
                 return exitCode;
             }
             // This may throw pre-execution resolving exceptions which are useful only to the end-user
             catch (TypinException ex)
             {
-                _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
+                _logger.LogDebug(ex, $"{nameof(TypinException)} occured. Trying to find exception handler.");
+
+                IEnumerable<ICliExceptionHandler> exceptionHandlers = _serviceProvider.GetServices<ICliExceptionHandler>();
+                foreach (ICliExceptionHandler handler in exceptionHandlers)
+                {
+                    if (handler.HandleException(ex))
+                    {
+                        _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
+
+                        break;
+                    }
+                }
+
+                _logger.LogCritical(ex, "Unhandled Typin exception caused app to terminate.");
+
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Unhandled Typin exception caused app to terminate."));
+                _console.Error.WriteLine();
+                _console.Error.WriteException(ex);
 
                 return ExitCodes.FromException(ex);
             }
@@ -144,66 +184,41 @@
             // we handle all exceptions and route them to the console nicely.
             // However, we don't want to swallow unhandled exceptions when the debugger is attached,
             // because we still want the IDE to show them to the developer.
-            catch (Exception ex) when (!Debugger.IsAttached)
+            catch (Exception ex) //when (!Debugger.IsAttached)
             {
-                _configuration.ExceptionHandler.HandleException(CliContext, ex);
+                _logger.LogCritical(ex, "Unhandled exception caused app to terminate.");
+
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Fatal error occured in {_metadata.ExecutableName}."));
+                _console.Error.WriteLine();
+                _console.Error.WriteException(ex);
 
                 return ExitCodes.FromException(ex);
             }
         }
-        #endregion
 
-        #region Execute command
-        /// <summary>
-        /// Parses input before pipeline execution.
-        /// </summary>
-        protected virtual async Task<int> ParseInput(IReadOnlyList<string> commandLineArguments,
-                                                     RootSchema root)
+        private async Task<int> StartAppAsync(IEnumerable<string> commandLineArguments)
         {
-            //TODO: CommandInput.Parse as middleware step
-            CommandInput input = CommandInputResolver.Parse(commandLineArguments, root.GetCommandNames());
-            CliContext.Input = input;
+            _applicationLifetime.Initialize();
 
-            return await ExecuteCommand();
-        }
+            int exitCode = ExitCodes.Error;
+            CancellationToken cancellationToken = _console.GetCancellationToken();
 
-        /// <summary>
-        /// Executes command.
-        /// </summary>
-        protected async Task<int> ExecuteCommand()
-        {
-            using (CliExecutionScope executionScope = CliContext.BeginExecutionScope(ServiceScopeFactory))
+            while (_applicationLifetime.State == CliLifetimes.Running && !cancellationToken.IsCancellationRequested)
             {
-                try
-                {
-                    // Execute middleware pipeline
-                    await executionScope.RunPipelineAsync();
-                }
-                // Swallow directive exceptions and route them to the console
-                catch (DirectiveException ex)
-                {
-                    _configuration.ExceptionHandler.HandleDirectiveException(CliContext, ex);
+                ICliMode? currentMode = _applicationLifetime.CurrentMode;
 
-                    return ExitCodes.FromException(ex);
-                }
-                // Swallow command exceptions and route them to the console
-                catch (CommandException ex)
-                {
-                    _configuration.ExceptionHandler.HandleCommandException(CliContext, ex);
+                if (currentMode != null)
+                    exitCode = await currentMode.ExecuteAsync(commandLineArguments, _cliCommandExecutor);
 
-                    return ExitCodes.FromException(ex);
-                }
-                // This may throw exceptions which are useful only to the end-user
-                catch (TypinException ex)
-                {
-                    _configuration.ExceptionHandler.HandleTypinException(CliContext, ex);
-
-                    return ExitCodes.FromException(ex);
-                }
-
-                return CliContext.ExitCode ??= ExitCodes.Error;
+                _applicationLifetime.TrySwitchModes();
+                _applicationLifetime.TryStop();
             }
+
+            _logger.LogInformation("CLI application will stop with '{ExitCode}'.", exitCode);
+
+            _applicationLifetime.State = CliLifetimes.Stopped;
+
+            return exitCode;
         }
-        #endregion
     }
 }

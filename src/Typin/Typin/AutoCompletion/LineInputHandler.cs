@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Threading.Tasks;
     using Typin.Console;
     using Typin.Internal.Exceptions;
     using static Typin.AutoCompletion.KeyHandler;
@@ -130,7 +131,7 @@
                 {
                     if (!_shortcuts.Add(shortcut))
                     {
-                        throw InternalTypinExceptions.DuplicatedShortcut(shortcut);
+                        throw ModeEndUserExceptions.DuplicatedShortcut(shortcut);
                     }
                 }
             }
@@ -166,12 +167,12 @@
         /// <summary>
         /// Reads a line from input.
         /// </summary>
-        public string ReadLine()
+        public async Task<string> ReadLineAsync()
         {
             IsReading = true;
             do
             {
-                _keyHandler.ReadKey();
+                await _keyHandler.ReadKeyAsync();
             } while (IsReading);
 
             return LastInput;
@@ -180,13 +181,14 @@
         /// <summary>
         /// Reads a sequence from array. When sequence is terminated with Enter, acts as ReadLine.
         /// </summary>
-        public string Read(params ConsoleKeyInfo[] line)
+        public async Task<string> ReadAsync(params ConsoleKeyInfo[] line)
         {
             IsReading = true;
+
             for (int i = 0; i < line.Length && IsReading; ++i)
             {
                 ConsoleKeyInfo keyInfo = line[i];
-                _keyHandler.ReadKey(keyInfo);
+                await _keyHandler.ReadKeyAsync(keyInfo);
             }
 
             return IsReading ? CurrentInput : LastInput;
@@ -209,7 +211,7 @@
             {
                 _text.Append(c);
                 _console.Output.Write(c);
-                CursorPosition++;
+                ++CursorPosition;
             }
             else
             {

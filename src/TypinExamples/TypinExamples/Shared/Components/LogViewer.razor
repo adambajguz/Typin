@@ -1,0 +1,165 @@
+@implements IWebLoggerDestination
+
+<div class="row">
+    <div class="col">
+    </div>
+</div>
+
+<div class="m-log-viewer overflow" style="min-height: @(logs.Count == 0 ? "unset" : "300px");">
+    <table class="striped condensed">
+
+        <caption class="text-right text-primary">
+            <div class="pull-right">
+                @if (logs.Count == 0)
+                {
+                    <p><i>(NO LOGS)</i></p>
+                }
+                else
+                {
+                    <details class="dropdown">
+                        <summary class="button accent is-medium outline">Filter (@filteredLogs.Count / @logs.Count)</summary>
+                        <div class="card bd-accent text-small" style="z-index: 999; right: 0; left: unset; margin-top: 1rem;">
+
+                            <div class="row text-left">
+                                @foreach (var level in VisibleLevels)
+                                {
+                                    <div class="col">
+                                        <label for="log-viewer--checkbox-@level.Key.ToString().ToLower()">
+                                            <input id="log-viewer--checkbox-@level.Key.ToString().ToLower()" name="checkbox" type="checkbox" checked="@level.Value" @onchange="(e) => FilterChanged(level.Key, e)">
+                                            <span class="@HtmlHelpers.GetLogLevelCSSClasses(level.Key)">@HtmlHelpers.GetLogLevelAlias(level.Key)</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </details>
+
+                    <button type="button" title="Remove all logs" class="button error outline is-medium" @onclick="RemoveAllLogs">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                }
+            </div>
+        </caption>
+
+        @if (logs.Count > 0)
+        {
+            <thead class="text-uppercase text-small">
+                <tr>
+                    <th>Time</th>
+                    <th>Level</th>
+                    <th>Category</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                <Virtualize Items="@filteredLogs">
+                    <ItemContent>
+                        <tr>
+                            <td class="text-grey no-wrap">@context.TimestampUtc.ToLocalTime().ToString("T")</td>
+                            <td class="no-wrap @HtmlHelpers.GetLogLevelCSSClasses(context.Level)">@HtmlHelpers.GetLogLevelAlias(context.Level)</td>
+                            <td class="text-grey break-anywhere">@context.Category</td>
+                            <td class="break-anywhere">
+                                @{
+                                    string[] lines = context.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
+
+                                    @foreach (string line in lines)
+                                    {
+                                        @line
+                                        if (lines.Last() != line)
+                                        {
+                                            <br />
+                                        }
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    </ItemContent>
+                    <Placeholder>
+                        <tr>
+                            <td>Empty.</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </Placeholder>
+                </Virtualize>
+            </tbody>
+        }
+    </table>
+</div>
+
+@code {
+    private Dictionary<LogLevel, bool> VisibleLevels = new()
+    {
+            { LogLevel.Trace, true },
+            { LogLevel.Debug, true },
+            { LogLevel.Information, true },
+            { LogLevel.Warning, true },
+            { LogLevel.Error, true },
+            { LogLevel.Critical, true }
+        };
+
+    private bool ShowTrace { get; set; } = true;
+    private bool ShowDebug { get; set; } = true;
+    private bool ShowInformation { get; set; } = true;
+    private bool ShowWarning { get; set; } = true;
+    private bool ShowError { get; set; } = true;
+    private bool ShowCritical { get; set; } = true;
+
+    private LinkedList<LogEntry> logs = new();
+    private List<LogEntry> filteredLogs = new();
+
+    [Inject] private IToastService ToastService { get; init; } = default!;
+
+    void RemoveAllLogs()
+    {
+        logs.Clear();
+        filteredLogs.Clear();
+        StateHasChanged();
+    }
+
+    void FilterChanged(LogLevel logLevel, ChangeEventArgs e)
+    {
+        if (logLevel == LogLevel.None)
+            return;
+
+        bool value = e.Value as bool? ?? false;
+        VisibleLevels[logLevel] = value;
+
+        filteredLogs = logs.Where(x => VisibleLevels[x.Level]).ToList();
+    }
+
+    void IWebLoggerDestination.WriteLog(LogEntry entry)
+    {
+        logs.AddLast(entry);
+
+        if (entry.Level != LogLevel.None && VisibleLevels[entry.Level])
+        {
+            filteredLogs.Add(entry);
+        }
+
+        StateHasChanged();
+
+        if (entry.Level >= Microsoft.Extensions.Logging.LogLevel.Error)
+        {
+            string[] lines = entry.Text?.Split(Environment.NewLine) ?? Array.Empty<string>();
+
+            RenderFragment message =
+                @<text>
+                    <b>@HtmlHelpers.GetLogLevelAlias(entry.Level): </b>
+
+                    @foreach (string line in lines)
+                    {
+                        @line
+                        if (lines.Last() != line)
+                        {
+                            <br />
+                        }
+                    }
+                </text>;
+
+            ToastService.ShowError(message, "Typin Log Viewer");
+        }
+    }
+}

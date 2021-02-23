@@ -1,4 +1,41 @@
+### v3.0.0 (23-Feb-2021)
+
+- Added `Typin.Core` library.
+- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`).
+- Renamed `normal mode` to `direct mode`, and added support for custom modes.
+- It is now possible to register multiple exception handleres to handle different exceptions in app.
+- Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, `ICliCommandExecutor`, `ICliApplicationLifetime`, `DirectMode`, `InteractiveMode`, `IPipelinedDirective`, and more; b) removed `InteractiveCliApplication`.
+- Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
+- Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
+- Added support for options with no name by automatic conversion of property names.
+- Added native support for .NET 5.0 (including usage of `init` instead of `get`).
+- Added `Typin.Console.IO` namespace with `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
+- Rewritten `Typin.Core.Console.ConsoleExtensions` to target `StandardStreamWriter`.
+- User middlewares are now executed after command instance creation.
+- Middleware types collection in `ApplicationConfiguration` order was reversed.
+- Merged `HandleVersionOption` and `HandleHelpOption` into one middleware named `HandleSpecialOptions`.
+- Removed unnecessary casts to `CliContext` from `ICliContext`.
+- Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
+- `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
+- Added logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added `IConsole.ReadKeyAsync()`.
+- Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
+- Option name and short name must start with letter (previously not start with digit).
+- Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
+- Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolving RootSchema.
+- Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A) during char parsing.
+- Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
+- Advanced interactive input is disabled when input is redirected.
+- Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
+- Added `ExceptionFormatter` utility and used it as a default exception printer in `DefaultExceptionHandler`.
+- `TableUtils` refactory and fix for proper handling of empty collection.
+- `[!]` directive is now required only to execute command without parameters and options.
+- Added startup message color personalization, and replaced string formating based on macros with `Func<ApplicationMetadata, string>` and `Action<ApplicationMetadata, IConsole>`.
+- Fixed case-sensitivity of command and option names (always case-sesitive).
+- Fixed interactive mode autocompletion results (fo 'column chan' TAB TAB result was 'column column change-range' instead of 'column change-range').
+
 ### v2.1.1 (18-Oct-2020)
+
 - Fixed `CommandOptionInput.IsOptionAlias` bug.
 - It is no possible to scope to `cmd` command even if there is only `cmd sub` in application.
 - Added `CommandInput.Arguments`.
@@ -8,7 +45,7 @@
 ### v2.1 (17-Oct-2020)
 
 - Schemas resolving improvements
-- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and normal modes.
+- Added support for strings with spaces by surrounding with `"` in interactive mode (to escape `"` type `""`) with a custom command line splitter that works in both interactive and direct modes.
 - Fixed negative numbers handling by forbidding options starting from digit. Options must have a name starting from char other than digit, while short name must not be a digit.
 - Auto-completion bug fixes.
 
@@ -46,7 +83,7 @@
 - Rewritten `RootSchema` with HashSet for faster execution, esspecially in interactive mode.
 - Added tests of the command used in benchmarking to easily check if it executs correctly and won't cause banchmarking freezing.
 - Improved code readability.
-- Removed `CliApplicationBuilder.UseTypeActivator` and added Microsoft.Extensions.DependencyInjection
+- Removed `CliApplicationBuilder.UseTypeActivator` and added `Microsoft.Extensions.DependencyInjection`
 - Added support for middlewares.
 - Added `TableUtils` and `TextUtils`.
 - Added history and auto-completion in interactive mode.

@@ -3,10 +3,11 @@
 <p align="center">
 
 [![Build](https://github.com/adambajguz/Typin/workflows/CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
-[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=12)](https://codecov.io/gh/adambajguz/Typin)
+[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=13)](https://codecov.io/gh/adambajguz/Typin)
 ![CodeQL](https://github.com/adambajguz/Typin/workflows/CodeQL/badge.svg?branch=master)
-[![Version](https://img.shields.io/nuget/v/Typin.svg)](https://nuget.org/packages/Typin)
-[![Downloads](https://img.shields.io/nuget/dt/Typin.svg)](https://nuget.org/packages/Typin)
+[![Version](https://img.shields.io/nuget/v/Typin.svg?label=NuGet)](https://nuget.org/packages/Typin)
+[![Downloads of Typin](https://img.shields.io/nuget/dt/Typin.svg?label=Typin)](https://nuget.org/packages/Typin)
+[![Downloads of Typin.Core](https://img.shields.io/nuget/dt/Typin.Core.svg?label=Typin.Core)](https://nuget.org/packages/Typin.Core)
 
 </p>
 
@@ -37,7 +38,7 @@
 
 
 
-**Typin** is a simple to use, ASP.NET Core inspired framework for building both interactive command line applications and command line tools.
+**Typin** is a simple to use, ASP.NET Core inspired framework for building both interactive command line applications and command line tools (direct mode). However, it is not limited to direct and interactive modes, because you can create your own modes.
 
 > **Etymology:** Typin is made out of "Typ" for "Type" and "in" for "interactively". It's pronounced as "Ty pin".
 
@@ -50,13 +51,19 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defined shortcuts,
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
 - [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
-- [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
 - [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
+- [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
+- Build-in options support with `Microsoft.Extensions.Options`,
 - Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
 - DI injectable `ICliContext` with lots of useful data,
-- Negative numbers handling,
-- Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand
-- (more coming soon).
+- Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
+- Custom help writer.
+- Custom modes support.
+- Logging with `Microsoft.Extensions.Logging`.
+- Optional option names by providing a kebab case name.
+- Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
+
+Overall, Typin is a framework that is much more flexible and rich with both features and metadata about defined commands etc.
 
 > See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.
 
@@ -77,7 +84,7 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Highly testable and easy to debug
 - Comes with built-in analyzers to help catch common mistakes
 - Targets .NET Standard 2.0+
-- Uses `Microsoft.Extensions.DependencyInjection` but no other external dependencies
+- Uses `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Options` but no other external dependencies
 
 ## Installing Typin
 

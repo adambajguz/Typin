@@ -4,7 +4,7 @@
 
     public class DependencyA
     {
-        public char Value { get; set; } = 'A';
+        public char Value { get; } = 'A';
         public Guid Id { get; } = Guid.NewGuid();
 
         public DependencyA()

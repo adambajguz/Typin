@@ -14,7 +14,7 @@
         private readonly LibraryService _libraryService;
 
         [CommandParameter(0, Name = "title", Description = "Book title.")]
-        public string Title { get; set; } = "";
+        public string Title { get; init; } = "";
 
         public BookRemoveCommand(LibraryService libraryService)
         {
@@ -25,7 +25,7 @@
         {
             Book? book = _libraryService.GetBook(Title);
 
-            if (book == null)
+            if (book is null)
                 throw new CommandException("Book not found.", 1);
 
             _libraryService.RemoveBook(book);
