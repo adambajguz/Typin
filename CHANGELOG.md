@@ -1,10 +1,10 @@
-### v3.0.0 (xx-Jan-2021)
+### v3.0.0 (23-Feb-2021)
 
 - Added `Typin.Core` library.
 - Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`).
-- Renamed `normal mode` to `direct mode`.
+- Renamed `normal mode` to `direct mode`, and added support for custom modes.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
-- Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, and more; b) removed `InteractiveCliApplication`.
+- Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, `ICliCommandExecutor`, `ICliApplicationLifetime`, `DirectMode`, `InteractiveMode`, `IPipelinedDirective`, and more; b) removed `InteractiveCliApplication`.
 - Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
 - Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
 - Added support for options with no name by automatic conversion of property names.
@@ -27,7 +27,7 @@
 - Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
 - Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
-- Added `ExceptionFormatter` util and used it as a default exception printer in `DefaultExceptionHandler`.
+- Added `ExceptionFormatter` utility and used it as a default exception printer in `DefaultExceptionHandler`.
 - `TableUtils` refactory and fix for proper handling of empty collection.
 - `[!]` directive is now required only to execute command without parameters and options.
 - Added startup message color personalization, and replaced string formating based on macros with `Func<ApplicationMetadata, string>` and `Action<ApplicationMetadata, IConsole>`.
