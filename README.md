@@ -2,9 +2,9 @@
 
 <p align="center">
 
-[![Build](https://github.com/adambajguz/Typin/workflows/CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
-[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=13)](https://codecov.io/gh/adambajguz/Typin)
-![CodeQL](https://github.com/adambajguz/Typin/workflows/CodeQL/badge.svg?branch=master)
+[![Build](https://github.com/adambajguz/Typin/workflows/Typin-CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
+[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=14)](https://codecov.io/gh/adambajguz/Typin)
+[![CodeQL]](https://github.com/adambajguz/Typin/workflows/CodeQL/badge.svg?branch=master)
 [![Version](https://img.shields.io/nuget/v/Typin.svg?label=NuGet)](https://nuget.org/packages/Typin)
 [![Downloads of Typin](https://img.shields.io/nuget/dt/Typin.svg?label=Typin)](https://nuget.org/packages/Typin)
 [![Downloads of Typin.Core](https://img.shields.io/nuget/dt/Typin.Core.svg?label=Typin.Core)](https://nuget.org/packages/Typin.Core)
