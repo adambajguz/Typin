@@ -28,7 +28,9 @@
             CommandSchema? commandSchema = _cliContext.RootSchema.TryFindCommand(name);
 
             if (commandSchema is not null)
+            {
                 return _performanceLogs.Where(x => x.CommandName == commandSchema.Name);
+            }
 
             return Array.Empty<PerformanceLog>();
         }
@@ -53,7 +55,9 @@
             CommandSchema? commandSchema = _cliContext.RootSchema.TryFindCommand(name);
 
             if (commandSchema is not null)
+            {
                 _performanceLogs.RemoveAll(x => x.CommandName == commandSchema.Name);
+            }
         }
     }
 }

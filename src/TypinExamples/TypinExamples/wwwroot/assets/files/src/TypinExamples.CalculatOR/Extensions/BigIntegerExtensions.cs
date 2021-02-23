@@ -15,10 +15,14 @@
             value = value.Replace("0b", string.Empty, true, CultureInfo.InvariantCulture);
 
             if (!Regex.IsMatch(value, @"^[0-1]+$"))
+            {
                 throw new FormatException("String must only contain '0', '1', and optional '0b' or '0B' identifier to be converted from binary to BigInteger.");
+            }
 
             if (value.Count(b => b == '1') + value.Count(b => b == '0') != value.Length)
+            {
                 return 0;
+            }
 
             BigInteger result = 0;
             foreach (char c in value)
