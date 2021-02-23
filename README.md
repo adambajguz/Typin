@@ -58,7 +58,9 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - DI injectable `ICliContext` with lots of useful data,
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
 - Custom help writer.
-- Custom modes support.
+- Custom modes support and application lifetime.
+- Startup message color personalization through a callback method.
+- Console IO wrapper classes (`StandardStreamReader` and `StandardStreamWriter`) and IO interfaces.
 - Logging with `Microsoft.Extensions.Logging`.
 - Optional option names by providing a kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
@@ -83,8 +85,8 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 - Provides comprehensive and colorful auto-generated help text
 - Highly testable and easy to debug
 - Comes with built-in analyzers to help catch common mistakes
-- Targets .NET Standard 2.0+
-- Uses `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Options` but no other external dependencies
+- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0
+- Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies
 
 ## Installing Typin
 
@@ -96,7 +98,19 @@ Or via the .NET Core command line interface:
 
     dotnet add package Typin
 
-Either commands, from Package Manager Console or .NET Core CLI, will download and install Typin and all required dependencies.
+Both commands will download and install Typin with all required dependencies.
+
+### Typin.Core
+
+If you need only API interfaces, you can install [TypinCore with NuGet](https://www.nuget.org/packages/Typin).
+
+    Install-Package Typin.Core
+    
+Or via the .NET Core command line interface:
+
+    dotnet add package Typin.Core
+
+Both commands will download and install Typin.Core with all required dependencies.
 
 ## Getting started and Documentation
 
