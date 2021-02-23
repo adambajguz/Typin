@@ -98,7 +98,19 @@ Or via the .NET Core command line interface:
 
     dotnet add package Typin
 
-Either commands, from Package Manager Console or .NET Core CLI, will download and install Typin and all required dependencies.
+Both commands will download and install Typin with all required dependencies.
+
+### Typin.Core
+
+If you need only API interfaces, you can install [TypinCore with NuGet](https://www.nuget.org/packages/Typin).
+
+    Install-Package Typin.Core
+    
+Or via the .NET Core command line interface:
+
+    dotnet add package Typin.Core
+
+Both commands will download and install Typin.Core with all required dependencies.
 
 ## Getting started and Documentation
 
