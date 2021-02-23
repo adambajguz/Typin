@@ -31,10 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 	ProjectSection(SolutionItems) = preProject
 		..\..\.gitattributes = ..\..\.gitattributes
 		..\..\.gitignore = ..\..\.gitignore
-		..\..\.github\workflows\CD-Examples.yml = ..\..\.github\workflows\CD-Examples.yml
-		..\..\.github\workflows\CI-Examples.yml = ..\..\.github\workflows\CI-Examples.yml
 		clean.ps1 = clean.ps1
 		..\..\codecov.yml = ..\..\codecov.yml
+		..\..\.github\workflows\TypinExamples-CD.yml = ..\..\.github\workflows\TypinExamples-CD.yml
+		..\..\.github\workflows\TypinExamples-CI.yml = ..\..\.github\workflows\TypinExamples-CI.yml
 		TypinExamples.props = TypinExamples.props
 	EndProjectSection
 EndProject

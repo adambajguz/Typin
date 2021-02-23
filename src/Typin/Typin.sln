@@ -47,8 +47,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 		..\..\.github\workflows\codeql-analysis.yml = ..\..\.github\workflows\codeql-analysis.yml
 		..\..\.github\workflows\Typin-CD.yml = ..\..\.github\workflows\Typin-CD.yml
 		..\..\.github\workflows\Typin-CI.yml = ..\..\.github\workflows\Typin-CI.yml
-		..\..\.github\workflows\TypinExamples-CD.yml = ..\..\.github\workflows\TypinExamples-CD.yml
-		..\..\.github\workflows\TypinExamples-CI.yml = ..\..\.github\workflows\TypinExamples-CI.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Core", "Typin.Core\Typin.Core.csproj", "{AB0DFBE4-052D-4F33-803E-E2DC5AC70D11}"
@@ -151,8 +149,11 @@ Global
 		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CD|x64.ActiveCfg = Release|x64
 		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CD|x86.ActiveCfg = Release|x86
 		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|Any CPU.Build.0 = Release|Any CPU
 		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|x64.ActiveCfg = Release|x64
+		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|x64.Build.0 = Release|x64
 		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|x86.ActiveCfg = Release|x86
+		{4A0AFE96-F5C0-4270-AA32-938F6CAEE404}.Release-CI|x86.Build.0 = Release|x86
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Debug|x64.ActiveCfg = Debug|x64
@@ -169,8 +170,11 @@ Global
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CD|x64.ActiveCfg = Release|x64
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CD|x86.ActiveCfg = Release|x86
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|Any CPU.ActiveCfg = Release|Any CPU
+		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|Any CPU.Build.0 = Release|Any CPU
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|x64.ActiveCfg = Release|x64
+		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|x64.Build.0 = Release|x64
 		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|x86.ActiveCfg = Release|x86
+		{16CAC35E-4DBB-433B-92E3-8B285206DDCB}.Release-CI|x86.Build.0 = Release|x86
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Debug|x64.ActiveCfg = Debug|x64
@@ -187,8 +191,11 @@ Global
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CD|x64.ActiveCfg = Release|x64
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CD|x86.ActiveCfg = Release|x86
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|Any CPU.ActiveCfg = Release|Any CPU
+		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|Any CPU.Build.0 = Release|Any CPU
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|x64.ActiveCfg = Release|x64
+		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|x64.Build.0 = Release|x64
 		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|x86.ActiveCfg = Release|x86
+		{5CCF7E79-C4D4-4A0E-96E0-1BE4B3CFE91C}.Release-CI|x86.Build.0 = Release|x86
 		{86F58E1A-180E-48A4-9DC3-AC6529E9FB85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{86F58E1A-180E-48A4-9DC3-AC6529E9FB85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86F58E1A-180E-48A4-9DC3-AC6529E9FB85}.Debug|x64.ActiveCfg = Debug|x64
