@@ -85,8 +85,8 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 - Provides comprehensive and colorful auto-generated help text
 - Highly testable and easy to debug
 - Comes with built-in analyzers to help catch common mistakes
-- Targets .NET Standard 2.0+
-- Uses `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Options` but no other external dependencies
+- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0
+- Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies
 
 ## Installing Typin
 
