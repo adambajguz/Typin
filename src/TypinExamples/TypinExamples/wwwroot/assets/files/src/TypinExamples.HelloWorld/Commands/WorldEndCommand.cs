@@ -37,7 +37,9 @@
                     console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine("The World is safe :)"));
                 }
                 else
+                {
                     console.Output.WithForegroundColor(ConsoleColor.Yellow, (output) => output.WriteLine("Sorry, I can't do that :<"));
+                }
             }
             catch (TaskCanceledException)
             {

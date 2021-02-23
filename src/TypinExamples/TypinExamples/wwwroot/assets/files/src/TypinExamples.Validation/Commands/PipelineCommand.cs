@@ -28,7 +28,7 @@
 
         private static void DebugPrintServices(IConsole console, IReadOnlyCollection<Type> middlewares)
         {
-            TableUtils.Write(console,
+            TableUtils.Write(console.Output,
                              middlewares.Concat(new Type?[] { null })
                                         .Concat(middlewares.Reverse()),
                              new string[] { "Middleware type name", "Assembly" },
