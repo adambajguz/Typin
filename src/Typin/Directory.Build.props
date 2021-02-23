@@ -10,7 +10,7 @@
     </Copyright>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
