@@ -30,7 +30,7 @@
                 }
 
                 Message<TNotification> casted = message as Message<TNotification> ?? throw new NullReferenceException("Invalid notification message type.");
-                await _handler.HandleAsync(casted.Payload, worker, cancellationToken);
+                await _handler.HandleAsync(casted.Payload!, worker, cancellationToken);
             }
             catch (Exception ex)
             {
