@@ -144,6 +144,46 @@ See [wiki](https://github.com/adambajguz/Typin/wiki) for detailed instructions a
 
 Here's how Typin's execution overhead compares to that of other libraries (single command comparison) and with increasing number of commands.
 
+### Typin 3.0
+
+```ini
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.19042
+Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=5.0.103
+  [Host]     : .NET Core 3.1.12 (CoreCLR 4.700.21.6504, CoreFX 4.700.21.6905), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.12 (CoreCLR 4.700.21.6504, CoreFX 4.700.21.6905), X64 RyuJIT
+```
+
+|                               Method |        Mean |      Error |     StdDev | Ratio | Rank |
+|------------------------------------- |------------:|-----------:|-----------:|------:|-----:|
+|                    CommandLineParser |    2.581 us |  0.0508 us |  0.0915 us |  0.01 |    1 |
+|                                CliFx |   54.462 us |  1.0281 us |  0.9617 us |  0.27 |    2 |
+| McMaster.Extensions.CommandLineUtils |  128.181 us |  1.2168 us |  1.0161 us |  0.64 |    3 |
+|                                Clipr |  132.400 us |  1.4180 us |  1.3264 us |  0.66 |    4 |
+|                                Typin |  200.833 us |  3.9689 us |  4.5706 us |  1.00 |    5 |
+|                            TypinWarm |  200.833 us |  5.9736 us |  6.8792 us |  1.00 |    5 |
+|                   System.CommandLine |  207.763 us |  0.9785 us |  0.9153 us |  1.03 |    6 |
+|                            PowerArgs |  258.524 us |  2.0289 us |  1.8979 us |  1.29 |    7 |
+|                               Cocona | 1298.033 us | 32.8040 us | 30.6849 us |  6.46 |    8 |
+
+
+|                Method |      Mean |     Error |    StdDev | Ratio | Rank |
+|---------------------- |----------:|----------:|----------:|------:|-----:|
+|   'CliFx - 1 command' |  56.25 us |  1.278 us |  2.064 us |  0.28 |    1 |
+|  'CliFx - 2 commands' |  76.38 us |  0.977 us |  0.914 us |  0.38 |    2 |
+|  'CliFx - 5 commands' | 139.08 us |  2.507 us |  2.094 us |  0.69 |    3 |
+|   'Typin - 1 command' | 200.31 us |  4.561 us |  4.043 us |  1.00 |    4 |
+|  'Typin - 2 commands' | 235.40 us |  4.161 us |  3.689 us |  1.18 |    5 |
+| 'CliFx - 10 commands' | 240.25 us |  2.842 us |  2.658 us |  1.20 |    6 |
+|  'Typin - 5 commands' | 296.04 us |  5.119 us |  4.538 us |  1.48 |    7 |
+| 'Typin - 10 commands' | 417.64 us |  8.725 us | 18.782 us |  2.13 |    8 |
+| 'CliFx - 20 commands' | 485.98 us |  9.718 us | 18.723 us |  2.51 |    9 |
+| 'Typin - 20 commands' | 682.66 us | 13.528 us | 19.829 us |  3.46 |   10 |
+
+ > Typin 3.x oraz 4.0 will focus on optimizations, further API improvements, and usage of source code generators.
+
+### Typin <= 2.1.1
+
 ```ini
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.19041
 Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
@@ -152,30 +192,30 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
   DefaultJob : .NET Core 3.1.8 (CoreCLR 4.700.20.41105, CoreFX 4.700.20.41903), X64 RyuJIT
 ```
 
-|                               Method |         Mean |     Error |    StdDev |       Median | Ratio | RatioSD | Rank |
-|------------------------------------- |-------------:|----------:|----------:|-------------:|------:|--------:|-----:|
-|                    CommandLineParser |     2.489 us | 0.0481 us | 0.0573 us |     2.500 us |  0.03 |    0.00 |    1 |
-|                                CliFx |    51.513 us | 0.3411 us | 0.3024 us |    51.551 us |  0.57 |    0.00 |    2 |
-|                                Typin |    90.748 us | 0.4652 us | 0.4351 us |    90.759 us |  1.00 |    0.00 |    3 |
-| McMaster.Extensions.CommandLineUtils |   129.112 us | 1.5520 us | 1.3758 us |   128.436 us |  1.42 |    0.02 |    4 |
-|                                Clipr |   131.652 us | 2.8059 us | 4.1129 us |   129.439 us |  1.47 |    0.05 |    4 |
-|                   System.CommandLine |   198.114 us | 3.7021 us | 3.4630 us |   195.986 us |  2.18 |    0.04 |    5 |
-|                            PowerArgs |   257.859 us | 1.4766 us | 1.3812 us |   258.043 us |  2.84 |    0.02 |    6 |
-|                               Cocona |      1166 us | 7.3347 us | 6.1248 us |      1167 us | 12.86 |    0.10 |    7 |
+|                               Method |         Mean |     Error |    StdDev | Ratio | Rank |
+|------------------------------------- |-------------:|----------:|----------:|------:|-----:|
+|                    CommandLineParser |     2.489 us | 0.0481 us | 0.0573 us |  0.03 |    1 |
+|                                CliFx |    51.513 us | 0.3411 us | 0.3024 us |  0.57 |    2 |
+|                                Typin |    90.748 us | 0.4652 us | 0.4351 us |  1.00 |    3 |
+| McMaster.Extensions.CommandLineUtils |   129.112 us | 1.5520 us | 1.3758 us |  1.42 |    4 |
+|                                Clipr |   131.652 us | 2.8059 us | 4.1129 us |  1.47 |    4 |
+|                   System.CommandLine |   198.114 us | 3.7021 us | 3.4630 us |  2.18 |    5 |
+|                            PowerArgs |   257.859 us | 1.4766 us | 1.3812 us |  2.84 |    6 |
+|                               Cocona |      1166 us | 7.3347 us | 6.1248 us | 12.86 |    7 |
 
 
-|                Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Rank |
-|---------------------- |----------:|---------:|---------:|------:|--------:|-----:|
-|   'CliFx - 1 command' |  51.15 us | 0.843 us | 0.788 us |  0.54 |    0.01 |    1 |
-|  'CliFx - 2 commands' |  71.39 us | 1.375 us | 1.972 us |  0.76 |    0.03 |    2 |
-|   'Typin - 1 command' |  94.46 us | 1.974 us | 2.027 us |  1.00 |    0.00 |    3 |
-|  'Typin - 2 commands' | 118.90 us | 2.668 us | 4.811 us |  1.29 |    0.05 |    4 |
-|  'CliFx - 5 commands' | 126.71 us | 1.908 us | 1.692 us |  1.34 |    0.03 |    5 |
-|  'Typin - 5 commands' | 180.16 us | 3.459 us | 3.701 us |  1.91 |    0.06 |    6 |
-| 'CliFx - 10 commands' | 222.28 us | 3.079 us | 2.880 us |  2.35 |    0.07 |    7 |
-| 'Typin - 10 commands' | 281.79 us | 4.679 us | 4.148 us |  2.99 |    0.06 |    8 |
-| 'CliFx - 20 commands' | 454.07 us | 8.708 us | 8.942 us |  4.81 |    0.13 |    9 |
-| 'Typin - 20 commands' | 519.70 us | 6.735 us | 6.300 us |  5.50 |    0.15 |   10 |
+|                Method |      Mean |    Error |   StdDev | Ratio | Rank |
+|---------------------- |----------:|---------:|---------:|------:|-----:|
+|   'CliFx - 1 command' |  51.15 us | 0.843 us | 0.788 us |  0.54 |    1 |
+|  'CliFx - 2 commands' |  71.39 us | 1.375 us | 1.972 us |  0.76 |    2 |
+|   'Typin - 1 command' |  94.46 us | 1.974 us | 2.027 us |  1.00 |    3 |
+|  'Typin - 2 commands' | 118.90 us | 2.668 us | 4.811 us |  1.29 |    4 |
+|  'CliFx - 5 commands' | 126.71 us | 1.908 us | 1.692 us |  1.34 |    5 |
+|  'Typin - 5 commands' | 180.16 us | 3.459 us | 3.701 us |  1.91 |    6 |
+| 'CliFx - 10 commands' | 222.28 us | 3.079 us | 2.880 us |  2.35 |    7 |
+| 'Typin - 10 commands' | 281.79 us | 4.679 us | 4.148 us |  2.99 |    8 |
+| 'CliFx - 20 commands' | 454.07 us | 8.708 us | 8.942 us |  4.81 |    9 |
+| 'Typin - 20 commands' | 519.70 us | 6.735 us | 6.300 us |  5.50 |   10 |
 
 Legends:
   * Mean    : Arithmetic mean of all measurements
