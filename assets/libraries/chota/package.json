@@ -1,0 +1,48 @@
+{
+  "name": "chota",
+  "version": "0.8.0",
+  "description": "A really small CSS framework",
+  "main": "dist/chota.min.css",
+  "scripts": {
+    "start": "run-p docs watch",
+    "docs": "jekyll s -s docs",
+    "build": "rimraf dist/* && yarn postcss &&  cross-env NODE_ENV=production yarn postcss --ext .min.css && gzip -c dist/chota.min.css  | wc -c | xargs echo 'Size:'",
+    "postcss": "postcss ./src/chota.css -d dist/",
+    "watch": "cross-env NODE_ENV=development yarn postcss -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "yarn build"
+  },
+  "keywords": [
+    "css",
+    "minimal",
+    "web"
+  ],
+  "author": "Jenil Gogari",
+  "license": "MIT",
+  "homepage": "https://jenil.github.io/chota",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenil/chota.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jenil/chota/issues"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.6.1",
+    "cross-env": "^7.0.2",
+    "cssnano": "^4.1.7",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^7.1.1",
+    "postcss-csso": "^4.0.0",
+    "postcss-import": "^12.0.1",
+    "rimraf": "^3.0.0"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "README.md"
+  ],
+  "browserslist": [
+    "last 2 versions"
+  ]
+}

@@ -1,0 +1,18 @@
+﻿div.c-box--container {
+}
+
+    div.c-box--container > div.c-box {
+        border: 1px dashed var(--color-lightGrey);
+        padding: 0.5rem 2rem;
+        margin: 0 0 2rem 0;
+    }
+
+        div.c-box--container > div.c-box > div.c-box--top {
+            letter-spacing: 0.1rem;
+            font-size: 1.4rem;
+            font-family: var(--font-family-mono);
+        }
+
+        div.c-box--container > div.c-box > div.c-box--content {
+            margin-top: 0.5rem;
+        }

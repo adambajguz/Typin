@@ -1,0 +1,30 @@
+﻿header > .hero {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary-color);
+}
+
+    header > .hero > .logo {
+        flex: 1;
+        flex-direction: column;
+        margin: 12rem 4rem 12rem 4rem;
+    }
+
+        header > .hero > .logo svg {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        header > .hero > .logo .header-heading {
+            margin: 1.7em 0 0 0;
+            font-size: 1.5em;
+            font-weight: 300;
+        }
+
+        header > .hero > .logo .header-subheading {
+            font-weight: 100;
+        }
+
+        header > .hero > .logo .header-subheading > p {
+            margin-bottom: .4rem;
+        }

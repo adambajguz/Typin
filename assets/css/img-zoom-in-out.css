@@ -1,0 +1,20 @@
+﻿img.img-zoom-in-out {
+    transform-origin: center center;
+    animation: img-zoom-in-out--keyframes 4s infinite;
+    max-width: 100%;
+}
+
+@keyframes img-zoom-in-out--keyframes {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        /* equals 110% */
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,8 @@
+﻿table.condensed th, td {
+    padding: 0 .4rem;
+}
+
+div.overflow {
+    max-height: 45vh;
+    overflow: auto;
+}
