@@ -23,14 +23,14 @@
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
-            if (modeTypes != null)
+            if (modeTypes is not null)
             {
-                if (attribute.SupportedModes != null && attribute.SupportedModes.Except(modeTypes).Any())
+                if (attribute.SupportedModes is not null && attribute.SupportedModes.Except(modeTypes).Any())
                 {
                     throw CommandResolverExceptions.InvalidSupportedModesInCommand(type, attribute);
                 }
 
-                if (attribute.ExcludedModes != null && attribute.ExcludedModes.Except(modeTypes).Any())
+                if (attribute.ExcludedModes is not null && attribute.ExcludedModes.Except(modeTypes).Any())
                 {
                     throw CommandResolverExceptions.InvalidExcludedModesInCommand(type, attribute);
                 }
@@ -45,13 +45,13 @@
 
             CommandParameterSchema?[] parameters = type.GetProperties()
                                                        .Select(CommandParameterSchemaResolver.TryResolve)
-                                                       .Where(p => p != null)
+                                                       .Where(p => p is not null)
                                                        .OrderBy(p => p!.Order)
                                                        .ToArray();
 
             CommandOptionSchema?[] options = type.GetProperties()
                                                  .Select(CommandOptionSchemaResolver.TryResolve)
-                                                 .Where(o => o != null)
+                                                 .Where(o => o is not null)
                                                  .Concat(builtInOptions)
                                                  .ToArray();
 
@@ -77,7 +77,7 @@
                                                                                  .GroupBy(a => a.Order)
                                                                                  .FirstOrDefault(g => g.Count() > 1);
 
-            if (duplicateOrderGroup != null)
+            if (duplicateOrderGroup is not null)
             {
                 throw ParameterResolverExceptions.ParametersWithSameOrder(
                     command,
@@ -91,7 +91,7 @@
                                                                                    .GroupBy(a => a.Name!, StringComparer.Ordinal)
                                                                                    .FirstOrDefault(g => g.Count() > 1);
 
-            if (duplicateNameGroup != null)
+            if (duplicateNameGroup is not null)
             {
                 throw ParameterResolverExceptions.ParametersWithSameName(
                     command,
@@ -117,7 +117,7 @@
                                                                        .Skip(1)
                                                                        .LastOrDefault(p => !p.IsScalar);
 
-            if (nonLastNonScalarParameter != null)
+            if (nonLastNonScalarParameter is not null)
             {
                 throw ParameterResolverExceptions.NonLastNonScalarParameter(
                     command,
@@ -133,7 +133,7 @@
                 .GroupBy(o => o.Name!, StringComparer.Ordinal)
                 .FirstOrDefault(g => g.Count() > 1);
 
-            if (duplicateNameGroup != null)
+            if (duplicateNameGroup is not null)
             {
                 throw OptionResolverExceptions.OptionsWithSameName(
                     command,
@@ -143,11 +143,11 @@
             }
 
             IGrouping<char, CommandOptionSchema>? duplicateShortNameGroup = command.Options
-                .Where(o => o.ShortName != null)
+                .Where(o => o.ShortName is not null)
                 .GroupBy(o => o.ShortName!.Value)
                 .FirstOrDefault(g => g.Count() > 1);
 
-            if (duplicateShortNameGroup != null)
+            if (duplicateShortNameGroup is not null)
             {
                 throw OptionResolverExceptions.OptionsWithSameShortName(
                     command,
@@ -161,7 +161,7 @@
                 .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault(g => g.Count() > 1);
 
-            if (duplicateEnvironmentVariableNameGroup != null)
+            if (duplicateEnvironmentVariableNameGroup is not null)
             {
                 throw OptionResolverExceptions.OptionsWithSameEnvironmentVariableName(
                     command,

@@ -27,13 +27,13 @@
             bool isDll = string.Equals(Path.GetExtension(entryAssemblyLocation), ".dll", StringComparison.OrdinalIgnoreCase);
 
             return isDll
-                ? "dotnet " + Path.GetFileName(entryAssemblyLocation)
+                ? $"dotnet {Path.GetFileName(entryAssemblyLocation)}"
                 : Path.GetFileNameWithoutExtension(entryAssemblyLocation);
         }
 
         public static string? TryGetDefaultVersionText()
         {
-            return EntryAssembly != null ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}" : null;
+            return EntryAssembly is not null ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}" : null;
         }
     }
 }

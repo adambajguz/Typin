@@ -13,7 +13,7 @@
         private int _completionStart;
         private int _completionsIndex;
 
-        private bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+        private bool IsInAutoCompleteMode => AutoCompletionHandler is not null && _completions.Length != 0;
 
         public InputHistoryProvider History { get; }
         public IAutoCompletionHandler? AutoCompletionHandler { get; set; }

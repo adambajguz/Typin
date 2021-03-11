@@ -71,7 +71,7 @@
         /// </summary>
         public bool MatchesShortName(char shortName)
         {
-            return ShortName != null && ShortName == shortName;
+            return ShortName is not null && ShortName == shortName;
         }
 
         /// <summary>
@@ -92,12 +92,12 @@
                       .Append(Name);
             }
 
-            if (!string.IsNullOrWhiteSpace(Name) && ShortName != null)
+            if (!string.IsNullOrWhiteSpace(Name) && ShortName is not null)
             {
                 buffer.Append('|');
             }
 
-            if (ShortName != null)
+            if (ShortName is not null)
             {
                 buffer.Append('-')
                       .Append(ShortName);

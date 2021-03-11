@@ -207,7 +207,7 @@ namespace Typin
             {
                 ICliMode? currentMode = _applicationLifetime.CurrentMode;
 
-                if (currentMode != null)
+                if (currentMode is not null)
                     exitCode = await currentMode.ExecuteAsync(commandLineArguments, _cliCommandExecutor);
 
                 _applicationLifetime.TrySwitchModes();

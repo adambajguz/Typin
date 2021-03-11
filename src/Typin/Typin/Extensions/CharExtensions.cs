@@ -34,24 +34,24 @@
 
         private static readonly Dictionary<char, Tuple<ConsoleKey, ConsoleModifiers>> specialKeyCharMap = new()
         {
-            {ExclamationMark, Tuple.Create(ConsoleKey.D0, NoModifiers)},
-            {CarriageReturn, Tuple.Create(ConsoleKey.Enter,  NoModifiers)},
-            {LineFeed, Tuple.Create(ConsoleKey.Enter,  NoModifiers)},
-            {Space, Tuple.Create(ConsoleKey.Spacebar,  NoModifiers)},
-            {CtrlA, Tuple.Create(ConsoleKey.A, ConsoleModifiers.Control)},
-            {CtrlB, Tuple.Create(ConsoleKey.B, ConsoleModifiers.Control)},
-            {CtrlD, Tuple.Create(ConsoleKey.D, ConsoleModifiers.Control)},
-            {CtrlE, Tuple.Create(ConsoleKey.E, ConsoleModifiers.Control)},
-            {CtrlF, Tuple.Create(ConsoleKey.F, ConsoleModifiers.Control)},
-            {CtrlG, Tuple.Create(ConsoleKey.G, ConsoleModifiers.Control)},
-            {CtrlH, Tuple.Create(ConsoleKey.H, ConsoleModifiers.Control)},
-            {CtrlK, Tuple.Create(ConsoleKey.K, ConsoleModifiers.Control)},
-            {CtrlL, Tuple.Create(ConsoleKey.L, ConsoleModifiers.Control)},
-            {CtrlN, Tuple.Create(ConsoleKey.N, ConsoleModifiers.Control)},
-            {CtrlP, Tuple.Create(ConsoleKey.P, ConsoleModifiers.Control)},
-            {CtrlT, Tuple.Create(ConsoleKey.T, ConsoleModifiers.Control)},
-            {CtrlU, Tuple.Create(ConsoleKey.U, ConsoleModifiers.Control)},
-            {CtrlW, Tuple.Create(ConsoleKey.W, ConsoleModifiers.Control)}
+            { ExclamationMark, Tuple.Create(ConsoleKey.D0, NoModifiers) },
+            { CarriageReturn, Tuple.Create(ConsoleKey.Enter, NoModifiers) },
+            { LineFeed, Tuple.Create(ConsoleKey.Enter, NoModifiers) },
+            { Space, Tuple.Create(ConsoleKey.Spacebar, NoModifiers) },
+            { CtrlA, Tuple.Create(ConsoleKey.A, ConsoleModifiers.Control) },
+            { CtrlB, Tuple.Create(ConsoleKey.B, ConsoleModifiers.Control) },
+            { CtrlD, Tuple.Create(ConsoleKey.D, ConsoleModifiers.Control) },
+            { CtrlE, Tuple.Create(ConsoleKey.E, ConsoleModifiers.Control) },
+            { CtrlF, Tuple.Create(ConsoleKey.F, ConsoleModifiers.Control) },
+            { CtrlG, Tuple.Create(ConsoleKey.G, ConsoleModifiers.Control) },
+            { CtrlH, Tuple.Create(ConsoleKey.H, ConsoleModifiers.Control) },
+            { CtrlK, Tuple.Create(ConsoleKey.K, ConsoleModifiers.Control) },
+            { CtrlL, Tuple.Create(ConsoleKey.L, ConsoleModifiers.Control) },
+            { CtrlN, Tuple.Create(ConsoleKey.N, ConsoleModifiers.Control) },
+            { CtrlP, Tuple.Create(ConsoleKey.P, ConsoleModifiers.Control) },
+            { CtrlT, Tuple.Create(ConsoleKey.T, ConsoleModifiers.Control) },
+            { CtrlU, Tuple.Create(ConsoleKey.U, ConsoleModifiers.Control) },
+            { CtrlW, Tuple.Create(ConsoleKey.W, ConsoleModifiers.Control) }
         };
 
         /// <summary>

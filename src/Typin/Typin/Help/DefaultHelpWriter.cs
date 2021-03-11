@@ -210,7 +210,9 @@
                     WriteHorizontalMargin(1);
                 }
                 else
+                {
                     WriteHorizontalMargin();
+                }
 
                 Write(DirectiveNameColor, "[");
                 Write(DirectiveNameColor, directive.Key);
@@ -281,7 +283,9 @@
                 WriteHorizontalMargin(1);
             }
             else
+            {
                 WriteHorizontalMargin();
+            }
 
             Write(CommentColor, _context.Metadata.ExecutableName);
 
@@ -388,13 +392,13 @@
                 }
 
                 // Short name
-                if (option.ShortName != null)
+                if (option.ShortName is not null)
                 {
                     Write(OptionNameColor, $"-{option.ShortName}");
                 }
 
                 // Separator
-                if (!string.IsNullOrWhiteSpace(option.Name) && option.ShortName != null)
+                if (!string.IsNullOrWhiteSpace(option.Name) && option.ShortName is not null)
                 {
                     Write('|');
                 }
@@ -434,7 +438,7 @@
                 {
                     object? defaultValue = argumentDefaultValues.GetValueOrDefault(option);
                     string? defaultValueFormatted = FormatDefaultValue(defaultValue);
-                    if (defaultValueFormatted != null)
+                    if (defaultValueFormatted is not null)
                     {
                         Write($"Default: {defaultValueFormatted}.");
                     }
@@ -471,7 +475,9 @@
                     WriteHorizontalMargin(1);
                 }
                 else
+                {
                     WriteHorizontalMargin();
+                }
 
                 Write(CommandNameColor, relativeCommandName);
 
@@ -536,7 +542,7 @@
                     return null;
 
                 return defaultValues.Cast<object?>()
-                                    .Where(o => o != null)
+                                    .Where(o => o is not null)
                                     .Select(o => o!.ToFormattableString(CultureInfo.InvariantCulture).Quote())
                                     .JoinToString(' ');
             }

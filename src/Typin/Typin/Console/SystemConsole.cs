@@ -119,7 +119,7 @@
         /// <inheritdoc />
         public CancellationToken GetCancellationToken()
         {
-            if (_cancellationTokenSource != null)
+            if (_cancellationTokenSource is not null)
             {
                 return _cancellationTokenSource.Token;
             }
@@ -135,7 +135,7 @@
              *
              *   public CancellationToken GetCancellationToken()
              *   {
-             *       if (_cancellationTokenSource != null)
+             *       if (_cancellationTokenSource is not null)
              *           return _cancellationTokenSource.Token;
              *
              *       _cancellationTokenSource = new CancellationTokenSource();

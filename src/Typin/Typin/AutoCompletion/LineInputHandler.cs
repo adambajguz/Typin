@@ -106,7 +106,7 @@
                                 HashSet<ShortcutDefinition>? userDefinedShortcuts = null) :
             this(console)
         {
-            if (internalShortcuts != null)
+            if (internalShortcuts is not null)
             {
                 //TODO: maybe hashset is not the best collection
                 //_shortcuts.Union(internalShortcuts);
@@ -121,7 +121,7 @@
                 }
             }
 
-            if (userDefinedShortcuts != null)
+            if (userDefinedShortcuts is not null)
             {
                 //_shortcuts.Union(userDefinedShortcut);
                 foreach (ShortcutDefinition shortcut in userDefinedShortcuts)

@@ -150,6 +150,7 @@
                 }
                 // Short name
                 else if (CommandOptionInput.IsOptionAlias(argument))
+                {
                     foreach (var alias in argument.Substring(1))
                     {
                         // Flush previous
@@ -159,9 +160,12 @@
                         currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
+                }
                 // Value
                 else if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                {
                     currentOptionValues.Add(argument);
+                }
             }
 
             // Flush last option

@@ -114,10 +114,10 @@
             if (!HasModeRestrictions())
                 return true;
 
-            if (SupportedModes != null && !SupportedModes!.Contains(type))
+            if (SupportedModes is not null && !SupportedModes!.Contains(type))
                 return false;
 
-            if (ExcludedModes != null && ExcludedModes!.Contains(type))
+            if (ExcludedModes is not null && ExcludedModes.Contains(type))
                 return false;
 
             return true;
