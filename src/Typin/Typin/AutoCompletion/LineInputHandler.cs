@@ -14,7 +14,7 @@
         private readonly IConsole _console;
         private readonly KeyHandler _keyHandler;
         private readonly HashSet<ShortcutDefinition> _shortcuts;
-        private readonly StringBuilder _text = new StringBuilder();
+        private readonly StringBuilder _text = new();
 
         public event InputModifiedEventHandler? InputModified
         {
@@ -298,7 +298,7 @@
                 int left = _console.CursorLeft;
                 int top = _console.CursorTop;
 
-                string spaces = new string(' ', 1);
+                string spaces = new(' ', 1);
                 _console.Output.Write(string.Format("{0}{1}", replacement, spaces));
                 _console.SetCursorPosition(left, top);
             }

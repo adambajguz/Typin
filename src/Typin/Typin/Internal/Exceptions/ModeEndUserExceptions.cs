@@ -27,7 +27,7 @@
 
         public static TypinException CommandExecutedInInvalidMode(CommandSchema command, Type currentMode)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
             if (command.SupportedModes != null)
@@ -57,7 +57,7 @@
 
         public static TypinException DirectiveExecutedInInvalidMode(DirectiveSchema directive, Type currentMode)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
             if (directive.SupportedModes != null)

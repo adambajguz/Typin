@@ -155,7 +155,7 @@
              * ====================================================================================================================
              */
 
-            var cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new();
 
             Console.CancelKeyPress += (_, args) =>
             {

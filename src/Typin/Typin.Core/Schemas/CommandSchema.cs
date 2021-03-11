@@ -148,7 +148,7 @@
         /// </summary>
         public IReadOnlyDictionary<ArgumentSchema, object?> GetArgumentValues(ICommand instance)
         {
-            var result = new Dictionary<ArgumentSchema, object?>();
+            Dictionary<ArgumentSchema, object?> result = new();
 
             foreach (ArgumentSchema argument in GetArguments())
             {
@@ -165,7 +165,7 @@
 
         internal string GetInternalDisplayString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             // Type
             buffer.Append(Type.FullName);

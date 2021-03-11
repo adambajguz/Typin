@@ -43,8 +43,8 @@
         private void ResolveCommands(IReadOnlyList<Type> commandTypes)
         {
             CommandSchema? defaultCommand = null;
-            var commands = new Dictionary<string, CommandSchema>();
-            var invalidCommands = new List<CommandSchema>();
+            Dictionary<string, CommandSchema> commands = new();
+            List<CommandSchema> invalidCommands = new();
 
             foreach (Type commandType in commandTypes)
             {
@@ -78,8 +78,8 @@
 
         private void ResolveDirectives(IReadOnlyList<Type> directiveTypes)
         {
-            var directives = new Dictionary<string, DirectiveSchema>();
-            var invalidDirectives = new List<DirectiveSchema>();
+            Dictionary<string, DirectiveSchema> directives = new();
+            List<DirectiveSchema> invalidDirectives = new();
 
             foreach (Type? directiveType in directiveTypes)
             {

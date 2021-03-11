@@ -55,16 +55,14 @@
                                                  .Concat(builtInOptions)
                                                  .ToArray();
 
-            CommandSchema command = new CommandSchema(
-                type,
-                name,
-                attribute.Description,
-                attribute.Manual,
-                attribute.SupportedModes,
-                attribute.ExcludedModes,
-                parameters!,
-                options!
-            );
+            CommandSchema command = new(type,
+                                        name,
+                                        attribute.Description,
+                                        attribute.Manual,
+                                        attribute.SupportedModes,
+                                        attribute.ExcludedModes,
+                                        parameters!,
+                                        options!);
 
             ValidateParameters(command);
             ValidateOptions(command);

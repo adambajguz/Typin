@@ -60,7 +60,7 @@
                 }
 
                 bool inputModified = false;
-                var input = new ShortcutDefinition(keyInfo.Key, keyInfo.Modifiers, () => { });
+                ShortcutDefinition input = new(keyInfo.Key, keyInfo.Modifiers, () => { });
                 if (_shortcuts.TryGetValue(input, out ShortcutDefinition shortcutDefinition))
                 {
                     shortcutDefinition.Action.Invoke();

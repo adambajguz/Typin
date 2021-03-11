@@ -10,7 +10,7 @@
         private readonly IRootSchemaAccessor _rootSchemaAccessor;
 
         /// <inheritdoc/>
-        public char[] Separators { get; set; } = new char[] { ' ' };
+        public char[] Separators { get; set; } = new[] { ' ' };
 
         /// <summary>
         /// Initializes an instance of <see cref="AutoCompletionHandler"/>.

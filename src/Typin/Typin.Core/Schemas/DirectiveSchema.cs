@@ -103,7 +103,7 @@
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             // Type
             buffer.Append(Type.FullName);

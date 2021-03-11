@@ -7,7 +7,7 @@
     /// </summary>
     public class InputHistoryProvider : IInputHistoryProvider
     {
-        private readonly LinkedList<string> _history = new LinkedList<string>();
+        private readonly LinkedList<string> _history = new();
         private LinkedListNode<string>? _selection;
 
         /// <inheritdoc/>

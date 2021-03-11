@@ -29,8 +29,8 @@
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             //Initialize collections
-            List<IDirective> directivesInstances = new List<IDirective>();
-            List<IPipelinedDirective> pipelinedDirectivesInstances = new List<IPipelinedDirective>();
+            List<IDirective> directivesInstances = new();
+            List<IPipelinedDirective> pipelinedDirectivesInstances = new();
 
             //Process directive input
             foreach (DirectiveInput directiveInput in directives)

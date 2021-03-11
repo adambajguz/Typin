@@ -23,8 +23,8 @@
         {
             Type exceptionType = exception.GetType();
 
-            string indentationShared = new string(' ', 4 * indentLevel);
-            string indentationLocal = new string(' ', 2);
+            string indentationShared = new(' ', 4 * indentLevel);
+            string indentationLocal = new(' ', 2);
 
             // Fully qualified exception type
             output.Write(indentationShared);

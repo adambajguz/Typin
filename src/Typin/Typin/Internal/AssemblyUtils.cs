@@ -7,7 +7,7 @@
 
     internal static class AssemblyUtils
     {
-        private static readonly Lazy<Assembly?> LazyEntryAssembly = new Lazy<Assembly?>(Assembly.GetEntryAssembly);
+        private static readonly Lazy<Assembly?> LazyEntryAssembly = new(Assembly.GetEntryAssembly);
 
         /// <summary>
         /// Entry assembly is null in tests.

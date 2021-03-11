@@ -16,17 +16,17 @@
 
         public Task<int> ExecuteAsync(string[] args)
         {
-            var command = new RootCommand
+            RootCommand command = new()
             {
-                new Option(new[] {"--str", "-s"})
+                new Option(new[] { "--str", "-s" })
                 {
                     Argument = new Argument<string?>()
                 },
-                new Option(new[] {"--int", "-i"})
+                new Option(new[] { "--int", "-i" })
                 {
                     Argument = new Argument<int>()
                 },
-                new Option(new[] {"--bool", "-b"})
+                new Option(new[] { "--bool", "-b" })
                 {
                     Argument = new Argument<bool>()
                 }

@@ -105,7 +105,7 @@
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             foreach (DirectiveInput directive in Directives)
             {

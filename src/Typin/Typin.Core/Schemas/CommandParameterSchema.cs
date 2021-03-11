@@ -31,7 +31,7 @@
 
         internal string GetUserFacingDisplayString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             buffer.Append('<')
                   .Append(Name)

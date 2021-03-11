@@ -8,7 +8,7 @@
 
     public sealed class HistoryTests
     {
-        private readonly string[] _history = new string[] { "ls -a", "dotnet run", "git init" };
+        private readonly string[] _history = new[] { "ls -a", "dotnet run", "git init" };
 
         public HistoryTests()
         {
@@ -19,7 +19,7 @@
         public void Should_add_collection_to_history()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(new SystemConsole());
+            AutoCompleteInput input = new(new SystemConsole());
             InputHistoryProvider history = input.History;
             history.IsEnabled = true;
 
@@ -34,7 +34,7 @@
         public void Should_add_single_item_to_history()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(new SystemConsole());
+            AutoCompleteInput input = new(new SystemConsole());
             InputHistoryProvider history = input.History;
             history.IsEnabled = true;
 
@@ -56,7 +56,7 @@
         public void Should_add_single_item_to_empty_history()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(new SystemConsole());
+            AutoCompleteInput input = new(new SystemConsole());
             InputHistoryProvider history = input.History;
             history.IsEnabled = true;
 
@@ -71,7 +71,7 @@
         public void Should_clear_history()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(new SystemConsole());
+            AutoCompleteInput input = new(new SystemConsole());
             InputHistoryProvider history = input.History;
             history.IsEnabled = true;
 
@@ -92,7 +92,7 @@
         public void Should_add_after_history_clearing()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(new SystemConsole());
+            AutoCompleteInput input = new(new SystemConsole());
             InputHistoryProvider history = input.History;
             history.IsEnabled = true;
 

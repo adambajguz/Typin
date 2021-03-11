@@ -5,7 +5,7 @@
 
     public class Library
     {
-        public static Library Empty { get; } = new Library(Array.Empty<Book>());
+        public static Library Empty { get; } = new(Array.Empty<Book>());
 
         public IReadOnlyList<Book> Books { get; }
 
