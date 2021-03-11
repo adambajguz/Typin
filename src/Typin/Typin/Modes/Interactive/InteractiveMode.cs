@@ -57,7 +57,15 @@
                 await executor.ExecuteCommandAsync(commandLineArguments);
             }
 
-            IEnumerable<string> interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
+            IEnumerable<string> interactiveArguments;
+            try
+            {
+                interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
+            }
+            catch (TaskCanceledException)
+            {
+                return ExitCodes.Error; //TODO: should this be erorr or success? or maybe other?
+            }
 
             _console.ResetColor();
 
