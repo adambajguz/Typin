@@ -99,7 +99,9 @@
         public override string ToString()
         {
             if (Modifiers == 0)
+            {
                 return Key.ToString();
+            }
 
             return string.Concat(Modifiers, Key);
         }

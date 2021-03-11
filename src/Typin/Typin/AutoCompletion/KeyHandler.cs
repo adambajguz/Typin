@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
 
@@ -35,17 +36,17 @@
         /// <summary>
         /// Handles key input.
         /// </summary>
-        public async Task ReadKeyAsync()
+        public async Task ReadKeyAsync(CancellationToken cancellationToken = default)
         {
             ConsoleKeyInfo keyInfo = await _console.ReadKeyAsync(true);
 
-            await ReadKeyAsync(keyInfo);
+            await ReadKeyAsync(keyInfo, cancellationToken);
         }
 
         /// <summary>
         /// Handles key input.
         /// </summary>
-        public async Task ReadKeyAsync(ConsoleKeyInfo keyInfo)
+        public async Task ReadKeyAsync(ConsoleKeyInfo keyInfo, CancellationToken cancellationToken = default)
         {
             await Task.Run(() =>
             {
@@ -77,8 +78,10 @@
                 }
 
                 if (inputModified)
+                {
                     InputModified?.Invoke();
-            });
+                }
+            }, cancellationToken);
         }
     }
 }

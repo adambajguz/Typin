@@ -70,10 +70,10 @@
                     groups["method"].Value,
                     (
                         from i in Enumerable.Range(0, pt.Count)
-                        select new StackFrameParameter(pt[i].Value, pn[i].Value.NullIfWhiteSpace())
+                        select new StackFrameParameter(pt[i].Value, pn[i].Value.NullIfEmpty())
                     ).ToArray(),
-                    groups["file"].Value.NullIfWhiteSpace(),
-                    groups["line"].Value.NullIfWhiteSpace()
+                    groups["file"].Value.NullIfEmpty(),
+                    groups["line"].Value.NullIfEmpty()
                 );
             }
 

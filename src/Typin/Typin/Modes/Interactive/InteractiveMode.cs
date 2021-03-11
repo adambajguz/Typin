@@ -102,7 +102,7 @@
             if (_autoCompleteInput is null)
                 line = await console.Input.ReadLineAsync();
             else
-                line = await _autoCompleteInput.ReadLineAsync();
+                line = await _autoCompleteInput.ReadLineAsync(console.GetCancellationToken());
 
             console.ForegroundColor = ConsoleColor.Gray;
 

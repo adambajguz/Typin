@@ -120,7 +120,9 @@
         public CancellationToken GetCancellationToken()
         {
             if (_cancellationTokenSource != null)
+            {
                 return _cancellationTokenSource.Token;
+            }
 
             /* ====================================================================================================================
              *
@@ -157,6 +159,7 @@
 
             Console.CancelKeyPress += (_, args) =>
             {
+                //TODO: remove token from console + add logging + add supprot for cancelling single command in interactive mode.
                 // If cancellation hasn't been requested yet - cancel shutdown and fire the token
                 if (!cts.IsCancellationRequested)
                 {
@@ -179,7 +182,7 @@
         [ExcludeFromCodeCoverage]
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            //TODO: fix enter and maybe other
+            //TODO: fix double enter for \r\
             if (Input.IsRedirected)
             {
                 int v = -1;
@@ -187,6 +190,8 @@
                 {
                     v = Input.Read();
                 }
+
+                Output.Write((char)v);
 
                 return ((char)v).ToConsoleKeyInfo();
             }
@@ -198,23 +203,44 @@
         [ExcludeFromCodeCoverage]
         public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
         {
+            CancellationToken cancellationToken = GetCancellationToken();
+
             char[] charsRead = new char[1];
 
-            //TODO: fix enter and maybe other
+            //TODO: fix double enter for \r\
             if (Input.IsRedirected)
             {
                 int v = -1;
-                while (v < 0)
+                while (v < 0 && !cancellationToken.IsCancellationRequested)
                 {
-                    v = await Input.ReadAsync(charsRead, 0, 1);
+#if NETSTANDARD2_0
+                    v = await Task.Run(() => Input.ReadAsync(charsRead, 0, 1), cancellationToken);
+#else
+                    v = await Input.ReadAsync(charsRead, cancellationToken);
+#endif
                 }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    throw new TaskCanceledException($"{nameof(ReadKeyAsync)} cancelled.");
+                }
+
+                Output.Write(charsRead[0]);
 
                 return (charsRead[0]).ToConsoleKeyInfo();
             }
 
-            ConsoleKeyInfo consoleKey = await Task.Run(() => Console.ReadKey(intercept));
+            while (!Console.KeyAvailable && !cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(1);
+            }
 
-            return consoleKey;
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new TaskCanceledException($"{nameof(ReadKeyAsync)} cancelled.");
+            }
+
+            return Console.ReadKey(intercept);
         }
 
         /// <summary>
@@ -247,7 +273,9 @@
         private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamReader.CreateNull(console);
+            }
 
             return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
@@ -255,7 +283,9 @@
         private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamWriter.CreateNull(console);
+            }
 
             return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {

@@ -5,7 +5,7 @@
 
     internal static class InternalStringExtensions
     {
-        public static string? NullIfWhiteSpace(this string str)
+        public static string? NullIfEmpty(this string str)
         {
             return string.IsNullOrWhiteSpace(str) ? null : str;
         }

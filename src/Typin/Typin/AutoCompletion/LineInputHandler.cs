@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
     using Typin.Internal.Exceptions;
@@ -76,14 +77,10 @@
                 new ShortcutDefinition(ConsoleKey.RightArrow, MoveCursorRight),
                 new ShortcutDefinition(ConsoleKey.Home, () =>
                 {
-                    while (!IsStartOfLine)
-                        MoveCursorLeft();
-                }),
+                    while (!IsStartOfLine) { MoveCursorLeft(); } }),
                 new ShortcutDefinition(ConsoleKey.End, () =>
                 {
-                    while (!IsEndOfLine)
-                        MoveCursorRight();
-                }),
+                    while (!IsEndOfLine) { MoveCursorRight(); } }),
                 new ShortcutDefinition(ConsoleKey.Backspace, true, () => Backspace()),
                 new ShortcutDefinition(ConsoleKey.Delete, true, Delete),
                 new ShortcutDefinition(ConsoleKey.Insert, () => { }),
@@ -167,13 +164,13 @@
         /// <summary>
         /// Reads a line from input.
         /// </summary>
-        public async Task<string> ReadLineAsync()
+        public async Task<string> ReadLineAsync(CancellationToken cancellationToken = default)
         {
             IsReading = true;
             do
             {
-                await _keyHandler.ReadKeyAsync();
-            } while (IsReading);
+                await _keyHandler.ReadKeyAsync(cancellationToken);
+            } while (IsReading && !cancellationToken.IsCancellationRequested);
 
             return LastInput;
         }
@@ -199,13 +196,17 @@
         public void Write(string str)
         {
             foreach (char character in str)
+            {
                 Write(character);
+            }
         }
 
         public void Write(char c)
         {
             if (c == '\0')
+            {
                 return;
+            }
 
             if (IsEndOfLine)
             {
@@ -233,12 +234,18 @@
         private void MoveCursorLeft(int count = 1)
         {
             if (CursorPosition < count)
+            {
                 count = CursorPosition;
+            }
 
             if (_console.CursorLeft < count)
+            {
                 _console.SetCursorPosition(_console.BufferWidth - 1, _console.CursorTop - 1);
+            }
             else
+            {
                 _console.SetCursorPosition(_console.CursorLeft - count, _console.CursorTop);
+            }
 
             CursorPosition -= count;
         }
@@ -246,12 +253,18 @@
         private void MoveCursorRight()
         {
             if (IsEndOfLine)
+            {
                 return;
+            }
 
             if (IsEndOfBuffer)
+            {
                 _console.SetCursorPosition(0, _console.CursorTop + 1);
+            }
             else
+            {
                 _console.SetCursorPosition(_console.CursorLeft + 1, _console.CursorTop);
+            }
 
             ++CursorPosition;
         }
@@ -261,7 +274,9 @@
         public void ClearLine()
         {
             while (!IsStartOfLine)
+            {
                 Backspace();
+            }
 
             _text.Clear();
         }
@@ -271,7 +286,9 @@
             for (; count > 0; --count)
             {
                 if (CursorPosition == 0)
+                {
                     return;
+                }
 
                 MoveCursorLeft(1);
                 int index = CursorPosition;
@@ -296,7 +313,9 @@
         {
             //TODO: Use Delete instead of Backspace or maybe remove delete?
             if (IsEndOfLine)
+            {
                 return;
+            }
 
             DoUntilNextWordOrWhitespace(MoveCursorRight);
             DoUntilPrevWordOrWhitespace(() => Backspace());
@@ -305,7 +324,9 @@
         private void Delete()
         {
             if (IsEndOfLine)
+            {
                 return;
+            }
 
             int index = CursorPosition;
             _text.Remove(index, 1);
@@ -323,7 +344,9 @@
         private void DoUntilPrevWordOrWhitespace(Action action, bool treatSpacesAsWord = false)
         {
             if (IsStartOfLine)
+            {
                 return;
+            }
 
             if (char.IsWhiteSpace(_text[CursorPosition - 1]))
             {
@@ -334,7 +357,9 @@
                 while (!IsStartOfLine && char.IsWhiteSpace(_text[CursorPosition - 1]));
 
                 if (treatSpacesAsWord)
+                {
                     return;
+                }
             }
 
             do
@@ -347,7 +372,9 @@
         private void DoUntilNextWordOrWhitespace(Action action, bool treatSpacesAsWord = false)
         {
             if (IsEndOfLine)
+            {
                 return;
+            }
 
             if (char.IsWhiteSpace(_text[CursorPosition + 1]))
             {
@@ -358,7 +385,9 @@
                 while (!IsEndOfLine && char.IsWhiteSpace(_text[CursorPosition + 1]));
 
                 if (treatSpacesAsWord)
+                {
                     return;
+                }
             }
 
             //int v = treatSpacesAsWord ? 0 : 1;

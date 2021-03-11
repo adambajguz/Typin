@@ -27,7 +27,10 @@
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
                 .UseDirectMode(true)
-                .UseInteractiveMode()
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    //cfg.IsAdvancedInputAvailable = false;
+                })
                 .ConfigureLogging(cfg =>
                 {
                     cfg.SetMinimumLevel(LogLevel.Debug);
