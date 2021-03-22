@@ -50,20 +50,20 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 
 - [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defined shortcuts,
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
-- [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives) that can be used as either flags (``IDirective`) or dynamic pipeline extensions (`IPipelinedDirective`),
+- [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives) that can be used as either flags (`IDirective`) or dynamic pipeline extensions (`IPipelinedDirective`),
 - [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
 - [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
 - Build-in options support with `Microsoft.Extensions.Options`,
 - Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) with one or more exception handlers,
-- Ability to execute commands from other commands or servcies with `ICliCommandExecutor` (NOT RECOMMENDED, except for custom CLI mode classes),
+- Ability to execute commands from other commands or services with `ICliCommandExecutor` (NOT RECOMMENDED, except for custom CLI mode classes),
 - DI injectable `ICliContext` with lots of useful data,
-- Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
+- Manual property in `CommandAttribute` that can be used to provide a long, extended description of a command,
 - Custom help writer.
 - Custom modes support and application lifetime management.
 - Startup message color personalization through a callback method.
 - Console IO wrapper classes (`StandardStreamReader` and `StandardStreamWriter`) and IO interfaces.
 - Logging with `Microsoft.Extensions.Logging`.
-- Optional option and parmeter names by automatically generated kebab case name.
+- Optional option and parameter names by automatically generated kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
 - Native support for parsing `Half` type in .NET 5 targeted applications.
 - Validation can be easily added with [FluentValidation](https://github.com/FluentValidation/FluentValidation) and [a middleware](https://github.com/adambajguz/Typin/blob/master/src/TypinExamples/Examples/TypinExamples.Validation/Middleware/FluentValidationMiddleware.cs).
