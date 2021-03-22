@@ -17,7 +17,7 @@
         /// </remarks>
         public static IEnumerable<string> Split(string commandLine)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new();
 
             bool quoted = false;
             bool escaped = false;

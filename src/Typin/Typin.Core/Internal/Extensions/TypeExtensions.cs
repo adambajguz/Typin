@@ -15,7 +15,7 @@
 
         public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
         {
-            return property != null && property.PropertyType != typeof(string)
+            return property is not null && property.PropertyType != typeof(string)
                        ? property.PropertyType.TryGetEnumerableUnderlyingType()
                        : null;
         }
@@ -38,7 +38,7 @@
 
             return type.GetInterfaces()
                        .Select(TryGetEnumerableUnderlyingType)
-                       .Where(t => t != null)
+                       .Where(t => t is not null)
                        .OrderByDescending(t => t != typeof(object)) // prioritize more specific types
                        .FirstOrDefault();
         }

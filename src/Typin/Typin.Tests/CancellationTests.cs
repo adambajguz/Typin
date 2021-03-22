@@ -16,7 +16,7 @@
             // Can't test it with a real console because CliWrap can't send Ctrl+C
 
             // Arrange
-            using var cts = new CancellationTokenSource();
+            using CancellationTokenSource cts = new();
             var (console, stdOut, _) = VirtualConsole.CreateBuffered(cancellationToken: cts.Token);
 
             var application = new CliApplicationBuilder()

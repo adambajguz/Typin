@@ -207,11 +207,17 @@ namespace Typin
             {
                 ICliMode? currentMode = _applicationLifetime.CurrentMode;
 
-                if (currentMode != null)
+                //TODO: remove nulability from CurrentMode
+                if (currentMode is not null)
                     exitCode = await currentMode.ExecuteAsync(commandLineArguments, _cliCommandExecutor);
 
                 _applicationLifetime.TrySwitchModes();
                 _applicationLifetime.TryStop();
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("Cancellation requested. Stopping CLI application...");
             }
 
             _logger.LogInformation("CLI application will stop with '{ExitCode}'.", exitCode);

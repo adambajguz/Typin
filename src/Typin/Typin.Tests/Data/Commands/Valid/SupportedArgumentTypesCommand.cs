@@ -149,7 +149,7 @@
 
         [JsonProperty("datetime-nullable")]
         [CommandOption("datetime-nullable")]
-        public DateTime? DateTimeNullable { get; init; } = new DateTime(1898, 10, 20);
+        public DateTime? DateTimeNullable { get; init; } = new(1898, 10, 20);
 
         [JsonProperty("datetime-offset-nullable")]
         [CommandOption("datetime-offset-nullable")]
@@ -157,7 +157,7 @@
 
         [JsonProperty("timespan-nullable")]
         [CommandOption("timespan-nullable")]
-        public TimeSpan? TimeSpanNullable { get; init; } = new TimeSpan(1, 10, 30);
+        public TimeSpan? TimeSpanNullable { get; init; } = new(1, 10, 30);
         #endregion
 
         #region Custom enum

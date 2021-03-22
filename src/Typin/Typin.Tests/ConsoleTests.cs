@@ -60,9 +60,9 @@
         public void Fake_implementation_of_console_can_be_used_to_execute_commands_in_isolation()
         {
             // Arrange
-            using var stdIn = new MemoryStream(Console.InputEncoding.GetBytes("input"));
-            using var stdOut = new MemoryStream();
-            using var stdErr = new MemoryStream();
+            using MemoryStream stdIn = new(Console.InputEncoding.GetBytes("input"));
+            using MemoryStream stdOut = new();
+            using MemoryStream stdErr = new();
 
             using IConsole console = new VirtualConsole(input: stdIn,
                                                         output: stdOut,
@@ -110,7 +110,8 @@
         public async Task Console_color_extensions_should_work()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<WithColorsCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithColorsCommand>();
 
             var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
 
@@ -132,7 +133,8 @@
         public async Task Console_color_extensions_should_work_after_colors_reset()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<WithColorsAndResetCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithColorsAndResetCommand>();
 
             var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
 

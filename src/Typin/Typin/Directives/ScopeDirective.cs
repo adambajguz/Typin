@@ -55,7 +55,7 @@
         {
             string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
 
-            if (name != null)
+            if (name is not null)
             {
                 _options.Scope = name;
                 context.ExitCode ??= ExitCodes.Success;

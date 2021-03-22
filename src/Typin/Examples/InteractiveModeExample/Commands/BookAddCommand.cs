@@ -35,10 +35,10 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            if (_libraryService.GetBook(Title) != null)
+            if (_libraryService.GetBook(Title) is not null)
                 throw new CommandException("Book already exists.", 1);
 
-            var book = new Book(Title, Author, Published, Isbn);
+            Book book = new(Title, Author, Published, Isbn);
             _libraryService.AddBook(book);
 
             console.Output.WriteLine("Book added.");

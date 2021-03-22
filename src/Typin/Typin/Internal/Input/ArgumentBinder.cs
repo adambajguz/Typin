@@ -55,7 +55,7 @@
 
                 // Primitive conversion
                 Func<string, object?>? primitiveConverter = PrimitiveConverters.GetValueOrDefault(targetType);
-                if (primitiveConverter != null && !string.IsNullOrWhiteSpace(value))
+                if (primitiveConverter is not null && !string.IsNullOrWhiteSpace(value))
                     return primitiveConverter(value);
 
                 // Enum conversion conversion
@@ -64,7 +64,7 @@
 
                 // Nullable<T> conversion
                 Type? nullableUnderlyingType = targetType.TryGetNullableUnderlyingType();
-                if (nullableUnderlyingType != null)
+                if (nullableUnderlyingType is not null)
                 {
                     return !string.IsNullOrWhiteSpace(value)
                         ? ConvertScalar(argumentSchema, value, nullableUnderlyingType)
@@ -73,17 +73,17 @@
 
                 // String-constructible conversion
                 ConstructorInfo? stringConstructor = targetType.GetConstructor(new[] { typeof(string) });
-                if (stringConstructor != null)
+                if (stringConstructor is not null)
                     return stringConstructor.Invoke(new object?[] { value });
 
                 // String-parseable (with format provider) conversion
                 MethodInfo? parseMethodWithFormatProvider = targetType.TryGetStaticParseMethod(true);
-                if (parseMethodWithFormatProvider != null)
+                if (parseMethodWithFormatProvider is not null)
                     return parseMethodWithFormatProvider.Invoke(null, new object[] { value!, FormatProvider });
 
                 // String-parsable (without format provider) conversion
                 MethodInfo? parseMethod = targetType.TryGetStaticParseMethod();
-                if (parseMethod != null)
+                if (parseMethod is not null)
                     return parseMethod.Invoke(null, new object?[] { value });
             }
             catch (Exception ex)
@@ -107,10 +107,9 @@
 
             // Constructible from an array
             ConstructorInfo? arrayConstructor = targetEnumerableType.GetConstructor(new[] { arrayType });
-            if (arrayConstructor != null)
-                return arrayConstructor.Invoke(new object[] { array });
+            _ = arrayConstructor ?? throw ArgumentBindingExceptions.CannotConvertNonScalar(argumentSchema, values, targetEnumerableType);
 
-            throw ArgumentBindingExceptions.CannotConvertNonScalar(argumentSchema, values, targetEnumerableType);
+            return arrayConstructor.Invoke(new object[] { array });
         }
 
         private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyList<string> values)

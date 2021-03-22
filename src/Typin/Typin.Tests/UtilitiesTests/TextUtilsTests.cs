@@ -41,7 +41,7 @@
             string output = TextUtils.ConvertTabsToSpaces(text);
 
             // Assert
-            string t = new string(' ', 2);
+            string t = new(' ', 2);
             output.Should().Be($"Lorem ipsum dolor sit amet,{t} consectetur adipiscing elit.{t}{t} Proin in quam enim. Integer consequat efficitur maximus.{t}{t}{t}In egestas eget magna viverra varius.");
 
             _output.WriteLine(text);
@@ -57,7 +57,7 @@
             string output = TextUtils.ConvertTabsToSpaces(text, 8);
 
             // Assert
-            string t = new string(' ', 8);
+            string t = new(' ', 8);
             output.Should().Be($"Lorem ipsum dolor sit amet,{t} consectetur adipiscing elit.{t}{t} Proin in quam enim. Integer consequat efficitur maximus.{t}{t}{t}In egestas eget magna viverra varius.");
 
             _output.WriteLine(text);

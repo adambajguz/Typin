@@ -98,7 +98,9 @@
                     continue;
                 }
                 else if (!inputsProvided) // Skip if the inputs weren't provided for this option
+                {
                     continue;
+                }
 
                 string[] inputValues = inputs.SelectMany(i => i.Values)
                                              .ToArray();

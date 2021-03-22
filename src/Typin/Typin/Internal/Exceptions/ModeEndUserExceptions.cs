@@ -27,10 +27,10 @@
 
         public static TypinException CommandExecutedInInvalidMode(CommandSchema command, Type currentMode)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
-            if (command.SupportedModes != null)
+            if (command.SupportedModes is not null)
             {
                 builder.AppendLine();
                 builder.AppendLine($"Command '{command.Type.FullName}' supports modes:");
@@ -41,7 +41,7 @@
                 }
             }
 
-            if (command.ExcludedModes != null)
+            if (command.ExcludedModes is not null)
             {
                 builder.AppendLine();
                 builder.AppendLine($"Command '{command.Type.FullName}' cannot run in modes:");
@@ -57,10 +57,10 @@
 
         public static TypinException DirectiveExecutedInInvalidMode(DirectiveSchema directive, Type currentMode)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new();
             builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
-            if (directive.SupportedModes != null)
+            if (directive.SupportedModes is not null)
             {
                 builder.AppendLine();
                 builder.AppendLine($"Directive '{directive.Type.FullName}' supports modes:");
@@ -71,7 +71,7 @@
                 }
             }
 
-            if (directive.ExcludedModes != null)
+            if (directive.ExcludedModes is not null)
             {
                 builder.AppendLine();
                 builder.AppendLine($"Directive '{directive.Type.FullName}' cannot run in modes:");

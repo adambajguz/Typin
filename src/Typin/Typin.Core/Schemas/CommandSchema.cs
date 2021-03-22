@@ -114,10 +114,10 @@
             if (!HasModeRestrictions())
                 return true;
 
-            if (SupportedModes != null && !SupportedModes!.Contains(type))
+            if (SupportedModes is not null && !SupportedModes!.Contains(type))
                 return false;
 
-            if (ExcludedModes != null && ExcludedModes!.Contains(type))
+            if (ExcludedModes is not null && ExcludedModes.Contains(type))
                 return false;
 
             return true;
@@ -148,7 +148,7 @@
         /// </summary>
         public IReadOnlyDictionary<ArgumentSchema, object?> GetArgumentValues(ICommand instance)
         {
-            var result = new Dictionary<ArgumentSchema, object?>();
+            Dictionary<ArgumentSchema, object?> result = new();
 
             foreach (ArgumentSchema argument in GetArguments())
             {
@@ -165,7 +165,7 @@
 
         internal string GetInternalDisplayString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             // Type
             buffer.Append(Type.FullName);

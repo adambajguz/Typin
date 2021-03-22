@@ -95,7 +95,8 @@
         public async Task Application_can_be_created_and_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>();
 
             if (interactive)
             {
@@ -120,7 +121,8 @@
         public async Task Application_can_be_created_but_not_executed_with_list_command(string[] commandLineArguments, string result, bool interactive)
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>();
 
             if (interactive)
             {
@@ -154,7 +156,8 @@
         public async Task Application_can_be_created_and_executed_with_string_command(string commandLine, string result, bool interactive, bool containsExecutable)
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>();
 
             if (interactive)
             {
@@ -174,8 +177,9 @@
         public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                     .AddCommand<NamedInteractiveOnlyCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>()
+                .AddCommand<NamedInteractiveOnlyCommand>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
@@ -191,8 +195,9 @@
         public async Task Application_with_direct_mode_cannot_execute_direct_mode_excluded_commands()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                     .AddCommand<NamedDirectExcludedCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>()
+                .AddCommand<NamedDirectExcludedCommand>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-direct-excluded-only" }, isInputRedirected: false);
@@ -208,10 +213,11 @@
         public async Task Application_without_interactive_mode_cannot_execute_interactive_only_commands_even_if_supports_interactive_mode_but_is_not_started()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>()
-                                                     .AddCommand<NamedInteractiveOnlyCommand>()
-                                                     .UseDirectMode(true)
-                                                     .UseInteractiveMode();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>()
+                .AddCommand<NamedInteractiveOnlyCommand>()
+                .UseDirectMode(true)
+                .UseInteractiveMode();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
@@ -227,7 +233,8 @@
         public async Task Application_can_be_created_and_executed_with_benchmark_commands()
         {
             // Arrange
-            var builder = new CliApplicationBuilder().AddCommand<BenchmarkDefaultCommand>();
+            var builder = new CliApplicationBuilder()
+                .AddCommand<BenchmarkDefaultCommand>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "-13", "-b" });

@@ -15,7 +15,7 @@
 
     public sealed class AutoCompleteInputTests : IDisposable
     {
-        private readonly string[] _history = new string[] { "dotnet run", "git init", "clear" };
+        private readonly string[] _history = new[] { "dotnet run", "git init", "clear" };
 
         private readonly IConsole _console;
         private readonly MemoryStream stdIn;
@@ -36,7 +36,7 @@
         private AutoCompleteInput GetAutoCompleteInstance()
         {
             // Arrange
-            AutoCompleteInput instance = new AutoCompleteInput(_console)
+            AutoCompleteInput instance = new(_console)
             {
                 AutoCompletionHandler = new TestAutoCompleteHandler()
             };

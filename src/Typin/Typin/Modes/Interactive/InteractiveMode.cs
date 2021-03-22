@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Typin.AutoCompletion;
     using Typin.Console;
@@ -20,6 +21,7 @@
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
         private readonly ApplicationConfiguration _configuration;
+        private readonly ILogger _logger;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
 
@@ -28,6 +30,7 @@
         /// </summary>
         public InteractiveMode(IOptions<InteractiveModeOptions> options,
                                IConsole console,
+                               ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                ApplicationMetadata metadata,
                                ApplicationConfiguration configuration)
@@ -35,6 +38,7 @@
             _options = options.Value;
 
             _console = console;
+            _logger = logger;
             _metadata = metadata;
             _configuration = configuration;
 
@@ -57,7 +61,16 @@
                 await executor.ExecuteCommandAsync(commandLineArguments);
             }
 
-            IEnumerable<string> interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
+            IEnumerable<string> interactiveArguments;
+            try
+            {
+                interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
+            }
+            catch (TaskCanceledException)
+            {
+                _logger.LogInformation("Interactive mode input cancelled.");
+                return ExitCodes.Error;
+            }
 
             _console.ResetColor();
 
@@ -102,7 +115,7 @@
             if (_autoCompleteInput is null)
                 line = await console.Input.ReadLineAsync();
             else
-                line = await _autoCompleteInput.ReadLineAsync();
+                line = await _autoCompleteInput.ReadLineAsync(console.GetCancellationToken());
 
             console.ForegroundColor = ConsoleColor.Gray;
 
