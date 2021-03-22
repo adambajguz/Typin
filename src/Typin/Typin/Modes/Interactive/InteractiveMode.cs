@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Typin.AutoCompletion;
     using Typin.Console;
@@ -20,6 +21,7 @@
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
         private readonly ApplicationConfiguration _configuration;
+        private readonly ILogger _logger;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
 
@@ -28,6 +30,7 @@
         /// </summary>
         public InteractiveMode(IOptions<InteractiveModeOptions> options,
                                IConsole console,
+                               ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                ApplicationMetadata metadata,
                                ApplicationConfiguration configuration)
@@ -35,6 +38,7 @@
             _options = options.Value;
 
             _console = console;
+            _logger = logger;
             _metadata = metadata;
             _configuration = configuration;
 
@@ -64,7 +68,8 @@
             }
             catch (TaskCanceledException)
             {
-                return ExitCodes.Error; //TODO: should this be erorr or success? or maybe other?
+                _logger.LogInformation("Interactive mode input cancelled.");
+                return ExitCodes.Error;
             }
 
             _console.ResetColor();

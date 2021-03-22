@@ -1,6 +1,7 @@
 ### v3.0.1 (xx-Mar-2021)
 
  - Fixed Ctrl+C in interactive mode.
+ - .NET 5/C# 9 related refactor.s
 
 ### v3.0.0 (23-Feb-2021)
 
