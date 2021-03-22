@@ -1,0 +1,25 @@
+﻿footer.page-footer.footer-bg {
+    background-color: var(--bg-secondary-color);
+    padding: 4rem;
+}
+
+footer.page-footer > div.footer-authors {
+    font-weight: 500;
+    margin: 0.35em 0 0.7em 0;
+    font-size: 1em;
+}
+
+footer .text-separator {
+    padding: 0 .6rem;
+}
+
+/*Sticky footer*/
+app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+    app > footer.page-footer {
+        margin-top: auto
+    }
