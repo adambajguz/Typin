@@ -29,7 +29,7 @@
         public Type? RequestedModeType { get; private set; } = null;
 
         /// <inheritdoc/>
-        public bool IsModeRequested => !(RequestedMode is null);
+        public bool IsModeRequested => RequestedMode is not null;
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplicationLifetime"/>.

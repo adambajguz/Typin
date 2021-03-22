@@ -122,7 +122,7 @@
             IEnumerable<CommandSchema> descendants = GetDescendantCommands(Commands.Values, parentCommandName);
 
             // Filter out descendants of descendants, leave only children
-            var result = new List<CommandSchema>(descendants);
+            List<CommandSchema> result = new(descendants);
 
             foreach (var descendant in descendants)
             {

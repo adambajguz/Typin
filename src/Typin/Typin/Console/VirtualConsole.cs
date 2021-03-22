@@ -61,13 +61,13 @@
                                                                                                                    CancellationToken cancellationToken = default)
         {
             // Memory streams don't need to be disposed
-            var output = new MemoryStreamWriter(Console.OutputEncoding);
-            var error = new MemoryStreamWriter(Console.OutputEncoding);
+            MemoryStreamWriter output = new(Console.OutputEncoding);
+            MemoryStreamWriter error = new(Console.OutputEncoding);
 
-            var console = new VirtualConsole(input: null, isInputRedirected,
-                                             output.Stream, isOutputRedirected,
-                                             error.Stream, isErrorRedirected,
-                                             cancellationToken);
+            VirtualConsole console = new(input: null, isInputRedirected,
+                                         output.Stream, isOutputRedirected,
+                                         error.Stream, isErrorRedirected,
+                                         cancellationToken);
 
             return (console, output, error);
         }
@@ -127,6 +127,10 @@
                 v = Input.Read();
             }
 
+            Output.Write((char)v);
+
+            //TODO: fix double enter for \r\
+
             return ((char)v).ToConsoleKeyInfo();
         }
 
@@ -134,15 +138,25 @@
         [ExcludeFromCodeCoverage]
         public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
         {
+            CancellationToken cancellationToken = GetCancellationToken();
+
             char[] charsRead = new char[1];
 
             int v = -1;
             while (v < 0)
             {
-                v = await Input.ReadAsync(charsRead, 0, 1);
+#if NETSTANDARD2_0
+                v = await Task.Run(() => Input.ReadAsync(charsRead, 0, 1), cancellationToken);
+#else
+                v = await Input.ReadAsync(charsRead, cancellationToken);
+#endif
             }
 
-            return (charsRead[0]).ToConsoleKeyInfo();
+            Output.Write(charsRead[0]);
+
+            //TODO: fix double enter for \r\
+
+            return charsRead[0].ToConsoleKeyInfo();
         }
 
         /// <summary>
@@ -175,7 +189,9 @@
         private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamReader.CreateNull(console);
+            }
 
             return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
@@ -183,7 +199,9 @@
         private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamWriter.CreateNull(console);
+            }
 
             return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {

@@ -7,7 +7,7 @@
     /// </summary>
     public class InputHistoryProvider : IInputHistoryProvider
     {
-        private readonly LinkedList<string> _history = new LinkedList<string>();
+        private readonly LinkedList<string> _history = new();
         private LinkedListNode<string>? _selection;
 
         /// <inheritdoc/>
@@ -27,7 +27,9 @@
             string value = entry.TrimEnd('\n', '\r');
 
             if (string.IsNullOrWhiteSpace(value))
+            {
                 return false;
+            }
 
             _history.AddLast(value);
 
@@ -38,7 +40,9 @@
         public void AddEntries(params string[] entries)
         {
             foreach (string entry in entries)
+            {
                 TryAddEntry(entry);
+            }
         }
 
         /// <inheritdoc/>

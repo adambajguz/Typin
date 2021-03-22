@@ -35,7 +35,7 @@
 
         public ValueTask ExecuteAsync(IConsole console)
         {
-            if (_libraryService.GetBook(Title) != null)
+            if (_libraryService.GetBook(Title) is not null)
                 throw new CommandException("Book already exists.", 1);
 
             Book book = new(Title, Author, Published, Isbn);

@@ -17,7 +17,7 @@
             public string? Group { get; init; }
         }
 
-        private readonly List<Data> _testData = new List<Data>
+        private readonly List<Data> _testData = new()
         {
             new Data { Integer = 0, Str = "testA", Group = "X" },
             new Data { Integer = 1, Str = "testB", Group = "Z" },

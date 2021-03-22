@@ -14,12 +14,12 @@
         /// <summary>
         /// Gets a help option schema instance.
         /// </summary>
-        public static CommandOptionSchema HelpOption { get; } = new CommandOptionSchema(null, "help", 'h', null, false, "Shows help text.");
+        public static CommandOptionSchema HelpOption { get; } = new(null, "help", 'h', null, false, "Shows help text.");
 
         /// <summary>
         /// Gets a version option schema instance.
         /// </summary>
-        public static CommandOptionSchema VersionOption { get; } = new CommandOptionSchema(null, "version", null, null, false, "Shows version information.");
+        public static CommandOptionSchema VersionOption { get; } = new(null, "version", null, null, false, "Shows version information.");
 
         /// <summary>
         /// Option name.
@@ -71,7 +71,7 @@
         /// </summary>
         public bool MatchesShortName(char shortName)
         {
-            return ShortName != null && ShortName == shortName;
+            return ShortName is not null && ShortName == shortName;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@
 
         private string GetUserFacingDisplayString()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new();
 
             if (!string.IsNullOrWhiteSpace(Name))
             {
@@ -92,12 +92,12 @@
                       .Append(Name);
             }
 
-            if (!string.IsNullOrWhiteSpace(Name) && ShortName != null)
+            if (!string.IsNullOrWhiteSpace(Name) && ShortName is not null)
             {
                 buffer.Append('|');
             }
 
-            if (ShortName != null)
+            if (ShortName is not null)
             {
                 buffer.Append('-')
                       .Append(ShortName);

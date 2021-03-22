@@ -31,7 +31,7 @@
             TableUtils.Write(console.Output,
                              middlewares.Concat(new Type?[] { null })
                                         .Concat(middlewares.Reverse()),
-                             new string[] { "Middleware type name", "Assembly" },
+                             new[] { "Middleware type name", "Assembly" },
                              footnotes: null,
                              x => x == null ? "<PipelineTermination>" : x.FullName == null ? string.Empty : x.FullName.ToString(),
                              x => x == null ? string.Empty : x.Assembly.ToString());

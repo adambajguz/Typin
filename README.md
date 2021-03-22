@@ -50,20 +50,24 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 
 - [Interactive mode](https://github.com/adambajguz/Typin/wiki/Interactive-mode) with auto-completion, parameter escaping with `"`, and support for user-defined shortcuts,
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
-- [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives),
+- [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives) that can be used as either flags (``IDirective`) or dynamic pipeline extensions (`IPipelinedDirective`),
 - [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
 - [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
 - Build-in options support with `Microsoft.Extensions.Options`,
-- Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) messages,
+- Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) with one or more exception handlers,
+- Ability to execute commands from other commands or servcies with `ICliCommandExecutor` (NOT RECOMMENDED, except for custom CLI mode classes),
 - DI injectable `ICliContext` with lots of useful data,
 - Manual property in `CommandAttribute` that can be used to provide a long, extended description of a commmand,
 - Custom help writer.
-- Custom modes support and application lifetime.
+- Custom modes support and application lifetime management.
 - Startup message color personalization through a callback method.
 - Console IO wrapper classes (`StandardStreamReader` and `StandardStreamWriter`) and IO interfaces.
 - Logging with `Microsoft.Extensions.Logging`.
-- Optional option names by providing a kebab case name.
+- Optional option and parmeter names by automatically generated kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
+- Native support for parsing `Half` type in .NET 5 targeted applications.
+- Validation can be easily added with [FluentValidation](https://github.com/FluentValidation/FluentValidation) and [a middleware](https://github.com/adambajguz/Typin/blob/master/src/TypinExamples/Examples/TypinExamples.Validation/Middleware/FluentValidationMiddleware.cs).
+- Console input/output targeted extensions through `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 
 Overall, Typin is a framework that is much more flexible and rich with both features and metadata about defined commands etc.
 
@@ -71,22 +75,24 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 
 ## Features
 
-- Complete application framework, not just an argument parser
-- Requires minimal amount of code to get started
-- Configuration via attributes
-- Handles conversions to various types, including custom types
-- Supports multi-level command hierarchies
-- Supports interactive mode
+- Complete application framework
+- Argument (options and parmeters) parser.
+- Requires minimal amount of code to get started.
+- Configuration via attributes.
+- Handles conversions to various types, including custom types.
+- Similarly to ASP.NET Core, relies on dependency injection, thus is very extensible.
+- Supports multi-level command hierarchies.
+- Supports interactive mode and user defined modes.
 - Intuitive auto-completion (Tab / Shift + Tab) in interactive mode.
 - Intuitive command history (Up and Down arrows) in interactive mode, accessible also from user code.
-- Exposes raw input, output, error streams to handle binary data
-- Allows graceful command cancellation
-- Prints errors and routes exit codes on exceptions
-- Provides comprehensive and colorful auto-generated help text
-- Highly testable and easy to debug
-- Comes with built-in analyzers to help catch common mistakes
-- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0
-- Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies
+- Exposes raw input, output, error streams to handle binary data.
+- Allows graceful command cancellation.
+- Prints errors and routes exit codes on exceptions.
+- Provides comprehensive and colorful auto-generated help text.
+- Highly testable and easy to debug.
+- Automatic generation of option and parameter names by transforming property name with kebab-case formatter.
+- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0.
+- Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies.
 
 ## Installing Typin
 

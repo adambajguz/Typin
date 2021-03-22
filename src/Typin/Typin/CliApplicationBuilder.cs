@@ -25,8 +25,8 @@ namespace Typin
         private bool _cliApplicationBuilt;
 
         //Directives and commands settings
-        private readonly List<Type> _commandTypes = new List<Type>();
-        private readonly List<Type> _directivesTypes = new List<Type>();
+        private readonly List<Type> _commandTypes = new();
+        private readonly List<Type> _directivesTypes = new();
 
         //Metadata settings
         private string? _title;
@@ -40,15 +40,15 @@ namespace Typin
 
         //Dependency injection
         private IServiceFactoryAdapter _serviceProviderAdapter = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
-        private readonly List<Action<IServiceCollection>> _configureServicesActions = new List<Action<IServiceCollection>>();
-        private readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
+        private readonly List<Action<IServiceCollection>> _configureServicesActions = new();
+        private readonly List<IConfigureContainerAdapter> _configureContainerActions = new();
 
         //Modes
-        private readonly List<Type> _modeTypes = new List<Type>();
+        private readonly List<Type> _modeTypes = new();
         private Type? _startupMode;
 
         //Middleware
-        private readonly LinkedList<Type> _middlewareTypes = new LinkedList<Type>();
+        private readonly LinkedList<Type> _middlewareTypes = new();
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplicationBuilder"/>.
@@ -551,17 +551,17 @@ namespace Typin
             this.AddAfterUserMiddlewares();
 
             // Create context
-            var _serviceCollection = new ServiceCollection();
+            ServiceCollection _serviceCollection = new();
 
-            var metadata = new ApplicationMetadata(_title, _executableName, _versionText, _description);
-            var configuration = new ApplicationConfiguration(_modeTypes,
-                                                             _commandTypes,
-                                                             _directivesTypes,
-                                                             _middlewareTypes,
-                                                             _startupMode!,
-                                                             _serviceCollection);
+            ApplicationMetadata metadata = new(_title, _executableName, _versionText, _description);
+            ApplicationConfiguration configuration = new(_modeTypes,
+                                                         _commandTypes,
+                                                         _directivesTypes,
+                                                         _middlewareTypes,
+                                                         _startupMode!,
+                                                         _serviceCollection);
 
-            var environmentVariablesAccessor = new EnvironmentVariablesAccessor();
+            EnvironmentVariablesAccessor environmentVariablesAccessor = new();
 
             // Add core services
             _serviceCollection.AddOptions();

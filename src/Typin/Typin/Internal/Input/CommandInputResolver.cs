@@ -54,7 +54,7 @@
         {
             isDefaultDirectiveSpecified = false;
 
-            var result = new List<DirectiveInput>();
+            List<DirectiveInput> result = new();
 
             for (; index < commandLineArguments.Count; index++)
             {
@@ -81,7 +81,7 @@
             if (isDefaultDirectiveSpecified)
                 return null;
 
-            var buffer = new List<string>();
+            List<string> buffer = new();
 
             string? commandName = null;
             int lastIndex = index;
@@ -111,7 +111,7 @@
         private static IReadOnlyList<CommandParameterInput> ParseParameters(IReadOnlyList<string> commandLineArguments,
                                                                             ref int index)
         {
-            var result = new List<CommandParameterInput>();
+            List<CommandParameterInput> result = new();
 
             for (; index < commandLineArguments.Count; index++)
             {
@@ -129,10 +129,10 @@
         private static IReadOnlyList<CommandOptionInput> ParseOptions(IReadOnlyList<string> commandLineArguments,
                                                                       ref int index)
         {
-            var result = new List<CommandOptionInput>();
+            List<CommandOptionInput> result = new();
 
             string? currentOptionAlias = null;
-            var currentOptionValues = new List<string>();
+            List<string> currentOptionValues = new();
 
             for (; index < commandLineArguments.Count; index++)
             {
@@ -150,6 +150,7 @@
                 }
                 // Short name
                 else if (CommandOptionInput.IsOptionAlias(argument))
+                {
                     foreach (var alias in argument.Substring(1))
                     {
                         // Flush previous
@@ -159,9 +160,12 @@
                         currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
                     }
+                }
                 // Value
                 else if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                {
                     currentOptionValues.Add(argument);
+                }
             }
 
             // Flush last option

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
 
@@ -12,7 +13,7 @@
         private int _completionStart;
         private int _completionsIndex;
 
-        private bool IsInAutoCompleteMode => AutoCompletionHandler != null && _completions.Length != 0;
+        private bool IsInAutoCompleteMode => AutoCompletionHandler is not null && _completions.Length != 0;
 
         public InputHistoryProvider History { get; }
         public IAutoCompletionHandler? AutoCompletionHandler { get; set; }
@@ -25,7 +26,7 @@
         {
             History = new InputHistoryProvider();
 
-            var keyActions = new HashSet<ShortcutDefinition>
+            HashSet<ShortcutDefinition> keyActions = new()
             {
                 // History
                 new ShortcutDefinition(ConsoleKey.UpArrow, () =>
@@ -48,17 +49,11 @@
                 // AutoComplete
                 new ShortcutDefinition(ConsoleKey.Tab, () =>
                 {
-                    if (IsInAutoCompleteMode)
-                        NextAutoComplete();
-                    else
-                        InitAutoComplete();
+                    if (IsInAutoCompleteMode) { NextAutoComplete(); } else { InitAutoComplete(); }
                 }),
                 new ShortcutDefinition(ConsoleKey.Tab, ConsoleModifiers.Shift, () =>
                 {
-                    if (IsInAutoCompleteMode)
-                        PreviousAutoComplete();
-                    else
-                        InitAutoComplete(true);
+                    if (IsInAutoCompleteMode) { PreviousAutoComplete(); } else { InitAutoComplete(true); }
                 })
             };
 
@@ -75,9 +70,9 @@
         /// <summary>
         /// Reads a line from input.
         /// </summary>
-        public async Task<string> ReadLineAsync()
+        public async Task<string> ReadLineAsync(CancellationToken cancellationToken = default)
         {
-            string text = await _lineInputHandler.ReadLineAsync();
+            string text = await _lineInputHandler.ReadLineAsync(cancellationToken);
 
             ResetAutoComplete();
 
@@ -111,7 +106,9 @@
         private void InitAutoComplete(bool fromEnd = false)
         {
             if (AutoCompletionHandler is null || !_lineInputHandler.IsEndOfLine)
+            {
                 return;
+            }
 
             string text = _lineInputHandler.CurrentInput;
 
@@ -121,7 +118,9 @@
             _completions = AutoCompletionHandler.GetSuggestions(text, _completionStart);
 
             if (_completions.Length == 0)
+            {
                 return;
+            }
 
             _lineInputHandler.ClearLine();
             _completionsIndex = fromEnd ? _completions.Length - 1 : 0;
@@ -131,7 +130,9 @@
         private void NextAutoComplete()
         {
             if (++_completionsIndex == _completions.Length)
+            {
                 _completionsIndex = 0;
+            }
 
             _lineInputHandler.ClearLine();
             _lineInputHandler.Write(_completions[_completionsIndex]);
@@ -140,7 +141,9 @@
         private void PreviousAutoComplete()
         {
             if (--_completionsIndex == -1)
+            {
                 _completionsIndex = _completions.Length - 1;
+            }
 
             _lineInputHandler.ClearLine();
             _lineInputHandler.Write(_completions[_completionsIndex]);

@@ -5,7 +5,7 @@
 
     internal class TestAutoCompleteHandler : IAutoCompletionHandler
     {
-        public char[] Separators { get; set; } = new char[] { ' ', '.', '/', '\\', ':' };
+        public char[] Separators { get; set; } = new[] { ' ', '.', '/', '\\', ':' };
 
         public string[] GetSuggestions(string text, int index)
         {

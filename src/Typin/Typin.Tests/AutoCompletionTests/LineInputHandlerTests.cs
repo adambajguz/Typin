@@ -33,7 +33,7 @@
         private async Task<LineInputHandler> GetKeyHandlerInstance()
         {
             // Arrange
-            LineInputHandler handler = new LineInputHandler(_console);
+            LineInputHandler handler = new(_console);
 
             ConsoleKeyInfo[] input = "Hello".Select(c => c.ToConsoleKeyInfo()).ToArray();
             await handler.ReadAsync(input);
@@ -198,7 +198,7 @@
             LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, 'S'.ToConsoleKeyInfo() };
+            ConsoleKeyInfo[] input = new[] { Home, 'S'.ToConsoleKeyInfo() };
             await handler.ReadAsync(input);
 
             // Assert
@@ -212,7 +212,7 @@
             LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { Home, End, ExclamationPoint };
+            ConsoleKeyInfo[] input = new[] { Home, End, ExclamationMark };
             await handler.ReadAsync(input);
 
             // Assert
@@ -243,7 +243,7 @@
             LineInputHandler handler = await GetKeyHandlerInstance();
 
             // Act
-            ConsoleKeyInfo[] input = new ConsoleKeyInfo[] { LeftArrow, LeftArrow, RightArrow, ExclamationPoint };
+            ConsoleKeyInfo[] input = new[] { LeftArrow, LeftArrow, RightArrow, ExclamationMark };
             await handler.ReadAsync(input);
 
             // Assert

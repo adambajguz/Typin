@@ -12,7 +12,7 @@
         /// <summary>
         /// Gets the stream that interfaces with a backing store.
         /// </summary>
-        public MemoryStream Stream { get; } = new MemoryStream();
+        public MemoryStream Stream { get; } = new();
 
         /// <summary>
         /// Gets the stream that interfaces with a backing store.

@@ -10,8 +10,8 @@
     /// </summary>
     public static class TextUtils
     {
-        private static readonly Regex _newLinesRegex = new Regex(@"\r\n?|\n", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly Regex _toKebabCaseRegex = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _newLinesRegex = new(@"\r\n?|\n", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _toKebabCaseRegex = new(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// Converts string to Kebab case.

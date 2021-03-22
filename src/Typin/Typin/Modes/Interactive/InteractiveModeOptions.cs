@@ -40,7 +40,7 @@
         /// <summary>
         /// User defined shortcuts.
         /// </summary>
-        public HashSet<ShortcutDefinition> UserDefinedShortcuts { get; set; } = new HashSet<ShortcutDefinition>();
+        public HashSet<ShortcutDefinition> UserDefinedShortcuts { get; set; } = new();
 
         /// <summary>
         /// Whether advanced input is available.

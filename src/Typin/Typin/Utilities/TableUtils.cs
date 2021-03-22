@@ -119,7 +119,9 @@
                     stream.WithForegroundColor(ConsoleColor.DarkYellow, (o) => o.Write(header.PadRight(targetWidth)));
 
                     if (i + 1 < columnWidths.Length)
+                    {
                         stream.WithForegroundColor(ConsoleColor.Magenta, (o) => o.Write(" |"));
+                    }
                 }
                 stream.WriteLine();
 
@@ -143,7 +145,9 @@
                     stream.Write(value.PadRight(targetWidth));
 
                     if (i + 1 < columnWidths.Length)
+                    {
                         stream.WithForegroundColor(ConsoleColor.Magenta, (o) => o.Write(" |"));
+                    }
                 }
 
                 stream.WriteLine();
@@ -158,7 +162,9 @@
                 string header = headers.ElementAtOrDefault(i) ?? string.Empty;
 
                 if (columnWidths[i] < header.Length)
+                {
                     columnWidths[i] = header.Length;
+                }
             }
         }
         #endregion

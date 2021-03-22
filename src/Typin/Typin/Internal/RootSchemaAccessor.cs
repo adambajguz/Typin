@@ -28,12 +28,12 @@
         {
             _logger.LogDebug("Resolving root schema...");
 
-            var timer = new Stopwatch();
+            Stopwatch timer = new();
             timer.Start();
 
-            RootSchemaResolver rootSchemaResolver = new RootSchemaResolver(_configuration.CommandTypes,
-                                                                           _configuration.DirectiveTypes,
-                                                                           _configuration.ModeTypes);
+            RootSchemaResolver rootSchemaResolver = new(_configuration.CommandTypes,
+                                                        _configuration.DirectiveTypes,
+                                                        _configuration.ModeTypes);
 
             RootSchema? rootScheam = rootSchemaResolver.Resolve();
             timer.Stop();

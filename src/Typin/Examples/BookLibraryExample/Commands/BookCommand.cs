@@ -27,8 +27,7 @@
         {
             Book? book = _libraryService.GetBook(Title);
 
-            if (book is null)
-                throw new CommandException("Book not found.", 1);
+            _ = book ?? throw new CommandException("Book not found.", 1);
 
             console.RenderBook(book);
 
