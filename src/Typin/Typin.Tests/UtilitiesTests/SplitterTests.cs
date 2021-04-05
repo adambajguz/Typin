@@ -67,14 +67,14 @@
         public void ShouldParse(string commandLine, string[] results)
         {
             //Act
-            IEnumerable<string> splitted = CommandLineSplitter.Split(commandLine);
+            IEnumerable<string> split = CommandLineSplitter.Split(commandLine);
 
             _output.WriteLine(commandLine);
-            _output.WriteLine(JsonConvert.SerializeObject(splitted));
+            _output.WriteLine(JsonConvert.SerializeObject(split));
 
             //Assert
-            splitted.Count().Should().Be(results.Length);
-            splitted.Should().Equal(results);
+            split.Count().Should().Be(results.Length);
+            split.Should().Equal(results);
         }
     }
 }
