@@ -314,20 +314,17 @@
             foreach (CommandParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
-                Write(parameter.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>"
-                );
+                Write(parameter.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
             foreach (CommandOptionSchema option in command.Options.Where(o => o.IsRequired))
             {
                 Write(' ');
-                Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}"
-                );
+                Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
 
                 Write(' ');
-                Write(option.IsScalar ? "<value>" : "<values...>"
-                );
+                Write(option.IsScalar ? "<value>" : "<values...>");
             }
 
             // Options placeholder
