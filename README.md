@@ -73,6 +73,8 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 
 > See [CHANGELOG.md](https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md) for a complete list of changes.
 
+> Also see [WIKI: Roadmap and support](https://github.com/adambajguz/Typin/wiki/Roadmap-and-support) for more info about future and support.
+
 ## Features
 
 - Complete application framework
