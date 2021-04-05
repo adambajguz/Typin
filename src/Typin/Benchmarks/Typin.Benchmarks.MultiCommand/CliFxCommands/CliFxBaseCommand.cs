@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using CliFx;
     using CliFx.Attributes;
+    using CliFx.Infrastructure;
 
     public abstract class CliFxBaseCommand : ICommand
     {
