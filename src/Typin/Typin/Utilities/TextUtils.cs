@@ -37,10 +37,9 @@
             return text.Replace("\t", new string(' ', width));
         }
 
-
         /// <summary>
-        /// Convertes escaped char sequence to char.
-        /// The following escape sequences are supported: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', and '\\')
+        /// Converts escaped char sequence to char.
+        /// The following escape sequences are supported: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\', and Unicode escape sequence e.g. \u006A)
         /// </summary>
         [SuppressMessage("Style", "IDE0057:Use range operator")]
         public static char UnescapeChar(string? text)
