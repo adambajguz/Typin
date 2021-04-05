@@ -446,7 +446,7 @@ namespace Typin
         public CliApplicationBuilder UseHelpWriter<T>()
             where T : IHelpWriter
         {
-            return UseOptionFallbackProvider(typeof(T));
+            return UseHelpWriter(typeof(T));
         }
         #endregion
 

@@ -1,7 +1,11 @@
-### v3.0.1 (xx-Mar-2021)
+### v3.0.2 (05-Apr-2021)
+
+ - Fixed `CliApplicationBuilder.UseHelpWriter<>` - it was using `UseOptionFallbackProvider(Type)` instead of `UseHelpWriter(Type)`.
+ 
+### v3.0.1 (22-Mar-2021)
 
  - Fixed Ctrl+C in interactive mode.
- - .NET 5/C# 9 related refactor.s
+ - .NET 5/C# 9 related refactor.
 
 ### v3.0.0 (23-Feb-2021)
 

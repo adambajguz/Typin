@@ -38,7 +38,6 @@
         /// </summary>
         public string? FallbackVariableName { get; init; }
 
-
         /// <summary>
         /// Whether option has auto generated name.
         /// </summary>
