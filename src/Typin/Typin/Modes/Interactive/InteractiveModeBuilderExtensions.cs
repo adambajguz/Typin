@@ -11,10 +11,8 @@
     public static class InteractiveModeBuilderExtensions
     {
         /// <summary>
-        /// Adds a direct mode to the application (enabled with [interactive] directive).
-        /// By default this adds [default], [>], [.], and [..] and advanced command input.
-        ///
-        /// If you wish to add only [default] directive, set addScopeDirectives to false.
+        /// Adds an interactive mode to the application (enabled with [interactive] directive or `interactive` command).
+        /// By default this adds [interactive], [default], [>], [.], and [..], as well as `interactive` command and advanced command input.
         /// </summary>
         public static CliApplicationBuilder UseInteractiveMode(this CliApplicationBuilder builder,
                                                                bool asStartup = false,

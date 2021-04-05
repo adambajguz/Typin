@@ -10,7 +10,7 @@
 ### v3.0.0 (23-Feb-2021)
 
 - Added `Typin.Core` library.
-- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`).
+- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`.
 - Renamed `normal mode` to `direct mode`, and added support for custom modes.
 - It is now possible to register multiple exception handleres to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, `ICliCommandExecutor`, `ICliApplicationLifetime`, `DirectMode`, `InteractiveMode`, `IPipelinedDirective`, and more; b) removed `InteractiveCliApplication`.
