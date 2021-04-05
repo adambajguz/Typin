@@ -50,7 +50,7 @@
             // Update CommandSchema
             context.CommandSchema = commandSchema;
 
-            // Get command instance (also used in help text)
+            // Get command instance (default values are used in help so we need command instance)
             ICommand instance = GetCommandInstance(commandSchema);
             context.Command = instance;
 
