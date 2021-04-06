@@ -71,6 +71,29 @@
 
             return (console, output, error);
         }
+
+
+        /// <summary>
+        /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
+        /// Use the exposed streams to easily get the current output.
+        /// </summary>
+        public static (VirtualConsole console, MemoryStreamReader input, MemoryStreamWriter output, MemoryStreamWriter error) CreateBufferedWithInput(bool isInputRedirected = true,
+                                                                                                                                                      bool isOutputRedirected = true,
+                                                                                                                                                      bool isErrorRedirected = true,
+                                                                                                                                                      CancellationToken cancellationToken = default)
+        {
+            // Memory streams don't need to be disposed
+            MemoryStreamReader input = new(Console.InputEncoding);
+            MemoryStreamWriter output = new(Console.OutputEncoding);
+            MemoryStreamWriter error = new(Console.OutputEncoding);
+
+            VirtualConsole console = new(input.Stream, isInputRedirected,
+                                         output.Stream, isOutputRedirected,
+                                         error.Stream, isErrorRedirected,
+                                         cancellationToken);
+
+            return (console, input, output, error);
+        }
         #endregion
 
         /// <inheritdoc />
