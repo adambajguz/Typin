@@ -1,7 +1,6 @@
 ﻿namespace Typin.Directives
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
@@ -17,7 +16,6 @@
     ///         cmd1>
     /// </example>
     /// </summary>
-    [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeUpDirective : IPipelinedDirective
     {
