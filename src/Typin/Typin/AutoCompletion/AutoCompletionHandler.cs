@@ -1,10 +1,12 @@
 ﻿namespace Typin.AutoCompletion
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     /// <summary>
     /// Default auto completion handler.
     /// /// </summary>
+    [ExcludeFromCodeCoverage]
     internal class AutoCompletionHandler : IAutoCompletionHandler
     {
         private readonly IRootSchemaAccessor _rootSchemaAccessor;

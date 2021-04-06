@@ -1,6 +1,5 @@
 ﻿namespace Typin.Directives
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -28,7 +27,6 @@
     ///              > cmd1 -h
     /// </example>
     /// </summary>
-    [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class ScopeDirective : IPipelinedDirective
     {

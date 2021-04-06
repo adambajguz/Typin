@@ -1,3 +1,8 @@
+### v3.0.3 (06-Apr-2021)
+
+ - Fixed `DefaultDirective` (`[!]`) executes default command - unable to execute scoped command without parameters, e.g., `[>] books/r [!]\r` was executing default command.
+ - Fixed `DefaultDirective` behavior (more consistent with direct mode): it WILL NOT (was: WILL) force default command execution when input contains default commmand parameter values equal to command/subcommand name.
+
 ### v3.0.2 (05-Apr-2021)
 
  - Fixed `CliApplicationBuilder.UseHelpWriter<>` - it was using `UseOptionFallbackProvider(Type)` instead of `UseHelpWriter(Type)`.

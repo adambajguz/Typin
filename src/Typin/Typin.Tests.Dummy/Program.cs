@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests.Dummy
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Threading.Tasks;
 
@@ -10,7 +9,6 @@
 
         public static string Location { get; } = Assembly.Location;
 
-        [ExcludeFromCodeCoverage]
         public static async Task Main()
         {
             await new CliApplicationBuilder()
