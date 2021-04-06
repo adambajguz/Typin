@@ -10,6 +10,7 @@
     //TODO: maybe this should be a separate lib like Typin.Testing
     internal static class CliApplicationBuilderExtensions
     {
+
         #region Array based
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,
@@ -52,7 +53,7 @@
 
             if (input is not null)
             {
-                stdIn.WriteString(input);
+                stdIn.WriteString(input.TrimEnd('\r') + "\rexit\r");
             }
 
             int exitCode = await application.RunAsync(commandLineArguments, environmentVariables);
@@ -96,7 +97,7 @@
 
             if (input is not null)
             {
-                stdIn.WriteString(input);
+                stdIn.WriteString(input.TrimEnd('\r') + "\rexit\r");
             }
 
             int exitCode = await application.RunAsync(commandLine, environmentVariables, containsExecutable);
