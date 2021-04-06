@@ -78,9 +78,6 @@
                                                 bool isDefaultDirectiveSpecified,
                                                 ref int index)
         {
-            if (isDefaultDirectiveSpecified)
-                return null;
-
             List<string> buffer = new();
 
             string? commandName = null;

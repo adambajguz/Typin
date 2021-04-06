@@ -1,6 +1,5 @@
 ﻿namespace Typin.Commands
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -13,7 +12,6 @@
     /// This is useful for situations when it is necessary to execute multiple commands (since you don't have to constantly type dotnet ...).
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     [Command(BuiltInDirectives.Interactive, Description = "Starts an interactive mode.",
              ExcludedModes = new[] { typeof(InteractiveMode) })]
     public sealed class InteractiveCommand : ICommand

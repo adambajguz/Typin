@@ -60,10 +60,10 @@
         /// <summary>
         /// Checks if a name is a command or subcommand name part. This returns true even if there is no "cmd" command but "cmd sub" exists.
         /// </summary>
-        public bool IsCommandOrSubcommandPart(string? commandName, bool hasDefaultDirective = false)
+        public bool IsCommandOrSubcommandPart(string? commandName)
         {
-            if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
-                return true;
+            if (string.IsNullOrWhiteSpace(commandName))
+                return false;
 
             if (Commands.ContainsKey(commandName))
                 return true;
@@ -76,9 +76,9 @@
         /// <summary>
         /// Finds command schema by name.
         /// </summary>
-        public CommandSchema? TryFindCommand(string? commandName, bool hasDefaultDirective = false)
+        public CommandSchema? TryFindCommand(string? commandName)
         {
-            if (hasDefaultDirective || string.IsNullOrWhiteSpace(commandName))
+            if (string.IsNullOrWhiteSpace(commandName))
                 return DefaultCommand;
 
             Commands.TryGetValue(commandName, out CommandSchema? value);
