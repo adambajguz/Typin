@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
-    using Typin.Directives;
     using Typin.Input;
     using Typin.Internal;
     using Typin.Schemas;
@@ -35,9 +34,9 @@
             CommandInput input = context.Input;
 
             // Try to get the command matching the input or fallback to default
-            bool hasDefaultDirective = input.HasDirective(BuiltInDirectives.Default);
-            CommandSchema commandSchema = root.TryFindCommand(input.CommandName, hasDefaultDirective) ?? StubDefaultCommand.Schema;
+            CommandSchema commandSchema = root.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
 
+            // TODO: is the problem below still valid?
             // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
             // Forbid to execute real default command in interactive mode without [!] directive.
             //if (!(commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&

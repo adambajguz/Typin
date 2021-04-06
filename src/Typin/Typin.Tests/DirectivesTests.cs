@@ -194,7 +194,7 @@
         }
 
         [Fact]
-        public async Task Default_directive_should_allow_default_command_to_execute_when_there_is_a_name_conflict()
+        public async Task Default_directive_should_not_allow_default_command_to_execute_when_there_is_a_name_conflict()
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -208,7 +208,8 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
-            stdOut.GetString().Should().ContainAll(
+            stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
+            stdOut.GetString().Should().NotContainAll(
                 "named", DefaultCommandWithParameter.ExpectedOutputText
             );
 
