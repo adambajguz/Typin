@@ -23,15 +23,21 @@
         /// <summary>
         /// Whether command argument is scalar.
         /// </summary>
-        public bool IsScalar => Property.TryGetEnumerableArgumentUnderlyingType() == null;
+        public bool IsScalar => Property.TryGetEnumerableArgumentUnderlyingType() is null;
+
+        /// <summary>
+        /// Binding converter type.
+        /// </summary>
+        public Type? ConverterType { get; init; }
 
         /// <summary>
         /// Initializes an instance of <see cref="ArgumentSchema"/>.
         /// </summary>
-        protected ArgumentSchema(PropertyInfo? property, string? description)
+        protected ArgumentSchema(PropertyInfo? property, string? description, Type? converterType)
         {
             Property = property;
             Description = description;
+            ConverterType = converterType;
         }
 
         /// <summary>

@@ -25,7 +25,8 @@
                 property,
                 attribute.Order,
                 name,
-                attribute.Description
+                attribute.Description,
+                attribute.Converter
             );
         }
     }

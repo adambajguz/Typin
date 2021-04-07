@@ -1,5 +1,6 @@
 ﻿namespace Typin.Schemas
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Text;
@@ -22,8 +23,12 @@
         /// <summary>
         /// Initializes an instance of <see cref="CommandParameterSchema"/>.
         /// </summary>
-        public CommandParameterSchema(PropertyInfo? property, int order, string name, string? description)
-            : base(property, description)
+        public CommandParameterSchema(PropertyInfo? property,
+                                      int order,
+                                      string name,
+                                      string? description,
+                                      Type? converter)
+            : base(property, description, converter)
         {
             Order = order;
             Name = name;

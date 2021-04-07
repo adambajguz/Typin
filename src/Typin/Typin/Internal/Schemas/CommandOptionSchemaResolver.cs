@@ -27,7 +27,8 @@
                 attribute.ShortName,
                 attribute.FallbackVariableName,
                 attribute.IsRequired,
-                attribute.Description
+                attribute.Description,
+                attribute.Converter
             );
         }
     }

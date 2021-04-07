@@ -1,10 +1,12 @@
-﻿namespace Typin.Internal.Input
+namespace Typin.Internal.Input
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using Typin.Binding;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
@@ -41,6 +43,14 @@
         {
             try
             {
+                // User-defiend type converter
+                if (argumentSchema.ConverterType is Type ct)
+                {
+                    IBindingConverter converterInstance = BindingConverterActivator.GetConverter(ct);
+
+                    return converterInstance.Convert(value);
+                }
+
                 // No conversion necessary
                 if (targetType == typeof(object) || targetType == typeof(string))
                     return value;
@@ -94,7 +104,7 @@
             throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, value, targetType);
         }
 
-        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyList<string> values, Type targetEnumerableType, Type targetElementType)
+        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType)
         {
             Array array = values.Select(v => ConvertScalar(argumentSchema, v, targetElementType))
                                 .ToNonGenericArray(targetElementType);
@@ -112,7 +122,7 @@
             return arrayConstructor.Invoke(new object[] { array });
         }
 
-        private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyList<string> values)
+        private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
         {
             PropertyInfo? property = argumentSchema.Property;
 
@@ -141,7 +151,7 @@
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyList<string> values)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
         {
             if (argumentSchema.Property is null)
                 return;
@@ -153,9 +163,9 @@
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, params string[] values)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, string value)
         {
-            BindOn(argumentSchema, command, (IReadOnlyList<string>)values);
+            BindOn(argumentSchema, command, new[] { value });
         }
     }
 }

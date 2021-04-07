@@ -20,7 +20,7 @@
             return new TypinException(message);
         }
 
-        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandParameterSchema parameter, IReadOnlyList<string> values)
+        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandParameterSchema parameter, IReadOnlyCollection<string> values)
         {
             string message = $@"
 Parameter {parameter} expects a single value, but provided with multiple:
@@ -29,7 +29,7 @@ Parameter {parameter} expects a single value, but provided with multiple:
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandOptionSchema option, IReadOnlyList<string> values)
+        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandOptionSchema option, IReadOnlyCollection<string> values)
         {
             string message = $@"
 Option {option} expects a single value, but provided with multiple:
@@ -38,7 +38,7 @@ Option {option} expects a single value, but provided with multiple:
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertMultipleValuesToNonScalar(ArgumentSchema argument, IReadOnlyList<string> values)
+        public static TypinException CannotConvertMultipleValuesToNonScalar(ArgumentSchema argument, IReadOnlyCollection<string> values)
         {
             return argument switch
             {
@@ -86,7 +86,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
         }
 
         public static TypinException CannotConvertNonScalar(CommandParameterSchema parameter,
-                                                            IReadOnlyList<string> values,
+                                                            IReadOnlyCollection<string> values,
                                                             Type type)
         {
             string message = $@"
@@ -99,7 +99,7 @@ Target type is not assignable from array and doesn't have a public constructor t
         }
 
         public static TypinException CannotConvertNonScalar(CommandOptionSchema option,
-                                                            IReadOnlyList<string> values,
+                                                            IReadOnlyCollection<string> values,
                                                             Type type)
         {
             string message = $@"
@@ -112,7 +112,7 @@ Target type is not assignable from array and doesn't have a public constructor t
         }
 
         public static TypinException CannotConvertNonScalar(ArgumentSchema argument,
-                                                            IReadOnlyList<string> values,
+                                                            IReadOnlyCollection<string> values,
                                                             Type type)
         {
             return argument switch

@@ -1,6 +1,7 @@
 ﻿namespace Typin.Internal.Exceptions
 {
     using System;
+    using Typin.Binding;
     using Typin.Exceptions;
 
     /// <summary>
@@ -48,6 +49,13 @@ If you intended to set the short name instead, use the attribute overload that a
             string message = $"Command option short name '{shortName}' is invalid. Options must have a name starting from letter, while short names must be a letter.";
 
             return new TypinException(message);
-        }
+        }     
+        
+        public static TypinException InvalidConverterType(Type converterType)
+        {
+            string message = $"Command argument has an invalid converter '{converterType.FullName}'. It must implement '{typeof(IBindingConverter).Name}'.";
+
+            return new TypinException(message);
+        }  
     }
 }
