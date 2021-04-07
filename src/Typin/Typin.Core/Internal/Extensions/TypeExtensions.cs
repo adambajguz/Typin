@@ -4,20 +4,12 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     internal static class TypeExtensions
     {
         public static bool Implements(this Type type, Type interfaceType)
         {
             return type.GetInterfaces().Contains(interfaceType);
-        }
-
-        public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
-        {
-            return property is not null && property.PropertyType != typeof(string)
-                       ? property.PropertyType.TryGetEnumerableUnderlyingType()
-                       : null;
         }
 
         public static Type? TryGetNullableUnderlyingType(this Type type)

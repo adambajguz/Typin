@@ -8,13 +8,6 @@
 
     internal static class TypeExtensions
     {
-        public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
-        {
-            return property is not null && property.PropertyType != typeof(string)
-                       ? property.PropertyType.TryGetEnumerableUnderlyingType()
-                       : null;
-        }
-
         public static Type? TryGetNullableUnderlyingType(this Type type)
         {
             return Nullable.GetUnderlyingType(type);

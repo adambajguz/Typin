@@ -4,7 +4,7 @@
     <TargetFrameworks>net5.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <Authors>$(Company)</Authors>
     <Description>Declarative framework for interactive CLI applications</Description>
-    <PackageTags>cli command line executable interactive interface framework parser arguments net core terminal shell console tooling</PackageTags>
+    <PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
     <PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageIcon>typin-favicon-64px.png</PackageIcon>
@@ -17,6 +17,14 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <RootNamespace>Typin</RootNamespace>
     <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+    <WarningsAsErrors>nullable;CS1591,CS1591,NU1605</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
