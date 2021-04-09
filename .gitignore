@@ -353,3 +353,5 @@ src/TypinExamples/TypinExamples/wwwroot/assets/libraries/*/*
 !src/TypinExamples/TypinExamples/wwwroot/assets/libraries/font-awesome/about.txt
 !src/TypinExamples/TypinExamples/wwwroot/assets/libraries/xterm/about.txt
 !src/TypinExamples/TypinExamples/wwwroot/assets/libraries/monaco-editor/about.txt
+
+/.ionide
