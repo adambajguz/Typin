@@ -24,14 +24,12 @@
 
             IReadOnlyList<DirectiveInput> directives = ParseDirectives(
                 tmp,
-                ref index,
-                out bool isDefaultDirectiveSpecified
+                ref index
             );
 
             string? commandName = ParseCommandName(
                 tmp,
                 availableCommandNamesSet,
-                isDefaultDirectiveSpecified,
                 ref index
             );
 
@@ -49,11 +47,8 @@
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
-                                                                     ref int index,
-                                                                     out bool isDefaultDirectiveSpecified)
+                                                                     ref int index)
         {
-            isDefaultDirectiveSpecified = false;
-
             List<DirectiveInput> result = new();
 
             for (; index < commandLineArguments.Count; index++)
@@ -65,8 +60,6 @@
 
                 string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
 
-                isDefaultDirectiveSpecified = name == BuiltInDirectives.Default;
-
                 result.Add(new DirectiveInput(name));
             }
 
@@ -75,7 +68,6 @@
 
         private static string? ParseCommandName(IReadOnlyList<string> commandLineArguments,
                                                 ISet<string> commandNames,
-                                                bool isDefaultDirectiveSpecified,
                                                 ref int index)
         {
             List<string> buffer = new();
@@ -114,7 +106,7 @@
             {
                 string argument = commandLineArguments[index];
 
-                if (CommandOptionInput.IsOption(argument) | CommandOptionInput.IsOptionAlias(argument))
+                if (CommandOptionInput.IsOption(argument) || CommandOptionInput.IsOptionAlias(argument))
                     break;
 
                 result.Add(new CommandParameterInput(argument));

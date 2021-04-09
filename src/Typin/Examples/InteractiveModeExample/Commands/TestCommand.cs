@@ -1,5 +1,6 @@
 ﻿namespace InteractiveModeExample.Commands
 {
+    using System;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -16,6 +17,9 @@
 
         [CommandOption("char", 'c')]
         public char Ch { get; init; }
+
+        [CommandOption("date", 'd')]
+        public DateTime Date { get; init; } = DateTime.Now;
 
         public ValueTask ExecuteAsync(IConsole console)
         {
