@@ -1,0 +1,138 @@
+﻿namespace Typin.Tests.InteractiveMode
+{
+    using System;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Typin.Modes;
+    using Typin.Tests.Data.Commands.Valid;
+    using Typin.Tests.Extensions;
+    using Xunit;
+    using Xunit.Abstractions;
+
+    public class InteractiveModeCustomPromptTests
+    {
+        private const int Timeout = 2000;
+        private readonly ITestOutputHelper _output;
+
+        public InteractiveModeCustomPromptTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_string_based_prompt()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt("~$ ");
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith("~$ ");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_func_based_prompt_with_metadata()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseTitle("testTitle")
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt((metadata) => metadata.Title);
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith("testTitle");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_action_based_prompt_with_metadata_and_console()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseTitle("testTitle")
+                .UseExecutableName("otherTitle")
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt((metadata, console) =>
+                    {
+                        console.Output.Write(metadata.Title);
+                        console.Error.Write(metadata.ExecutableName);
+                    });
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith("testTitle");
+            stdErr.GetString().Should().StartWith("otherTitle");
+        }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_action_based_prompt_with_options_metadata_and_console()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseTitle("testTitle")
+                .UseExecutableName("otherTitle")
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt((interactiveModeOptions, metadata, console) =>
+                    {
+                        console.Output.Write(interactiveModeOptions.PromptForeground);
+                        console.Output.Write(" ");
+                        console.Output.Write(metadata.Title);
+                        console.Error.Write(metadata.ExecutableName);
+                    });
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith($"{ConsoleColor.Blue} testTitle");
+            stdErr.GetString().Should().StartWith("otherTitle");
+        }
+    }
+}

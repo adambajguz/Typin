@@ -30,6 +30,7 @@
                 .UseInteractiveMode(options: (cfg) =>
                 {
                     //cfg.IsAdvancedInputAvailable = false;
+                    cfg.SetPrompt("~$ ");
                 })
                 .ConfigureLogging(cfg =>
                 {
