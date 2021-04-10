@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Directives;
     using Typin.Input;
     using Typin.Internal.Extensions;
 

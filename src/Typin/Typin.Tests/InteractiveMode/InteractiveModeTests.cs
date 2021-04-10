@@ -40,7 +40,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().Contain("dotnet testhost.dll> ");
+            stdOut.GetString().Should().StartWith("dotnet testhost.dll> ");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 

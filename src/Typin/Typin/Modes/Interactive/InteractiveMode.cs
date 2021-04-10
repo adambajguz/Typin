@@ -90,23 +90,11 @@
         {
             IConsole console = _console;
 
-            // Print prompt
-            ConsoleColor promptForeground = _options.PromptForeground;
-            console.Output.WithForegroundColor(promptForeground, (output) => output.Write(executableName));
-
             string scope = _options.Scope;
             bool hasScope = !string.IsNullOrWhiteSpace(scope);
 
-            if (hasScope)
-            {
-                console.Output.WithForegroundColor(_options.ScopeForeground, (output) =>
-                {
-                    output.Write(' ');
-                    output.Write(scope);
-                });
-            }
-
-            console.Output.WithForegroundColor(promptForeground, (output) => output.Write("> "));
+            // Print prompt
+            _options.Prompt(_metadata, _console);
 
             // Read user input
             console.ForegroundColor = _options.CommandForeground;
