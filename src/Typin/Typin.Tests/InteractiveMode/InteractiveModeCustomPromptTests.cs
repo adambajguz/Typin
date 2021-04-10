@@ -30,6 +30,7 @@
                 .UseDirectMode(asStartup: true)
                 .UseInteractiveMode(options: (cfg) =>
                 {
+                    cfg.PromptForeground = ConsoleColor.Magenta;
                     cfg.SetPrompt("~$ ");
                 });
 
@@ -42,6 +43,58 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().StartWith("~$ ");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_have_simple_string_prompt_with_scope()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt("~$ ");
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: "[>] exit\r[..]\r");
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith("~$ ");
+            stdOut.GetString().Should().Contain("exit ~$ ");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_multiple_calls_of_set_prompt()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt("~$ ");
+                    cfg.SetDefaultPrompt();
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith("dotnet testhost.dll> ");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 

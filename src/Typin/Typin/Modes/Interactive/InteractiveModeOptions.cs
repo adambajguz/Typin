@@ -49,7 +49,7 @@
         public bool IsAdvancedInputAvailable { get; set; } = true;
 
         /// <summary>
-        /// Prompt writer. Use SetPrompt to change prompt specification.
+        /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initalize with a call to <see cref="SetDefaultPrompt"/>).
         /// </summary>
         public Action<ApplicationMetadata, IConsole> Prompt { get; private set; } = default!;
 
@@ -63,13 +63,12 @@
 
         #region Prompt setters
         /// <summary>
-        /// Sets application startup message, which appears just after starting the app.
+        /// Sets interactive mode prompt to default ("{metadata.ExecutableName} {scope}}> ").
         /// </summary>
         public InteractiveModeOptions SetDefaultPrompt()
         {
             Prompt = (metadata, console) =>
             {
-                // Print prompt
                 ConsoleColor promptForeground = PromptForeground;
                 console.Output.WithForegroundColor(promptForeground, (output) => output.Write(metadata.ExecutableName));
 
@@ -92,12 +91,25 @@
         }
 
         /// <summary>
-        /// Sets application startup message, which appears just after starting the app.
+        /// Sets interactive mode prompt to simple string with foreground set to <see cref="PromptForeground"/>.
+        /// Scope may be appended to the beginning of the prompt when available with foreground set to <see cref="ScopeForeground"/>
         /// </summary>
         public InteractiveModeOptions SetPrompt(string prompt)
         {
             Prompt = (metadata, console) =>
             {
+                string scope = Scope;
+                bool hasScope = !string.IsNullOrWhiteSpace(scope);
+
+                if (hasScope)
+                {
+                    console.Output.WithForegroundColor(ScopeForeground, (output) =>
+                    {
+                        output.Write(scope);
+                        output.Write(' ');
+                    });
+                }
+
                 console.Output.WithForegroundColor(PromptForeground, (output) => output.Write(prompt));
             };
 
@@ -105,7 +117,7 @@
         }
 
         /// <summary>
-        /// Sets application startup message, which appears just after starting the app.
+        /// Sets interactive mode prompt to a string template that may use <see cref="ApplicationMetadata"/> with foreground set to <see cref="PromptForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Func<ApplicationMetadata, string> prompt)
         {
@@ -120,7 +132,8 @@
         }
 
         /// <summary>
-        /// Sets application startup message, which appears just after starting the app.
+        /// Sets interactive mode prompt to action that directly interacts with console.
+        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<ApplicationMetadata, IConsole> prompt)
         {
@@ -130,7 +143,8 @@
         }
 
         /// <summary>
-        /// Sets application startup message, which appears just after starting the app.
+        /// Sets interactive mode prompt to action that directly interacts with console.
+        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<InteractiveModeOptions, ApplicationMetadata, IConsole> prompt)
         {
