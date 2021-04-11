@@ -15,28 +15,87 @@ namespace Typin.Internal.Input
     {
         private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
 
-        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
-            new Dictionary<Type, Func<string, object?>>
+        //TODO: benchmark PrimitiveConverters vs PrimitiveConverter()
+//        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
+//            new Dictionary<Type, Func<string, object?>>
+//            {
+//                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
+//                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
+//                [typeof(short)] = v => short.Parse(v, FormatProvider),
+//                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
+//                [typeof(int)] = v => int.Parse(v, FormatProvider),
+//                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
+//                [typeof(long)] = v => long.Parse(v, FormatProvider),
+//                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
+//#if NET5_0
+//                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
+//#endif
+//                [typeof(float)] = v => float.Parse(v, FormatProvider),
+//                [typeof(double)] = v => double.Parse(v, FormatProvider),
+//                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
+//                [typeof(Guid)] = v => Guid.Parse(v),
+//                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
+//                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
+//                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
+//            };
+
+        private static object? PrimitiveConverter(Type targetType, string value)
+        {
+            if (targetType.IsPrimitive)
             {
-                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
-                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
-                [typeof(short)] = v => short.Parse(v, FormatProvider),
-                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
-                [typeof(int)] = v => int.Parse(v, FormatProvider),
-                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
-                [typeof(long)] = v => long.Parse(v, FormatProvider),
-                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
+                if (targetType == typeof(sbyte))
+                    return sbyte.Parse(value, FormatProvider);
+
+                if (targetType == typeof(byte))
+                    return byte.Parse(value, FormatProvider);
+
+                if (targetType == typeof(short))
+                    return short.Parse(value, FormatProvider);
+
+                if (targetType == typeof(ushort))
+                    return ushort.Parse(value, FormatProvider);
+
+                if (targetType == typeof(int))
+                    return int.Parse(value, FormatProvider);
+
+                if (targetType == typeof(uint))
+                    return uint.Parse(value, FormatProvider);
+
+                if (targetType == typeof(long))
+                    return long.Parse(value, FormatProvider);
+
+                if (targetType == typeof(ulong))
+                    return ulong.Parse(value, FormatProvider);
+
 #if NET5_0
-                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
+                if (targetType == typeof(Half))
+                    return Half.Parse(value, FormatProvider);
 #endif
-                [typeof(float)] = v => float.Parse(v, FormatProvider),
-                [typeof(double)] = v => double.Parse(v, FormatProvider),
-                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
-                [typeof(Guid)] = v => Guid.Parse(v),
-                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
-                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
-                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
-            };
+
+                if (targetType == typeof(float))
+                    return float.Parse(value, FormatProvider);
+
+                if (targetType == typeof(double))
+                    return double.Parse(value, FormatProvider);
+
+                if (targetType == typeof(decimal))
+                    return decimal.Parse(value, FormatProvider);
+            }
+
+            if (targetType == typeof(Guid))
+                return Guid.Parse(value);
+
+            if (targetType == typeof(DateTime))
+                return DateTime.Parse(value, FormatProvider);
+
+            if (targetType == typeof(DateTimeOffset))
+                return DateTimeOffset.Parse(value, FormatProvider);
+
+            if (targetType == typeof(TimeSpan))
+                return TimeSpan.Parse(value, FormatProvider);
+
+            return null;
+        }
 
         #region Value Converter
         private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType, IBindingConverter? converterInstance)
@@ -70,9 +129,8 @@ namespace Typin.Internal.Input
                     return TextUtils.UnescapeChar(value);
 
                 // Primitive conversion
-                Func<string, object?>? primitiveConverter = PrimitiveConverters.GetValueOrDefault(targetType);
-                if (primitiveConverter is not null && !string.IsNullOrWhiteSpace(value))
-                    return primitiveConverter(value);
+                if (!string.IsNullOrWhiteSpace(value) && PrimitiveConverter(targetType, value) is object v)
+                    return v;
 
                 // Enum conversion conversion
                 if (targetType.IsEnum && !string.IsNullOrWhiteSpace(value))

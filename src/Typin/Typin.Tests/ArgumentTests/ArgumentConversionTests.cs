@@ -1,5 +1,6 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
+    using System;
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -229,7 +230,7 @@
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--str-parsable-format", "foobar"
             });
@@ -238,11 +239,40 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
                 StringParsableWithFormatProvider = CustomStringParsableWithFormatProvider.Parse("foobar", CultureInfo.InvariantCulture)
             });
+        }
+
+        [Theory]
+        [InlineData("24.12", "89.9")]
+        [InlineData(" 24.12 ", " 89.9 ")]
+        [InlineData("-24.12", "-89.9")]
+        [InlineData(" -24.12 ", "-89.9")]
+        [InlineData("-24.12", "")]
+        [InlineData("-24.12", " ")]
+        [InlineData("0", "0")]
+        [InlineData(" 0 ", "0 ")]
+        [InlineData("0", " ")]
+        [InlineData("24.", "89.")]
+        public async Task Property_of_a_type_half_and_nullable_half_should_be_converted(string half, string nullableHalf)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<HalfCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "half", "--half", half, "--half-nullable", nullableHalf
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll($"Value:{half.Trim().Trim('.')}", $"NullableValue:{(string.IsNullOrWhiteSpace(nullableHalf) ? "null" : nullableHalf.Trim().Trim('.'))}");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Theory]
