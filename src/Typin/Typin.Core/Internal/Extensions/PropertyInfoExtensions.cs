@@ -1,7 +1,6 @@
 ﻿namespace Typin.Internal.Extensions
 {
     using System;
-    using System.Linq;
     using System.Reflection;
 
     internal static class PropertyInfoExtensions

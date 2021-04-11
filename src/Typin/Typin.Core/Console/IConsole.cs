@@ -8,7 +8,7 @@
     /// <summary>
     /// Abstraction for interacting with the console.
     /// </summary>
-    public interface IConsole : IStandardInput, IStandardOutputAndError, IDisposable
+    public interface IConsole : IStandardInput, IStandardOutputAndError
     {
         /// <summary>
         /// Current foreground color.

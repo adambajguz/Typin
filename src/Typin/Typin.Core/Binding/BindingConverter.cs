@@ -30,7 +30,7 @@
             return Convert(value);
         }
 #endif
-        
+
         /// <summary>
         /// Converts raw command line input to <typeparamref name="T"/>.
         /// </summary>

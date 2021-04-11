@@ -194,6 +194,13 @@ namespace Typin
 
                 return ExitCodes.FromException(ex);
             }
+            finally
+            {
+                if (_console is IDisposable dc)
+                {
+                    dc.Dispose();
+                }
+            }
         }
 
         private async Task<int> StartAppAsync(IEnumerable<string> commandLineArguments)

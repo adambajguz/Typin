@@ -14,7 +14,7 @@
     /// Does not leak to system console in any way.
     /// Use this class as a substitute for system console when running tests.
     /// </summary>
-    public class VirtualConsole : IConsole
+    public class VirtualConsole : IConsole, IDisposable
     {
         private readonly CancellationToken _cancellationToken;
         private bool _disposedValue;

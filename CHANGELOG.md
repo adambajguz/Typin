@@ -2,6 +2,8 @@
 
  - Added `InteractiveModeOptions.Prompt`, InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
  - Removed `IDisposable` from `CliContext`.
+ - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
+ - Fixed a bug with not disposed console when stopping the application.
 
 ### v3.0.3 (06-Apr-2021)
 
