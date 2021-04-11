@@ -67,11 +67,6 @@
                 if (shortName is char sn && !CommandOptionInput.IsOptionAlias("-" + sn))
                     throw AttributesExceptions.InvalidOptionShortName(sn);
             }
-
-            if (Converter is Type t && !t.Implements(typeof(IBindingConverter)))
-            {
-                throw AttributesExceptions.InvalidConverterType(t);
-            }
         }
 
         /// <summary>

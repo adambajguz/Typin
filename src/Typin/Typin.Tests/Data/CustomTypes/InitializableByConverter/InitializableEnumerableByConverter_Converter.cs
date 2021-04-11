@@ -18,7 +18,14 @@
 
         public override InitializableEnumerableByConverter<T> ConvertCollection(IReadOnlyCollection<string> values)
         {
-            throw new System.NotImplementedException();
+            List<T> v = new();
+
+            foreach (string value in values)
+            {
+                v.AddRange(value.Split(':').Cast<T>());
+            }
+
+            return new InitializableEnumerableByConverter<T>(v);
         }
     }
 }

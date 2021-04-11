@@ -45,11 +45,6 @@
         public CommandParameterAttribute(int order)
         {
             Order = order;
-
-            if (Converter is Type t && !t.Implements(typeof(IBindingConverter)))
-            {
-                throw AttributesExceptions.InvalidConverterType(t);
-            }
         }
     }
 }

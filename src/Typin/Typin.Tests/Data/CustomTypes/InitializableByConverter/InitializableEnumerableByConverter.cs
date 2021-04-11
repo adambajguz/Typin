@@ -10,9 +10,9 @@
 
     public class InitializableEnumerableByConverter<T> : InitializableEnumerableByConverter, IEnumerable<T>
     {
-        private readonly T[] _arr;
+        private readonly IEnumerable<T> _arr;
 
-        public InitializableEnumerableByConverter(T[] value)
+        public InitializableEnumerableByConverter(IEnumerable<T> value)
         {
             _arr = value;
         }

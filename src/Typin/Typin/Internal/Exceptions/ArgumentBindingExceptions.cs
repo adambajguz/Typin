@@ -48,28 +48,17 @@ Option {option} expects a single value, but provided with multiple:
             };
         }
 
-        public static TypinException CannotConvertToType(CommandParameterSchema parameter,
-                                                         string? value,
+        public static TypinException CannotConvertToType(ArgumentSchema argument,
+                                                         IReadOnlyCollection<string> values,
                                                          Type type,
                                                          Exception? innerException = null)
         {
-            string message = $@"
-Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter}.
-{innerException?.Message ?? "This type is not supported."}";
-
-            return new TypinException(message.Trim(), innerException);
-        }
-
-        public static TypinException CannotConvertToType(CommandOptionSchema option,
-                                                         string? value,
-                                                         Type type,
-                                                         Exception? innerException = null)
-        {
-            string message = $@"
-Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option}.
-{innerException?.Message ?? "This type is not supported."}";
-
-            return new TypinException(message.Trim(), innerException);
+            return argument switch
+            {
+                CommandParameterSchema parameter => CannotConvertToType(parameter, values, type, innerException),
+                CommandOptionSchema option => CannotConvertToType(option, values, type, innerException),
+                _ => throw new ArgumentOutOfRangeException(nameof(argument))
+            };
         }
 
         public static TypinException CannotConvertToType(ArgumentSchema argument,
@@ -84,6 +73,58 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
                 _ => throw new ArgumentOutOfRangeException(nameof(argument))
             };
         }
+
+        #region CannotConvertToType helpers
+        private static TypinException CannotConvertToType(CommandParameterSchema parameter,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
+        {
+            string message = $@"
+Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter {parameter}.
+{innerException?.Message ?? "This type is not supported."}";
+
+            return new TypinException(message.Trim(), innerException);
+        }
+
+        private static TypinException CannotConvertToType(CommandParameterSchema parameter,
+                                                         IReadOnlyCollection<string> values,
+                                                         Type type,
+                                                         Exception? innerException = null)
+        {
+            string valuesStr = string.Join(", \"", values);
+            string message = $@"
+Can't convert values [""{valuesStr}""] to type '{type.Name}' for parameter {parameter}.
+{innerException?.Message ?? "This type is not supported."}";
+
+            return new TypinException(message.Trim(), innerException);
+        }
+
+        private static TypinException CannotConvertToType(CommandOptionSchema option,
+                                                         string? value,
+                                                         Type type,
+                                                         Exception? innerException = null)
+        {
+            string message = $@"
+Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {option}.
+{innerException?.Message ?? "This type is not supported."}";
+
+            return new TypinException(message.Trim(), innerException);
+        }
+
+        private static TypinException CannotConvertToType(CommandOptionSchema option,
+                                                         IReadOnlyCollection<string> values,
+                                                         Type type,
+                                                         Exception? innerException = null)
+        {
+            string valuesStr = string.Join(", \"", values);
+            string message = $@"
+Can't convert values [""{valuesStr}""] to type '{type.Name}' for option {option}.
+{innerException?.Message ?? "This type is not supported."}";
+
+            return new TypinException(message.Trim(), innerException);
+        }
+        #endregion
 
         public static TypinException CannotConvertNonScalar(CommandParameterSchema parameter,
                                                             IReadOnlyCollection<string> values,

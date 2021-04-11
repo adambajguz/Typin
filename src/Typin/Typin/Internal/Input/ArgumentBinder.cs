@@ -42,18 +42,18 @@ namespace Typin.Internal.Input
         {
             try
             {
-                if (targetType.IsAssignableFrom(converterInstance?.TargetType))
+                if (converterInstance is not null && targetType.IsAssignableFrom(converterInstance.TargetType))
                 {
                     // Structs do not support inheritance, so we want to execute our Nullable<T> handling logic if converter is for T, not Nullable<T>.
                     // If value is null or whitespace, we must check if this is a nullable struct and converter is for non-nullable struct else normal conversion with converter.
                     if (string.IsNullOrWhiteSpace(value) &&
-                        converterInstance?.TargetType != targetType &&
+                        converterInstance.TargetType != targetType &&
                         targetType.TryGetNullableUnderlyingType() is not null)
                     {
                         return null;
                     }
 
-                    return converterInstance!.Convert(value is null ? Array.Empty<string>() : new[] { value! });
+                    return converterInstance.Convert(value);
                 }
 
                 // No conversion necessary
@@ -153,7 +153,14 @@ namespace Typin.Internal.Input
                 // Non-scalar with conversion for collection
                 else if (targetType.IsAssignableFrom(converterInstance.TargetType))
                 {
-                    return converterInstance.Convert(values);
+                    try
+                    {
+                        return converterInstance.Convert(values);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, values, targetType, ex);
+                    }
                 }
                 // Non-scalar with conversion for collection item type
                 else
