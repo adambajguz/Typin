@@ -1,9 +1,7 @@
 ﻿namespace Typin.Schemas
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
-    using System.Text;
 
     /// <summary>
     /// Stores command parameter schema.
@@ -34,22 +32,10 @@
             Name = name;
         }
 
-        internal string GetUserFacingDisplayString()
-        {
-            StringBuilder buffer = new();
-
-            buffer.Append('<')
-                  .Append(Name)
-                  .Append('>');
-
-            return buffer.ToString();
-        }
-
         /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"{Property?.Name ?? "<implicit>"} ([{Order}] {GetUserFacingDisplayString()})";
+            return $"{Property?.Name ?? "<implicit>"} ([{Order}] <{Name}>)";
         }
     }
 }

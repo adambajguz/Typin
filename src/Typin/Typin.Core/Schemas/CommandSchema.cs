@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Typin.Internal.Exceptions;
@@ -163,7 +162,8 @@
             return result;
         }
 
-        internal string GetInternalDisplayString()
+        /// <inheritdoc/>
+        public override string ToString()
         {
             StringBuilder buffer = new();
 
@@ -177,13 +177,6 @@
                   .Append(')');
 
             return buffer.ToString();
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            return GetInternalDisplayString();
         }
     }
 }
