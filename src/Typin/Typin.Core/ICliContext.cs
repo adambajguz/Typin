@@ -9,7 +9,7 @@
     /// <summary>
     /// Command line application context.
     /// </summary>
-    public interface ICliContext : IDisposable
+    public interface ICliContext
     {
         /// <summary>
         /// Context instance id.

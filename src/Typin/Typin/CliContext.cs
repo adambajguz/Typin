@@ -121,15 +121,5 @@
         {
             return Directives.Where(x => x.GetType() == type);
         }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            _input = default!;
-            _command = default!;
-            _commandSchema = default!;
-            _commandDefaultValues = default!;
-            ExitCode = null;
-        }
     }
 }

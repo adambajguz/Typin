@@ -1,6 +1,7 @@
 ### v3.1.0 (xx-Apr-2021)
 
  - Added `InteractiveModeOptions.Prompt`, InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
+ - Removed `IDisposable` from `CliContext`.
 
 ### v3.0.3 (06-Apr-2021)
 
