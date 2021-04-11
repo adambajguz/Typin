@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     /// <summary>
@@ -99,8 +98,7 @@
             return value;
         }
 
-        [SuppressMessage("Performance", "CA1822:Mark members as static")]
-        private IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
+        private static IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
         {
             return potentialParentCommands.Where(c => string.IsNullOrWhiteSpace(parentCommandName) ||
                                                  c.Name!.StartsWith(parentCommandName + ' ', StringComparison.Ordinal));

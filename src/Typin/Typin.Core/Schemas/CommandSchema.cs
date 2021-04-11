@@ -152,10 +152,10 @@
             foreach (ArgumentSchema argument in GetArguments())
             {
                 // Skip built-in arguments
-                if (argument.Property is null)
+                if (argument.BindableProperty.Property is null)
                     continue;
 
-                object? value = argument.Property.GetValue(instance);
+                object? value = argument.BindableProperty.GetValue(instance);
                 result[argument] = value;
             }
 

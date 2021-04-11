@@ -35,7 +35,7 @@
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{Property?.Name ?? "<implicit>"} ([{Order}] <{Name}>)";
+            return $"{BindableProperty.Property?.Name ?? "<implicit>"} ([{Order}] <{Name}>)";
         }
     }
 }

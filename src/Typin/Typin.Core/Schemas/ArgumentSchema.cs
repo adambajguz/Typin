@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Typin.Internal.Extensions;
 
     /// <summary>
     /// Abstract command argument schema used in <see cref="CommandParameterSchema"/> and <see cref="CommandOptionSchema"/>
@@ -11,29 +10,14 @@
     public abstract class ArgumentSchema
     {
         /// <summary>
-        /// Property info may be null for built-in arguments (help and version options)
+        /// Bindable property info.
         /// </summary>
-        public PropertyInfo? Property { get; }
+        public BindablePropertyInfo BindableProperty { get; }
 
         /// <summary>
         /// Command argument description, which is used in help text.
         /// </summary>
         public string? Description { get; }
-
-        private bool? _isScalar;
-
-        /// <summary>
-        /// Whether command argument is scalar.
-        /// </summary>
-        public bool IsScalar
-        {
-            get
-            {
-                _isScalar ??= Property.TryGetEnumerableArgumentUnderlyingType() is null;
-
-                return _isScalar.Value;
-            }
-        }
 
         /// <summary>
         /// Binding converter type.
@@ -45,38 +29,47 @@
         /// </summary>
         protected ArgumentSchema(PropertyInfo? property, string? description, Type? converterType)
         {
-            Property = property;
+            BindableProperty = new BindablePropertyInfo(property);
             Description = description;
             ConverterType = converterType;
         }
 
-        private IReadOnlyList<string>? _validValues;
+        /// <summary>
+        /// Property info may be null for built-in arguments (help and version options).
+        /// </summary>
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty'.")]
+        public PropertyInfo? Property => BindableProperty.Property;
+
+        /// <summary>
+        /// Whether command argument is scalar.
+        /// </summary>
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.IsScalar'.")]
+        public bool IsScalar => BindableProperty.IsScalar;
 
         /// <summary>
         /// Returns a list of valid values.
         /// </summary>
         /// <returns></returns>
+        /// <exception cref="ArgumentException">
+        /// The property's set accessor is not found.
+        /// -or-
+        /// value cannot be converted to the type of System.Reflection.PropertyInfo.PropertyType.</exception>
+        /// <exception cref="TargetException">
+        /// In the .NET for Windows Store apps or the Portable Class Library, catch System.Exception instead.
+        /// The type of obj does not match the target type, or a property is an instance property but obj is null.
+        /// </exception>
+        /// <exception cref="MethodAccessException">
+        /// In the .NET for Windows Store apps or the Portable Class Library, catch the base class exception, System.MemberAccessException, instead.
+        /// There was an illegal attempt to access a private or protected method inside a class.
+        /// </exception>
+        /// <exception cref="TargetInvocationException">
+        /// An error occurred while setting the property value.
+        /// The System.Exception.InnerException property indicates the reason for the error.
+        /// </exception>
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.GetValidValues()'.")]
         public IReadOnlyList<string> GetValidValues()
         {
-            _validValues ??= InternalGetValidValues();
-
-            return _validValues;
-
-            IReadOnlyList<string> InternalGetValidValues()
-            {
-                if (Property is null)
-                    return Array.Empty<string>();
-
-                Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ??
-                                      Property.PropertyType.TryGetEnumerableUnderlyingType() ??
-                                      Property.PropertyType;
-
-                // Enum
-                if (underlyingType.IsEnum)
-                    return Enum.GetNames(underlyingType);
-
-                return Array.Empty<string>();
-            }
+            return BindableProperty.GetValidValues();
         }
     }
 }
