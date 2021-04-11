@@ -176,7 +176,7 @@
                 "PARAMETERS",
                 "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
                 "OPTIONS",
-                "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
+                "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\", \"\".",
                 "* --required-enum", "Valid values: \"Value1\", \"Value2\", \"Value3\"."
             );
         }
@@ -276,6 +276,35 @@
                 "wizz",
                 "Buzz",
                 "fizzz",
+                "Value1", "Value2", "Value3",
+                "Value4", "Value5", "Value6",
+                "Value7", "Value8", "Value9",
+                "ValueA", "ValueB", "ValueC",
+                @"(Default: ""ValueD"" ""ValueF"")"
+            );
+        }
+
+        [Fact]
+        public async Task Help_text_shows_all_valid_values_for_non_scalar_nullable_enum_parameters_and_options()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithNullableEnumCollectionArgumentsCommand>();
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "PARAMETERS",
+                "OPTIONS",
+                "Foo",
+                "bar",
+                "wizz",
+                "Buzz",
+                "fizzz",
+                @"""""",
                 "Value1", "Value2", "Value3",
                 "Value4", "Value5", "Value6",
                 "Value7", "Value8", "Value9",

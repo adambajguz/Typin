@@ -38,16 +38,22 @@ namespace Typin.Internal.Input
             };
 
         #region Value Converter
-        private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType)
+        private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType, IBindingConverter? converterInstance)
         {
             try
             {
-                // User-defiend type converter
-                if (argumentSchema.ConverterType is Type ct)
+                if (targetType.IsAssignableFrom(converterInstance?.TargetType))
                 {
-                    IBindingConverter converterInstance = BindingConverterActivator.GetConverter(ct);
+                    // Structs do not support inheritance, so we want to execute our Nullable<T> handling logic if converter is for T, not Nullable<T>.
+                    // If value is null or whitespace, we must check if this is a nullable struct and converter is for non-nullable struct else normal conversion with converter.
+                    if (string.IsNullOrWhiteSpace(value) &&
+                        converterInstance?.TargetType != targetType &&
+                        targetType.TryGetNullableUnderlyingType() is not null)
+                    {
+                        return null;
+                    }
 
-                    return converterInstance.Convert(value);
+                    return converterInstance!.Convert(value is null ? Array.Empty<string>() : new[] { value! });
                 }
 
                 // No conversion necessary
@@ -76,7 +82,7 @@ namespace Typin.Internal.Input
                 if (nullableUnderlyingType is not null)
                 {
                     return !string.IsNullOrWhiteSpace(value)
-                        ? ConvertScalar(argumentSchema, value, nullableUnderlyingType)
+                        ? ConvertScalar(argumentSchema, value, nullableUnderlyingType, converterInstance: null) // we can pass null because we have an extra check in the beginning of the method
                         : null;
                 }
 
@@ -103,9 +109,9 @@ namespace Typin.Internal.Input
             throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, value, targetType);
         }
 
-        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType)
+        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
         {
-            Array array = values.Select(v => ConvertScalar(argumentSchema, v, targetElementType))
+            Array array = values.Select(v => ConvertScalar(argumentSchema, v, targetElementType, converterInstance))
                                 .ToNonGenericArray(targetElementType);
 
             Type arrayType = array.GetType();
@@ -132,17 +138,42 @@ namespace Typin.Internal.Input
             Type targetType = property.PropertyType;
             Type? enumerableUnderlyingType = property.TryGetEnumerableArgumentUnderlyingType();
 
+            // User-defined conversion
+            if (argumentSchema.ConverterType is Type converterType)
+            {
+                IBindingConverter converterInstance = BindingConverterActivator.GetConverter(converterType);
+
+                // Scalar
+                if (enumerableUnderlyingType is null)
+                {
+                    return values.Count <= 1
+                        ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, converterInstance)
+                        : throw ArgumentBindingExceptions.CannotConvertMultipleValuesToNonScalar(argumentSchema, values);
+                }
+                // Non-scalar with conversion for collection
+                else if (targetType.IsAssignableFrom(converterInstance.TargetType))
+                {
+                    return converterInstance.Convert(values);
+                }
+                // Non-scalar with conversion for collection item type
+                else
+                {
+                    return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, converterInstance);
+                }
+            }
+
+            // Default conversion
             // Scalar
             if (enumerableUnderlyingType is null)
             {
                 return values.Count <= 1
-                    ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType)
+                    ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, null)
                     : throw ArgumentBindingExceptions.CannotConvertMultipleValuesToNonScalar(argumentSchema, values);
             }
-            // Non-scalar
+            // Non-scalar with conversion for collection item type
             else
             {
-                return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType);
+                return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, null); ;
             }
         }
         #endregion

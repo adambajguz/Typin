@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Typin.Internal.Extensions;
 
@@ -14,6 +15,11 @@
         /// Property info may be null for built-in arguments (help and version options)
         /// </summary>
         public PropertyInfo? Property { get; }
+
+        /// <summary>
+        /// Whether property is actually a built-in argument (help and version options).
+        /// </summary>
+        public bool IsBuiltIn => Property is null;
 
         /// <summary>
         /// Whether command argument is scalar.
@@ -55,13 +61,23 @@
                 if (Property is null)
                     return Array.Empty<string>();
 
-                Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ??
-                                      Property.PropertyType.TryGetEnumerableUnderlyingType() ??
-                                      Property.PropertyType;
+                Type? underlyingType = Property.PropertyType.TryGetEnumerableUnderlyingType() ?? Property.PropertyType;
+                Type? nullableType = underlyingType.TryGetNullableUnderlyingType();
+                underlyingType = nullableType ?? underlyingType;
 
                 // Enum
                 if (underlyingType.IsEnum)
-                    return Enum.GetNames(underlyingType);
+                {
+                    if (nullableType is null)
+                    {
+                        return Enum.GetNames(underlyingType);
+                    }
+
+                    List<string> enumNames = Enum.GetNames(underlyingType).ToList();
+                    enumNames.Add(string.Empty);
+
+                    return enumNames;
+                }
 
                 return Array.Empty<string>();
             }

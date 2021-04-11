@@ -8,7 +8,7 @@
  - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
  - Fixed console not being disposed when stopping the application.
  - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
- - Fixed showing choices on non-scalar enum arguments.
+ - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
 
 ### v3.0.3 (06-Apr-2021)
 
