@@ -20,10 +20,20 @@
         /// </summary>
         public string? Description { get; }
 
+        private bool? _isScalar;
+
         /// <summary>
         /// Whether command argument is scalar.
         /// </summary>
-        public bool IsScalar => Property.TryGetEnumerableArgumentUnderlyingType() is null;
+        public bool IsScalar
+        {
+            get
+            {
+                _isScalar ??= Property.TryGetEnumerableArgumentUnderlyingType() is null;
+
+                return _isScalar.Value;
+            }
+        }
 
         /// <summary>
         /// Binding converter type.
@@ -40,24 +50,33 @@
             ConverterType = converterType;
         }
 
+        private IReadOnlyList<string>? _validValues;
+
         /// <summary>
         /// Returns a list of valid values.
         /// </summary>
         /// <returns></returns>
         public IReadOnlyList<string> GetValidValues()
         {
-            if (Property is null)
+            _validValues ??= InternalGetValidValues();
+
+            return _validValues;
+
+            IReadOnlyList<string> InternalGetValidValues()
+            {
+                if (Property is null)
+                    return Array.Empty<string>();
+
+                Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ??
+                                      Property.PropertyType.TryGetEnumerableUnderlyingType() ??
+                                      Property.PropertyType;
+
+                // Enum
+                if (underlyingType.IsEnum)
+                    return Enum.GetNames(underlyingType);
+
                 return Array.Empty<string>();
-
-            Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ??
-                                  Property.PropertyType.TryGetEnumerableUnderlyingType() ??
-                                  Property.PropertyType;
-
-            // Enum
-            if (underlyingType.IsEnum)
-                return Enum.GetNames(underlyingType);
-
-            return Array.Empty<string>();
+            }
         }
     }
 }

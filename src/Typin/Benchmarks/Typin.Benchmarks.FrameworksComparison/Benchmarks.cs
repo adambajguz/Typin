@@ -18,15 +18,7 @@
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
 
-        [Benchmark(Description = "TypinWarm")]
-        public async ValueTask<int> ExecuteWithTypinWarmDefaultCommandOnly()
-        {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
-        }
-
-        [Benchmark(Description = "Typin", Baseline = true)]
+         [Benchmark(Description = "Typin", Baseline = true)]
         public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
         {
             return await new CliApplicationBuilder().AddCommand<TypinCommand>()
