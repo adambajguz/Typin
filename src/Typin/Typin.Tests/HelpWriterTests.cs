@@ -2,16 +2,18 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Directives;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
 
-    public class HelpTextTests
+    public class HelpWriterTests
     {
         private readonly ITestOutputHelper _output;
 
-        public HelpTextTests(ITestOutputHelper output)
+        public HelpWriterTests(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -29,9 +31,110 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage".ToUpperInvariant(),
-                "Parameters".ToUpperInvariant(),
+                "USAGE",
+                "PARAMETERS",
                 "cmd", "<param-a>", "<param-b>", "<param-c...>"
+            );
+        }
+
+        [Fact]
+        public async Task Help_text_shows_directives()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>()
+                .AddDirective<DebugDirective>();
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "USAGE",
+                "PARAMETERS",
+                "DIRECTIVES",
+                "[debug]",
+                "cmd", "<param-a>", "<param-b>", "<param-c...>"
+            );
+        }
+
+        [Fact]
+        public async Task Help_text_shows_modes()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>()
+                .AddCommand<NamedInteractiveOnlyCommand>()
+                .AddDirective<DebugDirective>()
+                .UseDirectMode(true)
+                .UseInteractiveMode();
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "USAGE",
+                "DIRECTIVES",
+                "SUPPORTED MODES",
+                typeof(DirectMode).FullName,
+                typeof(Modes.InteractiveMode).FullName,
+                "@ interactive",
+                "@ named-interactive-only",
+                "@ [.]",
+                "@ [..]",
+                "@ [>]",
+                "@ [interactive]",
+                "[debug]",
+                "[!]"
+            );
+        }
+
+        [Fact]
+        public async Task Help_text_should_not_show_interactive_mode_addons_when_switched_off()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithParametersCommand>()
+                .AddCommand<NamedInteractiveOnlyCommand>()
+                .AddDirective<DebugDirective>()
+                .UseDirectMode(true)
+                .UseInteractiveMode(
+                    false,
+                    (options) =>
+                    {
+
+                    },
+                    new InteractiveModeBuilderSettings
+                    {
+                        AddInteractiveCommand = false,
+                        AddInteractiveDirective = false,
+                        AddScopeDirectives = false,
+                    });
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "USAGE",
+                "DIRECTIVES",
+                "SUPPORTED MODES",
+                typeof(DirectMode).FullName,
+                typeof(Modes.InteractiveMode).FullName,
+                "@ named-interactive-only",
+                "[debug]",
+                "[!]"
+            );
+            stdOut.GetString().Should().NotContainAll(
+                "@ interactive",
+                "@ [.]",
+                "@ [..]",
+                "@ [>]",
+                "@ [interactive]"
             );
         }
 
@@ -48,9 +151,9 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Usage".ToUpperInvariant(),
+                "USAGE",
                 "cmd", "--opt-a <value>", "--opt-c <values...>", "[options]",
-                "Options".ToUpperInvariant(),
+                "OPTIONS",
                 "* -a|--opt-a",
                 "-b|--opt-b",
                 "* -c|--opt-c"
@@ -70,9 +173,9 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Parameters".ToUpperInvariant(),
+                "PARAMETERS",
                 "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
-                "Options".ToUpperInvariant(),
+                "OPTIONS",
                 "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
                 "* --required-enum", "Valid values: \"Value1\", \"Value2\", \"Value3\"."
             );
@@ -91,9 +194,9 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options".ToUpperInvariant(),
-                "-a|--opt-a", "Environment variable:", "ENV_OPT_A",
-                "-b|--opt-b", "Environment variable:", "ENV_OPT_B"
+                "OPTIONS",
+                "-a|--opt-a", "Fallback variable:", "ENV_OPT_A",
+                "-b|--opt-b", "Fallback variable:", "ENV_OPT_B"
             );
         }
 
@@ -110,7 +213,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options".ToUpperInvariant(),
+                "OPTIONS",
                 "--obj", "Default: \"42\"",
                 "--str", "Default: \"foo\"",
                 "--str-empty", "Default: \"\"",
@@ -138,7 +241,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdOut.GetString().Should().ContainAll(
-                "Options".ToUpperInvariant(),
+                "OPTIONS",
                 "--object", "Default: \"42\"",
                 "--string", "Default: \"foo\"",
                 "--string-empty", "Default: \"\"",
@@ -150,6 +253,34 @@
                 "--int-array", "Default: \"1\" \"2\" \"3\"",
                 "--time-span", "Default: \"02:03:00\"",
                 "--enum", "Default: \"Value2\""
+            );
+        }
+
+        [Fact]
+        public async Task Help_text_shows_all_valid_values_for_non_scalar_enum_parameters_and_options()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<WithEnumCollectionArgumentsCommand>();
+
+            // Act
+            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll(
+                "PARAMETERS",
+                "OPTIONS",
+                "Foo",
+                "bar",
+                "wizz",
+                "Buzz",
+                "fizzz",
+                "Value1", "Value2", "Value3",
+                "Value4", "Value5", "Value6",
+                "Value7", "Value8", "Value9",
+                "ValueA", "ValueB", "ValueC",
+                @"(Default: ""ValueD"" ""ValueF"")"
             );
         }
     }

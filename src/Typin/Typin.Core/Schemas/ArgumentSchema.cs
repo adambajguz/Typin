@@ -11,7 +11,7 @@
     public abstract class ArgumentSchema
     {
         /// <summary>
-        /// Property info can be null on built-in arguments (help and version options)
+        /// Property info may be null for built-in arguments (help and version options)
         /// </summary>
         public PropertyInfo? Property { get; }
 
@@ -49,7 +49,9 @@
             if (Property is null)
                 return Array.Empty<string>();
 
-            Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ?? Property.PropertyType;
+            Type underlyingType = Property.PropertyType.TryGetNullableUnderlyingType() ??
+                                  Property.PropertyType.TryGetEnumerableUnderlyingType() ??
+                                  Property.PropertyType;
 
             // Enum
             if (underlyingType.IsEnum)

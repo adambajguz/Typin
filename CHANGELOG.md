@@ -2,8 +2,11 @@
 
  - Added `InteractiveModeOptions.Prompt`, InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
  - Removed `IDisposable` from `CliContext`.
+ - Changed default values format in help - now in round brackets.
  - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
- - Fixed a bug with not disposed console when stopping the application.
+ - Fixed console not being disposed when stopping the application.
+ - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
+ - Fixed showing choices on non-scalar enum arguments.
 
 ### v3.0.3 (06-Apr-2021)
 
@@ -38,7 +41,7 @@
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
-- Added logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added logging with `Microsoft.Extensions.Logging` (default logger is `DebugLogger`).
 - Added `IConsole.ReadKeyAsync()`.
 - Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).

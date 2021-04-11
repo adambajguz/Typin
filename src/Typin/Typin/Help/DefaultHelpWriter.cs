@@ -419,14 +419,15 @@
                 var validValues = option.GetValidValues();
                 if (validValues.Any())
                 {
-                    Write($"Valid values: {FormatValidValues(validValues)}.");
-                    Write(' ');
+                    Write("Valid values: ");
+                    Write(FormatValidValues(validValues));
+                    Write(". ");
                 }
 
                 // Environment variable
                 if (!string.IsNullOrWhiteSpace(option.FallbackVariableName))
                 {
-                    Write($"Environment variable: \"{option.FallbackVariableName}\".");
+                    Write($"Fallback variable: \"{option.FallbackVariableName}\".");
                     Write(' ');
                 }
 
@@ -437,7 +438,9 @@
                     string? defaultValueFormatted = FormatDefaultValue(defaultValue);
                     if (defaultValueFormatted is not null)
                     {
-                        Write($"Default: {defaultValueFormatted}.");
+                        Write("(Default: ");
+                        Write(defaultValueFormatted);
+                        Write(')');
                     }
                 }
 
