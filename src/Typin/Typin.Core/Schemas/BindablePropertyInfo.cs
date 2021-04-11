@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using Typin.Internal.Extensions;
@@ -12,9 +13,19 @@
     public sealed class BindablePropertyInfo
     {
         /// <summary>
-        /// Property info may be null for built-in arguments (help and version options)
+        /// Property info (may be null for built-in arguments, i.e., help and version options)
         /// </summary>
         public PropertyInfo? Property { get; }
+
+        /// <summary>
+        /// Property type (may be null for built-in arguments, i.e., help and version options)
+        /// </summary>
+        public Type? PropertyType => Property?.PropertyType;
+
+        /// <summary>
+        /// Property type (may be <see cref="string.Empty"/> for built-in arguments, i.e., help and version options)
+        /// </summary>
+        public string PropertyName => Property?.Name ?? string.Empty;
 
         /// <summary>
         /// Whether property is actually a built-in argument (help and version options).
@@ -58,10 +69,10 @@
 
             IReadOnlyList<string> InternalGetValidValues()
             {
-                if (Property is null)
+                if (IsBuiltIn)
                     return Array.Empty<string>();
 
-                Type? underlyingType = Property.PropertyType.TryGetEnumerableUnderlyingType() ?? Property.PropertyType;
+                Type? underlyingType = PropertyType!.TryGetEnumerableUnderlyingType() ?? Property!.PropertyType;
                 Type? nullableType = underlyingType.TryGetNullableUnderlyingType();
                 underlyingType = nullableType ?? underlyingType;
 
@@ -115,18 +126,21 @@
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object? obj)
         {
             return Property?.Equals(obj) ?? false;
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override int GetHashCode()
         {
             return Property?.GetHashCode() ?? 0;
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         public override string? ToString()
         {
             return Property?.ToString() ?? "<built-in argument>";

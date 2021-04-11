@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
 
     /// <summary>
@@ -37,12 +38,14 @@
         /// <summary>
         /// Property info may be null for built-in arguments (help and version options).
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty'.")]
         public PropertyInfo? Property => BindableProperty.Property;
 
         /// <summary>
         /// Whether command argument is scalar.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.IsScalar'.")]
         public bool IsScalar => BindableProperty.IsScalar;
 
@@ -66,6 +69,7 @@
         /// An error occurred while setting the property value.
         /// The System.Exception.InnerException property indicates the reason for the error.
         /// </exception>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.GetValidValues()'.")]
         public IReadOnlyList<string> GetValidValues()
         {
