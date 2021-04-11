@@ -32,6 +32,7 @@ namespace Typin.Internal.Input
                 [typeof(float)] = v => float.Parse(v, FormatProvider),
                 [typeof(double)] = v => double.Parse(v, FormatProvider),
                 [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
+                [typeof(Guid)] = v => Guid.Parse(v),
                 [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
                 [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
                 [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
@@ -91,7 +92,7 @@ namespace Typin.Internal.Input
                 if (stringConstructor is not null)
                     return stringConstructor.Invoke(new object?[] { value });
 
-                // String-parseable (with format provider) conversion
+                // String-parsable (with format provider) conversion
                 MethodInfo? parseMethodWithFormatProvider = targetType.TryGetStaticParseMethod(true);
                 if (parseMethodWithFormatProvider is not null)
                     return parseMethodWithFormatProvider.Invoke(null, new object[] { value!, FormatProvider });

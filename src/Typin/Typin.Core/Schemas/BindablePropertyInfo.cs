@@ -7,6 +7,9 @@
     using System.Reflection;
     using Typin.Internal.Extensions;
 
+    //TODO: maybe we should abstract help and version options, and remove nulablility of BindablePropertyInfo.Property?
+    //TODO: maybye rename BindablePropertyInfo to BindableProperty?
+
     /// <summary>
     /// Represents a bindable <see cref="PropertyInfo"/>.
     /// </summary>

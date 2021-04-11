@@ -70,6 +70,8 @@
         [InlineData(@"cmd --decimal -15.123", @"{ ""decimal"": -15.123 }")]
         [InlineData(@"cmd --decimal 15.123", @"{ ""decimal"": 15.123 }")]
 
+        [InlineData(@"cmd --guid ""{47BDE31E-6F2D-44E6-B585-A0037ADCE901}""", @"{ ""guid"": ""{47bde31e-6f2d-44e6-b585-a0037adce901}"" }")]
+
         [InlineData(@"cmd --datetime ""28 Apr 1995""", @"{ ""datetime"": ""1995-04-28T00:00:00"" }")]
         [InlineData(@"cmd --datetime 2020-11-12", @"{ ""datetime"": ""2020-11-12T00:00:00"" }")]
         [InlineData(@"cmd --datetime ""2020-11-12 12:00:56""", @"{ ""datetime"": ""2020-11-12T12:00:56"" }")]
@@ -136,6 +138,9 @@
         [InlineData(@"cmd --decimal-nullable -15.123", @"{ ""decimal-nullable"": -15.123 }")]
         [InlineData(@"cmd --decimal-nullable 15.123", @"{ ""decimal-nullable"": 15.123 }")]
         [InlineData(@"cmd --decimal-nullable", @"{ ""decimal-nullable"": null }")]
+
+        [InlineData(@"cmd --guid-nullable ""{47BDE31E-6F2D-44E6-B585-A0037ADCE901}""", @"{ ""guid-nullable"": ""{47bde31e-6f2d-44e6-b585-a0037adce901}"" }")]
+        [InlineData(@"cmd --guid-nullable", @"{ ""guid-nullable"": null }")]
 
         [InlineData(@"cmd --datetime-nullable ""28 Apr 1995""", @"{ ""datetime-nullable"": ""1995-04-28T00:00:00"" }")]
         [InlineData(@"cmd --datetime-nullable 2020-11-12", @"{ ""datetime-nullable"": ""2020-11-12T00:00:00"" }")]

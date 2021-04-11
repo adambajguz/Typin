@@ -77,6 +77,10 @@
         [CommandOption("decimal")]
         public decimal Decimal { get; init; }
 
+        [JsonProperty("guid")]
+        [CommandOption("guid")]
+        public Guid Guid { get; init; }
+
         [JsonProperty("datetime")]
         [CommandOption("datetime")]
         public DateTime DateTime { get; init; }
@@ -146,6 +150,10 @@
         [JsonProperty("decimal-nullable")]
         [CommandOption("decimal-nullable")]
         public decimal? DecimalNullable { get; init; } = 98.1245M;
+
+        [JsonProperty("guid-nullable")]
+        [CommandOption("guid-nullable")]
+        public Guid? GuidNullable { get; init; } = (Guid?)Guid.Parse("{12345678-abcd-2222-3333-111111111111}");
 
         [JsonProperty("datetime-nullable")]
         [CommandOption("datetime-nullable")]
