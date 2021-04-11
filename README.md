@@ -188,7 +188,7 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 | 'CliFx - 20 commands' | 485.98 us |  9.718 us | 18.723 us |  2.51 |    9 |
 | 'Typin - 20 commands' | 682.66 us | 13.528 us | 19.829 us |  3.46 |   10 |
 
- > Typin 3.x oraz 4.0 will focus on optimizations, further API improvements, and usage of source code generators.
+ > Typin 4.0 will focus on optimizations, further API improvements, and usage of source code generators.
 
 ### Typin <= 2.1.1
 
