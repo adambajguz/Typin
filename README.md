@@ -181,7 +181,6 @@ Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
 |  'CliFx - 5 commands' | 122.28 us | 2.725 us | 3.994 us |  0.65 |    3 |
 |   'Typin - 1 command' | 191.65 us | 0.913 us | 0.810 us |  1.00 |    4 |
 | 'CliFx - 10 commands' | 195.04 us | 1.284 us | 1.139 us |  1.02 |    5 |
-|      'Typin - warmup' | 195.07 us | 4.428 us | 4.142 us |  1.02 |    5 |
 |  'Typin - 2 commands' | 215.12 us | 2.679 us | 2.506 us |  1.12 |    6 |
 |  'Typin - 5 commands' | 279.66 us | 2.766 us | 2.587 us |  1.46 |    7 |
 | 'CliFx - 20 commands' | 376.77 us | 2.897 us | 2.419 us |  1.97 |    8 |
