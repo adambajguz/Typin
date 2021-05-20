@@ -10,7 +10,7 @@
 
     public class InteractiveModeTests
     {
-        private const int Timeout = 2000;
+        private const int Timeout = 5000;
         private readonly ITestOutputHelper _output;
 
         public InteractiveModeTests(ITestOutputHelper output)

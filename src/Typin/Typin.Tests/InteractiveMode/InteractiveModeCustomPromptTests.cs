@@ -11,7 +11,7 @@
 
     public class InteractiveModeCustomPromptTests
     {
-        private const int Timeout = 2000;
+        private const int Timeout = 5000;
         private readonly ITestOutputHelper _output;
 
         public InteractiveModeCustomPromptTests(ITestOutputHelper output)
