@@ -51,7 +51,7 @@
         /// <summary>
         /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initalize with a call to <see cref="SetDefaultPrompt"/>).
         /// </summary>
-        public Action<ApplicationMetadata, IConsole> Prompt { get; private set; } = default!;
+        public Action<IServiceProvider, ApplicationMetadata, IConsole> Prompt { get; private set; } = default!;
 
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveModeOptions"/>.
@@ -67,7 +67,7 @@
         /// </summary>
         public InteractiveModeOptions SetDefaultPrompt()
         {
-            Prompt = (metadata, console) =>
+            Prompt = (provider, metadata, console) =>
             {
                 ConsoleColor promptForeground = PromptForeground;
                 console.Output.WithForegroundColor(promptForeground, (output) => output.Write(metadata.ExecutableName));
@@ -96,7 +96,7 @@
         /// </summary>
         public InteractiveModeOptions SetPrompt(string prompt)
         {
-            Prompt = (metadata, console) =>
+            Prompt = (provider, metadata, console) =>
             {
                 string scope = Scope;
                 bool hasScope = !string.IsNullOrWhiteSpace(scope);
@@ -121,7 +121,7 @@
         /// </summary>
         public InteractiveModeOptions SetPrompt(Func<ApplicationMetadata, string> prompt)
         {
-            Prompt = (metadata, console) =>
+            Prompt = (provider, metadata, console) =>
             {
                 string tmp = prompt(metadata);
 
@@ -137,7 +137,7 @@
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<ApplicationMetadata, IConsole> prompt)
         {
-            Prompt = prompt;
+            Prompt = (provider, metadata, console) => prompt(metadata, console);
 
             return this;
         }
@@ -148,7 +148,29 @@
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<InteractiveModeOptions, ApplicationMetadata, IConsole> prompt)
         {
-            Prompt = (metadata, console) => prompt(this, metadata, console);
+            Prompt = (provider, metadata, console) => prompt(this, metadata, console);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets interactive mode prompt to action that directly interacts with console.
+        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// </summary>
+        public InteractiveModeOptions SetPrompt(Action<IServiceProvider, ApplicationMetadata, IConsole> prompt)
+        {
+            Prompt = prompt;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets interactive mode prompt to action that directly interacts with console.
+        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// </summary>
+        public InteractiveModeOptions SetPrompt(Action<IServiceProvider, InteractiveModeOptions, ApplicationMetadata, IConsole> prompt)
+        {
+            Prompt = (provider, metadata, console) => prompt(provider, this, metadata, console);
 
             return this;
         }

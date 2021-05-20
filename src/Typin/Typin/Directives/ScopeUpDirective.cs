@@ -42,9 +42,13 @@
             string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (splittedScope.Length > 1)
+            {
                 _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
+            }
             else if (splittedScope.Length == 1)
+            {
                 _options.Scope = string.Empty;
+            }
 
             context.ExitCode ??= ExitCodes.Success;
 

@@ -62,10 +62,14 @@
         public bool IsCommandOrSubcommandPart(string? commandName)
         {
             if (string.IsNullOrWhiteSpace(commandName))
+            {
                 return false;
+            }
 
             if (Commands.ContainsKey(commandName))
+            {
                 return true;
+            }
 
             commandName = string.Concat(commandName.Trim(), " ");
 
@@ -78,7 +82,9 @@
         public CommandSchema? TryFindCommand(string? commandName)
         {
             if (string.IsNullOrWhiteSpace(commandName))
+            {
                 return DefaultCommand;
+            }
 
             Commands.TryGetValue(commandName, out CommandSchema? value);
 
@@ -91,7 +97,9 @@
         public DirectiveSchema? TryFindDirective(string directiveName)
         {
             if (string.IsNullOrWhiteSpace(directiveName))
+            {
                 return null;
+            }
 
             Directives.TryGetValue(directiveName, out DirectiveSchema? value);
 

@@ -184,7 +184,9 @@
         private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamReader.CreateNull(console);
+            }
 
             return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
         }
@@ -192,7 +194,9 @@
         private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
         {
             if (stream is null)
+            {
                 return StandardStreamWriter.CreateNull(console);
+            }
 
             return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
             {

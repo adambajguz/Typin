@@ -55,7 +55,9 @@
                 string argument = commandLineArguments[index];
 
                 if (!argument.StartsWith('[') || !argument.EndsWith(']'))
+                {
                     break;
+                }
 
                 string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
 
@@ -91,7 +93,9 @@
 
             // Update the index only if command name was found in the arguments
             if (!string.IsNullOrWhiteSpace(commandName))
+            {
                 index = lastIndex + 1;
+            }
 
             return commandName;
         }
@@ -106,7 +110,9 @@
                 string argument = commandLineArguments[index];
 
                 if (CommandOptionInput.IsOption(argument) || CommandOptionInput.IsOptionAlias(argument))
+                {
                     break;
+                }
 
                 result.Add(new CommandParameterInput(argument));
             }
@@ -131,7 +137,9 @@
                 {
                     // Flush previous
                     if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                    {
                         result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+                    }
 
                     currentOptionAlias = argument.Substring(2);
                     currentOptionValues = new List<string>();
@@ -143,7 +151,9 @@
                     {
                         // Flush previous
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                        {
                             result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+                        }
 
                         currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
@@ -158,7 +168,9 @@
 
             // Flush last option
             if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+            {
                 result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+            }
 
             return result;
         }

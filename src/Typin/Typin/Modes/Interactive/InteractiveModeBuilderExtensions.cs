@@ -29,10 +29,14 @@
             builder.AddDirective<DefaultDirective>();
 
             if (builderSettings.AddInteractiveCommand)
+            {
                 builder.AddCommand<InteractiveCommand>();
+            }
 
             if (builderSettings.AddInteractiveDirective)
+            {
                 builder.AddDirective<InteractiveDirective>();
+            }
 
             if (builderSettings.AddScopeDirectives)
             {

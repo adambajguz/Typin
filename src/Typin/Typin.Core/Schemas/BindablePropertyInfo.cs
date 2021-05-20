@@ -73,7 +73,9 @@
             IReadOnlyList<string> InternalGetValidValues()
             {
                 if (IsBuiltIn)
+                {
                     return Array.Empty<string>();
+                }
 
                 Type? underlyingType = PropertyType!.TryGetEnumerableUnderlyingType() ?? Property!.PropertyType;
                 Type? nullableType = underlyingType.TryGetNullableUnderlyingType();

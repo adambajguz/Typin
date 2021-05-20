@@ -23,7 +23,9 @@
             int remainingInputs = parameterInputs.Count;
 
             if (remainingParameters > remainingInputs)
+            {
                 throw ArgumentBindingExceptions.ParameterNotSet(parameters.TakeLast(remainingParameters - remainingInputs));
+            }
 
             // Scalar parameters
             int i = 0;
@@ -49,7 +51,9 @@
 
                 // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
                 if (!nonScalarValues.Any())
+                {
                     throw ArgumentBindingExceptions.ParameterNotSet(new[] { nonScalarParameter });
+                }
 
                 nonScalarParameter.BindOn(instance, nonScalarValues);
                 --remainingParameters;
@@ -58,7 +62,9 @@
 
             // Ensure all inputs were bound
             if (remainingInputs > 0)
+            {
                 throw ArgumentBindingExceptions.UnrecognizedParametersProvided(parameterInputs.TakeLast(remainingInputs));
+            }
         }
 
         /// <summary>
@@ -111,16 +117,22 @@
 
                 // Required option implies that the value has to be set and also be non-empty
                 if (inputValues.Any())
+                {
                     unsetRequiredOptions.Remove(option);
+                }
             }
 
             // Ensure all inputs were bound
             if (remainingOptionInputs.Any())
+            {
                 throw ArgumentBindingExceptions.UnrecognizedOptionsProvided(remainingOptionInputs);
+            }
 
             // Ensure all required options were set
             if (unsetRequiredOptions.Any())
+            {
                 throw ArgumentBindingExceptions.RequiredOptionsNotSet(unsetRequiredOptions);
+            }
         }
     }
 }

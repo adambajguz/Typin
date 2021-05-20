@@ -1,7 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
-    using System.Globalization;
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;

@@ -31,7 +31,9 @@
 
             // Handle commands not supported in current mode
             if (!commandSchema.CanBeExecutedInMode(currentModeType))
+            {
                 throw ModeEndUserExceptions.CommandExecutedInInvalidMode(commandSchema, currentModeType);
+            }
 
             // Get command instance from context and bind arguments
             ICommand instance = context.Command;

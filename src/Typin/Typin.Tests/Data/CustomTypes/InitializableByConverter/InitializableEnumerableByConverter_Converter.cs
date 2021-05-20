@@ -9,7 +9,9 @@
         public override InitializableEnumerableByConverter<T>? Convert(string? value)
         {
             if (value is null)
+            {
                 return null;
+            }
 
             T[] values = value.Split(':').Cast<T>().ToArray();
 

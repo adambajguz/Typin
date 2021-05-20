@@ -45,10 +45,14 @@
         public static char UnescapeChar(string? text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return '\0';
+            }
 
             if (text.Length == 1)
+            {
                 return text[0];
+            }
 
             if (text[0] == '\\')
             {

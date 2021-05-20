@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
-    using System;
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;

@@ -60,10 +60,14 @@
             if (!(Name is null && ShortName is null))
             {
                 if (Name is string n && (n.Contains(' ') || !CommandOptionInput.IsOption("--" + n)))
+                {
                     throw AttributesExceptions.InvalidOptionName(n);
+                }
 
                 if (shortName is char sn && !CommandOptionInput.IsOptionAlias("-" + sn))
+                {
                     throw AttributesExceptions.InvalidOptionShortName(sn);
+                }
             }
         }
 

@@ -19,7 +19,7 @@
 
         public override IEnumerator<T> GetEnumerator()
         {
-            return (IEnumerator<T>)_arr.GetEnumerator();
+            return _arr.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

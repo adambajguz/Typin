@@ -29,7 +29,9 @@
 
             // Act
             foreach (double progress in progressValues)
+            {
                 ticker.Report(progress);
+            }
 
             string stdOutData = console.Output.Encoding.GetString(stdOut.GetBytes());
 
@@ -51,7 +53,9 @@
 
             // Act
             foreach (double progress in progressValues)
+            {
                 ticker.Report(progress);
+            }
 
             string stdOutData = console.Output.Encoding.GetString(stdOut.GetBytes());
 

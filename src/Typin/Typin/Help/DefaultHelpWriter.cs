@@ -67,7 +67,9 @@
             _console.ForegroundColor = ConsoleColor.Gray;
 
             if (command.IsDefault)
+            {
                 WriteApplicationInfo();
+            }
 
             WriteCommandDescription(command);
             WriteCommandUsage(root.Directives, command, childCommands);
@@ -109,7 +111,9 @@
         private void WriteVerticalMargin(int size = 1)
         {
             for (int i = 0; i < size; i++)
+            {
                 WriteLine();
+            }
         }
 
         private void WriteHorizontalMargin(int size = 2)
@@ -120,9 +124,13 @@
         private void WriteColumnMargin(int columnSize = 24, int offsetSize = 2)
         {
             if (_column + offsetSize < columnSize)
+            {
                 WriteHorizontalMargin(columnSize - _column);
+            }
             else
+            {
                 WriteHorizontalMargin(offsetSize);
+            }
         }
 
         private void WriteHeader(string text)
@@ -159,10 +167,14 @@
             IReadOnlyList<Type> modesInApplication = _context.Configuration.ModeTypes;
 
             if (modesInApplication.Count == 1)
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Supported modes");
 
@@ -192,10 +204,14 @@
         private void WriteDirectivesManual(IReadOnlyDictionary<string, DirectiveSchema> directives)
         {
             if (directives.Count == 0)
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Directives");
 
@@ -225,7 +241,9 @@
         private void WriteDirectiveDescription(DirectiveSchema directive)
         {
             if (string.IsNullOrWhiteSpace(directive.Description))
+            {
                 return;
+            }
 
             WriteColumnMargin();
             Write(directive.Description);
@@ -236,10 +254,14 @@
         private void WriteCommandDescription(CommandSchema command)
         {
             if (string.IsNullOrWhiteSpace(command.Description))
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Description");
 
@@ -251,10 +273,14 @@
         private void WriteCommandManual(CommandSchema command)
         {
             if (string.IsNullOrWhiteSpace(command.Manual))
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Manual");
             WriteHorizontalMargin();
@@ -272,7 +298,9 @@
                                        IEnumerable<CommandSchema> childCommands)
         {
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Usage");
 
@@ -337,10 +365,14 @@
         private void WriteCommandParameters(CommandSchema command)
         {
             if (!command.Parameters.Any())
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Parameters");
 
@@ -373,7 +405,9 @@
                                          IReadOnlyDictionary<ArgumentSchema, object?> argumentDefaultValues)
         {
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Options");
 
@@ -457,10 +491,14 @@
                                           IEnumerable<CommandSchema> childCommands)
         {
             if (!childCommands.Any())
+            {
                 return;
+            }
 
             if (!IsEmpty)
+            {
                 WriteVerticalMargin();
+            }
 
             WriteHeader("Commands");
 
@@ -499,18 +537,24 @@
 
             bool isDirectMode = _applicationLifetime.CurrentMode is DirectMode;
             if (isDirectMode)
+            {
                 Write(_context.Metadata.ExecutableName);
+            }
 
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
                 if (isDirectMode)
+                {
                     Write(' ');
+                }
 
                 Write(ConsoleColor.Cyan, command.Name);
             }
 
             if (isDirectMode)
+            {
                 Write(' ');
+            }
 
             Write(ConsoleColor.Cyan, "[command]");
 
@@ -532,7 +576,9 @@
         private static string? FormatDefaultValue(object? defaultValue)
         {
             if (defaultValue == null)
+            {
                 return null;
+            }
 
             // Enumerable
             if (!(defaultValue is string) && defaultValue is IEnumerable defaultValues)
@@ -541,7 +587,9 @@
 
                 // If the ToString() method is not overriden, the default value can't be formatted nicely
                 if (!elementType.IsToStringOverriden())
+                {
                     return null;
+                }
 
                 return defaultValues.Cast<object?>()
                                     .Where(o => o is not null)
@@ -553,7 +601,9 @@
             {
                 // If the ToString() method is not overriden, the default value can't be formatted nicely
                 if (!defaultValue.GetType().IsToStringOverriden())
+                {
                     return null;
+                }
 
                 return defaultValue.ToFormattableString(CultureInfo.InvariantCulture).Quote();
             }

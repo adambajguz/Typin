@@ -108,16 +108,24 @@
         public bool CanBeExecutedInMode(Type type)
         {
             if (!KnownTypesHelpers.IsCliModeType(type))
+            {
                 throw AttributesExceptions.InvalidModeType(type);
+            }
 
             if (!HasModeRestrictions())
+            {
                 return true;
+            }
 
             if (SupportedModes is not null && !SupportedModes!.Contains(type))
+            {
                 return false;
+            }
 
             if (ExcludedModes is not null && ExcludedModes.Contains(type))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -136,10 +144,14 @@
         public IEnumerable<ArgumentSchema> GetArguments()
         {
             foreach (CommandParameterSchema parameter in Parameters)
+            {
                 yield return parameter;
+            }
 
             foreach (CommandOptionSchema option in Options)
+            {
                 yield return option;
+            }
         }
 
         /// <summary>
@@ -153,7 +165,9 @@
             {
                 // Skip built-in arguments
                 if (argument.BindableProperty.IsBuiltIn)
+                {
                     continue;
+                }
 
                 object? value = argument.BindableProperty.GetValue(instance);
                 result[argument] = value;

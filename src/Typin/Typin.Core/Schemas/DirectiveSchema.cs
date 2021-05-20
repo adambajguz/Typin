@@ -76,16 +76,24 @@
         public bool CanBeExecutedInMode(Type type)
         {
             if (!KnownTypesHelpers.IsCliModeType(type))
+            {
                 throw AttributesExceptions.InvalidModeType(type);
+            }
 
             if (!HasModeRestrictions())
+            {
                 return true;
+            }
 
             if (SupportedModes is not null && !SupportedModes!.Contains(type))
+            {
                 return false;
+            }
 
             if (ExcludedModes is not null && ExcludedModes!.Contains(type))
+            {
                 return false;
+            }
 
             return true;
         }

@@ -187,5 +187,39 @@
             stdOut.GetString().Should().StartWith($"{ConsoleColor.Blue} testTitle");
             stdErr.GetString().Should().StartWith("otherTitle");
         }
+
+        [Fact(Timeout = Timeout)]
+        public async Task Application_should_allow_action_based_prompt_with_service_options_metadata_and_console()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddCommand<ExitCommand>()
+                .UseDirectMode(asStartup: true)
+                .UseTitle("testTitle")
+                .UseExecutableName("otherTitle")
+                .UseInteractiveMode(options: (cfg) =>
+                {
+                    cfg.SetPrompt<ICliApplicationLifetime>((lifetime, interactiveModeOptions, metadata, console) =>
+                       {
+                           console.Output.Write(lifetime.CurrentModeType?.Name);
+                           console.Output.Write(interactiveModeOptions.PromptForeground);
+                           console.Output.Write(" ");
+                           console.Output.Write(metadata.Title);
+                           console.Error.Write(metadata.ExecutableName);
+                       });
+                });
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
+                                                                                commandLine: "interactive",
+                                                                                isInputRedirected: true,
+                                                                                input: string.Empty);
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith($"InteractiveMode{ConsoleColor.Blue} testTitle");
+            stdErr.GetString().Should().StartWith("otherTitle");
+        }
     }
 }

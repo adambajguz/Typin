@@ -10,7 +10,9 @@
         public string[] GetSuggestions(string text, int index)
         {
             if (text.StartsWith('X'))
+            {
                 return Array.Empty<string>();
+            }
 
             return new string[] { "World", "Angel", "Hello" };
         }

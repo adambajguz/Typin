@@ -9,12 +9,16 @@
         public override InitializableClassTypeByConverter? Convert(string? value)
         {
             if (value is null)
+            {
                 return null;
+            }
 
             string[] values = value.Split(':');
 
             if (values.Length != 2)
+            {
                 throw new FormatException($"Invalid format of {nameof(InitializableClassTypeByConverter)}.");
+            }
 
             DayOfWeek day = Enum.Parse<DayOfWeek>(values[0]);
             int v = int.Parse(values[1]);

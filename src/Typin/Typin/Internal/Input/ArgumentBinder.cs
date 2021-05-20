@@ -16,83 +16,115 @@ namespace Typin.Internal.Input
         private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
 
         //TODO: benchmark PrimitiveConverters vs PrimitiveConverter()
-//        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
-//            new Dictionary<Type, Func<string, object?>>
-//            {
-//                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
-//                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
-//                [typeof(short)] = v => short.Parse(v, FormatProvider),
-//                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
-//                [typeof(int)] = v => int.Parse(v, FormatProvider),
-//                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
-//                [typeof(long)] = v => long.Parse(v, FormatProvider),
-//                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-//#if NET5_0
-//                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
-//#endif
-//                [typeof(float)] = v => float.Parse(v, FormatProvider),
-//                [typeof(double)] = v => double.Parse(v, FormatProvider),
-//                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
-//                [typeof(Guid)] = v => Guid.Parse(v),
-//                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
-//                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
-//                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
-//            };
+        //        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
+        //            new Dictionary<Type, Func<string, object?>>
+        //            {
+        //                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
+        //                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
+        //                [typeof(short)] = v => short.Parse(v, FormatProvider),
+        //                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
+        //                [typeof(int)] = v => int.Parse(v, FormatProvider),
+        //                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
+        //                [typeof(long)] = v => long.Parse(v, FormatProvider),
+        //                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
+        //#if NET5_0
+        //                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
+        //#endif
+        //                [typeof(float)] = v => float.Parse(v, FormatProvider),
+        //                [typeof(double)] = v => double.Parse(v, FormatProvider),
+        //                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
+        //                [typeof(Guid)] = v => Guid.Parse(v),
+        //                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
+        //                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
+        //                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
+        //            };
 
         private static object? PrimitiveConverter(Type targetType, string value)
         {
             if (targetType.IsPrimitive)
             {
                 if (targetType == typeof(sbyte))
+                {
                     return sbyte.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(byte))
+                {
                     return byte.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(short))
+                {
                     return short.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(ushort))
+                {
                     return ushort.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(int))
+                {
                     return int.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(uint))
+                {
                     return uint.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(long))
+                {
                     return long.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(ulong))
+                {
                     return ulong.Parse(value, FormatProvider);
+                }
 
 #if NET5_0
                 if (targetType == typeof(Half))
+                {
                     return Half.Parse(value, FormatProvider);
+                }
 #endif
 
                 if (targetType == typeof(float))
+                {
                     return float.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(double))
+                {
                     return double.Parse(value, FormatProvider);
+                }
 
                 if (targetType == typeof(decimal))
+                {
                     return decimal.Parse(value, FormatProvider);
+                }
             }
 
             if (targetType == typeof(Guid))
+            {
                 return Guid.Parse(value);
+            }
 
             if (targetType == typeof(DateTime))
+            {
                 return DateTime.Parse(value, FormatProvider);
+            }
 
             if (targetType == typeof(DateTimeOffset))
+            {
                 return DateTimeOffset.Parse(value, FormatProvider);
+            }
 
             if (targetType == typeof(TimeSpan))
+            {
                 return TimeSpan.Parse(value, FormatProvider);
+            }
 
             return null;
         }
@@ -118,23 +150,33 @@ namespace Typin.Internal.Input
 
                 // No conversion necessary
                 if (targetType == typeof(object) || targetType == typeof(string))
+                {
                     return value;
+                }
 
                 // Bool conversion (special case)
                 if (targetType == typeof(bool))
+                {
                     return string.IsNullOrWhiteSpace(value) || bool.Parse(value);
+                }
 
                 // Char conversion (special case)
                 if (targetType == typeof(char))
+                {
                     return TextUtils.UnescapeChar(value);
+                }
 
                 // Primitive conversion
                 if (!string.IsNullOrWhiteSpace(value) && PrimitiveConverter(targetType, value) is object v)
+                {
                     return v;
+                }
 
                 // Enum conversion conversion
                 if (targetType.IsEnum && !string.IsNullOrWhiteSpace(value))
+                {
                     return Enum.Parse(targetType, value ?? string.Empty, true);
+                }
 
                 // Nullable<T> conversion
                 Type? nullableUnderlyingType = targetType.TryGetNullableUnderlyingType();
@@ -148,17 +190,23 @@ namespace Typin.Internal.Input
                 // String-constructible conversion
                 ConstructorInfo? stringConstructor = targetType.GetConstructor(new[] { typeof(string) });
                 if (stringConstructor is not null)
+                {
                     return stringConstructor.Invoke(new object?[] { value });
+                }
 
                 // String-parsable (with format provider) conversion
                 MethodInfo? parseMethodWithFormatProvider = targetType.TryGetStaticParseMethod(true);
                 if (parseMethodWithFormatProvider is not null)
+                {
                     return parseMethodWithFormatProvider.Invoke(null, new object[] { value!, FormatProvider });
+                }
 
                 // String-parsable (without format provider) conversion
                 MethodInfo? parseMethod = targetType.TryGetStaticParseMethod();
                 if (parseMethod is not null)
+                {
                     return parseMethod.Invoke(null, new object?[] { value });
+                }
             }
             catch (Exception ex)
             {
@@ -177,7 +225,9 @@ namespace Typin.Internal.Input
 
             // Assignable from an array
             if (targetEnumerableType.IsAssignableFrom(arrayType))
+            {
                 return array;
+            }
 
             // Constructible from an array
             ConstructorInfo? arrayConstructor = targetEnumerableType.GetConstructor(new[] { arrayType });
@@ -190,7 +240,9 @@ namespace Typin.Internal.Input
         {
             // Short-circuit built-in arguments
             if (argumentSchema.BindableProperty.Property is null)
+            {
                 return null;
+            }
 
             PropertyInfo property = argumentSchema.BindableProperty.Property;
             Type targetType = property.PropertyType;
@@ -249,7 +301,9 @@ namespace Typin.Internal.Input
         public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
         {
             if (argumentSchema.BindableProperty.Property is null)
+            {
                 return;
+            }
 
             object? value = argumentSchema.Convert(values);
             argumentSchema.BindableProperty.SetValue(command, value);

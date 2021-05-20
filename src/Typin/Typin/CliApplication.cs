@@ -216,7 +216,9 @@ namespace Typin
 
                 //TODO: remove nulability from CurrentMode
                 if (currentMode is not null)
+                {
                     exitCode = await currentMode.ExecuteAsync(commandLineArguments, _cliCommandExecutor);
+                }
 
                 _applicationLifetime.TrySwitchModes();
                 _applicationLifetime.TryStop();

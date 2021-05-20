@@ -40,7 +40,9 @@
             Name = name.TrimStart('[').TrimEnd(']');
 
             if (string.IsNullOrWhiteSpace(Name))
+            {
                 throw AttributesExceptions.DirectiveNameIsInvalid(name);
+            }
         }
     }
 }

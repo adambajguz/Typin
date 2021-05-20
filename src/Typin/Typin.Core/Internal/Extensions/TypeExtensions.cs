@@ -21,13 +21,19 @@
         public static Type? TryGetEnumerableUnderlyingType(this Type type)
         {
             if (type.IsPrimitive)
+            {
                 return null;
+            }
 
             if (type == typeof(IEnumerable))
+            {
                 return typeof(object);
+            }
 
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
                 return type.GetGenericArguments().FirstOrDefault();
+            }
 
             return type.GetInterfaces()
                        .Select(TryGetEnumerableUnderlyingType)

@@ -38,7 +38,9 @@
             Debugger.Launch();
 
             while (!Debugger.IsAttached)
+            {
                 await Task.Delay(100, cancellationToken);
+            }
 
             //Replace with an event
             //console.WithForegroundColor(ConsoleColor.Green, () =>
