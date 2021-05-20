@@ -1,7 +1,7 @@
 ### v3.1.0 (xx-Apr-2021)
 
  - Added `InteractiveModeOptions.Prompt`, InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
- - Added `BindableProperyInfo` and `ArgumentSchema.BindableProperty`, as well as marked `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and`ArgumentSchema.GetValidValues()` obsolete - will be removed in Typin 4.0.
+ - Added `BindableProperyInfo` and `ArgumentSchema.BindableProperty`, as well as marked `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and `ArgumentSchema.GetValidValues()` obsolete - will be removed in Typin 4.0.
  - Removed `IDisposable` from `CliContext`.
  - Faster `Guid` binding by explicit `Guid.Parse()` call (added `Guid` to `ArgumentBinder.PrimitiveConverters`).
  - Changed default values format in help - now in round brackets.
