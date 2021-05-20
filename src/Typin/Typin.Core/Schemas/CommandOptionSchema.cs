@@ -1,7 +1,6 @@
 ﻿namespace Typin.Schemas
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -14,12 +13,12 @@
         /// <summary>
         /// Gets a help option schema instance.
         /// </summary>
-        public static CommandOptionSchema HelpOption { get; } = new(null, "help", 'h', null, false, "Shows help text.");
+        public static CommandOptionSchema HelpOption { get; } = new(null, "help", 'h', null, false, "Shows help text.", null);
 
         /// <summary>
         /// Gets a version option schema instance.
         /// </summary>
-        public static CommandOptionSchema VersionOption { get; } = new(null, "version", null, null, false, "Shows version information.");
+        public static CommandOptionSchema VersionOption { get; } = new(null, "version", null, null, false, "Shows version information.", null);
 
         /// <summary>
         /// Option name.
@@ -49,8 +48,9 @@
                                    char? shortName,
                                    string? fallbackVariableName,
                                    bool isRequired,
-                                   string? description)
-            : base(property, description)
+                                   string? description,
+                                   Type? converter)
+            : base(property, description, converter)
         {
             Name = name;
             ShortName = shortName;
@@ -107,10 +107,9 @@
         }
 
         /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"{Property?.Name ?? "<implicit>"} ('{GetUserFacingDisplayString()}')";
+            return $"{BindableProperty.PropertyName} ('{GetUserFacingDisplayString()}')";
         }
     }
 }

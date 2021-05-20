@@ -138,7 +138,7 @@
         public async Task Nothing_should_happen_without_auto_complete_handler()
         {
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(_console);
+            AutoCompleteInput input = new(_console);
 
             // Act
             string text = await input.ReadLineAsync(Tab, Enter);
@@ -247,7 +247,7 @@
             bool test = false;
 
             // Arrange
-            AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
+            AutoCompleteInput input = new(_console, new HashSet<ShortcutDefinition>
             {
                 new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { test = true; }),
                 new ShortcutDefinition(ConsoleKey.B, ConsoleModifiers.Control, () => { test = true; }),
@@ -273,7 +273,7 @@
             // Arrange
             Action act = () =>
             {
-                AutoCompleteInput input = new AutoCompleteInput(_console, new HashSet<ShortcutDefinition>
+                AutoCompleteInput input = new(_console, new HashSet<ShortcutDefinition>
                 {
                     new ShortcutDefinition(ConsoleKey.A, ConsoleModifiers.Control, () => { }),
                     new ShortcutDefinition(ConsoleKey.Delete, () => { }),

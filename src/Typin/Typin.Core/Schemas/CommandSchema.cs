@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Typin.Internal.Exceptions;
@@ -153,17 +152,18 @@
             foreach (ArgumentSchema argument in GetArguments())
             {
                 // Skip built-in arguments
-                if (argument.Property is null)
+                if (argument.BindableProperty.IsBuiltIn)
                     continue;
 
-                object? value = argument.Property.GetValue(instance);
+                object? value = argument.BindableProperty.GetValue(instance);
                 result[argument] = value;
             }
 
             return result;
         }
 
-        internal string GetInternalDisplayString()
+        /// <inheritdoc/>
+        public override string ToString()
         {
             StringBuilder buffer = new();
 
@@ -177,13 +177,6 @@
                   .Append(')');
 
             return buffer.ToString();
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            return GetInternalDisplayString();
         }
     }
 }

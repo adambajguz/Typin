@@ -44,7 +44,7 @@
         public void Real_implementation_of_console_can_be_used_to_execute_commands()
         {
             // Arrange
-            using IConsole console = new SystemConsole();
+            using SystemConsole console = new();
 
             // Act
             console.ResetColor();
@@ -64,9 +64,9 @@
             using MemoryStream stdOut = new();
             using MemoryStream stdErr = new();
 
-            using IConsole console = new VirtualConsole(input: stdIn,
-                                                        output: stdOut,
-                                                        error: stdErr);
+            using VirtualConsole console = new(input: stdIn,
+                                               output: stdOut,
+                                               error: stdErr);
 
             // Act
             console.Output.Write("output");

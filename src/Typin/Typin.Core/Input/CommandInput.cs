@@ -87,20 +87,6 @@
                              .Any();
         }
 
-        /// <summary>
-        /// Whether command has any of given directives.
-        /// </summary>
-        internal bool HasAnyOfDirectives(string[] directives)
-        {
-            foreach (string directive in directives)
-            {
-                if (HasDirective(directive))
-                    return true;
-            }
-
-            return false;
-        }
-
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
         public override string ToString()

@@ -1,0 +1,19 @@
+﻿namespace Typin.Tests.Data.CustomTypes.InitializableByConverter
+{
+    using System;
+    using System.Collections.Generic;
+    using Typin.Binding;
+
+    public class InitializableNullableStructTypeByConverter_FailingConverter : BindingConverter<InitializableStructTypeByConverter?>
+    {
+        public override InitializableStructTypeByConverter? Convert(string? value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override InitializableStructTypeByConverter? ConvertCollection(IReadOnlyCollection<string> values)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

@@ -1,5 +1,6 @@
 ﻿namespace Typin.Tests.ArgumentTests
 {
+    using System;
     using System.Globalization;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -70,6 +71,8 @@
         [InlineData(@"cmd --decimal -15.123", @"{ ""decimal"": -15.123 }")]
         [InlineData(@"cmd --decimal 15.123", @"{ ""decimal"": 15.123 }")]
 
+        [InlineData(@"cmd --guid ""{47BDE31E-6F2D-44E6-B585-A0037ADCE901}""", @"{ ""guid"": ""{47bde31e-6f2d-44e6-b585-a0037adce901}"" }")]
+
         [InlineData(@"cmd --datetime ""28 Apr 1995""", @"{ ""datetime"": ""1995-04-28T00:00:00"" }")]
         [InlineData(@"cmd --datetime 2020-11-12", @"{ ""datetime"": ""2020-11-12T00:00:00"" }")]
         [InlineData(@"cmd --datetime ""2020-11-12 12:00:56""", @"{ ""datetime"": ""2020-11-12T12:00:56"" }")]
@@ -136,6 +139,9 @@
         [InlineData(@"cmd --decimal-nullable -15.123", @"{ ""decimal-nullable"": -15.123 }")]
         [InlineData(@"cmd --decimal-nullable 15.123", @"{ ""decimal-nullable"": 15.123 }")]
         [InlineData(@"cmd --decimal-nullable", @"{ ""decimal-nullable"": null }")]
+
+        [InlineData(@"cmd --guid-nullable ""{47BDE31E-6F2D-44E6-B585-A0037ADCE901}""", @"{ ""guid-nullable"": ""{47bde31e-6f2d-44e6-b585-a0037adce901}"" }")]
+        [InlineData(@"cmd --guid-nullable", @"{ ""guid-nullable"": null }")]
 
         [InlineData(@"cmd --datetime-nullable ""28 Apr 1995""", @"{ ""datetime-nullable"": ""1995-04-28T00:00:00"" }")]
         [InlineData(@"cmd --datetime-nullable 2020-11-12", @"{ ""datetime-nullable"": ""2020-11-12T00:00:00"" }")]
@@ -224,7 +230,7 @@
                 .AddCommand<SupportedArgumentTypesCommand>();
 
             // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[]
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
                 "cmd", "--str-parsable-format", "foobar"
             });
@@ -233,11 +239,40 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
             {
                 StringParsableWithFormatProvider = CustomStringParsableWithFormatProvider.Parse("foobar", CultureInfo.InvariantCulture)
             });
+        }
+
+        [Theory]
+        [InlineData("24.12", "89.9")]
+        [InlineData(" 24.12 ", " 89.9 ")]
+        [InlineData("-24.12", "-89.9")]
+        [InlineData(" -24.12 ", "-89.9")]
+        [InlineData("-24.12", "")]
+        [InlineData("-24.12", " ")]
+        [InlineData("0", "0")]
+        [InlineData(" 0 ", "0 ")]
+        [InlineData("0", " ")]
+        [InlineData("24.", "89.")]
+        public async Task Property_of_a_type_half_and_nullable_half_should_be_converted(string half, string nullableHalf)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<HalfCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "half", "--half", half, "--half-nullable", nullableHalf
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().ContainAll($"Value:{half.Trim().Trim('.')}", $"NullableValue:{(string.IsNullOrWhiteSpace(nullableHalf) ? "null" : nullableHalf.Trim().Trim('.'))}");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Theory]

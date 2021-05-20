@@ -22,7 +22,7 @@
 
             string data = File.ReadAllText(StorageFilePath);
 
-            return JsonConvert.DeserializeObject<Library>(data);
+            return JsonConvert.DeserializeObject<Library>(data) ?? Library.Empty;
         }
 
         public Book? GetBook(string title)

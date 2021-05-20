@@ -314,7 +314,7 @@
             foreach (CommandParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
-                Write(parameter.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
+                Write(parameter.BindableProperty.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
@@ -324,7 +324,7 @@
                 Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
 
                 Write(' ');
-                Write(option.IsScalar ? "<value>" : "<values...>");
+                Write(option.BindableProperty.IsScalar ? "<value>" : "<values...>");
             }
 
             // Options placeholder
@@ -359,7 +359,7 @@
                 }
 
                 // Valid values
-                var validValues = parameter.GetValidValues();
+                var validValues = parameter.BindableProperty.GetValidValues();
                 if (validValues.Any())
                 {
                     Write($"Valid values: {FormatValidValues(validValues)}.");
@@ -416,17 +416,18 @@
                 }
 
                 // Valid values
-                var validValues = option.GetValidValues();
+                var validValues = option.BindableProperty.GetValidValues();
                 if (validValues.Any())
                 {
-                    Write($"Valid values: {FormatValidValues(validValues)}.");
-                    Write(' ');
+                    Write("Valid values: ");
+                    Write(FormatValidValues(validValues));
+                    Write(". ");
                 }
 
                 // Environment variable
                 if (!string.IsNullOrWhiteSpace(option.FallbackVariableName))
                 {
-                    Write($"Environment variable: \"{option.FallbackVariableName}\".");
+                    Write($"Fallback variable: \"{option.FallbackVariableName}\".");
                     Write(' ');
                 }
 
@@ -437,7 +438,9 @@
                     string? defaultValueFormatted = FormatDefaultValue(defaultValue);
                     if (defaultValueFormatted is not null)
                     {
-                        Write($"Default: {defaultValueFormatted}.");
+                        Write("(Default: ");
+                        Write(defaultValueFormatted);
+                        Write(')');
                     }
                 }
 
@@ -447,7 +450,9 @@
         #endregion
 
         #region Command Children
+#if !NETSTANDARD2_0
         [SuppressMessage("Style", "IDE0057:Use range operator")]
+#endif
         private void WriteCommandChildren(CommandSchema command,
                                           IEnumerable<CommandSchema> childCommands)
         {

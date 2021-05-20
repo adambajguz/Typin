@@ -8,7 +8,7 @@
     using Typin.Console.IO;
     using Typin.Utilities;
 
-    public class VirtualAnsiConsole : IConsole
+    public class VirtualAnsiConsole : IConsole, IDisposable
     {
         private readonly CancellationToken _cancellationToken;
         private bool disposedValue;

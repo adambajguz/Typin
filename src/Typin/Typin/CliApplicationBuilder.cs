@@ -285,6 +285,7 @@ namespace Typin
         #region Console
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="IConsole"/>.
+        /// Console will be automatically diposed before exiting from <see cref="CliApplication.RunAsync(IEnumerable{string}, IReadOnlyDictionary{string, string})"/>.
         /// </summary>
         public CliApplicationBuilder UseConsole(IConsole console)
         {
