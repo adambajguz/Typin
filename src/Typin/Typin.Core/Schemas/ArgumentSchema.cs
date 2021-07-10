@@ -4,14 +4,14 @@
     using System.Reflection;
 
     /// <summary>
-    /// Abstract command argument schema used in <see cref="CommandParameterSchema"/> and <see cref="CommandOptionSchema"/>
+    /// Abstract command argument schema used in <see cref="ParameterSchema"/> and <see cref="OptionSchema"/>
     /// </summary>
     public abstract class ArgumentSchema
     {
         /// <summary>
-        /// Bindable property info.
+        /// Bindable argument.
         /// </summary>
-        public BindablePropertyInfo BindableProperty { get; }
+        public BindableArgument Bindable { get; }
 
         /// <summary>
         /// Command argument description, which is used in help text.
@@ -24,11 +24,21 @@
         public Type? ConverterType { get; init; }
 
         /// <summary>
-        /// Initializes an instance of <see cref="ArgumentSchema"/>.
+        /// Initializes an instance of <see cref="ArgumentSchema"/> that represents a property-based argument.
         /// </summary>
-        protected ArgumentSchema(PropertyInfo? property, string? description, Type? converterType)
+        protected ArgumentSchema(PropertyInfo property, string? description, Type? converterType)
         {
-            BindableProperty = new BindablePropertyInfo(property);
+            Bindable = new BindableArgument(property);
+            Description = description;
+            ConverterType = converterType;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ArgumentSchema"/> that represents a dynamic or built-in argument.
+        /// </summary>
+        protected ArgumentSchema(Type propertyType, string propertyName, bool isDynamic, string? description, Type? converterType)
+        {
+            Bindable = new BindableArgument(propertyType, propertyName, isDynamic);
             Description = description;
             ConverterType = converterType;
         }

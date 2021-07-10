@@ -1,19 +1,15 @@
 ﻿namespace Typin
 {
-    using System.Threading;
-    using System.Threading.Tasks;
+    using Typin.DynamicCommands;
 
     /// <summary>
     /// Entry point of a dynamic command.
     /// </summary>
-    public interface IDynamicCommand
+    public interface IDynamicCommand : ICommand
     {
         /// <summary>
-        /// Executes the command with a cancellation token.
-        /// This is the method that's called when the command is invoked by a user through command line.
+        /// Dynamic command arguments.
         /// </summary>
-        /// <param name="cancellationToken">Command cancellation token.</param>
-        /// <remarks>If the execution of the command is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        ValueTask ExecuteAsync(CancellationToken cancellationToken);
+        IDynamicArgumentCollection Arguments { get; init; }
     }
 }

@@ -3,7 +3,6 @@ namespace Typin
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -132,7 +131,6 @@ namespace Typin
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {

@@ -20,6 +20,11 @@
         public IReadOnlyList<Type> CommandTypes { get; }
 
         /// <summary>
+        /// Dynamic command types defined in this application.
+        /// </summary>
+        public IReadOnlyList<Type> DynamicCommandTypes { get; }
+
+        /// <summary>
         /// Custom directives defined in this application.
         /// </summary>
         public IReadOnlyList<Type> DirectiveTypes { get; }
@@ -44,6 +49,7 @@
         /// </summary>
         public ApplicationConfiguration(IReadOnlyList<Type> modeTypes,
                                         IReadOnlyList<Type> commandTypes,
+                                        IReadOnlyList<Type> dynamicCommandTypes,
                                         IReadOnlyList<Type> customDirectives,
                                         LinkedList<Type> middlewareTypes,
                                         Type startupMode,
@@ -51,6 +57,7 @@
         {
             ModeTypes = modeTypes;
             CommandTypes = commandTypes;
+            DynamicCommandTypes = dynamicCommandTypes;
             DirectiveTypes = customDirectives;
             MiddlewareTypes = middlewareTypes;
             StartupMode = startupMode;

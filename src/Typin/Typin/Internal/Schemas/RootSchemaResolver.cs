@@ -12,6 +12,7 @@
     internal class RootSchemaResolver
     {
         private readonly IReadOnlyList<Type> _commandTypes;
+        private readonly IReadOnlyList<Type> _dynamicCommandTypes;
         private readonly IReadOnlyList<Type> _directiveTypes;
         private readonly IReadOnlyList<Type> _modeTypes;
 
@@ -22,9 +23,13 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchemaResolver"/>.
         /// </summary>
-        public RootSchemaResolver(IReadOnlyList<Type> commandTypes, IReadOnlyList<Type> directiveTypes, IReadOnlyList<Type> modeTypes)
+        public RootSchemaResolver(IReadOnlyList<Type> commandTypes,
+                                  IReadOnlyList<Type> dynamicCommandTypes,
+                                  IReadOnlyList<Type> directiveTypes,
+                                  IReadOnlyList<Type> modeTypes)
         {
             _commandTypes = commandTypes;
+            _dynamicCommandTypes = dynamicCommandTypes;
             _directiveTypes = directiveTypes;
             _modeTypes = modeTypes;
         }
@@ -37,7 +42,14 @@
             ResolveCommands(_commandTypes);
             ResolveDirectives(_directiveTypes);
 
-            return new RootSchema(Directives!, Commands!, DefaultCommand);
+            Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> _dynamicCommands = new(() =>
+            {
+                return _dynamicCommandTypes.ToDictionary(
+                    x => x,
+                    x => CommandSchemaResolver.ResolveDynamic(x));
+            });
+
+            return new RootSchema(Directives!, _dynamicCommands, Commands!, DefaultCommand);
         }
 
         private void ResolveCommands(IReadOnlyList<Type> commandTypes)

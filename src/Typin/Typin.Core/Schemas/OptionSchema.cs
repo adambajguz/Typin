@@ -8,17 +8,17 @@
     /// <summary>
     /// Stores command option schema.
     /// </summary>
-    public class CommandOptionSchema : ArgumentSchema
+    public class OptionSchema : ArgumentSchema
     {
         /// <summary>
         /// Gets a help option schema instance.
         /// </summary>
-        public static CommandOptionSchema HelpOption { get; } = new(null, "help", 'h', null, false, "Shows help text.", null);
+        public static OptionSchema HelpOption { get; } = new(typeof(bool), "  __ShowHelp", false, "help", 'h', null, false, "Shows help text.", null);
 
         /// <summary>
         /// Gets a version option schema instance.
         /// </summary>
-        public static CommandOptionSchema VersionOption { get; } = new(null, "version", null, null, false, "Shows version information.", null);
+        public static OptionSchema VersionOption { get; } = new(typeof(bool), "  __ShowVersion", false, "version", null, null, false, "Shows version information.", null);
 
         /// <summary>
         /// Option name.
@@ -41,16 +41,36 @@
         public bool IsRequired { get; }
 
         /// <summary>
-        /// Initializes an instance of <see cref="CommandOptionSchema"/>.
+        /// Initializes an instance of <see cref="OptionSchema"/> that represents a property-based option.
         /// </summary>
-        public CommandOptionSchema(PropertyInfo? property,
-                                   string? name,
-                                   char? shortName,
-                                   string? fallbackVariableName,
-                                   bool isRequired,
-                                   string? description,
-                                   Type? converter)
+        public OptionSchema(PropertyInfo property,
+                            string? name,
+                            char? shortName,
+                            string? fallbackVariableName,
+                            bool isRequired,
+                            string? description,
+                            Type? converter)
             : base(property, description, converter)
+        {
+            Name = name;
+            ShortName = shortName;
+            FallbackVariableName = fallbackVariableName;
+            IsRequired = isRequired;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="OptionSchema"/> that represents a dynamic or built-in option.
+        /// </summary>
+        public OptionSchema(Type propertyType,
+                            string propertyName,
+                            bool isDynamic,
+                            string? name,
+                            char? shortName,
+                            string? fallbackVariableName,
+                            bool isRequired,
+                            string? description,
+                            Type? converter)
+            : base(propertyType, propertyName, isDynamic, description, converter)
         {
             Name = name;
             ShortName = shortName;
@@ -109,7 +129,7 @@
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{BindableProperty.PropertyName} ('{GetUserFacingDisplayString()}')";
+            return $"{Bindable.Name} ('{GetUserFacingDisplayString()}')";
         }
     }
 }

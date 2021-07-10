@@ -11,14 +11,14 @@
     using Typin.Utilities;
 
     /// <summary>
-    /// Resolves an instance of <see cref="CommandOptionSchema"/>.
+    /// Resolves an instance of <see cref="OptionSchema"/>.
     /// </summary>
-    internal static class CommandOptionSchemaResolver
+    internal static class OptionSchemaResolver
     {
         /// <summary>
-        /// Resolves <see cref="CommandOptionSchema"/>.
+        /// Resolves <see cref="OptionSchema"/>.
         /// </summary>
-        internal static CommandOptionSchema? TryResolve(PropertyInfo property)
+        internal static OptionSchema? TryResolve(PropertyInfo property)
         {
             OptionAttribute? attribute = property.GetCustomAttribute<OptionAttribute>();
             if (attribute is null)
@@ -50,7 +50,7 @@
                 throw AttributesExceptions.InvalidConverterType(converterType);
             }
 
-            return new CommandOptionSchema(
+            return new OptionSchema(
                 property,
                 name,
                 optionShortName,

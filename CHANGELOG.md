@@ -4,9 +4,11 @@
  - Replaced `ICommand.ExecuteAsync(CancellationToken cancellationToken)` with `IConsole.ExecuteAsync(CancellationToken cancellationToken)`.
  - Renamed `CommandParameterAttribute` to `ParameterAttribute`.
  - Renamed `CommandOptionAttribute` to `OptionAttribute`.
+ - Renamed `CommandOptionSchema` to `OptionSchema`.
+ - Renamed `CommandParameterSchema` to `ParameterSchema`.
 
  - Added `InteractiveModeOptions.Prompt`, `InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
- - Added `BindableProperyInfo` and `ArgumentSchema.BindableProperty`.
+ - Added `BindableArgument` and `ArgumentSchema.Bindable`.
  - Removed `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and `ArgumentSchema.GetValidValues()`.
  - Removed `IDisposable` from `CliContext`.
  - Faster `Guid` binding by explicit `Guid.Parse()` call (added `Guid` to `ArgumentBinder.PrimitiveConverters`).

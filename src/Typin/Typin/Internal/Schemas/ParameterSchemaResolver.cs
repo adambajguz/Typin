@@ -10,14 +10,14 @@
     using Typin.Utilities;
 
     /// <summary>
-    /// Resolves an instance of <see cref="CommandParameterSchema"/>.
+    /// Resolves an instance of <see cref="ParameterSchema"/>.
     /// </summary>
-    internal static class CommandParameterSchemaResolver
+    internal static class ParameterSchemaResolver
     {
         /// <summary>
-        /// Resolves <see cref="CommandParameterSchema"/>.
+        /// Resolves <see cref="ParameterSchema"/>.
         /// </summary>
-        public static CommandParameterSchema? TryResolve(PropertyInfo property)
+        public static ParameterSchema? TryResolve(PropertyInfo property)
         {
             ParameterAttribute? attribute = property.GetCustomAttribute<ParameterAttribute>();
             if (attribute is null)
@@ -32,7 +32,7 @@
                 throw AttributesExceptions.InvalidConverterType(converterType);
             }
 
-            return new CommandParameterSchema(
+            return new ParameterSchema(
                 property,
                 attribute.Order,
                 name,

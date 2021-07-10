@@ -21,10 +21,9 @@
     public interface IDynamicOptionBuilder
     {
         /// <summary>
-        /// Option name (must be longer than a single character). Starting dashes are trimed automatically.
-        /// All options in a command must have different names (comparison is case-sensitive).
+        /// Option property name.
         /// </summary>
-        IDynamicOptionBuilder WithName(string? name);
+        IDynamicOptionBuilder WithPropertyName(string? propertyName);
 
         /// <summary>
         /// Option short name (single character).

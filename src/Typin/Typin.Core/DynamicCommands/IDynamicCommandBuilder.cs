@@ -1,21 +1,13 @@
 ﻿namespace Typin.DynamicCommands
 {
     using System;
+    using Typin.Schemas;
 
     /// <summary>
     /// Dynamic command builder.
     /// </summary>
     public interface IDynamicCommandBuilder
     {
-        /// <summary>
-        /// Sets dynamic command name.
-        /// If the name is not set, the command is treated as a default command, i.e. the one that gets executed when the user
-        /// does not specify a command name in the arguments.
-        /// All commands in an application must have different names. Likewise, only one command without a name is allowed.
-        /// </summary>
-        /// <param name="name"></param>
-        IDynamicCommandBuilder WithName(string? name);
-
         /// <summary>
         /// Sets dynamic command description, which is used in help text.
         /// </summary>
@@ -42,8 +34,23 @@
         /// <param name="excludedModes"></param>
         IDynamicCommandBuilder WithExcludedModes(params Type[] excludedModes);
 
+        #region Options
         /// <summary>
-        /// Adds an option with type specified by <paramref name="optionType"/>.
+        /// Adds an option with type specified by <paramref name="optionType"/> and auto-generated name.
+        /// </summary>
+        /// <param name="optionType"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption(Type optionType);
+
+        /// <summary>
+        /// Adds an option with type specified by <typeparamref name="T"/> and auto-generated name.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption<T>();
+
+        /// <summary>
+        /// Adds an option with type specified by <paramref name="optionType"/> and auto-generated name.
         /// </summary>
         /// <param name="optionType"></param>
         /// <param name="action"></param>
@@ -51,7 +58,7 @@
         IDynamicCommandBuilder AddOption(Type optionType, Action<IDynamicOptionBuilder> action);
 
         /// <summary>
-        /// Adds an option with type specified by <typeparamref name="T"/>.
+        /// Adds an option with type specified by <typeparamref name="T"/> and auto-generated name.
         /// </summary>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
@@ -59,7 +66,67 @@
         IDynamicCommandBuilder AddOption<T>(Action<IDynamicOptionBuilder<T>> action);
 
         /// <summary>
-        /// Adds a parameter with type specified by <paramref name="parameterType"/>.
+        /// Adds an option with type specified by <paramref name="optionType"/>.
+        /// </summary>
+        /// <param name="optionType"></param>
+        /// <param name="name"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption(Type optionType, string name, Action<IDynamicOptionBuilder> action);
+
+        /// <summary>
+        /// Adds an option with type specified by <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption<T>(string name, Action<IDynamicOptionBuilder<T>> action);
+
+        /// <summary>
+        /// Adds an option with type specified by <paramref name="optionType"/>.
+        /// </summary>
+        /// <param name="optionType"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption(Type optionType, string name);
+
+        /// <summary>
+        /// Adds an option with type specified by <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddOption<T>(string name);
+        #endregion
+
+        #region Parameter
+        /// <summary>
+        /// Adds a parameter with type specified by <paramref name="parameterType"/> and auto-generated name.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="parameterType"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter(Type parameterType, int order);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <typeparamref name="T"/> and auto-generated name.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter<T>(int order);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <paramref name="parameterType"/> and auto-generated name.
         ///
         /// Order of this parameter compared to other parameters.
         /// All parameters in a command must have different order.
@@ -72,7 +139,7 @@
         IDynamicCommandBuilder AddParameter(Type parameterType, int order, Action<IDynamicParameterBuilder> action);
 
         /// <summary>
-        /// Adds a parameter with type specified by <typeparamref name="T"/>.
+        /// Adds a parameter with type specified by <typeparamref name="T"/> and auto-generated name.
         ///
         /// Order of this parameter compared to other parameters.
         /// All parameters in a command must have different order.
@@ -83,5 +150,66 @@
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         IDynamicCommandBuilder AddParameter<T>(int order, Action<IDynamicParameterBuilder<T>> action);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <paramref name="parameterType"/>.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="parameterType"></param>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter(Type parameterType, string name, int order);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <typeparamref name="T"/>.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter<T>(string name, int order);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <paramref name="parameterType"/>.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="parameterType"></param>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter(Type parameterType, string name, int order, Action<IDynamicParameterBuilder> action);
+
+        /// <summary>
+        /// Adds a parameter with type specified by <typeparamref name="T"/>.
+        ///
+        /// Order of this parameter compared to other parameters.
+        /// All parameters in a command must have different order.
+        /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IDynamicCommandBuilder AddParameter<T>(string name, int order, Action<IDynamicParameterBuilder<T>> action);
+        #endregion
+
+        /// <summary>
+        /// Builds a dynamic command schema.
+        /// </summary>
+        /// <returns></returns>
+        CommandSchema Build();
     }
 }

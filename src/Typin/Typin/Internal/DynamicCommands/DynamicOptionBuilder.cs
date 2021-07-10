@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Binding;
+    using Typin.Schemas;
 
     /// <summary>
     /// Dynamic command option builder.
@@ -11,7 +12,7 @@
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicOptionBuilder"/>.
         /// </summary>
-        public DynamicOptionBuilder() : base(typeof(T))
+        public DynamicOptionBuilder(string name) : base(name, typeof(T))
         {
 
         }
@@ -32,8 +33,9 @@
     internal class DynamicOptionBuilder : IDynamicOptionBuilder
     {
         private readonly Type _type;
+        private readonly string _name;
 
-        private string? _name;
+        private string? _propertyName;
         private char? _shortName;
         private bool _isRequired;
         private string? _description;
@@ -43,15 +45,26 @@
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicOptionBuilder"/>.
         /// </summary>
-        public DynamicOptionBuilder(Type type)
+        public DynamicOptionBuilder(string name, Type type)
         {
-            _type = type;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException($"'{nameof(name)}' cannot be null or whitespace.", nameof(name));
+            }
+
+            if (name == "help")
+            {
+                throw new ArgumentException("Option name 'help' is reserved.");
+            }
+
+            _name = name;
+            _type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         /// <inheritdoc/>
-        public IDynamicOptionBuilder WithName(string? name)
+        public IDynamicOptionBuilder WithPropertyName(string? propertyName)
         {
-            _name = name;
+            _propertyName = string.IsNullOrWhiteSpace(propertyName) ? null : propertyName;
 
             return this;
         }
@@ -59,6 +72,11 @@
         /// <inheritdoc/>
         public IDynamicOptionBuilder WithShortName(char? shortName)
         {
+            if (_name == "help")
+            {
+                throw new ArgumentException("option name 'help' is reserved.");
+            }
+
             _shortName = shortName;
 
             return this;
@@ -110,6 +128,19 @@
             _converter = converterType;
 
             return this;
+        }
+
+        public OptionSchema Build()
+        {
+            return new OptionSchema(_type,
+                                    _propertyName ?? _name,
+                                    true,
+                                    _name,
+                                    _shortName,
+                                    _fallbackVariableName,
+                                    _isRequired,
+                                    _description,
+                                    _converter);
         }
     }
 }

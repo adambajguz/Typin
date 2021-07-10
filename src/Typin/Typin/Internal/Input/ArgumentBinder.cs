@@ -239,12 +239,12 @@ namespace Typin.Internal.Input
         private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
         {
             // Short-circuit built-in arguments
-            if (argumentSchema.BindableProperty.Property is null)
+            if (argumentSchema.Bindable.Property is null)
             {
                 return null;
             }
 
-            PropertyInfo property = argumentSchema.BindableProperty.Property;
+            PropertyInfo property = argumentSchema.Bindable.Property;
             Type targetType = property.PropertyType;
             Type? enumerableUnderlyingType = property.TryGetEnumerableArgumentUnderlyingType();
 
@@ -300,13 +300,13 @@ namespace Typin.Internal.Input
         /// </summary>
         public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
         {
-            if (argumentSchema.BindableProperty.Property is null)
+            if (argumentSchema.Bindable.Property is null)
             {
                 return;
             }
 
             object? value = argumentSchema.Convert(values);
-            argumentSchema.BindableProperty.SetValue(command, value);
+            argumentSchema.Bindable.SetValue(command, value);
         }
 
         /// <summary>

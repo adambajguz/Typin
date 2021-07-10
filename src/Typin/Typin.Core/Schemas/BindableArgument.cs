@@ -7,33 +7,30 @@
     using System.Reflection;
     using Typin.Internal.Extensions;
 
-    //TODO: maybe we should abstract help and version options, and remove nulablility of BindablePropertyInfo.Property?
-    //TODO: maybye rename BindablePropertyInfo to BindableProperty?
-
     /// <summary>
     /// Represents a bindable <see cref="PropertyInfo"/>.
     /// </summary>
-    public sealed class BindablePropertyInfo
+    public sealed class BindableArgument
     {
         /// <summary>
-        /// Property info (may be null for built-in arguments, i.e., help and version options)
+        /// Property info (null for dynamic arguments and built-in arguments, i.e., help and version options )
         /// </summary>
         public PropertyInfo? Property { get; }
 
         /// <summary>
-        /// Property type (may be null for built-in arguments, i.e., help and version options)
+        /// Arguemnt type.
         /// </summary>
-        public Type? PropertyType => Property?.PropertyType;
+        public Type Type { get; }
 
         /// <summary>
-        /// Property type (may be <see cref="string.Empty"/> for built-in arguments, i.e., help and version options)
+        /// Argument type.
         /// </summary>
-        public string PropertyName => Property?.Name ?? string.Empty;
+        public string Name { get; }
 
         /// <summary>
-        /// Whether property is actually a built-in argument (help and version options).
+        /// Arguemnt type
         /// </summary>
-        public bool IsBuiltIn => Property is null;
+        public BindableArgumentKind Kind { get; }
 
         /// <summary>
         /// Whether command argument is scalar.
@@ -42,18 +39,36 @@
         {
             get
             {
-                _isScalar ??= Property.TryGetEnumerableArgumentUnderlyingType() is null;
+                _isScalar ??= Type.TryGetEnumerableArgumentUnderlyingType() is null;
 
                 return _isScalar.Value;
             }
         }
 
         /// <summary>
-        /// Initializes an instance of <see cref="BindablePropertyInfo"/>.
+        /// Initializes an instance of <see cref="BindableArgument"/> that represents a property-based argument.
         /// </summary>
-        internal BindablePropertyInfo(PropertyInfo? property)
+        internal BindableArgument(PropertyInfo property)
         {
-            Property = property;
+            Property = property ?? throw new ArgumentNullException(nameof(property));
+            Type = Property.PropertyType;
+            Name = Property.Name;
+            Kind = BindableArgumentKind.Property;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="BindableArgument"/> that represents a built-in argument.
+        /// </summary>
+        internal BindableArgument(Type propertyType, string propertyName, bool isDynamic)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
+            }
+
+            Type = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
+            Name = propertyName;
+            Kind = isDynamic ? BindableArgumentKind.Dynamic : BindableArgumentKind.BuiltIn;
         }
 
         private bool? _isScalar;
@@ -72,12 +87,7 @@
 
             IReadOnlyList<string> InternalGetValidValues()
             {
-                if (IsBuiltIn)
-                {
-                    return Array.Empty<string>();
-                }
-
-                Type? underlyingType = PropertyType!.TryGetEnumerableUnderlyingType() ?? Property!.PropertyType;
+                Type? underlyingType = Type.TryGetEnumerableUnderlyingType() ?? Type;
                 Type? nullableType = underlyingType.TryGetNullableUnderlyingType();
                 underlyingType = nullableType ?? underlyingType;
 
@@ -101,33 +111,36 @@
 
         /// <summary>
         /// Gets property value from command instance.
-        /// When <see cref="Property"/> is null, returns null.
+        /// For build-in arguemtns always returns null.
         /// </summary>
         /// <param name="commandInstance">Command instance.</param>
         /// <returns>Property value.</returns>
         public object? GetValue(ICommand commandInstance)
         {
+            if (commandInstance is IDynamicCommand dynamicCommandInstance)
+            {
+                return dynamicCommandInstance.Arguments.GetValueOrDefault(Name);
+            }
+
             return Property?.GetValue(commandInstance);
         }
 
         /// <summary>
         /// Sets a property value in command instance.
-        /// When <see cref="Property"/> is null, call is ignored (no operation - nop).
+        /// For build-in arguemtns call is always ignored (no operation - nop).
         /// </summary>
         /// <param name="commandInstance">Command instance.</param>
         /// <param name="value">Value to set.</param>
         public void SetValue(ICommand commandInstance, object? value)
         {
-            Property?.SetValue(commandInstance, value);
-        }
-
-        /// <summary>
-        /// Converts <see cref="BindablePropertyInfo"/> to <see cref="PropertyInfo"/>.
-        /// </summary>
-        /// <param name="bindablePropertyInfo">Bindable property info to convert.</param>
-        public static implicit operator PropertyInfo?(BindablePropertyInfo bindablePropertyInfo)
-        {
-            return bindablePropertyInfo.Property;
+            if (commandInstance is IDynamicCommand dynamicCommandInstance)
+            {
+                dynamicCommandInstance.Arguments.SetValue(Name, value);
+            }
+            else
+            {
+                Property?.SetValue(commandInstance, value);
+            }
         }
 
         /// <inheritdoc/>

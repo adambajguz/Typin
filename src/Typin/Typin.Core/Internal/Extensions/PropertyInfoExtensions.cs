@@ -11,5 +11,12 @@
                        ? property.PropertyType.TryGetEnumerableUnderlyingType()
                        : null;
         }
+
+        public static Type? TryGetEnumerableArgumentUnderlyingType(this Type? type)
+        {
+            return type is not null && type != typeof(string)
+                       ? type.TryGetEnumerableUnderlyingType()
+                       : null;
+        }
     }
 }

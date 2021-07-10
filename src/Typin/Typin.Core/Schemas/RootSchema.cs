@@ -9,19 +9,21 @@
     /// </summary>
     public class RootSchema
     {
+        private readonly Dictionary<string, CommandSchema> _commands;
+        private HashSet<string>? _directiveNamesHashSet;
+        private HashSet<string>? _commandNamesHashSet;
+        private readonly Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> _dynamicCommands;
+
         /// <summary>
         /// List of defined directives in the application.
         /// </summary>
         public IReadOnlyDictionary<string, DirectiveSchema> Directives { get; }
 
-        private HashSet<string>? _directiveNamesHashSet;
-
         /// <summary>
         /// List of defined commands in the application.
         /// </summary>
-        public IReadOnlyDictionary<string, CommandSchema> Commands { get; }
+        public IReadOnlyDictionary<string, CommandSchema> Commands => _commands;
 
-        private HashSet<string>? _commandNamesHashSet;
 
         /// <summary>
         /// Default command (null if no default command).
@@ -29,15 +31,111 @@
         public CommandSchema? DefaultCommand { get; }
 
         /// <summary>
+        /// Dynamic commands.
+        /// </summary>
+        public IEnumerable<BaseCommandSchema> DynamicCommands => _dynamicCommands.Value.Values;
+
+        /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
         public RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                          IReadOnlyDictionary<string, CommandSchema> commands,
+                          Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> dynamicCommands,
+                          Dictionary<string, CommandSchema> commands,
                           CommandSchema? defaultCommand)
         {
             Directives = directives;
-            Commands = commands;
+            _commands = commands;
             DefaultCommand = defaultCommand;
+            _dynamicCommands = dynamicCommands;
+        }
+
+        /// <summary>
+        /// Tries to add a dynamic command.
+        /// </summary>
+        /// <param name="commandSchema"></param>
+        /// <returns>Whether dynamic command was added.</returns>
+        public bool TryAddDynamicCommand(CommandSchema commandSchema)
+        {
+            if (commandSchema.IsDynamic && !commandSchema.IsDefault)
+            {
+                bool added = _commands.TryAdd(commandSchema.Name!, commandSchema);
+
+                if (added)
+                {
+                    _commandNamesHashSet = null;
+                }
+
+                return added;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to add all dynamic commands.
+        /// </summary>
+        /// <param name="commandSchemas"></param>
+        /// <returns>Whether all dynamic commands were added.</returns>
+        public bool TryAddDynamicCommandRange(IEnumerable<CommandSchema> commandSchemas)
+        {
+            bool allAdded = true;
+            foreach (CommandSchema schema in commandSchemas)
+            {
+                if (schema.IsDynamic && !schema.IsDefault)
+                {
+                    allAdded &= _commands.TryAdd(schema.Name!, schema);
+                }
+                else
+                {
+                    allAdded = false;
+                }
+            }
+            _commandNamesHashSet = null;
+
+            return allAdded;
+        }
+
+        /// <summary>
+        /// Tries to remove a dynamic command.
+        /// </summary>
+        /// <param name="name">Command name to remove.</param>
+        /// <returns>Whether dynamic command was added.</returns>
+        public bool TryRemoveDynamicCommand(string name)
+        {
+            if (_commands.TryGetValue(name, out CommandSchema? commandSchema) && commandSchema.IsDynamic)
+            {
+                _commands.Remove(name);
+                _commandNamesHashSet = null;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to remove a dynamic commands.
+        /// </summary>
+        /// <param name="names">Command names to remove.</param>
+        /// <returns>Whether all dynamic commands were removed.</returns>
+        public bool TryRemoveDynamicCommands(IEnumerable<string> names)
+        {
+            bool allRemoved = true;
+            foreach (string name in names)
+            {
+                if (_commands.TryGetValue(name, out CommandSchema? commandSchema) && commandSchema.IsDynamic)
+                {
+                    _commands.Remove(name);
+                }
+                else
+                {
+                    allRemoved = false;
+                }
+            }
+
+            _commandNamesHashSet = null;
+
+            return allRemoved;
         }
 
         /// <summary>
@@ -45,7 +143,7 @@
         /// </summary>
         public ISet<string> GetCommandNames()
         {
-            return (_commandNamesHashSet ??= Commands.Keys.ToHashSet(StringComparer.Ordinal));
+            return (_commandNamesHashSet ??= _commands.Keys.ToHashSet(StringComparer.Ordinal));
         }
 
         /// <summary>
@@ -66,14 +164,14 @@
                 return false;
             }
 
-            if (Commands.ContainsKey(commandName))
+            if (_commands.ContainsKey(commandName))
             {
                 return true;
             }
 
             commandName = string.Concat(commandName.Trim(), " ");
 
-            return Commands.Keys.Where(x => x.StartsWith(commandName)).Any();
+            return _commands.Keys.Where(x => x.StartsWith(commandName)).Any();
         }
 
         /// <summary>
@@ -86,9 +184,15 @@
                 return DefaultCommand;
             }
 
-            Commands.TryGetValue(commandName, out CommandSchema? value);
+            return _commands.GetValueOrDefault(commandName);
+        }
 
-            return value;
+        /// <summary>
+        /// Finds dynamic command base schema by type.
+        /// </summary>
+        public BaseCommandSchema? TryFindDynamicCommandBase(Type type)
+        {
+            return _dynamicCommands.Value.GetValueOrDefault(type);
         }
 
         /// <summary>
@@ -101,9 +205,7 @@
                 return null;
             }
 
-            Directives.TryGetValue(directiveName, out DirectiveSchema? value);
-
-            return value;
+            return Directives.GetValueOrDefault(directiveName);
         }
 
         private static IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)

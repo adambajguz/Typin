@@ -6,32 +6,34 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.DynamicCommands;
 
-    [Command("test", Description = "Test command.")]
-    public class TestCommand : ICommand
+    public class SampleDynamicCommand : IDynamicCommand
     {
         private readonly IConsole _console;
 
-        [Option("xe", 'a')]
+        [Option("author", 'a')]
         public string Author { get; init; } = string.Empty;
-
-        [Option('x')]
-        public string AuthorX { get; init; } = string.Empty;
-
-        [Option("char", 'c')]
-        public char Ch { get; init; }
 
         [Option("date", 'd')]
         public DateTime Date { get; init; } = DateTime.Now;
 
-        public TestCommand(IConsole console)
+        public IDynamicArgumentCollection Arguments { get; init; } = default!;
+
+        public SampleDynamicCommand(IConsole console)
         {
             _console = console;
         }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            _console.Output.WriteLine($"'{Author}' '{AuthorX}' '{Ch}'");
+            //add dynamic --name abc
+            //abc --help
+            //abc
+
+            //var number = Arguments.GetValue<int>("Number"); //TODO: add dynamic value binding
+
+            _console.Output.WriteLine($"'{Author}' '{Date}'");
 
             return default;
         }

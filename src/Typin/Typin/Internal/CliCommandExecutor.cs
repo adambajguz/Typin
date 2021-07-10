@@ -49,7 +49,7 @@
 
                 _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContextId);
 
-                CommandInput input = CommandInputResolver.Parse(commandLineArguments, _rootSchemaAccessor.RootSchema.GetCommandNames());
+                CommandInput input = InputResolver.Parse(commandLineArguments, _rootSchemaAccessor.RootSchema.GetCommandNames());
                 ((CliContext)cliContext).Input = input;
 
                 try
