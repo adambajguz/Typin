@@ -19,7 +19,7 @@
         /// </summary>
         public static CommandParameterSchema? TryResolve(PropertyInfo property)
         {
-            CommandParameterAttribute? attribute = property.GetCustomAttribute<CommandParameterAttribute>();
+            ParameterAttribute? attribute = property.GetCustomAttribute<ParameterAttribute>();
             if (attribute is null)
             {
                 return null;

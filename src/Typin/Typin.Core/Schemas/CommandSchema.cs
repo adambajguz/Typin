@@ -12,7 +12,7 @@
     public class CommandSchema
     {
         /// <summary>
-        /// Command type.
+        /// Command or dynamic command type.
         /// </summary>
         public Type Type { get; }
 
@@ -28,6 +28,8 @@
         /// Whether command is a default command.
         /// </summary>
         public bool IsDefault => string.IsNullOrWhiteSpace(Name);
+
+        public bool IsDynamic { get; }
 
         /// <summary>
         /// Command description, which is used in help text.
@@ -75,6 +77,7 @@
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
         public CommandSchema(Type type,
+                             bool isDynamic,
                              string? name,
                              string? description,
                              string? manual,
@@ -84,6 +87,7 @@
                              IReadOnlyList<CommandOptionSchema> options)
         {
             Type = type;
+            IsDynamic = isDynamic;
             Name = name;
             Description = description;
             Manual = manual;

@@ -58,13 +58,14 @@
                                                  .ToArray();
 
             CommandSchema command = new(type,
+                                        false,
                                         name,
                                         attribute.Description,
                                         attribute.Manual,
                                         attribute.SupportedModes,
                                         attribute.ExcludedModes,
                                         parameters!,
-                                        options!);
+                                        options!); ;
 
             ValidateParameters(command);
             ValidateOptions(command);
