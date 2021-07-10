@@ -8,13 +8,13 @@
     [Command("cmd")]
     public class CommandExceptionCommand : ICommand
     {
-        [CommandOption("code", 'c')]
+        [Option("code", 'c')]
         public int ExitCode { get; init; } = 133;
 
-        [CommandOption("msg", 'm')]
+        [Option("msg", 'm')]
         public string? Message { get; init; }
 
-        [CommandOption("show-help")]
+        [Option("show-help")]
         public bool ShowHelp { get; init; }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

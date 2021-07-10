@@ -8,10 +8,10 @@
     [Command("cmd")]
     public class NonLastNonScalarParameterCommand : SelfSerializeCommandBase
     {
-        [CommandParameter(0)]
+        [Parameter(0)]
         public IReadOnlyList<string>? ParamA { get; init; }
 
-        [CommandParameter(1)]
+        [Parameter(1)]
         public string? ParamB { get; init; }
 
         public NonLastNonScalarParameterCommand(IConsole console) : base(console)

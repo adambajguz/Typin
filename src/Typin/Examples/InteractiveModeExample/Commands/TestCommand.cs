@@ -12,16 +12,16 @@
     {
         private readonly IConsole _console;
 
-        [CommandOption("xe", 'a')]
+        [Option("xe", 'a')]
         public string Author { get; init; } = string.Empty;
 
-        [CommandOption('x')]
+        [Option('x')]
         public string AuthorX { get; init; } = string.Empty;
 
-        [CommandOption("char", 'c')]
+        [Option("char", 'c')]
         public char Ch { get; init; }
 
-        [CommandOption("date", 'd')]
+        [Option("date", 'd')]
         public DateTime Date { get; init; } = DateTime.Now;
 
 

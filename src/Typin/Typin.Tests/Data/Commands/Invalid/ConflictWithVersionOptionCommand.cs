@@ -8,7 +8,7 @@
     [Command]
     public class ConflictWithVersionOptionCommand : SelfSerializeCommandBase
     {
-        [CommandOption("version")]
+        [Option("version")]
         public string? Version { get; init; }
 
         public ConflictWithVersionOptionCommand(IConsole console) : base(console)

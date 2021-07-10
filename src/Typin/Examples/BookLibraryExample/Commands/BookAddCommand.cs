@@ -18,16 +18,16 @@
         private readonly LibraryService _libraryService;
         private readonly IConsole _console;
 
-        [CommandParameter(0, Name = "title", Description = "Book title.")]
+        [Parameter(0, Name = "title", Description = "Book title.")]
         public string Title { get; init; } = "";
 
-        [CommandOption("author", 'a', IsRequired = true, Description = "Book author.")]
+        [Option("author", 'a', IsRequired = true, Description = "Book author.")]
         public string Author { get; init; } = "";
 
-        [CommandOption("published", 'p', Description = "Book publish date.")]
+        [Option("published", 'p', Description = "Book publish date.")]
         public DateTimeOffset Published { get; init; } = CreateRandomDate();
 
-        [CommandOption("isbn", 'n', Description = "Book ISBN.")]
+        [Option("isbn", 'n', Description = "Book ISBN.")]
         public Isbn Isbn { get; init; } = CreateRandomIsbn();
 
         public BookAddCommand(LibraryService libraryService, IConsole console)

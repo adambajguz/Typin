@@ -6,13 +6,13 @@
     [Command]
     public class BenchmarkDefaultCommand : SelfSerializeCommandBase
     {
-        [CommandOption("str", 's')]
+        [Option("str", 's')]
         public string? StrOption { get; init; }
 
-        [CommandOption("int", 'i')]
+        [Option("int", 'i')]
         public int IntOption { get; init; }
 
-        [CommandOption("bool", 'b')]
+        [Option("bool", 'b')]
         public bool BoolOption { get; init; }
 
         public BenchmarkDefaultCommand(IConsole console) : base(console)

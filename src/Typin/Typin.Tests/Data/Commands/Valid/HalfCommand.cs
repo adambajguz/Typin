@@ -13,10 +13,10 @@
     {
         private readonly IConsole _console;
 
-        [CommandOption("half")]
+        [Option("half")]
         public Half Value { get; init; }
 
-        [CommandOption("half-nullable")]
+        [Option("half-nullable")]
         public Half? NullableValue { get; init; }
 
         public HalfCommand(IConsole console)

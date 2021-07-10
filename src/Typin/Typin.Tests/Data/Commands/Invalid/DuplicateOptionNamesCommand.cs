@@ -7,10 +7,10 @@
     [Command("cmd")]
     public class DuplicateOptionNamesCommand : SelfSerializeCommandBase
     {
-        [CommandOption("fruits")]
+        [Option("fruits")]
         public string? Apples { get; init; }
 
-        [CommandOption("fruits")]
+        [Option("fruits")]
         public string? Oranges { get; init; }
 
         public DuplicateOptionNamesCommand(IConsole console) : base(console)

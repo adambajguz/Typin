@@ -78,6 +78,7 @@
         /// All parameters in a command must have different order.
         /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
         /// </summary>
+        /// <param name="order"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>

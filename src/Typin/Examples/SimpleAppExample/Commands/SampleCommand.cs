@@ -12,22 +12,22 @@
     {
         private readonly IConsole _console;
 
-        [CommandParameter(0)]
+        [Parameter(0)]
         public int? ParamB { get; init; }
 
-        [CommandOption("str", 's')]
+        [Option("str", 's')]
         public string? StrOption { get; init; }
 
-        [CommandOption("int", 'i')]
+        [Option("int", 'i')]
         public int IntOption { get; init; }
 
-        [CommandOption("bool", 'b')]
+        [Option("bool", 'b')]
         public bool BoolOption { get; init; }
 
-        [CommandOption('v')]
+        [Option('v')]
         public bool VOption { get; init; }
 
-        [CommandOption('x')]
+        [Option('x')]
         public bool XOption { get; init; }
 
         public SampleCommand(IConsole console)

@@ -8,13 +8,13 @@
     [Command("cmd")]
     public class WithRequiredOptionsCommand : SelfSerializeCommandBase
     {
-        [CommandOption("opt-a", 'a', IsRequired = true)]
+        [Option("opt-a", 'a', IsRequired = true)]
         public string? OptA { get; init; }
 
-        [CommandOption("opt-b", 'b')]
+        [Option("opt-b", 'b')]
         public int? OptB { get; init; }
 
-        [CommandOption("opt-c", 'c', IsRequired = true)]
+        [Option("opt-c", 'c', IsRequired = true)]
         public IReadOnlyList<char>? OptC { get; init; }
 
         public WithRequiredOptionsCommand(IConsole console) : base(console)

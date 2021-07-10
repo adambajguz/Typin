@@ -29,6 +29,9 @@
         /// </summary>
         public bool IsDefault => string.IsNullOrWhiteSpace(Name);
 
+        /// <summary>
+        /// Whether command is a dynamic command.
+        /// </summary>
         public bool IsDynamic { get; }
 
         /// <summary>

@@ -7,10 +7,10 @@
     [Command("cmd")]
     public class DuplicateParameterNameCommand : SelfSerializeCommandBase
     {
-        [CommandParameter(0, Name = "param")]
+        [Parameter(0, Name = "param")]
         public string? ParamA { get; init; }
 
-        [CommandParameter(1, Name = "param")]
+        [Parameter(1, Name = "param")]
         public string? ParamB { get; init; }
 
         public DuplicateParameterNameCommand(IConsole console) : base(console)

@@ -14,19 +14,19 @@
         public enum CustomEnum4 { ValueA, ValueB, ValueC };
         public enum CustomEnum5 { ValueD, ValueE, ValueF };
 
-        [CommandParameter(0, Name = "Foo")]
+        [Parameter(0, Name = "Foo")]
         public List<CustomEnum1?> Foo { get; set; } = default!;
 
-        [CommandOption("bar")]
+        [Option("bar")]
         public IList<CustomEnum2?> Bar { get; set; } = default!;
 
-        [CommandOption("wizz")]
+        [Option("wizz")]
         public IEnumerable<CustomEnum3?> Wizz { get; set; } = default!;
 
-        [CommandOption("Buzz")]
+        [Option("Buzz")]
         public CustomEnum4?[] Buzz { get; set; } = default!;
 
-        [CommandOption("fizzz")]
+        [Option("fizzz")]
         public IReadOnlyCollection<CustomEnum5?> Fizz { get; set; } = new List<CustomEnum5?>() { CustomEnum5.ValueD, CustomEnum5.ValueF, null };
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

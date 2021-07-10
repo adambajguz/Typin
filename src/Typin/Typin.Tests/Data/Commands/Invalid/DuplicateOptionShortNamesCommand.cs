@@ -7,10 +7,10 @@
     [Command("cmd")]
     public class DuplicateOptionShortNamesCommand : SelfSerializeCommandBase
     {
-        [CommandOption('x')]
+        [Option('x')]
         public string? OptionA { get; init; }
 
-        [CommandOption('x')]
+        [Option('x')]
         public string? OptionB { get; init; }
 
         public DuplicateOptionShortNamesCommand(IConsole console) : base(console)

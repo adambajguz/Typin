@@ -7,7 +7,7 @@
     [Command("cmd")]
     public class WithSingleParameterCommand : SelfSerializeCommandBase
     {
-        [CommandParameter(0)]
+        [Parameter(0)]
         public string? ParamA { get; init; }
 
         public WithSingleParameterCommand(IConsole console) : base(console)

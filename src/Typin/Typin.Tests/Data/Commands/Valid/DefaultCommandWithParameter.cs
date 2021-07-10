@@ -13,7 +13,7 @@
 
         private readonly IConsole _console;
 
-        [CommandParameter(0)]
+        [Parameter(0)]
         public string? ParamA { get; init; }
 
         public DefaultCommandWithParameter(IConsole console)

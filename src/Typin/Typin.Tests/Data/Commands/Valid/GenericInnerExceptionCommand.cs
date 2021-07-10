@@ -8,10 +8,10 @@
     [Command("cmd")]
     public class GenericInnerExceptionCommand : ICommand
     {
-        [CommandOption("msg", 'm')]
+        [Option("msg", 'm')]
         public string? Message { get; init; }
 
-        [CommandOption("inner-msg", 'i')]
+        [Option("inner-msg", 'i')]
         public string? InnerMessage { get; init; }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

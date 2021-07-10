@@ -8,7 +8,7 @@
     [Command("cmd")]
     public class WithStringArrayOptionCommand : SelfSerializeCommandBase
     {
-        [CommandOption("opt", 'o')]
+        [Option("opt", 'o')]
         public IReadOnlyList<string>? Opt { get; init; }
 
         public WithStringArrayOptionCommand(IConsole console) : base(console)

@@ -7,10 +7,10 @@
     [Command("cmd")]
     public class InvalidOptionNameCommand : SelfSerializeCommandBase
     {
-        [CommandOption("1a")]
+        [Option("1a")]
         public string? Apples { get; init; }
 
-        [CommandOption("1", 'c')]
+        [Option("1", 'c')]
         public string? Oranges { get; init; }
 
         public InvalidOptionNameCommand(IConsole console) : base(console)

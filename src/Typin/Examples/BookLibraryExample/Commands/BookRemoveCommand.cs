@@ -15,7 +15,7 @@
         private readonly LibraryService _libraryService;
         private readonly IConsole _console;
 
-        [CommandParameter(0, Name = "title", Description = "Book title.")]
+        [Parameter(0, Name = "title", Description = "Book title.")]
         public string Title { get; init; } = "";
 
         public BookRemoveCommand(LibraryService libraryService, IConsole console)

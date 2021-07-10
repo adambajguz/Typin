@@ -7,19 +7,19 @@
     [Command("cmd")]
     public class EmptyOptionNameCommand : SelfSerializeCommandBase
     {
-        [CommandOption]
+        [Option]
         public string? Apples { get; init; }
 
-        [CommandOption]
+        [Option]
         public string? Blackberries { get; init; }
 
-        [CommandOption]
+        [Option]
         public string? WestIndianCherry { get; init; }
 
-        [CommandOption]
+        [Option]
         public string? CoconutMeat_Or_PitayaDragonfruit { get; init; }
 
-        [CommandOption]
+        [Option]
         public string? CoconutMeat_or_Pitaya { get; init; }
 
         public EmptyOptionNameCommand(IConsole console) : base(console)

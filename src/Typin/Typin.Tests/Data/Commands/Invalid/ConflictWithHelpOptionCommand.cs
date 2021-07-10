@@ -7,7 +7,7 @@
     [Command("cmd")]
     public class ConflictWithHelpOptionCommand : SelfSerializeCommandBase
     {
-        [CommandOption("option-h", 'h')]
+        [Option("option-h", 'h')]
         public string? OptionH { get; init; }
 
         public ConflictWithHelpOptionCommand(IConsole console) : base(console)

@@ -7,10 +7,10 @@
     [Command("cmd")]
     public class WithSingleRequiredOptionCommand : SelfSerializeCommandBase
     {
-        [CommandOption("opt-a")]
+        [Option("opt-a")]
         public string? OptA { get; init; }
 
-        [CommandOption("opt-b", IsRequired = true)]
+        [Option("opt-b", IsRequired = true)]
         public string? OptB { get; init; }
 
         public WithSingleRequiredOptionCommand(IConsole console) : base(console)

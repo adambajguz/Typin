@@ -7,7 +7,7 @@
     [Command("cmd")]
     public class SingleCharacterOptionNameCommand : SelfSerializeCommandBase
     {
-        [CommandOption("a")]
+        [Option("a")]
         public string? Apples { get; init; }
 
         public SingleCharacterOptionNameCommand(IConsole console) : base(console)

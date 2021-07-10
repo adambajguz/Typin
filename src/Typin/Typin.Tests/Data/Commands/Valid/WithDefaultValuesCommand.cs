@@ -10,37 +10,37 @@
     {
         public enum CustomEnum { Value1, Value2, Value3 };
 
-        [CommandOption("obj")]
+        [Option("obj")]
         public object? Object { get; init; } = 42;
 
-        [CommandOption("str")]
+        [Option("str")]
         public string? String { get; init; } = "foo";
 
-        [CommandOption("str-empty")]
+        [Option("str-empty")]
         public string StringEmpty { get; init; } = "";
 
-        [CommandOption("str-array")]
+        [Option("str-array")]
         public string[]? StringArray { get; init; } = { "foo", "bar", "baz" };
 
-        [CommandOption("bool")]
+        [Option("bool")]
         public bool Bool { get; init; } = true;
 
-        [CommandOption("char")]
+        [Option("char")]
         public char Char { get; init; } = 't';
 
-        [CommandOption("int")]
+        [Option("int")]
         public int Int { get; init; } = 1337;
 
-        [CommandOption("int-nullable")]
+        [Option("int-nullable")]
         public int? IntNullable { get; init; } = 1337;
 
-        [CommandOption("int-array")]
+        [Option("int-array")]
         public int[]? IntArray { get; init; } = { 1, 2, 3 };
 
-        [CommandOption("timespan")]
+        [Option("timespan")]
         public TimeSpan TimeSpan { get; init; } = TimeSpan.FromMinutes(123);
 
-        [CommandOption("enum")]
+        [Option("enum")]
         public CustomEnum Enum { get; init; } = CustomEnum.Value2;
 
         public WithDefaultValuesCommand(IConsole console) : base(console)

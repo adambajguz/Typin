@@ -8,13 +8,13 @@
     [Command("cmd")]
     public class WithParametersCommand : SelfSerializeCommandBase
     {
-        [CommandParameter(0)]
+        [Parameter(0)]
         public string? ParamA { get; init; }
 
-        [CommandParameter(1)]
+        [Parameter(1)]
         public int? ParamB { get; init; }
 
-        [CommandParameter(2)]
+        [Parameter(2)]
         public IReadOnlyList<string>? ParamC { get; init; }
 
         public WithParametersCommand(IConsole console) : base(console)

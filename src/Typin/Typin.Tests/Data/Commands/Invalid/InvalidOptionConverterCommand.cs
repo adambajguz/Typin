@@ -8,7 +8,7 @@
     [Command("cmd")]
     public class InvalidOptionConverterCommand : SelfSerializeCommandBase
     {
-        [CommandOption("str-nullable-struct", Converter = typeof(object))]
+        [Option("str-nullable-struct", Converter = typeof(object))]
         public InitializableStructTypeByConverter? StringNullableInitializableStruct { get; init; }
 
         public InvalidOptionConverterCommand(IConsole console) : base(console)

@@ -9,13 +9,13 @@
     {
         public enum CustomEnum { Value1, Value2, Value3 };
 
-        [CommandParameter(0, Name = "enum")]
+        [Parameter(0, Name = "enum")]
         public CustomEnum EnumParameter { get; init; }
 
-        [CommandOption("enum")]
+        [Option("enum")]
         public CustomEnum? EnumOption { get; init; }
 
-        [CommandOption("required-enum", IsRequired = true)]
+        [Option("required-enum", IsRequired = true)]
         public CustomEnum RequiredEnumOption { get; init; }
 
         public WithEnumArgumentsCommand(IConsole console) : base(console)

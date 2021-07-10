@@ -7,13 +7,13 @@
     [Command]
     public class TypinCommand : ICommand
     {
-        [CommandOption("str", 's')]
+        [Option("str", 's')]
         public string? StrOption { get; set; }
 
-        [CommandOption("int", 'i')]
+        [Option("int", 'i')]
         public int IntOption { get; set; }
 
-        [CommandOption("bool", 'b')]
+        [Option("bool", 'b')]
         public bool BoolOption { get; set; }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

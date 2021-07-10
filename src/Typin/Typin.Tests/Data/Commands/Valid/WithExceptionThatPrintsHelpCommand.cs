@@ -8,7 +8,7 @@
     [Command("cmd")]
     public class WithExceptionThatPrintsHelpCommand : ICommand
     {
-        [CommandOption("msg", 'm')]
+        [Option("msg", 'm')]
         public string? Message { get; init; }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

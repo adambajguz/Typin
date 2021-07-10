@@ -13,7 +13,7 @@
     {
         private readonly IConsole _console;
 
-        [CommandParameter(0)]
+        [Parameter(0)]
         public IReadOnlyList<string> Values { get; init; } = default!;
 
         public DefaultCommand(IConsole console)

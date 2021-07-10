@@ -10,7 +10,7 @@
     {
         private readonly IConsole _console;
 
-        [CommandOption("target", FallbackVariableName = "ENV_TARGET")]
+        [Option("target", FallbackVariableName = "ENV_TARGET")]
         public string Target { get; init; } = "World";
 
         public HelloWorldCommand(IConsole console)
