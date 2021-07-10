@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Invalid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -20,5 +21,10 @@
 
         [CommandOption]
         public string? CoconutMeat_or_Pitaya { get; init; }
+
+        public EmptyOptionNameCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

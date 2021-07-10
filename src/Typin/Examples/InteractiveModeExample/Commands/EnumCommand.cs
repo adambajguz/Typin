@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Command("enum", Description = "Enum test command.")]
     public class EnumCommand : ICommand
@@ -37,7 +37,7 @@
         [CommandOption("d4N")]
         public IEnumerable<DayOfWeek?> Day4N { get; init; } = default!;
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             return default;
         }

@@ -2,14 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.Initializable;
 
     [Command("cmd")]
-    [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
     public class SupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [JsonProperty("obj")]
@@ -233,5 +232,10 @@
         [CommandOption("int-nullable-array")]
         public int?[]? IntNullableArray { get; init; }
         #endregion
+
+        public SupportedArgumentTypesCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using Typin.Attributes;
+    using Typin.Console;
 
     [Command]
     public class BenchmarkDefaultCommand : SelfSerializeCommandBase
@@ -13,5 +14,10 @@
 
         [CommandOption("bool", 'b')]
         public bool BoolOption { get; init; }
+
+        public BenchmarkDefaultCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

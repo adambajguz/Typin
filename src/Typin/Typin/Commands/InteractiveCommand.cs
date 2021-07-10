@@ -1,8 +1,8 @@
 ﻿namespace Typin.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Directives;
     using Typin.Modes;
 
@@ -27,7 +27,7 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
 

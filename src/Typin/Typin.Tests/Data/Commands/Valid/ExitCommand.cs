@@ -1,8 +1,8 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Command("exit", Description = "Exits.")]
     public class ExitCommand : ICommand
@@ -14,7 +14,7 @@
             _lifetime = lifetime;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             _lifetime.RequestStop();
 

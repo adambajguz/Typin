@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Invalid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -8,6 +9,11 @@
     {
         [CommandOption('0')]
         public string? Apples { get; init; }
+
+        public NonLetterOptionShortName0Command(IConsole console) : base(console)
+        {
+
+        }
     }
 
     [Command("cmd")]
@@ -15,6 +21,11 @@
     {
         [CommandOption('=')]
         public string? Apples { get; init; }
+
+        public NonLetterOptionShortName1Command(IConsole console) : base(console)
+        {
+
+        }
     }
 
     [Command("cmd")]
@@ -22,6 +33,11 @@
     {
         [CommandOption('-')]
         public string? Apples { get; init; }
+
+        public NonLetterOptionShortName2Command(IConsole console) : base(console)
+        {
+
+        }
     }
 
     [Command("cmd")]
@@ -29,5 +45,10 @@
     {
         [CommandOption('~')]
         public string? Apples { get; init; }
+
+        public NonLetterOptionShortName3Command(IConsole console) : base(console)
+        {
+
+        }
     }
 }

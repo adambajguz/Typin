@@ -1,12 +1,11 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
-    [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
     public class WithDefaultValuesAndNamesCommand : SelfSerializeCommandBase
     {
         public enum CustomEnum { Value1, Value2, Value3 };
@@ -43,5 +42,10 @@
 
         [CommandOption]
         public CustomEnum Enum { get; init; } = CustomEnum.Value2;
+
+        public WithDefaultValuesAndNamesCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

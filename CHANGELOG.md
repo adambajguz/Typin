@@ -1,3 +1,8 @@
+### v4.0.0 (xx-Jul-2021)
+
+  - Added dynamic commands support.
+  - Replaced `ICommand.ExecuteAsync(CancellationToken cancellationToken)` with `IConsole.ExecuteAsync(CancellationToken cancellationToken)`
+
 ### v3.1.0 (xx-Apr-2021)
 
  - Added `InteractiveModeOptions.Prompt`, `InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.

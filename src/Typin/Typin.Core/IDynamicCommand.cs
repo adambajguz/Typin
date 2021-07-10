@@ -2,17 +2,17 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Console;
 
     /// <summary>
-    /// Entry point in a command line application.
+    /// Entry point of a dynamic command.
     /// </summary>
-    public interface ICommand
+    public interface IDynamicCommand
     {
         /// <summary>
-        /// Executes the command using the specified implementation of <see cref="IConsole"/>.
+        /// Executes the command with a cancellation token.
         /// This is the method that's called when the command is invoked by a user through command line.
         /// </summary>
+        /// <param name="cancellationToken">Command cancellation token.</param>
         /// <remarks>If the execution of the command is not asynchronous, simply end the method with <code>return default;</code></remarks>
         ValueTask ExecuteAsync(CancellationToken cancellationToken);
     }

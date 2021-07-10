@@ -1,5 +1,6 @@
 ﻿namespace BookLibraryExample.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using BookLibraryExample.Internal;
     using BookLibraryExample.Models;
@@ -14,22 +15,24 @@
     public class BookCommand : ICommand
     {
         private readonly LibraryService _libraryService;
+        private readonly IConsole _console;
 
         [CommandParameter(0, Name = "title", Description = "Book title.")]
         public string Title { get; init; } = "";
 
-        public BookCommand(LibraryService libraryService)
+        public BookCommand(LibraryService libraryService, IConsole console)
         {
             _libraryService = libraryService;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             Book? book = _libraryService.GetBook(Title);
 
             _ = book ?? throw new CommandException("Book not found.", 1);
 
-            console.RenderBook(book);
+            _console.RenderBook(book);
 
             return default;
         }

@@ -1,5 +1,6 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -12,9 +13,16 @@
     {
         public const string ExpectedOutputText = nameof(NamedDirectExcludedCommand);
 
-        public ValueTask ExecuteAsync(IConsole console)
+        private readonly IConsole _console;
+
+        public NamedDirectExcludedCommand(IConsole console)
         {
-            console.Output.WriteLine(ExpectedOutputText);
+            _console = console;
+        }
+
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
+        {
+            _console.Output.WriteLine(ExpectedOutputText);
 
             return default;
         }

@@ -239,7 +239,7 @@
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
-            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand
+            commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand(null!)
             {
                 StringParsableWithFormatProvider = CustomStringParsableWithFormatProvider.Parse("foobar", CultureInfo.InvariantCulture)
             });

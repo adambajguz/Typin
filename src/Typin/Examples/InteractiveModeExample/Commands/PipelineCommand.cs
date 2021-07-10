@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -13,15 +14,17 @@
     public class PipelineCommand : ICommand
     {
         private readonly ApplicationConfiguration _configuration;
+        private readonly IConsole _console;
 
-        public PipelineCommand(ApplicationConfiguration configuration)
+        public PipelineCommand(ApplicationConfiguration configuration, IConsole console)
         {
             _configuration = configuration;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            DebugPrintPipeline(console, _configuration.MiddlewareTypes);
+            DebugPrintPipeline(_console, _configuration.MiddlewareTypes);
 
             return default;
         }

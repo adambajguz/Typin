@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.NonInitializable;
 
@@ -15,5 +16,10 @@
 
         [CommandOption("str-enumerable-non-initializable")]
         public NonInitializableEnumerable<string>? StringEnumerableNonInitializable { get; init; }
+
+        public UnsupportedArgumentTypesCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

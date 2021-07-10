@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -12,5 +13,10 @@
 
         [CommandOption("opt-b", 'b', FallbackVariableName = "ENV_OPT_B")]
         public IReadOnlyList<string>? OptB { get; init; }
+
+        public WithEnvironmentVariablesCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -13,15 +14,17 @@
     {
         public const string PipelineTermination = "<PipelineTermination>";
         private readonly ICliContext _cliContext;
+        private readonly IConsole _console;
 
-        public PipelineCommand(ICliContext cliContext)
+        public PipelineCommand(ICliContext cliContext, IConsole console)
         {
             _cliContext = cliContext;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            DebugPrintPipeline(console, _cliContext.Configuration.MiddlewareTypes);
+            DebugPrintPipeline(_console, _cliContext.Configuration.MiddlewareTypes);
 
             return default;
         }

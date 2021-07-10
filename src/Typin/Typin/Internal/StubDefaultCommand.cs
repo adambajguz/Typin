@@ -1,9 +1,9 @@
 ﻿namespace Typin.Internal
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Internal.Schemas;
     using Typin.Schemas;
 
@@ -12,7 +12,7 @@
     {
         public static CommandSchema Schema { get; } = CommandSchemaResolver.Resolve(typeof(StubDefaultCommand), null);
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             return default;
         }

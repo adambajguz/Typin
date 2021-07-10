@@ -1,6 +1,7 @@
 ﻿namespace SimpleAppExample.Commands
 {
     using System.Text.Json;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -9,6 +10,8 @@
     [Command]
     public class SampleCommand : ICommand
     {
+        private readonly IConsole _console;
+
         [CommandParameter(0)]
         public int? ParamB { get; init; }
 
@@ -27,9 +30,14 @@
         [CommandOption('x')]
         public bool XOption { get; init; }
 
-        public async ValueTask ExecuteAsync(IConsole console)
+        public SampleCommand(IConsole console)
         {
-            await console.Output.WriteLineAsync(JsonSerializer.Serialize(this));
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
+        {
+            await _console.Output.WriteLineAsync(JsonSerializer.Serialize(this));
         }
     }
 }

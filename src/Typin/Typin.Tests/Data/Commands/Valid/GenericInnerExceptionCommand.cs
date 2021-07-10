@@ -1,9 +1,9 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Command("cmd")]
     public class GenericInnerExceptionCommand : ICommand
@@ -14,7 +14,7 @@
         [CommandOption("inner-msg", 'i')]
         public string? InnerMessage { get; init; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             throw new Exception(Message, new Exception(InnerMessage));
         }

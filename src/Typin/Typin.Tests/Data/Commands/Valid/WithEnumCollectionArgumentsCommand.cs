@@ -1,9 +1,9 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Command]
     public class WithEnumCollectionArgumentsCommand : ICommand
@@ -29,7 +29,7 @@
         [CommandOption("fizzz")]
         public IReadOnlyCollection<CustomEnum5> Fizz { get; set; } = new List<CustomEnum5>() { CustomEnum5.ValueD, CustomEnum5.ValueF };
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             return default;
         }

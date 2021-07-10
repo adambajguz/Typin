@@ -1,8 +1,8 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Exceptions;
 
     [Command("cmd")]
@@ -17,7 +17,7 @@
         [CommandOption("show-help")]
         public bool ShowHelp { get; init; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             throw new CommandException(Message, ExitCode, ShowHelp);
         }

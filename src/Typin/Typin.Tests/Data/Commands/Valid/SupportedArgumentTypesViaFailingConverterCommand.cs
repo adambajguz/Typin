@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.InitializableByConverter;
 
@@ -24,5 +25,10 @@
 
         [CommandOption("str-indirect-enumerable", Converter = typeof(InitializableEnumerableByConverter_FailingConverter<string>))]
         public InitializableEnumerableByConverter? IndirectlyStringEnumerableInitializable { get; init; }
+
+        public SupportedArgumentTypesViaFailingConverterCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

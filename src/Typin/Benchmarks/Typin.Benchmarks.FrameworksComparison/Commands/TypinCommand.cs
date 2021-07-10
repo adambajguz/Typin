@@ -1,8 +1,8 @@
 ﻿namespace Typin.Benchmarks.FrameworksComparison.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Console;
 
     [Command]
     public class TypinCommand : ICommand
@@ -16,7 +16,7 @@
         [CommandOption("bool", 'b')]
         public bool BoolOption { get; set; }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             return default;
         }

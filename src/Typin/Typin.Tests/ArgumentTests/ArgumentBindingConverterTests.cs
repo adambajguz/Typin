@@ -79,7 +79,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand());
+            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -121,7 +121,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand());
+            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -169,7 +169,7 @@
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
-            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().NotBeEquivalentTo(new SupportedArgumentTypesViaConverterCommand());
+            stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().NotBeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().NotStartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().ContainAll("The method or operation is not implemented.", "Can't convert value \"", optionName);
         }

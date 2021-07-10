@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -15,5 +16,10 @@
 
         [CommandOption("opt-c", 'c', IsRequired = true)]
         public IReadOnlyList<char>? OptC { get; init; }
+
+        public WithRequiredOptionsCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

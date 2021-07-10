@@ -1,6 +1,7 @@
 ﻿namespace InteractiveModeExample.Commands
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Models;
@@ -15,6 +16,7 @@
     public class BookAddCommand : ICommand
     {
         private readonly LibraryService _libraryService;
+        private readonly IConsole _console;
 
         [CommandParameter(0, Name = "title", Description = "Book title.")]
         public string Title { get; init; } = "";
@@ -28,12 +30,13 @@
         [CommandOption("isbn", 'n', Description = "Book ISBN.")]
         public Isbn Isbn { get; init; } = CreateRandomIsbn();
 
-        public BookAddCommand(LibraryService libraryService)
+        public BookAddCommand(LibraryService libraryService, IConsole console)
         {
             _libraryService = libraryService;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             if (_libraryService.GetBook(Title) is not null)
             {
@@ -43,14 +46,14 @@
             Book book = new(Title, Author, Published, Isbn);
             _libraryService.AddBook(book);
 
-            console.Output.WriteLine("Book added.");
-            console.RenderBook(book);
+            _console.Output.WriteLine("Book added.");
+            _console.RenderBook(book);
 
             return default;
         }
 
         #region Helpers
-        private static readonly Random Random = new Random();
+        private static readonly Random Random = new();
 
         private static DateTimeOffset CreateRandomDate()
         {

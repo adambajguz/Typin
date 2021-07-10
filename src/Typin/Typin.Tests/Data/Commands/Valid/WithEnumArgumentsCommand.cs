@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -16,5 +17,10 @@
 
         [CommandOption("required-enum", IsRequired = true)]
         public CustomEnum RequiredEnumOption { get; init; }
+
+        public WithEnumArgumentsCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

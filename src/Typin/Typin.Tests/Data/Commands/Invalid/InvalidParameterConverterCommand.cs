@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
     using Typin.Tests.Data.CustomTypes.InitializableByConverter;
 
@@ -12,5 +13,10 @@
 
         [CommandOption("str-nullable-struct", Converter = typeof(InitializableNullableStructTypeByConverter_Converter))]
         public InitializableStructTypeByConverter? StringNullableInitializableStruct { get; init; }
+
+        public InvalidParameterConverterCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

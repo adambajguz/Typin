@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Typin.Attributes;
+    using Typin.Console;
     using Typin.Tests.Data.Commands;
 
     [Command("cmd")]
@@ -15,5 +16,10 @@
 
         [CommandParameter(2)]
         public IReadOnlyList<string>? ParamC { get; init; }
+
+        public WithParametersCommand(IConsole console) : base(console)
+        {
+
+        }
     }
 }

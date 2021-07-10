@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
     using Typin.Console;
@@ -11,18 +12,25 @@
         public const string CompletionOutputText = "Finished";
         public const string CancellationOutputText = "Canceled";
 
-        public async ValueTask ExecuteAsync(IConsole console)
+        private readonly IConsole _console;
+
+        public CancellableCommand(IConsole console)
+        {
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(3),
-                                 console.GetCancellationToken());
+                                 cancellationToken);
 
-                console.Output.WriteLine(CompletionOutputText);
+                _console.Output.WriteLine(CompletionOutputText);
             }
             catch (OperationCanceledException)
             {
-                console.Output.WriteLine(CancellationOutputText);
+                _console.Output.WriteLine(CancellationOutputText);
                 throw;
             }
         }
