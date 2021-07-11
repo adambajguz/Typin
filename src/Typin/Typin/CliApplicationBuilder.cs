@@ -13,6 +13,7 @@ namespace Typin
     using Typin.Help;
     using Typin.Internal;
     using Typin.Internal.DependencyInjection;
+    using Typin.Internal.DynamicCommands;
     using Typin.Internal.Pipeline;
     using Typin.Modes;
     using Typin.OptionFallback;

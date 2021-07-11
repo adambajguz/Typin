@@ -7,6 +7,7 @@
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
+    using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -57,7 +58,8 @@
                 attribute.FallbackVariableName,
                 attribute.IsRequired,
                 attribute.Description,
-                attribute.Converter
+                attribute.Converter,
+                MetadataCollection.Empty
             );
         }
     }

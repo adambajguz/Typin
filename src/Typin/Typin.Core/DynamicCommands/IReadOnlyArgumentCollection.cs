@@ -4,12 +4,21 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Read-only dynamic argument collection.
+    /// Read-only argument collection.
     /// </summary>
-    public interface IReadOnlyDynamicArgumentCollection : IEquatable<DynamicArgumentCollection?>, IEnumerable<KeyValuePair<string, object>>, IReadOnlyCollection<object>
+    public interface IReadOnlyArgumentCollection : IReadOnlyCollection<KeyValuePair<string, InputValue>>
     {
         /// <summary>
-        /// Whether collection contains a property.
+        /// Gets or sets argument value.
+        /// </summary>
+        /// <param name="propertyName">Property name.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
+        /// <exception cref="KeyNotFoundException">Throws when <paramref name="propertyName"/> was not found.</exception>
+        InputValue this[string propertyName] { get; }
+
+        /// <summary>
+        /// Whether collection contains an argument.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
         /// <returns>Whether collection contains a property.</returns>
@@ -17,35 +26,20 @@
         bool Contains(string propertyName);
 
         /// <summary>
-        /// Gets property value.
+        /// Gets an arguemnt.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
         /// <returns>Property value.</returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        object? GetValueOrDefault(string propertyName);
+        /// <exception cref="KeyNotFoundException">Throws when <paramref name="propertyName"/> was not found.</exception>
+        InputValue Get(string propertyName);
 
         /// <summary>
-        /// Gets property value.
+        /// Gets an argument.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
         /// <returns>Property value.</returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        T? GetValueOrDefault<T>(string propertyName);
-
-        /// <summary>
-        /// Gets property value.
-        /// </summary>
-        /// <param name="propertyName">Property name.</param>
-        /// <returns>Property value.</returns>
-        /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        object? GetValue(string propertyName);
-
-        /// <summary>
-        /// Gets property value.
-        /// </summary>
-        /// <param name="propertyName">Property name.</param>
-        /// <returns>Property value.</returns>
-        /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        T GetValue<T>(string propertyName);
+        InputValue? TryGet(string propertyName);
     }
 }

@@ -6,6 +6,7 @@
     using Typin.Binding;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
+    using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -37,7 +38,8 @@
                 attribute.Order,
                 name,
                 attribute.Description,
-                attribute.Converter
+                attribute.Converter,
+                MetadataCollection.Empty
             );
         }
     }

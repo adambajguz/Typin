@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Binding;
+    using Typin.Metadata;
 
     /// <summary>
     /// Dynamic command parameter builder.
@@ -21,7 +22,8 @@
     public interface IDynamicParameterBuilder
     {
         /// <summary>
-        /// Parameter name.
+        /// Parameter name, which is only used in help text.
+        /// If this isn't specified, kebab-cased property name is used instead.
         /// </summary>
         IDynamicParameterBuilder WithName(string? name);
 
@@ -34,5 +36,11 @@
         /// Sets a binding converter for this parameter.
         /// </summary>
         IDynamicParameterBuilder WithBindingConverter(Type converter);
+
+        /// <summary>
+        /// Sets parameter metadata.
+        /// </summary>
+        /// <returns></returns>
+        IDynamicParameterBuilder WithMetadata(IArgumentMetadata metadata);
     }
 }

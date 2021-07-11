@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Binding;
+    using Typin.Metadata;
 
     /// <summary>
     /// Dynamic command option builder.
@@ -21,7 +22,8 @@
     public interface IDynamicOptionBuilder
     {
         /// <summary>
-        /// Option name.
+        /// Option name (must be longer than a single character). Starting dashes are trimed automatically.
+        /// All options in a command must have different names (comparison is case-sensitive).
         /// </summary>
         IDynamicOptionBuilder WithName(string? name);
 
@@ -62,5 +64,11 @@
         /// Sets a binding converter for this parameter.
         /// </summary>
         IDynamicOptionBuilder WithBindingConverter(Type converterType);
+
+        /// <summary>
+        /// Sets option metadata.
+        /// </summary>
+        /// <returns></returns>
+        IDynamicOptionBuilder SetMetadata(IArgumentMetadata metadata);
     }
 }

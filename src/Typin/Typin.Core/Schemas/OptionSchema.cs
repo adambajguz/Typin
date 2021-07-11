@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Text;
+    using Typin.Metadata;
 
     /// <summary>
     /// Stores command option schema.
@@ -13,12 +14,12 @@
         /// <summary>
         /// Gets a help option schema instance.
         /// </summary>
-        public static OptionSchema HelpOption { get; } = new(typeof(bool), "  __ShowHelp", false, "help", 'h', null, false, "Shows help text.", null);
+        public static OptionSchema HelpOption { get; } = new(typeof(bool), "  __ShowHelp", false, "help", 'h', null, false, "Shows help text.", null, MetadataCollection.Empty);
 
         /// <summary>
         /// Gets a version option schema instance.
         /// </summary>
-        public static OptionSchema VersionOption { get; } = new(typeof(bool), "  __ShowVersion", false, "version", null, null, false, "Shows version information.", null);
+        public static OptionSchema VersionOption { get; } = new(typeof(bool), "  __ShowVersion", false, "version", null, null, false, "Shows version information.", null, MetadataCollection.Empty);
 
         /// <summary>
         /// Option name.
@@ -49,8 +50,9 @@
                             string? fallbackVariableName,
                             bool isRequired,
                             string? description,
-                            Type? converter)
-            : base(property, description, converter)
+                            Type? converter,
+                            IMetadataCollection metadata)
+            : base(property, description, converter, metadata)
         {
             Name = name;
             ShortName = shortName;
@@ -69,8 +71,9 @@
                             string? fallbackVariableName,
                             bool isRequired,
                             string? description,
-                            Type? converter)
-            : base(propertyType, propertyName, isDynamic, description, converter)
+                            Type? converter,
+                            IMetadataCollection metadata)
+            : base(propertyType, propertyName, isDynamic, description, converter, metadata)
         {
             Name = name;
             ShortName = shortName;

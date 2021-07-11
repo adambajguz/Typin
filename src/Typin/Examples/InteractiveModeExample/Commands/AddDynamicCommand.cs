@@ -7,6 +7,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.DynamicCommands;
+    using Typin.Metadata;
     using Typin.Schemas;
 
     [Command("add dynamic", Description = "Adds a dynamic command.")]
@@ -30,13 +31,17 @@
         {
             CommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<SampleDynamicCommand>(Name)
                 .WithDescription("Test description.")
-                .WithManual("Some manual.")
+                .WithManual("Some manual\nadd dynamic --name abc\nabc 5 j --number 4 -a aaaaaa\nabc --help.")
                 .AddOption<int>("Number", (ob) => ob
                     .AsRequired()
                     .WithDescription("Some number.")
+                    .SetMetadata(new ArgumentMetadata("test"))
                 )
                 .AddOption(typeof(double))
-                .AddOption<int>()
+                .AddOption<int>((ob) => ob
+                    .SetMetadata(new ArgumentMetadata("test"))
+                )
+                .AddOption<string>("Str")
                 .AddOption(typeof(double), "Price")
                 .AddParameter<string>("Parameter", 0)
                 .AddParameter<string>(1)

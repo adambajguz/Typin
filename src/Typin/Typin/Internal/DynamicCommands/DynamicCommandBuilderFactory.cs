@@ -1,6 +1,7 @@
-﻿namespace Typin.DynamicCommands
+﻿namespace Typin.Internal.DynamicCommands
 {
     using System;
+    using Typin.DynamicCommands;
     using Typin.Schemas;
 
     /// <summary>
@@ -24,8 +25,8 @@
             if (!KnownTypesHelpers.IsDynamicCommandType(dynamicCommandType))
             {
                 throw new ArgumentException(
-                    nameof(dynamicCommandType),
-                    $"Type '{dynamicCommandType.FullName ?? dynamicCommandType.Name}' does not represent a dynamic command, i.e., does not implement '{nameof(IDynamicCommand)}'.");
+                    $"Type '{dynamicCommandType.FullName ?? dynamicCommandType.Name}' does not represent a dynamic command, i.e., does not implement '{nameof(IDynamicCommand)}'.",
+                    nameof(dynamicCommandType));
             }
 
             return new DynamicCommandBuilder(_rootSchemaAccessor.RootSchema, dynamicCommandType, commandName);

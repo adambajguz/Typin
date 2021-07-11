@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Typin.Metadata;
 
     /// <summary>
     /// Abstract command argument schema used in <see cref="ParameterSchema"/> and <see cref="OptionSchema"/>
@@ -26,9 +27,12 @@
         /// <summary>
         /// Initializes an instance of <see cref="ArgumentSchema"/> that represents a property-based argument.
         /// </summary>
-        protected ArgumentSchema(PropertyInfo property, string? description, Type? converterType)
+        protected ArgumentSchema(PropertyInfo property,
+                                 string? description,
+                                 Type? converterType,
+                                 IMetadataCollection metadata)
         {
-            Bindable = new BindableArgument(property);
+            Bindable = new BindableArgument(metadata, property);
             Description = description;
             ConverterType = converterType;
         }
@@ -36,9 +40,26 @@
         /// <summary>
         /// Initializes an instance of <see cref="ArgumentSchema"/> that represents a dynamic or built-in argument.
         /// </summary>
-        protected ArgumentSchema(Type propertyType, string propertyName, bool isDynamic, string? description, Type? converterType)
+        protected ArgumentSchema(Type propertyType,
+                                 string propertyName,
+                                 bool isDynamic,
+                                 string? description,
+                                 Type? converterType,
+                                 IMetadataCollection metadata)
         {
-            Bindable = new BindableArgument(propertyType, propertyName, isDynamic);
+            Bindable = new BindableArgument(metadata, propertyType, propertyName, isDynamic);
+            Description = description;
+            ConverterType = converterType;
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ArgumentSchema"/>.
+        /// </summary>
+        protected ArgumentSchema(BindableArgument bindableArgument,
+                                 string? description,
+                                 Type? converterType)
+        {
+            Bindable = bindableArgument ?? throw new ArgumentNullException(nameof(bindableArgument));
             Description = description;
             ConverterType = converterType;
         }

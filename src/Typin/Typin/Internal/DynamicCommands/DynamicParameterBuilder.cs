@@ -1,7 +1,10 @@
-﻿namespace Typin.DynamicCommands
+﻿namespace Typin.Internal.DynamicCommands
 {
     using System;
+    using System.Collections.Generic;
     using Typin.Binding;
+    using Typin.DynamicCommands;
+    using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -40,6 +43,7 @@
         private string? _name;
         private string? _description;
         private Type? _converter;
+        private readonly Dictionary<Type, IArgumentMetadata> _metadata = new();
 
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicParameterBuilder"/>.
@@ -80,6 +84,15 @@
             return this;
         }
 
+        /// <inheritdoc/>
+
+        public IDynamicParameterBuilder WithMetadata(IArgumentMetadata metadata)
+        {
+            _metadata[metadata.GetType()] = metadata;
+
+            return this;
+        }
+
         public ParameterSchema Build()
         {
             return new ParameterSchema(_type,
@@ -87,7 +100,8 @@
                                        _order,
                                        _name ?? TextUtils.ToKebabCase(_propertyName),
                                        _description,
-                                       _converter);
+                                       _converter,
+                                       new MetadataCollection(_metadata));
         }
     }
 }

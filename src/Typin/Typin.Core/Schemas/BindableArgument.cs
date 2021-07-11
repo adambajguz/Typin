@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Internal.Extensions;
+    using Typin.Metadata;
 
     /// <summary>
     /// Represents a bindable <see cref="PropertyInfo"/>.
@@ -42,9 +43,14 @@
         public bool IsScalar => EnumerableUnderlyingType is null;
 
         /// <summary>
+        /// Argument metadata.
+        /// </summary>
+        public IMetadataCollection Metadata { get; }
+
+        /// <summary>
         /// Initializes an instance of <see cref="BindableArgument"/> that represents a property-based argument.
         /// </summary>
-        internal BindableArgument(PropertyInfo property)
+        internal BindableArgument(IMetadataCollection metadata, PropertyInfo property)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
 
@@ -52,12 +58,13 @@
             EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = Property.Name;
             Kind = BindableArgumentKind.Property;
+            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="BindableArgument"/> that represents a built-in argument.
         /// </summary>
-        internal BindableArgument(Type propertyType, string propertyName, bool isDynamic)
+        internal BindableArgument(IMetadataCollection metadata, Type propertyType, string propertyName, bool isDynamic)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -68,6 +75,7 @@
             EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = propertyName;
             Kind = isDynamic ? BindableArgumentKind.Dynamic : BindableArgumentKind.BuiltIn;
+            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         }
 
         private IReadOnlyList<string>? _validValues;
@@ -116,7 +124,7 @@
         {
             if (Kind == BindableArgumentKind.Dynamic && commandInstance is IDynamicCommand dynamicCommandInstance)
             {
-                return dynamicCommandInstance.Arguments.GetValueOrDefault(Name);
+                return dynamicCommandInstance.Arguments.TryGet(Name);
             }
 
             return Property?.GetValue(commandInstance);
@@ -132,7 +140,7 @@
         {
             if (Kind == BindableArgumentKind.Dynamic && commandInstance is IDynamicCommand dynamicCommandInstance)
             {
-                dynamicCommandInstance.Arguments.SetValue(Name, value);
+                dynamicCommandInstance.Arguments.Set(Name, new InputValue(Metadata, Type, value));
             }
             else
             {

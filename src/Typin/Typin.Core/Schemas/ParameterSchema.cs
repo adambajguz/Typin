@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Typin.Metadata;
 
     /// <summary>
     /// Stores command parameter schema.
@@ -25,8 +26,9 @@
                                int order,
                                string name,
                                string? description,
-                               Type? converter)
-            : base(property, description, converter)
+                               Type? converter,
+                               IMetadataCollection metadata)
+            : base(property, description, converter, metadata)
         {
             Order = order;
             Name = name;
@@ -40,8 +42,9 @@
                                int order,
                                string name,
                                string? description,
-                               Type? converter)
-            : base(propertyType, propertyName, true, description, converter)
+                               Type? converter,
+                               IMetadataCollection metadata)
+            : base(propertyType, propertyName, true, description, converter, metadata)
         {
             Order = order;
             Name = name;

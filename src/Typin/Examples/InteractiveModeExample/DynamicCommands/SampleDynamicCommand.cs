@@ -1,12 +1,15 @@
 ﻿namespace InteractiveModeExample.Commands
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.DynamicCommands;
+    using Typin.Metadata;
 
     public class SampleDynamicCommand : IDynamicCommand
     {
@@ -18,7 +21,7 @@
         [Option("date", 'd')]
         public DateTime Date { get; init; } = DateTime.Now;
 
-        public IDynamicArgumentCollection Arguments { get; init; } = default!;
+        public IArgumentCollection Arguments { get; init; } = default!;
 
         public SampleDynamicCommand(IConsole console)
         {
@@ -27,13 +30,18 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            //add dynamic --name abc
-            //abc --help
-            //abc
+            _console.Output.WriteLine(JsonConvert.SerializeObject(this, Formatting.Indented));
 
-            var number = Arguments.GetValueOrDefault("Number");
+            InputValue? numberInput = Arguments.TryGet("Number");
+            int? number = Arguments["Number"].GetValueOrDefault<int?>();
+            int number2 = Arguments["Number"].GetValueOrDefault<int>();
+            int? number5 = Arguments["Opt5"].GetValueOrDefault<int?>();
+            string? param0 = Arguments.Get("Str").GetValueOrDefault<string?>();
+            string? param1 = Arguments.Get("Str").GetValueOrDefault<string>();
 
-            _console.Output.WriteLine(System.Text.Json.JsonSerializer.Serialize(this));
+            var filteredArgs = Arguments
+                .Where(x => x.Value.Metadata.GetValueOrDefault<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
+                .ToList();
 
             return default;
         }

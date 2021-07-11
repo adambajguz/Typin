@@ -1,8 +1,9 @@
-﻿namespace Typin.DynamicCommands
+﻿namespace Typin.Internal.DynamicCommands
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Typin.DynamicCommands;
     using Typin.Schemas;
 
     /// <summary>
@@ -10,8 +11,6 @@
     /// </summary>
     internal sealed class DynamicCommandBuilder : IDynamicCommandBuilder
     {
-        private readonly BaseCommandSchema _baseCommandSchema;
-
         private readonly Type _type;
         private readonly string _name;
         private string? _description;
@@ -39,8 +38,6 @@
 
             BaseCommandSchema baseCommandSchema = rootSchema.TryFindDynamicCommandBase(_type) ??
                 throw new NullReferenceException($"Dynamic command base not found for '{_type.FullName ?? _type.Name}'.");
-
-            _baseCommandSchema = baseCommandSchema;
 
             _options = baseCommandSchema.Options.ToList();
             _parameters = baseCommandSchema.Parameters.ToList();

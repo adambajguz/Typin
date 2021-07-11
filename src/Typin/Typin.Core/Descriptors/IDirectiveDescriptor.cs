@@ -9,7 +9,7 @@
     {
         /// <summary>
         /// Directive name.
-        /// All directives in an application must have different names.
+        /// All directives in a command must have different names.
         /// </summary>
         string Name { get; }
 

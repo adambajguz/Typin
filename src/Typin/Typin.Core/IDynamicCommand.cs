@@ -10,6 +10,6 @@
         /// <summary>
         /// Dynamic command arguments.
         /// </summary>
-        IDynamicArgumentCollection Arguments { get; init; }
+        IArgumentCollection Arguments { get; init; }
     }
 }

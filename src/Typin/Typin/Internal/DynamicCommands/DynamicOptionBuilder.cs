@@ -1,7 +1,10 @@
-﻿namespace Typin.DynamicCommands
+﻿namespace Typin.Internal.DynamicCommands
 {
     using System;
+    using System.Collections.Generic;
     using Typin.Binding;
+    using Typin.DynamicCommands;
+    using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -42,6 +45,7 @@
         private string? _description;
         private string? _fallbackVariableName;
         private Type? _converter;
+        private readonly Dictionary<Type, IArgumentMetadata> _metadata = new();
 
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicOptionBuilder"/>.
@@ -131,6 +135,15 @@
             return this;
         }
 
+        /// <inheritdoc/>
+
+        public IDynamicOptionBuilder SetMetadata(IArgumentMetadata metadata)
+        {
+            _metadata[metadata.GetType()] = metadata;
+
+            return this;
+        }
+
         public OptionSchema Build()
         {
             return new OptionSchema(_type,
@@ -141,7 +154,8 @@
                                     _fallbackVariableName,
                                     _isRequired,
                                     _description,
-                                    _converter);
+                                    _converter,
+                                    new MetadataCollection(_metadata));
         }
     }
 }

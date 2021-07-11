@@ -10,11 +10,12 @@
     using Typin.DynamicCommands;
     using Typin.Input;
     using Typin.Internal;
+    using Typin.Internal.DynamicCommands;
     using Typin.Schemas;
 
     internal sealed class ResolveCommandSchemaAndInstance : IMiddleware
     {
-        private static Action<IDynamicCommand, IDynamicArgumentCollection>? _dynamicCommandArguemtnCollectionSetter;
+        private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArguemtnCollectionSetter;
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -58,7 +59,7 @@
             if (commandSchema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
             {
                 _dynamicCommandArguemtnCollectionSetter ??= GetDynamicArgumentsSetter();
-                _dynamicCommandArguemtnCollectionSetter.Invoke(dynamicCommandInstance, new DynamicArgumentCollection());
+                _dynamicCommandArguemtnCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
             }
 
             // To avoid instantiating the command twice, we need to get default values
@@ -74,10 +75,10 @@
             return command != StubDefaultCommand.Schema ? (ICommand)_serviceProvider.GetRequiredService(command.Type) : new StubDefaultCommand();
         }
 
-        private static Action<IDynamicCommand, IDynamicArgumentCollection> GetDynamicArgumentsSetter()
+        private static Action<IDynamicCommand, IArgumentCollection> GetDynamicArgumentsSetter()
         {
             MethodInfo methodInfo = typeof(IDynamicCommand).GetProperty(nameof(IDynamicCommand.Arguments))!.GetSetMethod(true)!;
-            var @delegate = (Action<IDynamicCommand, IDynamicArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicCommand, IDynamicArgumentCollection>), methodInfo);
+            var @delegate = (Action<IDynamicCommand, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicCommand, IArgumentCollection>), methodInfo);
 
             return @delegate;
         }

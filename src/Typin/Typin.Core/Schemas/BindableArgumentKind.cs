@@ -1,7 +1,7 @@
-﻿using Typin.DynamicCommands;
-
-namespace Typin.Schemas
+﻿namespace Typin.Schemas
 {
+    using Typin.DynamicCommands;
+
     /// <summary>
     /// <see cref="BindableArgument"/> kind.
     /// </summary>
@@ -13,7 +13,7 @@ namespace Typin.Schemas
         Property,
 
         /// <summary>
-        /// Dynamic argument accesible throught <see cref="DynamicArgumentCollection"/>.
+        /// Dynamic argument accesible throught <see cref="IArgumentCollection"/>.
         /// </summary>
         Dynamic,
 
