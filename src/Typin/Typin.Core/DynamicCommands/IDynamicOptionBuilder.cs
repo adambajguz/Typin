@@ -21,9 +21,9 @@
     public interface IDynamicOptionBuilder
     {
         /// <summary>
-        /// Option property name.
+        /// Option name.
         /// </summary>
-        IDynamicOptionBuilder WithPropertyName(string? propertyName);
+        IDynamicOptionBuilder WithName(string? name);
 
         /// <summary>
         /// Option short name (single character).

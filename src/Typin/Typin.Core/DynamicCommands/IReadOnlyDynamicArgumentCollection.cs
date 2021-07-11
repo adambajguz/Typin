@@ -38,7 +38,7 @@
         /// <param name="propertyName">Property name.</param>
         /// <returns>Property value.</returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        object GetValue(string propertyName);
+        object? GetValue(string propertyName);
 
         /// <summary>
         /// Gets property value.

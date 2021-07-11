@@ -21,9 +21,9 @@
     public interface IDynamicParameterBuilder
     {
         /// <summary>
-        /// Parameter property name.
+        /// Parameter name.
         /// </summary>
-        IDynamicParameterBuilder WithPropertyName(string? propertyName);
+        IDynamicParameterBuilder WithName(string? name);
 
         /// <summary>
         /// Parameter description, which is used in help text.

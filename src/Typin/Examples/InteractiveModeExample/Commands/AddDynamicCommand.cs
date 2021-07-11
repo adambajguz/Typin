@@ -31,13 +31,15 @@
             CommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<SampleDynamicCommand>(Name)
                 .WithDescription("Test description.")
                 .WithManual("Some manual.")
-                .AddOption<int>("number", (ob) => ob
+                .AddOption<int>("Number", (ob) => ob
                     .AsRequired()
                     .WithDescription("Some number.")
                 )
                 .AddOption(typeof(double))
+                .AddOption<int>()
                 .AddOption(typeof(double), "Price")
-                .AddParameter<string>("sth", 0)
+                .AddParameter<string>("Parameter", 0)
+                .AddParameter<string>(1)
                 .Build();
 
             if (_rootSchema.TryAddDynamicCommand(commandSchema))

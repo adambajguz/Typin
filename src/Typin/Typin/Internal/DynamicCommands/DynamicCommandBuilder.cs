@@ -87,7 +87,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddOption(Type optionType)
         {
-            string name = string.Concat("opt", _options.Count);
+            string name = string.Concat("Opt", _options.Count);
 
             return AddOption(optionType, name, ob => { });
         }
@@ -101,7 +101,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddOption(Type optionType, Action<IDynamicOptionBuilder> action)
         {
-            string name = string.Concat("opt", _options.Count);
+            string name = string.Concat("Opt", _options.Count);
 
             return AddOption(optionType, name, action);
         }
@@ -109,27 +109,27 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddOption<T>(Action<IDynamicOptionBuilder<T>> action)
         {
-            string name = string.Concat("opt", _options.Count);
+            string name = string.Concat("Opt", _options.Count);
 
             return AddOption<T>(name, action);
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddOption(Type optionType, string name)
+        public IDynamicCommandBuilder AddOption(Type optionType, string propertyName)
         {
-            return AddOption(optionType, name, ob => { });
+            return AddOption(optionType, propertyName, ob => { });
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddOption<T>(string name)
+        public IDynamicCommandBuilder AddOption<T>(string propertyName)
         {
-            return AddOption<T>(name, ob => { });
+            return AddOption<T>(propertyName, ob => { });
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddOption(Type optionType, string name, Action<IDynamicOptionBuilder> action)
+        public IDynamicCommandBuilder AddOption(Type optionType, string propertyName, Action<IDynamicOptionBuilder> action)
         {
-            DynamicOptionBuilder builder = new(name, optionType);
+            DynamicOptionBuilder builder = new(propertyName, optionType);
             action(builder);
 
             OptionSchema schema = builder.Build();
@@ -149,9 +149,9 @@
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddOption<T>(string name, Action<IDynamicOptionBuilder<T>> action)
+        public IDynamicCommandBuilder AddOption<T>(string propertyName, Action<IDynamicOptionBuilder<T>> action)
         {
-            DynamicOptionBuilder<T> builder = new(name);
+            DynamicOptionBuilder<T> builder = new(propertyName);
             action(builder);
 
             OptionSchema schema = builder.Build();
@@ -187,7 +187,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddParameter(Type parameterType, int order, Action<IDynamicParameterBuilder> action)
         {
-            string name = string.Concat("param", _parameters.Count);
+            string name = string.Concat("Param", _parameters.Count);
 
             return AddParameter(parameterType, name, order, action);
         }
@@ -195,27 +195,27 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddParameter<T>(int order, Action<IDynamicParameterBuilder<T>> action)
         {
-            string name = string.Concat("param", _parameters.Count);
+            string name = string.Concat("Param", _parameters.Count);
 
             return AddParameter<T>(name, order, action);
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddParameter(Type parameterType, string name, int order)
+        public IDynamicCommandBuilder AddParameter(Type parameterType, string propertyName, int order)
         {
-            return AddParameter(parameterType, name, order, ob => { });
+            return AddParameter(parameterType, propertyName, order, ob => { });
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddParameter<T>(string name, int order)
+        public IDynamicCommandBuilder AddParameter<T>(string propertyName, int order)
         {
-            return AddParameter<T>(name, order, ob => { });
+            return AddParameter<T>(propertyName, order, ob => { });
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddParameter(Type parameterType, string name, int order, Action<IDynamicParameterBuilder> action)
+        public IDynamicCommandBuilder AddParameter(Type parameterType, string propertyName, int order, Action<IDynamicParameterBuilder> action)
         {
-            DynamicParameterBuilder builder = new(parameterType, name, order);
+            DynamicParameterBuilder builder = new(parameterType, propertyName, order);
             action(builder);
 
             ParameterSchema schema = builder.Build();
@@ -227,9 +227,9 @@
         }
 
         /// <inheritdoc/>
-        public IDynamicCommandBuilder AddParameter<T>(string name, int order, Action<IDynamicParameterBuilder<T>> action)
+        public IDynamicCommandBuilder AddParameter<T>(string propertyName, int order, Action<IDynamicParameterBuilder<T>> action)
         {
-            DynamicParameterBuilder<T> builder = new(name, order);
+            DynamicParameterBuilder<T> builder = new(propertyName, order);
             action(builder);
 
             ParameterSchema schema = builder.Build();

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using Typin.Internal.Extensions;
@@ -15,12 +14,17 @@
         /// <summary>
         /// Property info (null for dynamic arguments and built-in arguments, i.e., help and version options )
         /// </summary>
-        public PropertyInfo? Property { get; }
+        private PropertyInfo? Property { get; }
 
         /// <summary>
-        /// Arguemnt type.
+        /// Argument type.
         /// </summary>
         public Type Type { get; }
+
+        /// <summary>
+        /// Enumerable argument underlying type.
+        /// </summary>
+        public Type? EnumerableUnderlyingType { get; }
 
         /// <summary>
         /// Argument type.
@@ -35,15 +39,7 @@
         /// <summary>
         /// Whether command argument is scalar.
         /// </summary>
-        public bool IsScalar
-        {
-            get
-            {
-                _isScalar ??= Type.TryGetEnumerableArgumentUnderlyingType() is null;
-
-                return _isScalar.Value;
-            }
-        }
+        public bool IsScalar => EnumerableUnderlyingType is null;
 
         /// <summary>
         /// Initializes an instance of <see cref="BindableArgument"/> that represents a property-based argument.
@@ -51,7 +47,9 @@
         internal BindableArgument(PropertyInfo property)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
+
             Type = Property.PropertyType;
+            EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = Property.Name;
             Kind = BindableArgumentKind.Property;
         }
@@ -67,11 +65,10 @@
             }
 
             Type = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
+            EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = propertyName;
             Kind = isDynamic ? BindableArgumentKind.Dynamic : BindableArgumentKind.BuiltIn;
         }
-
-        private bool? _isScalar;
 
         private IReadOnlyList<string>? _validValues;
 
@@ -87,7 +84,7 @@
 
             IReadOnlyList<string> InternalGetValidValues()
             {
-                Type? underlyingType = Type.TryGetEnumerableUnderlyingType() ?? Type;
+                Type? underlyingType = EnumerableUnderlyingType ?? Type;
                 Type? nullableType = underlyingType.TryGetNullableUnderlyingType();
                 underlyingType = nullableType ?? underlyingType;
 
@@ -117,7 +114,7 @@
         /// <returns>Property value.</returns>
         public object? GetValue(ICommand commandInstance)
         {
-            if (commandInstance is IDynamicCommand dynamicCommandInstance)
+            if (Kind == BindableArgumentKind.Dynamic && commandInstance is IDynamicCommand dynamicCommandInstance)
             {
                 return dynamicCommandInstance.Arguments.GetValueOrDefault(Name);
             }
@@ -133,7 +130,7 @@
         /// <param name="value">Value to set.</param>
         public void SetValue(ICommand commandInstance, object? value)
         {
-            if (commandInstance is IDynamicCommand dynamicCommandInstance)
+            if (Kind == BindableArgumentKind.Dynamic && commandInstance is IDynamicCommand dynamicCommandInstance)
             {
                 dynamicCommandInstance.Arguments.SetValue(Name, value);
             }
@@ -141,27 +138,6 @@
             {
                 Property?.SetValue(commandInstance, value);
             }
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override bool Equals(object? obj)
-        {
-            return Property?.Equals(obj) ?? false;
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override int GetHashCode()
-        {
-            return Property?.GetHashCode() ?? 0;
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        public override string? ToString()
-        {
-            return Property?.ToString() ?? "<built-in argument>";
         }
     }
 }

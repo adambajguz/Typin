@@ -31,9 +31,9 @@
             //abc --help
             //abc
 
-            //var number = Arguments.GetValue<int>("Number"); //TODO: add dynamic value binding
+            var number = Arguments.GetValueOrDefault("Number");
 
-            _console.Output.WriteLine($"'{Author}' '{Date}'");
+            _console.Output.WriteLine(System.Text.Json.JsonSerializer.Serialize(this));
 
             return default;
         }

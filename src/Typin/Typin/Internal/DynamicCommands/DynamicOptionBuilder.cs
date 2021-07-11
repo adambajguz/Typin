@@ -3,6 +3,7 @@
     using System;
     using Typin.Binding;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     /// <summary>
     /// Dynamic command option builder.
@@ -33,9 +34,9 @@
     internal class DynamicOptionBuilder : IDynamicOptionBuilder
     {
         private readonly Type _type;
-        private readonly string _name;
+        private readonly string _propertyName;
 
-        private string? _propertyName;
+        private string? _name;
         private char? _shortName;
         private bool _isRequired;
         private string? _description;
@@ -45,26 +46,26 @@
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicOptionBuilder"/>.
         /// </summary>
-        public DynamicOptionBuilder(string name, Type type)
+        public DynamicOptionBuilder(string propertyName, Type type)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                throw new ArgumentException($"'{nameof(name)}' cannot be null or whitespace.", nameof(name));
+                throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
             }
 
-            if (name == "help")
+            if (propertyName == "help")
             {
                 throw new ArgumentException("Option name 'help' is reserved.");
             }
 
-            _name = name;
+            _propertyName = propertyName;
             _type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         /// <inheritdoc/>
-        public IDynamicOptionBuilder WithPropertyName(string? propertyName)
+        public IDynamicOptionBuilder WithName(string? name)
         {
-            _propertyName = string.IsNullOrWhiteSpace(propertyName) ? null : propertyName;
+            _name = string.IsNullOrWhiteSpace(name) ? null : name;
 
             return this;
         }
@@ -133,9 +134,9 @@
         public OptionSchema Build()
         {
             return new OptionSchema(_type,
-                                    _propertyName ?? _name,
+                                    _propertyName,
                                     true,
-                                    _name,
+                                    _name ?? TextUtils.ToKebabCase(_propertyName),
                                     _shortName,
                                     _fallbackVariableName,
                                     _isRequired,

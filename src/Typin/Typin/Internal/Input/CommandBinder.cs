@@ -94,7 +94,7 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.Bindable.Property!.PropertyType, out string? value))
+                    optionFallbackProvider.TryGetValue(v, option.Bindable.Type, out string? value))
                 {
                     string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
@@ -105,6 +105,11 @@
                 }
                 else if (!inputsProvided) // Skip if the inputs weren't provided for this option
                 {
+                    if (option.Bindable.Kind == BindableArgumentKind.Dynamic)
+                    {
+                        option.Bindable.SetValue(instance, null);
+                    }
+
                     continue;
                 }
 

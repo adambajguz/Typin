@@ -84,14 +84,19 @@
         }
 
         /// <inheritdoc/>
-        public object GetValue(string propertyName)
+        public object? GetValue(string propertyName)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
                 throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
             }
 
-            return _values.GetValueOrDefault(propertyName) ?? throw new NullReferenceException($"Cannot find dynamic property '{propertyName}' or the value was null.");
+            if (_values.TryGetValue(propertyName, out object? value))
+            {
+                return value;
+            }
+
+            throw new NullReferenceException($"Cannot find dynamic property '{propertyName}' or the value was null.");
         }
 
         /// <inheritdoc/>
@@ -102,9 +107,12 @@
                 throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
             }
 
-            object? value = _values.GetValueOrDefault(propertyName);
+            if (_values.TryGetValue(propertyName, out object? value))
+            {
+                return (T)value!;
+            }
 
-            return (T)value!;
+            throw new NullReferenceException($"Cannot find dynamic property '{propertyName}' or the value was null.");
         }
 
         /// <inheritdoc/>

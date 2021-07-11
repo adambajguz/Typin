@@ -3,6 +3,7 @@
     using System;
     using Typin.Binding;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     /// <summary>
     /// Dynamic command builder.
@@ -12,7 +13,7 @@
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicParameterBuilder{Type}"/>.
         /// </summary>
-        public DynamicParameterBuilder(string name, int order) : base(typeof(T), name, order)
+        public DynamicParameterBuilder(string propertyName, int order) : base(typeof(T), propertyName, order)
         {
 
         }
@@ -33,32 +34,32 @@
     internal class DynamicParameterBuilder : IDynamicParameterBuilder
     {
         private readonly Type _type;
-        private readonly string _name;
+        private readonly string _propertyName;
         private readonly int _order;
 
-        private string? _propertyName;
+        private string? _name;
         private string? _description;
         private Type? _converter;
 
         /// <summary>
         /// Initializes a new instace of <see cref="DynamicParameterBuilder"/>.
         /// </summary>
-        public DynamicParameterBuilder(Type type, string name, int order)
+        public DynamicParameterBuilder(Type type, string propertyName, int order)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                throw new ArgumentException($"'{nameof(name)}' cannot be null or whitespace.", nameof(name));
+                throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
             }
 
             _type = type ?? throw new ArgumentNullException(nameof(type));
-            _name = name;
+            _propertyName = propertyName;
             _order = order;
         }
 
         /// <inheritdoc/>
-        public IDynamicParameterBuilder WithPropertyName(string? propertyName)
+        public IDynamicParameterBuilder WithName(string? name)
         {
-            _propertyName = string.IsNullOrWhiteSpace(propertyName) ? null : propertyName;
+            _name = string.IsNullOrWhiteSpace(name) ? null : name;
 
             return this;
         }
@@ -82,9 +83,9 @@
         public ParameterSchema Build()
         {
             return new ParameterSchema(_type,
-                                       _propertyName ?? _name,
+                                       _propertyName,
                                        _order,
-                                       _name,
+                                       _name ?? TextUtils.ToKebabCase(_propertyName),
                                        _description,
                                        _converter);
         }
