@@ -11,9 +11,9 @@
     /// </summary>
     internal class RootSchemaResolver
     {
-        private readonly IReadOnlyList<Type> _commandTypes;
-        private readonly IReadOnlyList<Type> _dynamicCommandTypes;
-        private readonly IReadOnlyList<Type> _directiveTypes;
+        private readonly IReadOnlyCollection<Type> _commandTypes;
+        private readonly IReadOnlyCollection<Type> _dynamicCommandTypes;
+        private readonly IReadOnlyCollection<Type> _directiveTypes;
         private readonly IReadOnlyList<Type> _modeTypes;
 
         public CommandSchema? DefaultCommand { get; private set; }
@@ -23,9 +23,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchemaResolver"/>.
         /// </summary>
-        public RootSchemaResolver(IReadOnlyList<Type> commandTypes,
-                                  IReadOnlyList<Type> dynamicCommandTypes,
-                                  IReadOnlyList<Type> directiveTypes,
+        public RootSchemaResolver(IReadOnlyCollection<Type> commandTypes,
+                                  IReadOnlyCollection<Type> dynamicCommandTypes,
+                                  IReadOnlyCollection<Type> directiveTypes,
                                   IReadOnlyList<Type> modeTypes)
         {
             _commandTypes = commandTypes;
@@ -52,7 +52,7 @@
             return new RootSchema(Directives!, _dynamicCommands, Commands!, DefaultCommand);
         }
 
-        private void ResolveCommands(IReadOnlyList<Type> commandTypes)
+        private void ResolveCommands(IReadOnlyCollection<Type> commandTypes)
         {
             CommandSchema? defaultCommand = null;
             Dictionary<string, CommandSchema> commands = new();
@@ -90,7 +90,7 @@
             Commands = commands;
         }
 
-        private void ResolveDirectives(IReadOnlyList<Type> directiveTypes)
+        private void ResolveDirectives(IReadOnlyCollection<Type> directiveTypes)
         {
             Dictionary<string, DirectiveSchema> directives = new();
             List<DirectiveSchema> invalidDirectives = new();

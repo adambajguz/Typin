@@ -29,7 +29,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--opt", "foo", "-o", "bar", "--opt", "baz"
+                nameof(WithStringArrayOptionCommand), "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithStringArrayOptionCommand>();
@@ -54,7 +54,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--opt-a", "foo"
+                nameof(WithSingleRequiredOptionCommand), "--opt-a", "foo"
             });
 
             // Assert
@@ -73,7 +73,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--opt-a"
+                nameof(WithSingleRequiredOptionCommand), "--opt-a"
             });
 
             // Assert
@@ -92,7 +92,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--opt-a", "foo"
+                nameof(WithRequiredOptionsCommand), "--opt-a", "foo"
             });
 
             // Assert
@@ -111,7 +111,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "foo"
+                nameof(WithParametersCommand), "foo"
             });
 
             // Assert
@@ -136,7 +136,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "foo", number.ToString(), "bar", "baz"
+                nameof(WithParametersCommand), "foo", number.ToString(), "bar", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
@@ -163,7 +163,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "-", "0", "bar", "-", "baz"
+                nameof(WithParametersCommand), "-", "0", "bar", "-", "baz"
             });
 
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
@@ -235,10 +235,7 @@
                 .AddCommand<WithSingleParameterCommand>();
 
             // Act
-            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
-            {
-                "cmd"
-            });
+            var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, nameof(WithSingleParameterCommand));
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -255,7 +252,7 @@
             // Act
             var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "foo", "13"
+                nameof(WithParametersCommand), "foo", "13"
             });
 
             // Assert
@@ -264,12 +261,12 @@
         }
 
         [Theory]
-        [InlineData("cmd", "--non-existing-option", "13")]
-        [InlineData("cmd", "--non-existing-option", "13", "--non2")]
-        [InlineData("cmd", "--non-existing-option", "13", "non2")]
-        [InlineData("cmd", "non-existing-parameter")]
-        [InlineData("cmd", "--non-existing-option", "13", "non-existing-parameter", "--invalid")]
-        [InlineData("cmd", "non-existing-parameter", "--non-existing-option", "13")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "--non-existing-option", "13")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "--non-existing-option", "13", "--non2")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "--non-existing-option", "13", "non2")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "non-existing-parameter")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "--non-existing-option", "13", "non-existing-parameter", "--invalid")]
+        [InlineData(nameof(SupportedArgumentTypesCommand), "non-existing-parameter", "--non-existing-option", "13")]
         public async Task All_provided_parameter_and_option_arguments_must_be_bound_to_corresponding_properties(params string[] args)
         {
             // Arrange

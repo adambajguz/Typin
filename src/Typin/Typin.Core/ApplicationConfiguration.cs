@@ -17,17 +17,17 @@
         /// <summary>
         /// Command types defined in this application.
         /// </summary>
-        public IReadOnlyList<Type> CommandTypes { get; }
+        public IReadOnlyCollection<Type> CommandTypes { get; }
 
         /// <summary>
         /// Dynamic command types defined in this application.
         /// </summary>
-        public IReadOnlyList<Type> DynamicCommandTypes { get; }
+        public IReadOnlyCollection<Type> DynamicCommandTypes { get; }
 
         /// <summary>
         /// Custom directives defined in this application.
         /// </summary>
-        public IReadOnlyList<Type> DirectiveTypes { get; }
+        public IReadOnlyCollection<Type> DirectiveTypes { get; }
 
         /// <summary>
         /// Collection of middlewares in application.
@@ -48,9 +48,9 @@
         /// Initializes an instance of <see cref="ApplicationConfiguration"/>.
         /// </summary>
         public ApplicationConfiguration(IReadOnlyList<Type> modeTypes,
-                                        IReadOnlyList<Type> commandTypes,
-                                        IReadOnlyList<Type> dynamicCommandTypes,
-                                        IReadOnlyList<Type> customDirectives,
+                                        IReadOnlyCollection<Type> commandTypes,
+                                        IReadOnlyCollection<Type> dynamicCommandTypes,
+                                        IReadOnlyCollection<Type> customDirectives,
                                         LinkedList<Type> middlewareTypes,
                                         Type startupMode,
                                         IEnumerable<ServiceDescriptor> services)

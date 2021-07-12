@@ -27,9 +27,9 @@ namespace Typin
         private bool _cliApplicationBuilt;
 
         //Directives and commands settings
-        private readonly List<Type> _commandTypes = new();
-        private readonly List<Type> _dynamicCommandTypes = new();
-        private readonly List<Type> _directivesTypes = new();
+        private readonly HashSet<Type> _commandTypes = new();
+        private readonly HashSet<Type> _dynamicCommandTypes = new();
+        private readonly HashSet<Type> _directivesTypes = new();
 
         //Metadata settings
         private string? _title;
@@ -67,13 +67,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            _directivesTypes.Add(directiveType);
-
-            _configureServicesActions.Add(services =>
+            if (_directivesTypes.Add(directiveType))
             {
-                services.TryAddTransient(directiveType);
-                services.AddTransient(typeof(IDirective), directiveType);
-            });
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(directiveType);
+                    services.AddTransient(typeof(IDirective), directiveType);
+                });
+            }
 
             return this;
         }
@@ -144,13 +145,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommand(Type commandType)
         {
-            _commandTypes.Add(commandType);
-
-            _configureServicesActions.Add(services =>
+            if (_commandTypes.Add(commandType))
             {
-                services.TryAddTransient(commandType);
-                services.AddTransient(typeof(ICommand), commandType);
-            });
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(commandType);
+                    services.AddTransient(typeof(ICommand), commandType);
+                });
+            }
 
             return this;
         }
@@ -221,13 +223,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDynamicCommand(Type commandType)
         {
-            _dynamicCommandTypes.Add(commandType);
-
-            _configureServicesActions.Add(services =>
+            if (_dynamicCommandTypes.Add(commandType))
             {
-                services.TryAddTransient(commandType);
-                services.AddTransient(typeof(IDynamicCommand), commandType);
-            });
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(commandType);
+                    services.AddTransient(typeof(IDynamicCommand), commandType);
+                });
+            }
 
             return this;
         }

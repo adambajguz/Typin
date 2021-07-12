@@ -27,7 +27,7 @@
             // Act
             cts.CancelAfter(TimeSpan.FromSeconds(0.2));
 
-            int exitCode = await application.RunAsync(new[] { "cmd" });
+            int exitCode = await application.RunAsync(nameof(CancellableCommand));
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);

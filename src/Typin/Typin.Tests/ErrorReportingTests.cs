@@ -24,7 +24,7 @@
                 .AddCommand<GenericExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "duplicated-ex", "-m", "ErrorTest" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -45,7 +45,7 @@
                 .AddCommand<GenericInnerExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "-i", "FooBar" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "duplicated-ex", "-m", "ErrorTest", "-i", "FooBar" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -78,7 +78,7 @@
                 .AddCommand<CommandExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "-c", errorCode.ToString() });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(CommandExceptionCommand), "-m", "ErrorTest", "-c", errorCode.ToString() });
 
             // Assert
             exitCode.Should().Be(errorCode);
@@ -94,7 +94,7 @@
                 .AddCommand<CommandExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd");
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, nameof(CommandExceptionCommand));
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
@@ -110,7 +110,7 @@
                 .AddCommand<CommandExceptionCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "-m", "ErrorTest", "--show-help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(CommandExceptionCommand), "-m", "ErrorTest", "--show-help" });
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);

@@ -66,7 +66,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_opt_A"] = "incorrect",
@@ -92,7 +92,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_OPT_B"] = $"foo{Path.PathSeparator}bar"
@@ -117,7 +117,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_OPT_A"] = $"foo{Path.PathSeparator}bar"

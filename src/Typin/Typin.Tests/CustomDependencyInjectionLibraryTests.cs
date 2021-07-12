@@ -45,7 +45,7 @@
                 });
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "cmd" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { nameof(WithDependenciesCommand) });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -94,7 +94,7 @@
                 });
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "cmd" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { nameof(WithDependenciesCommand) });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
@@ -143,7 +143,7 @@
                 });
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "cmd" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { nameof(WithDependenciesCommand) });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);

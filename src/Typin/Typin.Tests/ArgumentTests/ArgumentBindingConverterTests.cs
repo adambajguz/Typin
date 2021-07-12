@@ -50,7 +50,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Saturday:1235"
+                nameof(SupportedArgumentTypesViaConverterCommand), optionName, "Saturday:1235"
             });
 
             // Assert
@@ -74,7 +74,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName
+                nameof(SupportedArgumentTypesViaConverterCommand), optionName
             });
 
             // Assert
@@ -96,7 +96,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Monday:1235", "1213"
+                nameof(SupportedArgumentTypesViaConverterCommand), optionName, "Monday:1235", "1213"
             });
 
             // Assert
@@ -116,7 +116,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "--str-nullable-struct-by-non-nullable-converter"
+                nameof(SupportedArgumentTypesViaFailingConverterCommand), "--str-nullable-struct-by-non-nullable-converter"
             });
 
             // Assert
@@ -141,7 +141,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Saturday:1235"
+                nameof(SupportedArgumentTypesViaFailingConverterCommand), optionName, "Saturday:1235"
             });
 
             // Assert
@@ -164,7 +164,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName
+                nameof(SupportedArgumentTypesViaFailingConverterCommand), optionName
             });
 
             // Assert
@@ -186,7 +186,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Monday:1235"
+                nameof(SupportedArgumentTypesViaFailingConverterCommand), optionName, "Monday:1235"
             });
 
             // Assert

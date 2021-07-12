@@ -36,7 +36,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom]");
 
-            // Asert
+            // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
             stdOut.GetString().Should().Contain(CustomDirective.ExpectedOutput);
             stdErr.GetString().Should().Contain("System.ApplicationException: custom directive detected");

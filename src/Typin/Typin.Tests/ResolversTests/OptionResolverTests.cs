@@ -25,7 +25,7 @@
                 .AddCommand<WithRequiredOptionsCommand>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "cmd --a a --c c z \n \b a");
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, $"{nameof(WithRequiredOptionsCommand)} --a a --c c z \n \b a");
 
             // Assert
             exitCode.Should().NotBe(ExitCodes.Success);
