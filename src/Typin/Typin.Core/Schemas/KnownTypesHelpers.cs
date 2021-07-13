@@ -44,6 +44,16 @@
         }
 
         /// <summary>
+        /// Checks whether type is a valid middleware.
+        /// </summary>
+        public static bool IsMiddlewareType(Type type)
+        {
+            return type.Implements(typeof(IMiddleware)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
+
+        /// <summary>
         /// Checks whether type is a valid dynamic command.
         /// </summary>
         public static bool IsDynamicCommandType(Type type)

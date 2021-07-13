@@ -51,19 +51,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Core", "Typin.Core\Typin.Core.csproj", "{AB0DFBE4-052D-4F33-803E-E2DC5AC70D11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data", "Typin.Tests.Data\Typin.Tests.Data.csproj", "{4267AA33-CBC6-4B47-883A-B3690B7EEA50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data", "Typin.Tests.Data\Typin.Tests.Data.csproj", "{4267AA33-CBC6-4B47-883A-B3690B7EEA50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data.Valid", "Typin.Tests.Data.Valid\Typin.Tests.Data.Valid.csproj", "{74C93FC1-2104-4D48-A4C6-088C5DAF7561}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data.Valid", "Typin.Tests.Data.Valid\Typin.Tests.Data.Valid.csproj", "{74C93FC1-2104-4D48-A4C6-088C5DAF7561}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data.Invalid", "Typin.Tests.Data.Invalid\Typin.Tests.Data.Invalid.csproj", "{EE18C665-B9C4-47E4-BD10-FDD62F945346}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data.Invalid", "Typin.Tests.Data.Invalid\Typin.Tests.Data.Invalid.csproj", "{EE18C665-B9C4-47E4-BD10-FDD62F945346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data.Common", "Typin.Tests.Data.Common\Typin.Tests.Data.Common.csproj", "{8016B9C7-DE6E-4025-9ACA-1ECBF0A0D54D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data.Common", "Typin.Tests.Data.Common\Typin.Tests.Data.Common.csproj", "{8016B9C7-DE6E-4025-9ACA-1ECBF0A0D54D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{C954B1E9-F881-434D-BA49-3900AD816238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data.Valid.DefaultCommands", "Typin.Tests.Data.Valid.DefaultCommands\Typin.Tests.Data.Valid.DefaultCommands.csproj", "{38824BA1-54E2-41C7-81A6-A0B27EE3F37A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data.Valid.DefaultCommands", "Typin.Tests.Data.Valid.DefaultCommands\Typin.Tests.Data.Valid.DefaultCommands.csproj", "{38824BA1-54E2-41C7-81A6-A0B27EE3F37A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Tests.Data.Invalid.DuplicatedCommands", "Typin.Tests.Data.Invalid.DuplicatedCommands\Typin.Tests.Data.Invalid.DuplicatedCommands.csproj", "{6C861F8F-166F-4358-BB5A-8CDE6425F893}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Tests.Data.Invalid.DuplicatedCommands", "Typin.Tests.Data.Invalid.DuplicatedCommands\Typin.Tests.Data.Invalid.DuplicatedCommands.csproj", "{6C861F8F-166F-4358-BB5A-8CDE6425F893}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
