@@ -25,12 +25,12 @@
         /// <summary>
         /// Whether option is help option (--help|-h).
         /// </summary>
-        public bool IsHelpOption => CommandOptionSchema.HelpOption.MatchesNameOrShortName(Alias);
+        public bool IsHelpOption => OptionSchema.HelpOption.MatchesNameOrShortName(Alias);
 
         /// <summary>
         /// Whether option is version option (--version).
         /// </summary>
-        public bool IsVersionOption => CommandOptionSchema.VersionOption.MatchesNameOrShortName(Alias);
+        public bool IsVersionOption => OptionSchema.VersionOption.MatchesNameOrShortName(Alias);
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionInput"/>.

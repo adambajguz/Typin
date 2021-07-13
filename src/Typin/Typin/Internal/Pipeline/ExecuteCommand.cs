@@ -12,7 +12,7 @@
             ICommand instance = context.Command;
 
             // Execute command
-            await instance.ExecuteAsync(context.Console);
+            await instance.ExecuteAsync(cancellationToken);
 
             context.ExitCode ??= ExitCodes.Success;
 

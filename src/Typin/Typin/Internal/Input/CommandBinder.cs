@@ -16,7 +16,7 @@
         /// </summary>
         public static void BindParameters(this CommandSchema commandSchema, ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
         {
-            IReadOnlyList<CommandParameterSchema> parameters = commandSchema.Parameters;
+            IReadOnlyList<ParameterSchema> parameters = commandSchema.Parameters;
 
             // All inputs must be bound
             int remainingParameters = parameters.Count;
@@ -29,9 +29,9 @@
 
             // Scalar parameters
             int i = 0;
-            for (; i < parameters.Count && parameters[i].BindableProperty.IsScalar; ++i)
+            for (; i < parameters.Count && parameters[i].Bindable.IsScalar; ++i)
             {
-                CommandParameterSchema parameter = parameters[i];
+                ParameterSchema parameter = parameters[i];
                 CommandParameterInput scalarInput = parameterInputs[i];
 
                 parameter.BindOn(instance, scalarInput.Value);
@@ -41,9 +41,9 @@
             }
 
             // Non-scalar parameter (only one is allowed)
-            if (i < parameters.Count && !parameters[i].BindableProperty.IsScalar)
+            if (i < parameters.Count && !parameters[i].Bindable.IsScalar)
             {
-                CommandParameterSchema nonScalarParameter = parameters[i];
+                ParameterSchema nonScalarParameter = parameters[i];
 
                 string[] nonScalarValues = parameterInputs.TakeLast(remainingInputs)
                                                           .Select(p => p.Value)
@@ -75,17 +75,17 @@
                                         IReadOnlyList<CommandOptionInput> optionInputs,
                                         IOptionFallbackProvider optionFallbackProvider)
         {
-            IReadOnlyList<CommandOptionSchema> options = commandSchema.Options;
+            IReadOnlyList<OptionSchema> options = commandSchema.Options;
 
             // All inputs must be bound
             HashSet<CommandOptionInput> remainingOptionInputs = optionInputs.ToHashSet();
 
             // All required options must be set
-            HashSet<CommandOptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
+            HashSet<OptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
                                                                        .ToHashSet();
 
             // Direct or fallback input
-            foreach (CommandOptionSchema option in options)
+            foreach (OptionSchema option in options)
             {
                 IEnumerable<CommandOptionInput> inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias));
 
@@ -94,9 +94,9 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.BindableProperty.Property!.PropertyType, out string? value))
+                    optionFallbackProvider.TryGetValue(v, option.Bindable.Type, out string? value))
                 {
-                    string[] values = option.BindableProperty.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
+                    string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
                     option.BindOn(instance, values);
                     unsetRequiredOptions.Remove(option);
@@ -105,6 +105,11 @@
                 }
                 else if (!inputsProvided) // Skip if the inputs weren't provided for this option
                 {
+                    if (option.Bindable.Kind == BindableArgumentKind.Dynamic)
+                    {
+                        option.Bindable.SetValue(instance, null);
+                    }
+
                     continue;
                 }
 

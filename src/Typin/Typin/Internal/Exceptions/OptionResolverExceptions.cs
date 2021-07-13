@@ -11,7 +11,7 @@
     /// </summary>
     internal static class OptionResolverExceptions
     {
-        public static TypinException OptionsWithSameName(CommandSchema command, string name, IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameName(BaseCommandSchema command, string name, IReadOnlyList<OptionSchema> invalidOptions)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same name ('{name}'):
@@ -22,7 +22,7 @@ Options must have unique names (names are case-sensitive).";
             return new TypinException(message.Trim());
         }
 
-        public static TypinException OptionsWithSameShortName(CommandSchema command, char shortName, IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameShortName(BaseCommandSchema command, char shortName, IReadOnlyList<OptionSchema> invalidOptions)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same short name ('{shortName}'):
@@ -33,7 +33,7 @@ Options must have unique short names. Short names are case-sensitive (i.e. 'a' a
             return new TypinException(message.Trim());
         }
 
-        public static TypinException OptionsWithSameEnvironmentVariableName(CommandSchema command, string environmentVariableName, IReadOnlyList<CommandOptionSchema> invalidOptions)
+        public static TypinException OptionsWithSameEnvironmentVariableName(BaseCommandSchema command, string environmentVariableName, IReadOnlyList<OptionSchema> invalidOptions)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same fallback environment variable name ('{environmentVariableName}'):

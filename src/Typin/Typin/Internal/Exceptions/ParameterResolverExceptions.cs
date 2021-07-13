@@ -11,7 +11,7 @@
     /// </summary>
     internal static class ParameterResolverExceptions
     {
-        public static TypinException ParametersWithSameOrder(CommandSchema command, int order, IReadOnlyList<CommandParameterSchema> invalidParameters)
+        public static TypinException ParametersWithSameOrder(BaseCommandSchema command, int order, IReadOnlyList<ParameterSchema> invalidParameters)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} parameters with the same order ({order}):
@@ -22,7 +22,7 @@ Parameters must have unique order.";
             return new TypinException(message.Trim());
         }
 
-        public static TypinException ParametersWithSameName(CommandSchema command, string name, IReadOnlyList<CommandParameterSchema> invalidParameters)
+        public static TypinException ParametersWithSameName(BaseCommandSchema command, string name, IReadOnlyList<ParameterSchema> invalidParameters)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} parameters with the same name ('{name}'):
@@ -33,7 +33,7 @@ Parameters must have unique names to avoid potential confusion in the help text 
             return new TypinException(message.Trim());
         }
 
-        public static TypinException TooManyNonScalarParameters(CommandSchema command, IReadOnlyList<CommandParameterSchema> invalidParameters)
+        public static TypinException TooManyNonScalarParameters(BaseCommandSchema command, IReadOnlyList<ParameterSchema> invalidParameters)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:
@@ -47,7 +47,7 @@ If it's not feasible to fit into these constraints, consider using options inste
             return new TypinException(message.Trim());
         }
 
-        public static TypinException NonLastNonScalarParameter(CommandSchema command, CommandParameterSchema invalidParameter)
+        public static TypinException NonLastNonScalarParameter(BaseCommandSchema command, ParameterSchema invalidParameter)
         {
             string message = $@"
 Command '{command.Type.FullName}' is invalid because it contains a non-scalar parameter which is not the last in order:

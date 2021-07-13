@@ -1,5 +1,6 @@
 ﻿namespace InteractiveModeExample.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -8,9 +9,16 @@
     [Command("plot xy", Description = "Prints a middleware pipeline structure in application.")]
     public class PlotXYCommand : ICommand
     {
-        public ValueTask ExecuteAsync(IConsole console)
+        private readonly IConsole _console;
+
+        public PlotXYCommand(IConsole console)
         {
-            console.Output.WriteLine("plot xy");
+            _console = console;
+        }
+
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
+        {
+            _console.Output.WriteLine("plot xy");
 
             return default;
         }

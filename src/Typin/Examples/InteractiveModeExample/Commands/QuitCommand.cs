@@ -1,9 +1,9 @@
 ﻿namespace InteractiveModeExample.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
-    using Typin.Console;
     using Typin.Modes;
 
     [Command("quit", Description = "Quits the interactive mode",
@@ -17,7 +17,7 @@
             _applicationLifetime = applicationLifetime;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             _applicationLifetime.RequestStop();
 

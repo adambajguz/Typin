@@ -26,7 +26,7 @@
                 .UseHelpWriter<TestHelpWriter>();
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithParametersCommand), "--help" });
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);

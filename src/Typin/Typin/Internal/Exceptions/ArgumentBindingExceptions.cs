@@ -20,7 +20,7 @@
             return new TypinException(message);
         }
 
-        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandParameterSchema parameter, IReadOnlyCollection<string> values)
+        public static TypinException CannotConvertMultipleValuesToNonScalar(ParameterSchema parameter, IReadOnlyCollection<string> values)
         {
             string message = $@"
 Parameter {parameter} expects a single value, but provided with multiple:
@@ -29,7 +29,7 @@ Parameter {parameter} expects a single value, but provided with multiple:
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertMultipleValuesToNonScalar(CommandOptionSchema option, IReadOnlyCollection<string> values)
+        public static TypinException CannotConvertMultipleValuesToNonScalar(OptionSchema option, IReadOnlyCollection<string> values)
         {
             string message = $@"
 Option {option} expects a single value, but provided with multiple:
@@ -42,8 +42,8 @@ Option {option} expects a single value, but provided with multiple:
         {
             return argument switch
             {
-                CommandParameterSchema parameter => CannotConvertMultipleValuesToNonScalar(parameter, values),
-                CommandOptionSchema option => CannotConvertMultipleValuesToNonScalar(option, values),
+                ParameterSchema parameter => CannotConvertMultipleValuesToNonScalar(parameter, values),
+                OptionSchema option => CannotConvertMultipleValuesToNonScalar(option, values),
                 _ => throw new ArgumentOutOfRangeException(nameof(argument))
             };
         }
@@ -55,8 +55,8 @@ Option {option} expects a single value, but provided with multiple:
         {
             return argument switch
             {
-                CommandParameterSchema parameter => CannotConvertToType(parameter, values, type, innerException),
-                CommandOptionSchema option => CannotConvertToType(option, values, type, innerException),
+                ParameterSchema parameter => CannotConvertToType(parameter, values, type, innerException),
+                OptionSchema option => CannotConvertToType(option, values, type, innerException),
                 _ => throw new ArgumentOutOfRangeException(nameof(argument))
             };
         }
@@ -68,14 +68,14 @@ Option {option} expects a single value, but provided with multiple:
         {
             return argument switch
             {
-                CommandParameterSchema parameter => CannotConvertToType(parameter, value, type, innerException),
-                CommandOptionSchema option => CannotConvertToType(option, value, type, innerException),
+                ParameterSchema parameter => CannotConvertToType(parameter, value, type, innerException),
+                OptionSchema option => CannotConvertToType(option, value, type, innerException),
                 _ => throw new ArgumentOutOfRangeException(nameof(argument))
             };
         }
 
         #region CannotConvertToType helpers
-        private static TypinException CannotConvertToType(CommandParameterSchema parameter,
+        private static TypinException CannotConvertToType(ParameterSchema parameter,
                                                          string? value,
                                                          Type type,
                                                          Exception? innerException = null)
@@ -87,7 +87,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for parameter 
             return new TypinException(message.Trim(), innerException);
         }
 
-        private static TypinException CannotConvertToType(CommandParameterSchema parameter,
+        private static TypinException CannotConvertToType(ParameterSchema parameter,
                                                          IReadOnlyCollection<string> values,
                                                          Type type,
                                                          Exception? innerException = null)
@@ -100,7 +100,7 @@ Can't convert values [""{valuesStr}""] to type '{type.Name}' for parameter {para
             return new TypinException(message.Trim(), innerException);
         }
 
-        private static TypinException CannotConvertToType(CommandOptionSchema option,
+        private static TypinException CannotConvertToType(OptionSchema option,
                                                          string? value,
                                                          Type type,
                                                          Exception? innerException = null)
@@ -112,7 +112,7 @@ Can't convert value ""{value ?? "<null>"}"" to type '{type.Name}' for option {op
             return new TypinException(message.Trim(), innerException);
         }
 
-        private static TypinException CannotConvertToType(CommandOptionSchema option,
+        private static TypinException CannotConvertToType(OptionSchema option,
                                                          IReadOnlyCollection<string> values,
                                                          Type type,
                                                          Exception? innerException = null)
@@ -126,7 +126,7 @@ Can't convert values [""{valuesStr}""] to type '{type.Name}' for option {option}
         }
         #endregion
 
-        public static TypinException CannotConvertNonScalar(CommandParameterSchema parameter,
+        public static TypinException CannotConvertNonScalar(ParameterSchema parameter,
                                                             IReadOnlyCollection<string> values,
                                                             Type type)
         {
@@ -139,7 +139,7 @@ Target type is not assignable from array and doesn't have a public constructor t
             return new TypinException(message.Trim());
         }
 
-        public static TypinException CannotConvertNonScalar(CommandOptionSchema option,
+        public static TypinException CannotConvertNonScalar(OptionSchema option,
                                                             IReadOnlyCollection<string> values,
                                                             Type type)
         {
@@ -158,20 +158,20 @@ Target type is not assignable from array and doesn't have a public constructor t
         {
             return argument switch
             {
-                CommandParameterSchema parameter => CannotConvertNonScalar(parameter, values, type),
-                CommandOptionSchema option => CannotConvertNonScalar(option, values, type),
+                ParameterSchema parameter => CannotConvertNonScalar(parameter, values, type),
+                OptionSchema option => CannotConvertNonScalar(option, values, type),
                 _ => throw new ArgumentOutOfRangeException(nameof(argument))
             };
         }
 
-        public static TypinException ParameterNotSet(IEnumerable<CommandParameterSchema> parameter)
+        public static TypinException ParameterNotSet(IEnumerable<ParameterSchema> parameter)
         {
             string message = $@"Missing value for parameter: {parameter.Select(x => x.ToString()).JoinToString(", ")}.";
 
             return new TypinException(message);
         }
 
-        public static TypinException RequiredOptionsNotSet(IEnumerable<CommandOptionSchema> options)
+        public static TypinException RequiredOptionsNotSet(IEnumerable<OptionSchema> options)
         {
             string message = $@"Missing values for one or more required options: {options.Select(o => o).JoinToString(", ")}";
 

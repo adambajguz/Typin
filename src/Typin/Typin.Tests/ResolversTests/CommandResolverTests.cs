@@ -92,7 +92,7 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<GenericExceptionCommand>()
-                .AddCommand<CommandExceptionCommand>();
+                .AddCommand<GenericInnerExceptionCommand>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);

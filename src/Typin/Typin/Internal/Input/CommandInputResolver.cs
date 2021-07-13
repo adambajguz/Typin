@@ -9,7 +9,7 @@
     /// <summary>
     /// Resolves an instance of <see cref="CommandInput"/>.
     /// </summary>
-    internal class CommandInputResolver
+    internal class InputResolver
     {
         /// <summary>
         /// Resolves <see cref="CommandInput"/>.

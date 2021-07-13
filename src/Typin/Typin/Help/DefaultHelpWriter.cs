@@ -339,20 +339,20 @@
             }
 
             // Parameters
-            foreach (CommandParameterSchema parameter in command.Parameters)
+            foreach (ParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
-                Write(parameter.BindableProperty.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
+                Write(parameter.Bindable.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
-            foreach (CommandOptionSchema option in command.Options.Where(o => o.IsRequired))
+            foreach (OptionSchema option in command.Options.Where(o => o.IsRequired))
             {
                 Write(' ');
                 Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
 
                 Write(' ');
-                Write(option.BindableProperty.IsScalar ? "<value>" : "<values...>");
+                Write(option.Bindable.IsScalar ? "<value>" : "<values...>");
             }
 
             // Options placeholder
@@ -376,7 +376,7 @@
 
             WriteHeader("Parameters");
 
-            foreach (CommandParameterSchema parameter in command.Parameters.OrderBy(p => p.Order))
+            foreach (ParameterSchema parameter in command.Parameters.OrderBy(p => p.Order))
             {
                 Write(RequiredColor, "* ");
                 Write(RequiredParameterNameColor, $"{parameter.Name}");
@@ -391,7 +391,7 @@
                 }
 
                 // Valid values
-                var validValues = parameter.BindableProperty.GetValidValues();
+                var validValues = parameter.Bindable.GetValidValues();
                 if (validValues.Any())
                 {
                     Write($"Valid values: {FormatValidValues(validValues)}.");
@@ -411,7 +411,7 @@
 
             WriteHeader("Options");
 
-            foreach (CommandOptionSchema option in command.Options.OrderByDescending(o => o.IsRequired))
+            foreach (OptionSchema option in command.Options.OrderByDescending(o => o.IsRequired))
             {
                 if (option.IsRequired)
                 {
@@ -450,7 +450,7 @@
                 }
 
                 // Valid values
-                var validValues = option.BindableProperty.GetValidValues();
+                var validValues = option.Bindable.GetValidValues();
                 if (validValues.Any())
                 {
                     Write("Valid values: ");

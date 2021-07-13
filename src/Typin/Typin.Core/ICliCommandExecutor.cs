@@ -12,7 +12,7 @@
         /// <summary>
         /// Executes a command.
         /// </summary>
-        Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments);
+        Task<int> ExecuteCommandAsync(IEnumerable<string> commandLineArguments); //TODO: add cancellation token
 
         /// <summary>
         /// Executes a command.

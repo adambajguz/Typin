@@ -8,10 +8,12 @@ namespace Typin
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
     using Typin.Console;
+    using Typin.DynamicCommands;
     using Typin.Exceptions;
     using Typin.Help;
     using Typin.Internal;
     using Typin.Internal.DependencyInjection;
+    using Typin.Internal.DynamicCommands;
     using Typin.Internal.Pipeline;
     using Typin.Modes;
     using Typin.OptionFallback;
@@ -25,8 +27,9 @@ namespace Typin
         private bool _cliApplicationBuilt;
 
         //Directives and commands settings
-        private readonly List<Type> _commandTypes = new();
-        private readonly List<Type> _directivesTypes = new();
+        private readonly HashSet<Type> _commandTypes = new();
+        private readonly HashSet<Type> _dynamicCommandTypes = new();
+        private readonly HashSet<Type> _directivesTypes = new();
 
         //Metadata settings
         private string? _title;
@@ -64,13 +67,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            _directivesTypes.Add(directiveType);
-
-            _configureServicesActions.Add(services =>
+            if (_directivesTypes.Add(directiveType))
             {
-                services.TryAddTransient(directiveType);
-                services.AddTransient(typeof(IDirective), directiveType);
-            });
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(directiveType);
+                    services.AddTransient(typeof(IDirective), directiveType);
+                });
+            }
 
             return this;
         }
@@ -141,13 +145,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommand(Type commandType)
         {
-            _commandTypes.Add(commandType);
-
-            _configureServicesActions.Add(services =>
+            if (_commandTypes.Add(commandType))
             {
-                services.TryAddTransient(commandType);
-                services.AddTransient(typeof(ICommand), commandType);
-            });
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(commandType);
+                    services.AddTransient(typeof(ICommand), commandType);
+                });
+            }
 
             return this;
         }
@@ -211,6 +216,85 @@ namespace Typin
             return AddCommandsFrom(Assembly.GetCallingAssembly());
         }
         #endregion
+
+        #region DynamicCommands
+        /// <summary>
+        /// Adds a command of specified type to the application.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommand(Type commandType)
+        {
+            if (_dynamicCommandTypes.Add(commandType))
+            {
+                _configureServicesActions.Add(services =>
+                {
+                    services.TryAddTransient(commandType);
+                    services.AddTransient(typeof(IDynamicCommand), commandType);
+                });
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a command of specified type to the application.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommand<T>()
+            where T : ICommand
+        {
+            return AddDynamicCommand(typeof(T));
+        }
+
+        /// <summary>
+        /// Adds multiple commands to the application.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommand(IEnumerable<Type> commandTypes)
+        {
+            foreach (Type commandType in commandTypes)
+            {
+                AddCommand(commandType);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds commands from the specified assembly to the application.
+        /// Only adds public valid command types.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommandsFrom(Assembly commandAssembly)
+        {
+            foreach (Type commandType in commandAssembly.ExportedTypes.Where(KnownTypesHelpers.IsDynamicCommandType))
+            {
+                AddDynamicCommand(commandType);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds commands from the specified assemblies to the application.
+        /// Only adds public valid command types.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommandsFrom(IEnumerable<Assembly> commandAssemblies)
+        {
+            foreach (Assembly commandAssembly in commandAssemblies)
+            {
+                AddDynamicCommandsFrom(commandAssembly);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds commands from the calling assembly to the application.
+        /// Only adds public valid command types.
+        /// </summary>
+        public CliApplicationBuilder AddDynamicCommandsFromThisAssembly()
+        {
+            return AddDynamicCommandsFrom(Assembly.GetCallingAssembly());
+        }
+        #endregion
+
 
         #region Metadata
         /// <summary>
@@ -577,6 +661,7 @@ namespace Typin
             ApplicationMetadata metadata = new(_title, _executableName, _versionText, _description);
             ApplicationConfiguration configuration = new(_modeTypes,
                                                          _commandTypes,
+                                                         _dynamicCommandTypes,
                                                          _directivesTypes,
                                                          _middlewareTypes,
                                                          _startupMode!,
@@ -593,6 +678,11 @@ namespace Typin
             _serviceCollection.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
             _serviceCollection.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
+
+            if (_dynamicCommandTypes.Count > 0)
+            {
+                _serviceCollection.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
+            }
 
             _serviceCollection.AddScoped(typeof(ICliContext), (provider) =>
             {

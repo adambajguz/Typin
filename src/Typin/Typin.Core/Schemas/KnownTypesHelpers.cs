@@ -27,6 +27,7 @@
         public static bool IsCommandType(Type type)
         {
             return type.Implements(typeof(ICommand)) &&
+                   !type.Implements(typeof(IDynamicCommand)) &&
                    type.IsDefined(typeof(CommandAttribute)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
@@ -38,6 +39,26 @@
         public static bool IsCliModeType(Type type)
         {
             return type.Implements(typeof(ICliMode)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
+
+        /// <summary>
+        /// Checks whether type is a valid dynamic command.
+        /// </summary>
+        public static bool IsDynamicCommandType(Type type)
+        {
+            return type.Implements(typeof(IDynamicCommand)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
+
+        /// <summary>
+        /// Checks whether type is a valid command or dynamic command.
+        /// </summary>
+        public static bool IsNormalOrDynamicCommandType(Type type)
+        {
+            return type.Implements(typeof(ICommand)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
         }

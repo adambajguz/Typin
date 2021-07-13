@@ -1,6 +1,7 @@
 ﻿namespace InteractiveModeExample.Commands
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
@@ -12,13 +13,15 @@
     public class BookCommand : ICommand
     {
         private readonly LibraryService _libraryService;
+        private readonly IConsole _console;
 
-        public BookCommand(LibraryService libraryService)
+        public BookCommand(LibraryService libraryService, IConsole console)
         {
             _libraryService = libraryService;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             var library = _libraryService.GetLibrary();
 
@@ -28,18 +31,18 @@
                 // Margin
                 if (!isFirst)
                 {
-                    console.Output.WriteLine();
+                    _console.Output.WriteLine();
                 }
 
                 isFirst = false;
 
                 // Render book
-                console.RenderBook(book);
+                _console.RenderBook(book);
             }
 
             if (isFirst)
             {
-                console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No books"));
+                _console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No books"));
             }
 
             return default;
@@ -50,13 +53,15 @@
     public class Book2Command : ICommand
     {
         private readonly LibraryService _libraryService;
+        private readonly IConsole _console;
 
-        public Book2Command(LibraryService libraryService)
+        public Book2Command(LibraryService libraryService, IConsole console)
         {
             _libraryService = libraryService;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             var library = _libraryService.GetLibrary();
 
@@ -66,18 +71,18 @@
                 // Margin
                 if (!isFirst)
                 {
-                    console.Output.WriteLine();
+                    _console.Output.WriteLine();
                 }
 
                 isFirst = false;
 
                 // Render book
-                console.RenderBook(book);
+                _console.RenderBook(book);
             }
 
             if (isFirst)
             {
-                console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No BOOKS"));
+                _console.Error.WithForegroundColor(ConsoleColor.Red, (error) => error.WriteLine("No BOOKS"));
             }
 
             return default;

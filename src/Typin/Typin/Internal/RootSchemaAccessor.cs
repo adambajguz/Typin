@@ -19,7 +19,7 @@
 
         public RootSchemaAccessor(ApplicationConfiguration configuration, ILogger<RootSchemaAccessor> logger)
         {
-            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema);
+            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema, true);
             _configuration = configuration;
             _logger = logger;
         }
@@ -32,6 +32,7 @@
             timer.Start();
 
             RootSchemaResolver rootSchemaResolver = new(_configuration.CommandTypes,
+                                                        _configuration.DynamicCommandTypes,
                                                         _configuration.DirectiveTypes,
                                                         _configuration.ModeTypes);
 

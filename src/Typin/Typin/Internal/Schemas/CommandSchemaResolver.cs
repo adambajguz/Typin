@@ -38,33 +38,63 @@
                 }
             }
 
-
             string? name = attribute.Name;
 
-            CommandOptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
-                ? new[] { CommandOptionSchema.HelpOption, CommandOptionSchema.VersionOption }
-                : new[] { CommandOptionSchema.HelpOption };
+            OptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
+                ? new[] { OptionSchema.HelpOption, OptionSchema.VersionOption }
+                : new[] { OptionSchema.HelpOption };
 
-            CommandParameterSchema?[] parameters = type.GetProperties()
-                                                       .Select(CommandParameterSchemaResolver.TryResolve)
-                                                       .Where(p => p is not null)
-                                                       .OrderBy(p => p!.Order)
-                                                       .ToArray();
+            BaseCommandSchema baseSchema = ResolveBase(type, builtInOptions);
 
-            CommandOptionSchema?[] options = type.GetProperties()
-                                                 .Select(CommandOptionSchemaResolver.TryResolve)
-                                                 .Where(o => o is not null)
-                                                 .Concat(builtInOptions)
-                                                 .ToArray();
-
-            CommandSchema command = new(type,
+            CommandSchema command = new(baseSchema,
+                                        false,
                                         name,
                                         attribute.Description,
                                         attribute.Manual,
                                         attribute.SupportedModes,
-                                        attribute.ExcludedModes,
-                                        parameters!,
-                                        options!);
+                                        attribute.ExcludedModes);
+
+            return command;
+        }
+
+        /// <summary>
+        /// Resolves <see cref="CommandSchema"/>.
+        /// </summary>
+        public static BaseCommandSchema ResolveDynamic(Type type)
+        {
+            if (!KnownTypesHelpers.IsDynamicCommandType(type))
+            {
+                throw CommandResolverExceptions.InvalidCommandType(type);
+            }
+
+            return ResolveBase(type, new[] { OptionSchema.HelpOption });
+        }
+
+        /// <summary>
+        /// Resolves <see cref="CommandSchema"/>.
+        /// </summary>
+        private static BaseCommandSchema ResolveBase(Type type, OptionSchema[] builtInOptions)
+        {
+            if (!KnownTypesHelpers.IsNormalOrDynamicCommandType(type))
+            {
+                throw CommandResolverExceptions.InvalidCommandType(type);
+            }
+
+            ParameterSchema[] parameters = type.GetProperties()
+                                               .Select(ParameterSchemaResolver.TryResolve)
+                                               .Where(p => p is not null)
+                                               .OrderBy(p => p!.Order)
+                                               .ToArray()!;
+
+            OptionSchema[] options = type.GetProperties()
+                                         .Select(OptionSchemaResolver.TryResolve!)
+                                         .Where(o => o is not null)
+                                         .Concat(builtInOptions)
+                                         .ToArray()!;
+
+            BaseCommandSchema command = new(type,
+                                                       parameters,
+                                                       options); ;
 
             ValidateParameters(command);
             ValidateOptions(command);
@@ -73,11 +103,11 @@
         }
 
         #region Helpers
-        private static void ValidateParameters(CommandSchema command)
+        private static void ValidateParameters(BaseCommandSchema command)
         {
-            IGrouping<int, CommandParameterSchema>? duplicateOrderGroup = command.Parameters
-                                                                                 .GroupBy(a => a.Order)
-                                                                                 .FirstOrDefault(g => g.Count() > 1);
+            IGrouping<int, ParameterSchema>? duplicateOrderGroup = command.Parameters
+                                                                          .GroupBy(a => a.Order)
+                                                                          .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateOrderGroup is not null)
             {
@@ -88,10 +118,10 @@
                 );
             }
 
-            IGrouping<string, CommandParameterSchema>? duplicateNameGroup = command.Parameters
-                                                                                   .Where(a => !string.IsNullOrWhiteSpace(a.Name))
-                                                                                   .GroupBy(a => a.Name!, StringComparer.Ordinal)
-                                                                                   .FirstOrDefault(g => g.Count() > 1);
+            IGrouping<string, ParameterSchema>? duplicateNameGroup = command.Parameters
+                                                                            .Where(a => !string.IsNullOrWhiteSpace(a.Name))
+                                                                            .GroupBy(a => a.Name!, StringComparer.Ordinal)
+                                                                            .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateNameGroup is not null)
             {
@@ -102,9 +132,9 @@
                 );
             }
 
-            CommandParameterSchema[]? nonScalarParameters = command.Parameters
-                                                                   .Where(p => !p.BindableProperty.IsScalar)
-                                                                   .ToArray();
+            ParameterSchema[] nonScalarParameters = command.Parameters
+                                                           .Where(p => !p.Bindable.IsScalar)
+                                                           .ToArray();
 
             if (nonScalarParameters.Length > 1)
             {
@@ -114,10 +144,10 @@
                 );
             }
 
-            CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
-                                                                       .OrderByDescending(a => a.Order)
-                                                                       .Skip(1)
-                                                                       .LastOrDefault(p => !p.BindableProperty.IsScalar);
+            ParameterSchema? nonLastNonScalarParameter = command.Parameters
+                                                                .OrderByDescending(a => a.Order)
+                                                                .Skip(1)
+                                                                .LastOrDefault(p => !p.Bindable.IsScalar);
 
             if (nonLastNonScalarParameter is not null)
             {
@@ -128,9 +158,9 @@
             }
         }
 
-        private static void ValidateOptions(CommandSchema command)
+        private static void ValidateOptions(BaseCommandSchema command)
         {
-            IGrouping<string, CommandOptionSchema>? duplicateNameGroup = command.Options
+            IGrouping<string, OptionSchema>? duplicateNameGroup = command.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.Name))
                 .GroupBy(o => o.Name!, StringComparer.Ordinal)
                 .FirstOrDefault(g => g.Count() > 1);
@@ -144,7 +174,7 @@
                 );
             }
 
-            IGrouping<char, CommandOptionSchema>? duplicateShortNameGroup = command.Options
+            IGrouping<char, OptionSchema>? duplicateShortNameGroup = command.Options
                 .Where(o => o.ShortName is not null)
                 .GroupBy(o => o.ShortName!.Value)
                 .FirstOrDefault(g => g.Count() > 1);
@@ -158,7 +188,7 @@
                 );
             }
 
-            IGrouping<string, CommandOptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
+            IGrouping<string, OptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.FallbackVariableName))
                 .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault(g => g.Count() > 1);

@@ -66,7 +66,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_opt_A"] = "incorrect",
@@ -78,7 +78,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptA = "correct"
             });
@@ -92,7 +92,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_OPT_B"] = $"foo{Path.PathSeparator}bar"
@@ -103,7 +103,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptB = new[] { "foo", "bar" }
             });
@@ -117,7 +117,7 @@
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "cmd" },
+                new[] { nameof(WithEnvironmentVariablesCommand) },
                 new Dictionary<string, string>
                 {
                     ["ENV_OPT_A"] = $"foo{Path.PathSeparator}bar"
@@ -128,7 +128,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand
+            commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptA = $"foo{Path.PathSeparator}bar"
             });

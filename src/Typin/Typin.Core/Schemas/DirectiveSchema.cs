@@ -112,7 +112,7 @@
             StringBuilder buffer = new();
 
             // Type
-            buffer.Append(Type.FullName);
+            buffer.Append(Type.FullName ?? Type.Name);
 
             // Name
             buffer.Append(' ')

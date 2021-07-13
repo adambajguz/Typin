@@ -1,6 +1,7 @@
 ﻿namespace InteractiveModeExample.Commands
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -9,21 +10,28 @@
     [Command("test", Description = "Test command.")]
     public class TestCommand : ICommand
     {
-        [CommandOption("xe", 'a')]
+        private readonly IConsole _console;
+
+        [Option("xe", 'a')]
         public string Author { get; init; } = string.Empty;
 
-        [CommandOption('x')]
+        [Option('x')]
         public string AuthorX { get; init; } = string.Empty;
 
-        [CommandOption("char", 'c')]
+        [Option("char", 'c')]
         public char Ch { get; init; }
 
-        [CommandOption("date", 'd')]
+        [Option("date", 'd')]
         public DateTime Date { get; init; } = DateTime.Now;
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public TestCommand(IConsole console)
         {
-            console.Output.WriteLine($"'{Author}' '{AuthorX}' '{Ch}'");
+            _console = console;
+        }
+
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
+        {
+            _console.Output.WriteLine($"'{Author}' '{AuthorX}' '{Ch}'");
 
             return default;
         }

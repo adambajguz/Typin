@@ -9,13 +9,8 @@
     /// <summary>
     /// Stores command schema.
     /// </summary>
-    public class CommandSchema
+    public class CommandSchema : BaseCommandSchema
     {
-        /// <summary>
-        /// Command type.
-        /// </summary>
-        public Type Type { get; }
-
         /// <summary>
         /// Command name.
         /// If the name is not set, the command is treated as a default command, i.e. the one that gets executed when the user
@@ -28,6 +23,11 @@
         /// Whether command is a default command.
         /// </summary>
         public bool IsDefault => string.IsNullOrWhiteSpace(Name);
+
+        /// <summary>
+        /// Whether command is a dynamic command.
+        /// </summary>
+        public bool IsDynamic { get; }
 
         /// <summary>
         /// Command description, which is used in help text.
@@ -52,45 +52,45 @@
         public IReadOnlyCollection<Type>? ExcludedModes { get; }
 
         /// <summary>
-        /// List of ordered parameters.
+        /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
-        public IReadOnlyList<CommandParameterSchema> Parameters { get; }
-
-        /// <summary>
-        /// List of options.
-        /// </summary>
-        public IReadOnlyList<CommandOptionSchema> Options { get; }
-
-        /// <summary>
-        /// Whether help option is available for this command.
-        /// </summary>
-        public bool IsHelpOptionAvailable => Options.Contains(CommandOptionSchema.HelpOption);
-
-        /// <summary>
-        /// Whether version option is available for this command.
-        /// </summary>
-        public bool IsVersionOptionAvailable => Options.Contains(CommandOptionSchema.VersionOption);
+        public CommandSchema(Type type,
+                             bool isDynamic,
+                             string? name,
+                             string? description,
+                             string? manual,
+                             IReadOnlyList<Type>? supportedModes,
+                             IReadOnlyList<Type>? excludedModes,
+                             IReadOnlyList<ParameterSchema> parameters,
+                             IReadOnlyList<OptionSchema> options) :
+            base(type, parameters, options)
+        {
+            IsDynamic = isDynamic;
+            Name = name;
+            Description = description;
+            Manual = manual;
+            SupportedModes = supportedModes?.ToHashSet(); //TODO: only use empty
+            ExcludedModes = excludedModes?.ToHashSet(); //TODO: only use empty
+        }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
-        public CommandSchema(Type type,
+        public CommandSchema(BaseCommandSchema baseCommandSchema,
+                             bool isDynamic,
                              string? name,
                              string? description,
                              string? manual,
-                             Type[]? supportedModes,
-                             Type[]? excludedModes,
-                             IReadOnlyList<CommandParameterSchema> parameters,
-                             IReadOnlyList<CommandOptionSchema> options)
+                             IReadOnlyList<Type>? supportedModes,
+                             IReadOnlyList<Type>? excludedModes) :
+            base(baseCommandSchema.Type, baseCommandSchema.Parameters, baseCommandSchema.Options)
         {
-            Type = type;
+            IsDynamic = isDynamic;
             Name = name;
             Description = description;
             Manual = manual;
-            SupportedModes = supportedModes?.ToHashSet();
-            ExcludedModes = excludedModes?.ToHashSet();
-            Parameters = parameters;
-            Options = options;
+            SupportedModes = supportedModes?.ToHashSet(); //TODO: only use empty
+            ExcludedModes = excludedModes?.ToHashSet(); //TODO: only use empty
         }
 
         /// <summary>
@@ -138,51 +138,13 @@
             return (SupportedModes?.Count ?? 0) > 0 || (ExcludedModes?.Count ?? 0) > 0;
         }
 
-        /// <summary>
-        /// Enumerates through parameters and options.
-        /// </summary>
-        public IEnumerable<ArgumentSchema> GetArguments()
-        {
-            foreach (CommandParameterSchema parameter in Parameters)
-            {
-                yield return parameter;
-            }
-
-            foreach (CommandOptionSchema option in Options)
-            {
-                yield return option;
-            }
-        }
-
-        /// <summary>
-        /// Returns dictionary of arguments and its values.
-        /// </summary>
-        public IReadOnlyDictionary<ArgumentSchema, object?> GetArgumentValues(ICommand instance)
-        {
-            Dictionary<ArgumentSchema, object?> result = new();
-
-            foreach (ArgumentSchema argument in GetArguments())
-            {
-                // Skip built-in arguments
-                if (argument.BindableProperty.IsBuiltIn)
-                {
-                    continue;
-                }
-
-                object? value = argument.BindableProperty.GetValue(instance);
-                result[argument] = value;
-            }
-
-            return result;
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
             StringBuilder buffer = new();
 
             // Type
-            buffer.Append(Type.FullName);
+            buffer.Append(Type.FullName ?? Type.Name);
 
             // Name
             buffer.Append(' ')

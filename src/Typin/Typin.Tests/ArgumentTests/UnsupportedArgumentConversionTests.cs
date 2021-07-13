@@ -29,7 +29,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "foobar"
+                nameof(UnsupportedArgumentTypesCommand), optionName, "foobar"
             });
 
             // Assert

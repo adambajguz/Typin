@@ -23,6 +23,7 @@
             return await new CliApplicationBuilder()
                 .ConfigureServices(GetServiceCollection)
                 .AddCommandsFromThisAssembly()
+                .AddDynamicCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()

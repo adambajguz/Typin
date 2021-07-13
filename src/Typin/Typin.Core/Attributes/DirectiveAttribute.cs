@@ -1,10 +1,9 @@
 ﻿namespace Typin.Attributes
 {
     using System;
-    using Typin.Internal.Exceptions;
 
     /// <summary>
-    /// Annotates a type that defines a command.
+    /// Annotates a type that defines a directive.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class DirectiveAttribute : Attribute
@@ -37,12 +36,7 @@
         /// </summary>
         public DirectiveAttribute(string name)
         {
-            Name = name.TrimStart('[').TrimEnd(']');
-
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                throw AttributesExceptions.DirectiveNameIsInvalid(name);
-            }
+            Name = name;
         }
     }
 }

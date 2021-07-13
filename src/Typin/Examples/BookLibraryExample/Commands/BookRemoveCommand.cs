@@ -1,5 +1,6 @@
 ﻿namespace BookLibraryExample.Commands
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using BookLibraryExample.Models;
     using BookLibraryExample.Services;
@@ -12,16 +13,18 @@
     public class BookRemoveCommand : ICommand
     {
         private readonly LibraryService _libraryService;
+        private readonly IConsole _console;
 
-        [CommandParameter(0, Name = "title", Description = "Book title.")]
+        [Parameter(0, Name = "title", Description = "Book title.")]
         public string Title { get; init; } = "";
 
-        public BookRemoveCommand(LibraryService libraryService)
+        public BookRemoveCommand(LibraryService libraryService, IConsole console)
         {
             _libraryService = libraryService;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             Book? book = _libraryService.GetBook(Title);
 
@@ -29,7 +32,7 @@
 
             _libraryService.RemoveBook(book);
 
-            console.Output.WriteLine($"Book {Title} removed.");
+            _console.Output.WriteLine($"Book {Title} removed.");
 
             return default;
         }

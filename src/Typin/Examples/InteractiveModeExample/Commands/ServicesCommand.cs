@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin;
@@ -13,15 +14,17 @@
     public class ServicesCommand : ICommand
     {
         private readonly ICliContext _cliContext;
+        private readonly IConsole _console;
 
-        public ServicesCommand(ICliContext cliContext)
+        public ServicesCommand(ICliContext cliContext, IConsole console)
         {
             _cliContext = cliContext;
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            DebugPrintServices(console, _cliContext.Configuration.Services);
+            DebugPrintServices(_console, _cliContext.Configuration.Services);
 
             return default;
         }

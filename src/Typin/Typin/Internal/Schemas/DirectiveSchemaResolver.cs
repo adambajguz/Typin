@@ -24,6 +24,12 @@
             }
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
+            string directiveName = attribute.Name.TrimStart('[').TrimEnd(']');
+
+            if (string.IsNullOrWhiteSpace(directiveName))
+            {
+                throw AttributesExceptions.DirectiveNameIsInvalid(directiveName);
+            }
 
             if (modeTypes is not null)
             {
@@ -40,7 +46,7 @@
 
             return new DirectiveSchema(
                 type,
-                attribute.Name,
+                directiveName,
                 attribute.Description,
                 attribute.SupportedModes,
                 attribute.ExcludedModes

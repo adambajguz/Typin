@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
@@ -10,21 +11,23 @@
     [Command(Description = "Default Command Description")]
     public class DefaultCommand : ICommand
     {
-        [CommandParameter(0)]
+        private readonly IConsole _console;
+
+        [Parameter(0)]
         public IReadOnlyList<string> Values { get; init; } = default!;
 
-        public DefaultCommand()
+        public DefaultCommand(IConsole console)
         {
-
+            _console = console;
         }
 
-        public ValueTask ExecuteAsync(IConsole console)
+        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
+            _console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
 
             foreach (var value in Values)
             {
-                console.Output.WriteLine(value);
+                _console.Output.WriteLine(value);
             }
 
             return default;
