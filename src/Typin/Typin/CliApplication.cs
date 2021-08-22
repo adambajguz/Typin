@@ -122,7 +122,6 @@ namespace Typin
             return await RunAsync(commandLineArguments, environmentVariables);
         }
 
-
         /// <summary>
         /// Runs the application with specified command line arguments and environment variables, and returns the exit code.
         /// </summary>

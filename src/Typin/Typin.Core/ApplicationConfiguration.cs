@@ -30,11 +30,6 @@
         public IReadOnlyCollection<Type> DirectiveTypes { get; }
 
         /// <summary>
-        /// Collection of middlewares in application.
-        /// </summary>
-        public IReadOnlyCollection<Type> MiddlewareTypes { get; }
-
-        /// <summary>
         /// Startup mode type.
         /// </summary>
         public Type StartupMode { get; }
@@ -51,7 +46,6 @@
                                         IReadOnlyCollection<Type> commandTypes,
                                         IReadOnlyCollection<Type> dynamicCommandTypes,
                                         IReadOnlyCollection<Type> customDirectives,
-                                        LinkedList<Type> middlewareTypes,
                                         Type startupMode,
                                         IEnumerable<ServiceDescriptor> services)
         {
@@ -59,7 +53,6 @@
             CommandTypes = commandTypes;
             DynamicCommandTypes = dynamicCommandTypes;
             DirectiveTypes = customDirectives;
-            MiddlewareTypes = middlewareTypes;
             StartupMode = startupMode;
             Services = services;
         }

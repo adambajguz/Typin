@@ -3,15 +3,16 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
 
     public sealed class DirectivesCheckMiddleware : IMiddleware
     {
         public const string ExpectedOutput = "Command finished succesfully.";
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            if (context.Input.HasDirective("custom"))
+            if (args.Input.HasDirective("custom"))
             {
                 throw new ApplicationException("custom directive detected");
             }

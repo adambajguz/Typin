@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Input;
@@ -22,10 +23,10 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            WriteCommandLineInput(context.Console, context.Input);
-            context.ExitCode ??= ExitCodes.Success;
+            WriteCommandLineInput(args.Console, args.Input);
+            args.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

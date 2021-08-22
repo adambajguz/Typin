@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Input;
     using Typin.Internal.Exceptions;
@@ -22,8 +23,10 @@
             _optionFallbackProvider = optionFallbackProvider;
         }
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
+            var context = args;
+
             //Get input and command schema from context
             CommandInput input = context.Input;
             CommandSchema commandSchema = context.CommandSchema;

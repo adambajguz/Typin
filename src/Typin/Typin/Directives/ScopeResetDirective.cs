@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Modes;
 
@@ -35,10 +36,10 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             _options.Scope = string.Empty;
-            context.ExitCode ??= ExitCodes.Success;
+            args.ExitCode ??= ExitCodes.Success;
 
             return default;
         }

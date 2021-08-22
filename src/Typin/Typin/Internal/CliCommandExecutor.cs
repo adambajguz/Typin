@@ -2,14 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using PackSite.Library.Pipelining;
     using Typin.Exceptions;
     using Typin.Input;
-    using Typin.Internal.Extensions;
     using Typin.Internal.Input;
     using Typin.Utilities;
 
@@ -55,7 +54,10 @@
                 try
                 {
                     // Execute middleware pipeline
-                    await RunPipelineAsync(provider, cliContext);
+                    IInvokablePipelineFactory pipelineFactory = provider.GetRequiredService<IInvokablePipelineFactory>();
+                    IInvokablePipeline<ICliContext> cliPipeline = pipelineFactory.GetRequiredPipeline<ICliContext>();
+
+                    await cliPipeline.InvokeAsync(cliContext, CancellationToken.None);
                 }
                 catch (Exception ex)
                 {
@@ -83,22 +85,6 @@
 
                 return cliContext.ExitCode ?? ExitCodes.Error;
             }
-        }
-
-        private async Task RunPipelineAsync(IServiceProvider serviceProvider, ICliContext context)
-        {
-            IReadOnlyCollection<Type> middlewareTypes = context.Configuration.MiddlewareTypes;
-
-            CancellationToken cancellationToken = context.Console.GetCancellationToken();
-            CommandPipelineHandlerDelegate next = IMiddlewareExtensions.PipelineTermination;
-
-            foreach (Type middlewareType in middlewareTypes.Reverse())
-            {
-                IMiddleware instance = (IMiddleware)serviceProvider.GetRequiredService(middlewareType);
-                next = instance.Next(context, next, middlewareType, _logger, cancellationToken);
-            }
-
-            await next();
         }
     }
 }

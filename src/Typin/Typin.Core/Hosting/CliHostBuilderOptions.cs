@@ -3,9 +3,10 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Builder options for use with <see cref="HostBuilderExtensions.ConfigureCliHost(IHostBuilder, Action{ICliHostBuilder}, Action{CliHostBuilderOptions})"/>.
+    /// Builder options for use with <see cref="HostBuilderExtensions.ConfigureCliHost(IHostBuilder, Action{ICliHostBuilder}, Action{CliOptions})"/>.
     /// </summary>
-    public class CliHostBuilderOptions
+    public class CliOptions
+
     {
         /// <summary>
         /// Command line (default: null).

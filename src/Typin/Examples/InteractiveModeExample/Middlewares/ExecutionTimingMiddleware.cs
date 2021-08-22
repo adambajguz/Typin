@@ -4,13 +4,16 @@
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Console;
 
     public sealed class ExecutionTimingMiddleware : IMiddleware
     {
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
+            var context = args;
+
             context.Console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
             {
                 output.WriteLine("--- Handling command '{0}' with args '{1}'",

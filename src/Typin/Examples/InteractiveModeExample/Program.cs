@@ -3,7 +3,6 @@
     using System;
     using System.Threading.Tasks;
     using InteractiveModeExample.Directives;
-    using InteractiveModeExample.Middlewares;
     using InteractiveModeExample.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -27,7 +26,7 @@
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseMiddleware<ExecutionTimingMiddleware>()
+                //.UseMiddleware<ExecutionTimingMiddleware>()
                 .UseDirectMode(true)
                 .UseInteractiveMode(options: (cfg) =>
                 {

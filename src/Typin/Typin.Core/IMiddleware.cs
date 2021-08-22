@@ -1,7 +1,7 @@
 ﻿namespace Typin
 {
-    using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
 
     /// <summary>
     /// Represents an async continuation for the next task to execute in the pipeline.
@@ -13,12 +13,8 @@
     /// Pipeline middleware to surround the inner handler.
     /// Implementations add additional behavior and await the next delegate.
     /// </summary>
-    public interface IMiddleware
+    public interface IMiddleware : IStep<ICliContext>
     {
-        /// <summary>
-        /// Executes the middleware handler using the curent instance of <see cref="ICliContext"/>.
-        /// Perform any additional behavior and await the next delegate as necessary.
-        /// </summary>
-        Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken);
+
     }
 }

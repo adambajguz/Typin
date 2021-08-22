@@ -2,6 +2,7 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Modes;
 
@@ -32,7 +33,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             _applicationLifetime.RequestMode<InteractiveMode>();
 

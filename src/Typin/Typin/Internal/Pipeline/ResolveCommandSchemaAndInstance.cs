@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.DynamicCommands;
     using Typin.Input;
@@ -24,9 +25,10 @@
             _serviceProvider = serviceProvider;
         }
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            context.ExitCode ??= Execute((CliContext)context);
+            args.ExitCode ??= Execute((CliContext)args);
 
             await next();
         }

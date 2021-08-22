@@ -23,9 +23,9 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
-                .AddCommand<PipelineCommand>()
-                .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware(typeof(ExitCodeMiddleware));
+                .AddCommand<PipelineCommand>();
+            //.UseMiddleware<ExecutionTimingMiddleware>()
+            //.UseMiddleware(typeof(ExitCodeMiddleware));
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "pipeline" });
@@ -48,9 +48,9 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
-                .AddCommand<PipelineCommand>()
-                .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware(typeof(ExitCodeMiddleware));
+                .AddCommand<PipelineCommand>();
+            //.UseMiddleware<ExecutionTimingMiddleware>()
+            //.UseMiddleware(typeof(ExitCodeMiddleware));
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);

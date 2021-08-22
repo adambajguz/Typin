@@ -5,30 +5,41 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Logging;
+    using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Internal.Extensions;
 
     internal sealed class ExecuteDirectivesSubpipeline : IMiddleware
     {
-        private readonly ILogger _logger;
+        private readonly IStepActivator _stepActivator;
 
-        public ExecuteDirectivesSubpipeline(ILogger<ExecuteDirectivesSubpipeline> logger)
+        public ExecuteDirectivesSubpipeline(IStepActivator stepActivator)
         {
-            _logger = logger;
+            _stepActivator = stepActivator;
         }
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            IReadOnlyList<IPipelinedDirective> pipelinedDirectives = context.PipelinedDirectives;
-            CommandPipelineHandlerDelegate newNext = next;
+            IReadOnlyList<IPipelinedDirective> pipelinedDirectives = args.PipelinedDirectives;
 
-            foreach (IPipelinedDirective instance in pipelinedDirectives.Reverse())
+            if (pipelinedDirectives.Count > 0)
             {
-                newNext = instance.Next(context, newNext, _logger, cancellationToken);
-            }
+                var builder = PipelineBuilder.Create<ICliContext>()
+                    .Description(args.Id.ToString())
+                    .Lifetime(InvokablePipelineLifetime.Transient);
 
-            await newNext();
+                foreach (IPipelinedDirective instance in pipelinedDirectives.Reverse())
+                {
+                    builder.Add(instance);
+                }
+
+                IInvokablePipeline<ICliContext> invokableSubPipeline = builder.Build().CreateInvokable(_stepActivator);
+                await invokableSubPipeline.InvokeAsync(args, cancellationToken);
+                await next();
+            }
+            else
+            {
+                await next();
+            }
         }
     }
 }

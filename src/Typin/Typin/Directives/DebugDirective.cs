@@ -5,6 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Console;
 
@@ -23,7 +24,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
 #if NET5_0
             int processId = Environment.ProcessId;
@@ -31,7 +32,7 @@
             int processId = Process.GetCurrentProcess().Id;
 #endif
 
-            IConsole console = context.Console;
+            IConsole console = args.Console;
 
             console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine($"Attach debugger to PID {processId} to continue."));
 

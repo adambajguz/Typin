@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Input;
     using Typin.Internal.Extensions;
@@ -31,15 +32,13 @@
     public sealed class ScopeDirective : IPipelinedDirective
     {
         private readonly InteractiveModeOptions _options;
-        private readonly ICliContext _cliContext;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(IOptions<InteractiveModeOptions> options, ICliContext cliContext)
+        public ScopeDirective(IOptions<InteractiveModeOptions> options)
         {
             _options = options.Value;
-            _cliContext = cliContext;
         }
 
         /// <inheritdoc/>
@@ -49,27 +48,27 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            string? name = _cliContext.Input.CommandName ?? GetFallbackCommandName();
+            string? name = args.Input.CommandName ?? GetFallbackCommandName(args);
 
             if (name is not null)
             {
                 _options.Scope = name;
-                context.ExitCode ??= ExitCodes.Success;
+                args.ExitCode ??= ExitCodes.Success;
             }
 
             return default;
         }
 
-        private string? GetFallbackCommandName()
+        private static string? GetFallbackCommandName(ICliContext context)
         {
-            CommandInput input = _cliContext.Input;
+            CommandInput input = context.Input;
 
             string potentialName = input.Arguments.Skip(input.Directives.Count)
                                                   .JoinToString(' ');
 
-            if (_cliContext.RootSchema.IsCommandOrSubcommandPart(potentialName))
+            if (context.RootSchema.IsCommandOrSubcommandPart(potentialName))
             {
                 return potentialName;
             }

@@ -11,7 +11,6 @@
     using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
-    using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Data.Modes.Valid;
     using Typin.Tests.Data.Startups;
     using Typin.Tests.Data.Valid.Extensions;
@@ -127,8 +126,8 @@
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective(typeof(CustomDirective))
-                .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseMiddleware(typeof(ExitCodeMiddleware))
+                //.UseMiddleware<ExecutionTimingMiddleware>()
+                //.UseMiddleware(typeof(ExitCodeMiddleware))
                 .UseOptionFallbackProvider(typeof(EnvironmentVariableFallbackProvider))
                 .UseTitle("test")
                 .UseExecutableName("test")

@@ -7,6 +7,7 @@ namespace Typin
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
+    using PackSite.Library.Pipelining;
     using Typin.Console;
     using Typin.DynamicCommands;
     using Typin.Exceptions;
@@ -22,6 +23,7 @@ namespace Typin
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
     /// </summary>
+    [Obsolete]
     public sealed class CliApplicationBuilder
     {
         private bool _cliApplicationBuilt;
@@ -50,15 +52,12 @@ namespace Typin
         private readonly List<Type> _modeTypes = new();
         private Type? _startupMode;
 
-        //Middleware
-        private readonly LinkedList<Type> _middlewareTypes = new();
-
         /// <summary>
         /// Initializes an instance of <see cref="CliApplicationBuilder"/>.
         /// </summary>
         public CliApplicationBuilder()
         {
-            this.AddBeforeUserMiddlewares();
+
         }
 
         #region Directives
@@ -295,7 +294,6 @@ namespace Typin
         }
         #endregion
 
-
         #region Metadata
         /// <summary>
         /// Sets application title, which appears in the help text.
@@ -475,34 +473,6 @@ namespace Typin
         }
         #endregion
 
-        #region Middleware
-        /// <summary>
-        /// Adds a middleware to the command execution pipeline.
-        /// Middlewares are also registered as scoped services and are executed in registration order.
-        /// </summary>
-        public CliApplicationBuilder UseMiddleware(Type middleware)
-        {
-            _configureServicesActions.Add(services =>
-            {
-                services.AddScoped(typeof(IMiddleware), middleware);
-                services.AddScoped(middleware);
-            });
-
-            _middlewareTypes.AddLast(middleware);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a middleware to the command execution pipeline.
-        /// </summary>
-        public CliApplicationBuilder UseMiddleware<TMiddleware>()
-            where TMiddleware : class, IMiddleware
-        {
-            return UseMiddleware(typeof(TMiddleware));
-        }
-        #endregion
-
         #region Value fallback
         /// <summary>
         /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
@@ -652,9 +622,6 @@ namespace Typin
                 this.UseDirectMode(true);
             }
 
-            // Add core middlewares to the end of the pipeline
-            this.AddAfterUserMiddlewares();
-
             // Create context
             ServiceCollection _serviceCollection = new();
 
@@ -663,7 +630,6 @@ namespace Typin
                                                          _commandTypes,
                                                          _dynamicCommandTypes,
                                                          _directivesTypes,
-                                                         _middlewareTypes,
                                                          _startupMode!,
                                                          _serviceCollection);
 
@@ -671,6 +637,7 @@ namespace Typin
 
             // Add core services
             _serviceCollection.AddOptions();
+            _serviceCollection.AddPipelining();
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
             _serviceCollection.AddSingleton(typeof(IConsole), _console);
@@ -703,6 +670,18 @@ namespace Typin
             });
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
+            var pipelineCollection = serviceProvider.GetRequiredService<IPipelineCollection>();
+
+            var pipelineBuilder = PipelineBuilder.Create<ICliContext>()
+                .Lifetime(InvokablePipelineLifetime.Scoped)
+                .Add<ResolveCommandSchemaAndInstance>()
+                .Add<InitializeDirectives>()
+                .Add<ExecuteDirectivesSubpipeline>()
+                .Add<HandleSpecialOptions>()
+                .Add<BindInput>()
+                // user
+                .Add<ExecuteCommand>()
+                .Build().TryAddTo(pipelineCollection);
 
             return new CliApplication(serviceProvider, _console, environmentVariablesAccessor, metadata, _startupMessage);
         }

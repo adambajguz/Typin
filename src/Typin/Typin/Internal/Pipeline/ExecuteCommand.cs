@@ -2,12 +2,15 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
 
     internal sealed class ExecuteCommand : IMiddleware
     {
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
+            var context = args;
+
             // Get command instance from context
             ICommand instance = context.Command;
 

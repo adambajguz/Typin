@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Typin.Hosting.Components.Internal
+﻿namespace Typin.Internal.Components
 {
+    using System;
+    using System.Collections.Generic;
+    using Typin.Components;
+
+    /// <summary>
+    /// <see cref="ICliComponentProvider"/> implementation.
+    /// </summary>
     internal sealed class CliComponentProvider : ICliComponentProvider
     {
         private readonly IReadOnlyDictionary<Type, IReadOnlyList<Type>> _cliComponents;

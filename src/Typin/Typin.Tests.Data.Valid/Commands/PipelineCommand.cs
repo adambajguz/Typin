@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Utilities;
@@ -13,18 +14,20 @@
     public class PipelineCommand : ICommand
     {
         public const string PipelineTermination = "<PipelineTermination>";
-        private readonly ICliContext _cliContext;
+
+        private readonly IPipelineCollection _pipelineCollection;
         private readonly IConsole _console;
 
-        public PipelineCommand(ICliContext cliContext, IConsole console)
+        public PipelineCommand(IPipelineCollection pipelineCollection, IConsole console)
         {
-            _cliContext = cliContext;
+            _pipelineCollection = pipelineCollection;
             _console = console;
         }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            DebugPrintPipeline(_console, _cliContext.Configuration.MiddlewareTypes);
+            IPipeline<ICliContext> pipeline = _pipelineCollection.Get<ICliContext>();
+            DebugPrintPipeline(_console, pipeline.Steps);
 
             return default;
         }

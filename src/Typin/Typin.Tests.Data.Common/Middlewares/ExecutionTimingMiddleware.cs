@@ -3,6 +3,7 @@
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
 
     public sealed class ExecutionTimingMiddleware : IMiddleware
@@ -10,15 +11,15 @@
         public const string ExpectedOutput0 = "-- Handling Command";
         public const string ExpectedOutput1 = "-- Finished Command after";
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            context.Console.Output.WriteLine(ExpectedOutput0);
+            args.Console.Output.WriteLine(ExpectedOutput0);
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             await next();
 
             stopwatch.Stop();
-            context.Console.Output.WriteLine($"{ExpectedOutput1} {0} ms", stopwatch.Elapsed.TotalMilliseconds);
+            args.Console.Output.WriteLine($"{ExpectedOutput1} {0} ms", stopwatch.Elapsed.TotalMilliseconds);
         }
     }
 }

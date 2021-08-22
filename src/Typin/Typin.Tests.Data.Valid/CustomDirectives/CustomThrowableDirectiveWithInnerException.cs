@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Attributes;
     using Typin.Exceptions;
@@ -19,9 +20,9 @@
             return default;
         }
 
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken _)
+        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            context.Console.Output.Write(ExpectedOutput);
+            args.Console.Output.Write(ExpectedOutput);
 
             throw new DirectiveException(ExpectedExceptionMessage, new NullReferenceException(), ExpectedExitCode);
         }

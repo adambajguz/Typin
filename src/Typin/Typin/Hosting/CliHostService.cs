@@ -1,92 +1,46 @@
 ﻿namespace Typin.Hosting
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Typin.Hosting.Startup;
+    using PackSite.Library.Pipelining;
+    using Typin.Internal.Pipeline;
 
-    internal class CliHostService : IHostedService
+    internal class CliHostService : BackgroundService
     {
-        private readonly CliHostServiceOptions _options;
-
         private readonly ILogger _logger;
-        private readonly IApplicationBuilderFactory _applicationBuilderFactory;
-        private readonly IEnumerable<IStartupFilter> _startupFilters;
-        private readonly IConfiguration _configuration;
-        private readonly IHostEnvironment _hostingEnvirnment;
+        private readonly IHostEnvironment _hostingEnvironment;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
-        private readonly CliApplication _cliApplication;
+        private readonly IPipelineCollection _pipelineCollection;
 
-        public CliHostService(IOptions<CliHostServiceOptions> options,
-                              ILoggerFactory loggerFactory,
-                              IApplicationBuilderFactory applicationBuilderFactory,
-                              IEnumerable<IStartupFilter> startupFilters,
-                              IConfiguration configuration,
-                              IHostEnvironment hostingEnvironment,
+        public CliHostService(ILoggerFactory loggerFactory,
+                              IHostEnvironment hostingEnvirnment,
                               IHostApplicationLifetime hostApplicationLifetime,
-                              CliApplication cliApplication)
+                              IPipelineCollection pipelineCollection)
         {
-            _options = options.Value;
             _logger = loggerFactory.CreateLogger("Typin.Hosting.Diagnostics");
-            _applicationBuilderFactory = applicationBuilderFactory;
-            _startupFilters = startupFilters;
-            _configuration = configuration;
-            _hostingEnvirnment = hostingEnvironment;
+            _hostingEnvironment = hostingEnvirnment;
             _hostApplicationLifetime = hostApplicationLifetime;
-            _cliApplication = cliApplication;
+            _pipelineCollection = pipelineCollection;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        ///<inheritdoc/>
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            try
-            {
-                var configure = _options.ConfigureApplication;
+            var pipelineBuilder = PipelineBuilder.Create<ICliContext>()
+                .Lifetime(InvokablePipelineLifetime.Scoped)
+                .Add<ResolveCommandSchemaAndInstance>()
+                .Add<InitializeDirectives>()
+                .Add<ExecuteDirectivesSubpipeline>()
+                .Add<HandleSpecialOptions>()
+                .Add<BindInput>()
+                // user
+                .Add<ExecuteCommand>()
+                .Build().TryAddTo(_pipelineCollection);
 
-                if (configure == null)
-                {
-                    throw new InvalidOperationException($"No application configured. Please specify an application via in the CLI host configuration.");
-                }
-
-                var builder = _applicationBuilderFactory.CreateBuilder();
-
-                foreach (var filter in _startupFilters.Reverse())
-                {
-                    configure = filter.Configure(configure);
-                }
-
-                configure(builder);
-
-                // Build the request pipeline
-                builder.Build();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "s");
-            }
-
-            _hostApplicationLifetime.ApplicationStarted.Register(async () =>
-            {
-                await _cliApplication.RunAsync(cancellationToken);
-            });
-
-            //if (Options.HostingStartupExceptions != null)
-            //{
-            //    foreach (var exception in Options.HostingStartupExceptions.InnerExceptions)
-            //    {
-            //        Logger.HostingStartupAssemblyError(exception);
-            //    }
-            //}
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-
+            throw new NotImplementedException();
         }
     }
 }
