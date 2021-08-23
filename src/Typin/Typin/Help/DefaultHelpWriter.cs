@@ -8,7 +8,6 @@
     using System.Linq;
     using Typin.Console;
     using Typin.Internal.Extensions;
-    using Typin.Modes;
     using Typin.Schemas;
     using Typin.Utilities;
 
@@ -32,7 +31,6 @@
 
         private readonly ICliContext _context;
         private readonly IConsole _console;
-        private readonly ICliApplicationLifetime _applicationLifetime;
 
         private int _column;
         private int _row;
@@ -42,11 +40,10 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext, ICliApplicationLifetime applicationLifetime)
+        public DefaultHelpWriter(ICliContext cliContext)
         {
             _context = cliContext;
             _console = cliContext.Console;
-            _applicationLifetime = applicationLifetime;
         }
 
         /// <inheritdoc/>
@@ -164,7 +161,7 @@
         #region Mode restrictions
         private void WriteModeRestrictionsManual(CommandSchema command)
         {
-            IReadOnlyList<Type> modesInApplication = _context.Configuration.ModeTypes;
+            IReadOnlyList<Type> modesInApplication = null!;// _context.Configuration.ModeTypes;
 
             if (modesInApplication.Count == 1)
             {
@@ -535,27 +532,12 @@
             WriteVerticalMargin();
             Write(CommentColor, "TIP: You can run `");
 
-            bool isDirectMode = _applicationLifetime.CurrentMode is DirectMode;
-            if (isDirectMode)
-            {
-                Write(_context.Metadata.ExecutableName);
-            }
-
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
-                if (isDirectMode)
-                {
-                    Write(' ');
-                }
-
                 Write(ConsoleColor.Cyan, command.Name);
             }
 
-            if (isDirectMode)
-            {
-                Write(' ');
-            }
-
+            Write(' ');
             Write(ConsoleColor.Cyan, "[command]");
 
             Write(' ');

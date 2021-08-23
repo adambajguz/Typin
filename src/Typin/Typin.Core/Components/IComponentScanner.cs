@@ -65,7 +65,7 @@
         /// <summary>
         /// Adds a component of specified type to the application.
         /// </summary>
-        new IComponentScanner<TComponent> Single<T>()
+        IComponentScanner<TComponent> Single<T>()
             where T : class, TComponent;
 
         /// <summary>

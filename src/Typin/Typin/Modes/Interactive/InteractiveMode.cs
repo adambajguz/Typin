@@ -20,7 +20,6 @@
         private readonly InteractiveModeOptions _options;
         private readonly IConsole _console;
         private readonly ApplicationMetadata _metadata;
-        private readonly ApplicationConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
 
@@ -34,7 +33,6 @@
                                ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                ApplicationMetadata metadata,
-                               ApplicationConfiguration configuration,
                                IServiceProvider serviceProvider)
         {
             _options = options.Value;
@@ -42,7 +40,6 @@
             _console = console;
             _logger = logger;
             _metadata = metadata;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
 
             if (_options.IsAdvancedInputAvailable && !_console.Input.IsRedirected)
@@ -59,10 +56,10 @@
         /// <inheritdoc/>
         public async ValueTask<int> ExecuteAsync(IEnumerable<string> commandLineArguments, ICliCommandExecutor executor)
         {
-            if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Any())
-            {
-                await executor.ExecuteCommandAsync(commandLineArguments);
-            }
+            //if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Any())
+            //{
+            //    await executor.ExecuteCommandAsync(commandLineArguments);
+            //}
 
             IEnumerable<string> interactiveArguments;
             try

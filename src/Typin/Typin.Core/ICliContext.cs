@@ -22,11 +22,6 @@
         ApplicationMetadata Metadata { get; }
 
         /// <summary>
-        /// Configuration of an application.
-        /// </summary>
-        ApplicationConfiguration Configuration { get; }
-
-        /// <summary>
         /// Collection of environment variables.
         /// </summary>
         IReadOnlyDictionary<string, string> EnvironmentVariables { get; }

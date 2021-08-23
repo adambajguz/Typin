@@ -1,27 +1,31 @@
 ﻿namespace Typin.Internal
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using Microsoft.Extensions.Logging;
     using Typin;
+    using Typin.Components;
     using Typin.Internal.Schemas;
     using Typin.Schemas;
 
     /// <inheritdoc/>
     internal sealed class RootSchemaAccessor : IRootSchemaAccessor
     {
-        private readonly ApplicationConfiguration _configuration;
         private readonly Lazy<RootSchema> _rootSchema;
+
+        private readonly IComponentProvider _componentProvider;
         private readonly ILogger _logger;
 
         ///<inheritdoc/>
         public RootSchema RootSchema => _rootSchema.Value;
 
-        public RootSchemaAccessor(ApplicationConfiguration configuration, ILogger<RootSchemaAccessor> logger)
+        public RootSchemaAccessor(IComponentProvider componentProvider, ILogger<RootSchemaAccessor> logger)
         {
-            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema, true);
-            _configuration = configuration;
+            _componentProvider = componentProvider;
             _logger = logger;
+
+            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema, true);
         }
 
         private RootSchema ResolveRootSchema()
@@ -31,10 +35,12 @@
             Stopwatch timer = new();
             timer.Start();
 
-            RootSchemaResolver rootSchemaResolver = new(_configuration.CommandTypes,
-                                                        _configuration.DynamicCommandTypes,
-                                                        _configuration.DirectiveTypes,
-                                                        _configuration.ModeTypes);
+            IReadOnlyList<Type> commands = _componentProvider.Get<ICommand>();
+            IReadOnlyList<Type> dynamicCommands = _componentProvider.Get<IDynamicCommand>();
+            IReadOnlyList<Type> directives = _componentProvider.Get<IDirective>();
+            IReadOnlyList<Type> modes = _componentProvider.Get<ICliMode>();
+
+            RootSchemaResolver rootSchemaResolver = new(commands, dynamicCommands, directives, modes);
 
             RootSchema? rootScheam = rootSchemaResolver.Resolve();
             timer.Stop();

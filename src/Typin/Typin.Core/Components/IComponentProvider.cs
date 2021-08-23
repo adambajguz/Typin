@@ -6,8 +6,13 @@
     /// <summary>
     /// CLI component provider.
     /// </summary>
-    public interface ICliComponentProvider
+    public interface IComponentProvider
     {
+        /// <summary>
+        /// Componenet types collection.
+        /// </summary>
+        IReadOnlyCollection<Type> ComponentTypes { get; }
+
         /// <summary>
         /// Gets components by component type.
         /// </summary>

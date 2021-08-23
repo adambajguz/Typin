@@ -16,7 +16,6 @@
     using Typin.Internal;
     using Typin.Internal.Components;
     using Typin.Internal.DynamicCommands;
-    using Typin.OptionFallback;
 
     internal class CliBuilder : ICliBuilder, IDisposable
     {
@@ -46,20 +45,15 @@
             Configuration = context.Configuration;
             Services = services;
 
-
             ApplicationMetadata metadata = new(string.Empty, string.Empty, string.Empty, string.Empty);
-
-            EnvironmentVariablesAccessor environmentVariablesAccessor = new();
 
             // Add core services
             services.AddOptions();
             services.AddPipelining();
             services.AddSingleton(typeof(ApplicationMetadata), metadata);
             services.AddSingleton(typeof(IConsole), new SystemConsole());
-            services.AddSingleton(typeof(IEnvironmentVariablesAccessor), environmentVariablesAccessor);
             services.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
-            services.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
             services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
         }
 
@@ -101,11 +95,10 @@
         public void Dispose()
         {
             Dictionary<Type, IReadOnlyList<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
-            CliComponentProvider cliComponentProvider = new(cliComponents);
+            ComponentProvider cliComponentProvider = new(cliComponents);
 
             Services.AddSingleton(cliComponentProvider);
 
-            Services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
             Services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
             Services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
 

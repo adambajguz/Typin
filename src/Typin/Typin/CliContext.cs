@@ -24,9 +24,6 @@
         public ApplicationMetadata Metadata { get; }
 
         /// <inheritdoc/>
-        public ApplicationConfiguration Configuration { get; }
-
-        /// <inheritdoc/>
         public IReadOnlyDictionary<string, string> EnvironmentVariables { get; }
 
         /// <inheritdoc/>
@@ -84,13 +81,11 @@
         /// Initializes an instance of <see cref="CliContext"/>.
         /// </summary>
         public CliContext(ApplicationMetadata metadata,
-                          ApplicationConfiguration applicationConfiguration,
                           RootSchema rootSchema,
                           IReadOnlyDictionary<string, string> environmentVariables,
                           IConsole console)
         {
             Metadata = metadata;
-            Configuration = applicationConfiguration;
             RootSchema = rootSchema;
             EnvironmentVariables = environmentVariables;
             Console = console;

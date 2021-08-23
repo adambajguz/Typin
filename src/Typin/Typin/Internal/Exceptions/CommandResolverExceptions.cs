@@ -48,7 +48,7 @@ In order to be a valid command type, it must:
             string message = $@"
 There are no commands configured in the application.
 
-To fix this, ensure that at least one command is added through one of the methods on {nameof(CliApplicationBuilder)}.";
+To fix this, ensure that at least one command is added.";
 
             return new TypinException(message.Trim());
         }

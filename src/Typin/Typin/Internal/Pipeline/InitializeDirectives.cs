@@ -14,13 +14,10 @@
     internal sealed class InitializeDirectives : IMiddleware
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ICliApplicationLifetime _applicationLifetime;
 
-        public InitializeDirectives(IServiceProvider serviceProvider,
-                                    ICliApplicationLifetime applicationLifetime)
+        public InitializeDirectives(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _applicationLifetime = applicationLifetime;
         }
 
         public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
@@ -28,7 +25,7 @@
             var context = args;
 
             //Get current CLI mode and input directives
-            Type currentModeType = _applicationLifetime.CurrentModeType!;
+            //Type currentModeType = _applicationLifetime.CurrentModeType!;
             IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
 
             //Initialize collections
@@ -41,11 +38,11 @@
                 // Try to get the directive matching the input or fallback to default
                 DirectiveSchema directive = args.RootSchema.TryFindDirective(directiveInput.Name) ?? throw ArgumentBindingExceptions.UnknownDirectiveName(directiveInput);
 
-                // Handle interactive directives not supported in current mode
-                if (!directive.CanBeExecutedInMode(currentModeType))
-                {
-                    throw ModeEndUserExceptions.DirectiveExecutedInInvalidMode(directive, currentModeType);
-                }
+                //// Handle interactive directives not supported in current mode
+                //if (!directive.CanBeExecutedInMode(currentModeType))
+                //{
+                //    throw ModeEndUserExceptions.DirectiveExecutedInInvalidMode(directive, currentModeType);
+                //}
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);

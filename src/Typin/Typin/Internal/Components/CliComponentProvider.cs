@@ -2,18 +2,27 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Typin.Components;
 
     /// <summary>
-    /// <see cref="ICliComponentProvider"/> implementation.
+    /// <see cref="IComponentProvider"/> implementation.
     /// </summary>
-    internal sealed class CliComponentProvider : ICliComponentProvider
+    internal sealed class ComponentProvider : IComponentProvider
     {
         private readonly IReadOnlyDictionary<Type, IReadOnlyList<Type>> _cliComponents;
 
-        public CliComponentProvider(IReadOnlyDictionary<Type, IReadOnlyList<Type>> cliComponents)
+        /// <inheritdoc/>
+        public IReadOnlyCollection<Type> ComponentTypes { get; }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="ComponentProvider"/>.
+        /// </summary>
+        /// <param name="cliComponents"></param>
+        public ComponentProvider(IReadOnlyDictionary<Type, IReadOnlyList<Type>> cliComponents)
         {
             _cliComponents = cliComponents;
+            ComponentTypes = cliComponents.Keys.ToList();
         }
 
         /// <inheritdoc/>

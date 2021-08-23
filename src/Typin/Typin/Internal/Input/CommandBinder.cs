@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Microsoft.Extensions.Configuration;
     using Typin.Input;
     using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
-    using Typin.OptionFallback;
     using Typin.Schemas;
 
     internal static class CommandBinder
@@ -71,9 +71,9 @@
         /// Binds option inputs in command instance.
         /// </summary>
         public static void BindOptions(this CommandSchema commandSchema,
-                                        ICommand instance,
-                                        IReadOnlyList<CommandOptionInput> optionInputs,
-                                        IOptionFallbackProvider optionFallbackProvider)
+                                       ICommand instance,
+                                       IReadOnlyList<CommandOptionInput> optionInputs,
+                                       IConfiguration configuration)
         {
             IReadOnlyList<OptionSchema> options = commandSchema.Options;
 
@@ -94,7 +94,7 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.Bindable.Type, out string? value))
+                    configuration[v] is string value)
                 {
                     string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
