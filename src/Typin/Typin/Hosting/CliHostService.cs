@@ -3,44 +3,78 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using PackSite.Library.Pipelining;
-    using Typin.Internal.Pipeline;
+    using Microsoft.Extensions.Options;
+    using Typin.Console;
+    using Typin.Modes;
+    using Typin.Schemas;
 
     internal class CliHostService : BackgroundService
     {
-        private readonly ILogger _logger;
+        private readonly IConsole _console;
+        private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
+        private readonly ApplicationMetadata _metadata;
+        private readonly IOptions<CliOptions> _cliOptions;
+
         private readonly IHostEnvironment _hostingEnvironment;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
-        private readonly IPipelineCollection _pipelineCollection;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger _logger;
 
-        public CliHostService(ILoggerFactory loggerFactory,
-                              IHostEnvironment hostingEnvirnment,
+        public CliHostService(IHostEnvironment hostingEnvirnment,
+                              IConsole console,
+                              ICliCommandExecutor cliCommandExecutor,
+                              IOptions<ApplicationMetadata> appMetadataOptions,
+                              IOptions<CliOptions> cliOptions,
+                              IRootSchemaAccessor rootSchemaAccessor,
                               IHostApplicationLifetime hostApplicationLifetime,
-                              IPipelineCollection pipelineCollection)
+                              IServiceProvider serviceProvider,
+                              ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger("Typin.Hosting.Diagnostics");
+            _console = console;
+            _cliCommandExecutor = cliCommandExecutor;
+            _rootSchemaAccessor = rootSchemaAccessor;
+            _metadata = appMetadataOptions.Value;
+            _cliOptions = cliOptions;
+
             _hostingEnvironment = hostingEnvirnment;
             _hostApplicationLifetime = hostApplicationLifetime;
-            _pipelineCollection = pipelineCollection;
+            _serviceProvider = serviceProvider;
+            _logger = loggerFactory.CreateLogger("Typin.Hosting.Diagnostics");
         }
 
         ///<inheritdoc/>
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            var pipelineBuilder = PipelineBuilder.Create<ICliContext>()
-                .Lifetime(InvokablePipelineLifetime.Scoped)
-                .Add<ResolveCommandSchemaAndInstance>()
-                .Add<InitializeDirectives>()
-                .Add<ExecuteDirectivesSubpipeline>()
-                .Add<HandleSpecialOptions>()
-                .Add<BindInput>()
-                // user
-                .Add<ExecuteCommand>()
-                .Build().TryAddTo(_pipelineCollection);
+            try
+            {
+                _logger.LogInformation("Starting CLI application...");
+                _console.ResetColor();
 
-            throw new NotImplementedException();
+                RootSchema rootSchema = _rootSchemaAccessor.RootSchema;
+
+                _cliOptions.Value.StartupMessage?.Invoke(_serviceProvider, _metadata, _console);
+
+                Type startupModeType = _cliOptions.Value.StartupMode ?? typeof(DirectMode);
+                ICliMode startupMode = (ICliMode)_serviceProvider.GetRequiredService(startupModeType);
+
+                int exitCode = await startupMode.ExecuteAsync(_cliCommandExecutor, true, cancellationToken);
+                _logger.LogInformation("Stopping CLI application...");
+                _hostApplicationLifetime.StopApplication();
+            }
+            catch (Exception ex)
+            {
+                if (_hostApplicationLifetime.ApplicationStopping.IsCancellationRequested && ex is OperationCanceledException)
+                {
+                    return;
+                }
+
+                _logger.LogCritical(ex, "Fatal error");
+                _hostApplicationLifetime.StopApplication();
+            }
         }
     }
 }

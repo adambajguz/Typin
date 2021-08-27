@@ -8,13 +8,13 @@
     /// <summary>
     /// <see cref="IPipelinedDirective"/> component scanner.
     /// </summary>
-    public sealed class PipelinedDirectiveComponentScanner : ComponentScanner<IPipelinedDirective>
+    internal sealed class PipelinedDirectiveScanner : Scanner<IPipelinedDirective>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="PipelinedDirectiveComponentScanner"/>.
+        /// Initializes a new instance of <see cref="PipelinedDirectiveScanner"/>.
         /// </summary>
         /// <param name="services"></param>
-        public PipelinedDirectiveComponentScanner(IServiceCollection services) : base(services)
+        public PipelinedDirectiveScanner(IServiceCollection services) : base(services)
         {
 
         }

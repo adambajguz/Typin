@@ -8,13 +8,13 @@
     /// <summary>
     /// <see cref="IDirective"/> component scanner.
     /// </summary>
-    public sealed class DirectiveComponentScanner : ComponentScanner<IDirective>
+    internal sealed class DirectiveScanner : Scanner<IDirective>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="DirectiveComponentScanner"/>.
+        /// Initializes a new instance of <see cref="DirectiveScanner"/>.
         /// </summary>
         /// <param name="services"></param>
-        public DirectiveComponentScanner(IServiceCollection services) : base(services)
+        public DirectiveScanner(IServiceCollection services) : base(services)
         {
 
         }

@@ -17,6 +17,6 @@
         /// If the execution of the initialization method is not asynchronous, simply end the method with <code>return default;</code>.
         /// If you want to stop the execution of the command, simply throw DirectiveException.
         /// </remarks>
-        ValueTask OnInitializedAsync(CancellationToken cancellationToken);
+        ValueTask InitializeAsync(CancellationToken cancellationToken);
     }
 }

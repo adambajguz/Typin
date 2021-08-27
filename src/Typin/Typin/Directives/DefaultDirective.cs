@@ -11,18 +11,16 @@
     [Directive(BuiltInDirectives.Default, Description = "Executes a root or scoped command.")]
     public sealed class DefaultDirective : IDirective
     {
-        private readonly ICliContext _cliContext;
-
         /// <summary>
         /// Initializes an instance of <see cref="DefaultDirective"/>.
         /// </summary>
-        public DefaultDirective(ICliContext cliContext)
+        public DefaultDirective()
         {
-            _cliContext = cliContext;
+
         }
 
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }

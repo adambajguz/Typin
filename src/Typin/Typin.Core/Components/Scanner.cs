@@ -11,7 +11,7 @@
     /// CLI component scanner.
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public abstract class ComponentScanner<TComponent> : IComponentScanner<TComponent>
+    public abstract class Scanner<TComponent> : IScanner<TComponent>
         where TComponent : notnull
     {
         private readonly List<Type> _types = new();
@@ -32,10 +32,10 @@
         public IReadOnlyList<Type> Types => _types;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ComponentScanner{TComponent}"/>.
+        /// Initializes a new instance of <see cref="Scanner{TComponent}"/>.
         /// </summary>
         /// <param name="services"></param>
-        protected ComponentScanner(IServiceCollection services)
+        protected Scanner(IServiceCollection services)
         {
             Services = services;
             ComponentType = typeof(TComponent);
@@ -56,7 +56,7 @@
         protected abstract void RegisterService(Type type);
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> Single<T>()
+        public IScanner<TComponent> Single<T>()
             where T : class, TComponent
         {
             Single(typeof(T));
@@ -65,7 +65,7 @@
         }
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> Single(Type type)
+        public IScanner<TComponent> Single(Type type)
         {
             _ = type ?? throw new ArgumentNullException(nameof(type));
 
@@ -81,7 +81,7 @@
         }
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> Multiple(IEnumerable<Type> commandTypes)
+        public IScanner<TComponent> Multiple(IEnumerable<Type> commandTypes)
         {
             foreach (Type commandType in commandTypes)
             {
@@ -92,18 +92,19 @@
         }
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> From(Assembly assembly)
+        public IScanner<TComponent> From(Assembly assembly)
         {
             foreach (Type type in assembly.ExportedTypes.Where(IsValidComponent))
             {
                 _types.Add(type);
+                RegisterService(type);
             }
 
             return this;
         }
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> From(IEnumerable<Assembly> assemblies)
+        public IScanner<TComponent> From(IEnumerable<Assembly> assemblies)
         {
             foreach (Assembly assembly in assemblies)
             {
@@ -114,34 +115,34 @@
         }
 
         /// <inheritdoc/>
-        public IComponentScanner<TComponent> FromThisAssembly()
+        public IScanner<TComponent> FromThisAssembly()
         {
             From(Assembly.GetCallingAssembly());
 
             return this;
         }
 
-        IComponentScanner IComponentScanner.Single(Type type)
+        IScanner IScanner.Single(Type type)
         {
             return Single(type);
         }
 
-        IComponentScanner IComponentScanner.Multiple(IEnumerable<Type> types)
+        IScanner IScanner.Multiple(IEnumerable<Type> types)
         {
             return Multiple(types);
         }
 
-        IComponentScanner IComponentScanner.From(Assembly assembly)
+        IScanner IScanner.From(Assembly assembly)
         {
             return From(assembly);
         }
 
-        IComponentScanner IComponentScanner.From(IEnumerable<Assembly> assemblies)
+        IScanner IScanner.From(IEnumerable<Assembly> assemblies)
         {
             return From(assemblies);
         }
 
-        IComponentScanner IComponentScanner.FromThisAssembly()
+        IScanner IScanner.FromThisAssembly()
         {
             return FromThisAssembly();
         }

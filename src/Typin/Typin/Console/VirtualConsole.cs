@@ -16,7 +16,6 @@
     /// </summary>
     public class VirtualConsole : IConsole, IDisposable
     {
-        private readonly CancellationToken _cancellationToken;
         private bool _disposedValue;
 
         /// <inheritdoc />
@@ -41,14 +40,11 @@
         /// </summary>
         public VirtualConsole(Stream? input = null, bool isInputRedirected = true,
                               Stream? output = null, bool isOutputRedirected = true,
-                              Stream? error = null, bool isErrorRedirected = true,
-                              CancellationToken cancellationToken = default)
+                              Stream? error = null, bool isErrorRedirected = true)
         {
             Input = WrapInput(this, input, isInputRedirected);
             Output = WrapOutput(this, output, isOutputRedirected);
             Error = WrapOutput(this, error, isErrorRedirected);
-
-            _cancellationToken = cancellationToken;
         }
 
         /// <summary>
@@ -57,8 +53,7 @@
         /// </summary>
         public static (VirtualConsole console, MemoryStreamWriter output, MemoryStreamWriter error) CreateBuffered(bool isInputRedirected = true,
                                                                                                                    bool isOutputRedirected = true,
-                                                                                                                   bool isErrorRedirected = true,
-                                                                                                                   CancellationToken cancellationToken = default)
+                                                                                                                   bool isErrorRedirected = true)
         {
             // Memory streams don't need to be disposed
             MemoryStreamWriter output = new(Console.OutputEncoding);
@@ -66,8 +61,7 @@
 
             VirtualConsole console = new(input: null, isInputRedirected,
                                          output.Stream, isOutputRedirected,
-                                         error.Stream, isErrorRedirected,
-                                         cancellationToken);
+                                         error.Stream, isErrorRedirected);
 
             return (console, output, error);
         }
@@ -79,8 +73,7 @@
         /// </summary>
         public static (VirtualConsole console, MemoryStreamReader input, MemoryStreamWriter output, MemoryStreamWriter error) CreateBufferedWithInput(bool isInputRedirected = true,
                                                                                                                                                       bool isOutputRedirected = true,
-                                                                                                                                                      bool isErrorRedirected = true,
-                                                                                                                                                      CancellationToken cancellationToken = default)
+                                                                                                                                                      bool isErrorRedirected = true)
         {
             // Memory streams don't need to be disposed
             MemoryStreamReader input = new(Console.InputEncoding);
@@ -89,8 +82,7 @@
 
             VirtualConsole console = new(input.Stream, isInputRedirected,
                                          output.Stream, isOutputRedirected,
-                                         error.Stream, isErrorRedirected,
-                                         cancellationToken);
+                                         error.Stream, isErrorRedirected);
 
             return (console, input, output, error);
         }
@@ -127,12 +119,6 @@
         /// <inheritdoc />
         public int BufferHeight { get; set; } = int.MaxValue;
 
-        /// <inheritdoc />
-        public CancellationToken GetCancellationToken()
-        {
-            return _cancellationToken;
-        }
-
         /// <inheritdoc/>
         public void SetCursorPosition(int left, int top)
         {
@@ -159,10 +145,8 @@
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
-        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false, CancellationToken cancellationToken = default)
         {
-            CancellationToken cancellationToken = GetCancellationToken();
-
             char[] charsRead = new char[1];
 
             int v = -1;

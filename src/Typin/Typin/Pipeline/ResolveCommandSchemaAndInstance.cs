@@ -1,6 +1,7 @@
-﻿namespace Typin.Internal.Pipeline
+﻿namespace Typin.Pipeline
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading;
@@ -14,32 +15,41 @@
     using Typin.Internal.DynamicCommands;
     using Typin.Schemas;
 
-    internal sealed class ResolveCommandSchemaAndInstance : IMiddleware
+    /// <summary>
+    /// Resolves command schema and instance.
+    /// </summary>
+    public sealed class ResolveCommandSchemaAndInstance : IMiddleware
     {
-        private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArguemtnCollectionSetter;
+        private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
 
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly IServiceProvider _serviceProvider;
 
-        public ResolveCommandSchemaAndInstance(IServiceProvider serviceProvider)
+        private readonly ConcurrentDictionary<Type, ObjectFactory> _commandFactoryCache = new();
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="ResolveCommandSchemaAndInstance"/>.
+        /// </summary>
+        public ResolveCommandSchemaAndInstance(IRootSchemaAccessor rootSchemaAccessor, IServiceProvider serviceProvider)
         {
+            _rootSchemaAccessor = rootSchemaAccessor;
             _serviceProvider = serviceProvider;
         }
 
-
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.ExitCode ??= Execute((CliContext)args);
+            args.ExitCode ??= Execute(args);
 
             await next();
         }
 
         private int? Execute(CliContext context)
         {
-            RootSchema root = context.RootSchema;
-            CommandInput input = context.Input;
+            CommandInput input = context.Input ?? throw new NullReferenceException($"{nameof(CliContext.PipelinedDirectives)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
-            CommandSchema commandSchema = root.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
+            CommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
 
             // TODO: is the problem below still valid?
             // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
@@ -60,8 +70,8 @@
 
             if (commandSchema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
             {
-                _dynamicCommandArguemtnCollectionSetter ??= GetDynamicArgumentsSetter();
-                _dynamicCommandArguemtnCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
+                _dynamicCommandArgumentCollectionSetter ??= GetDynamicArgumentsSetter();
+                _dynamicCommandArgumentCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
             }
 
             // To avoid instantiating the command twice, we need to get default values
@@ -74,7 +84,17 @@
 
         private ICommand GetCommandInstance(CommandSchema command)
         {
-            return command != StubDefaultCommand.Schema ? (ICommand)_serviceProvider.GetRequiredService(command.Type) : new StubDefaultCommand();
+            if (command == StubDefaultCommand.Schema)
+            {
+                return new StubDefaultCommand();
+            }
+
+            ObjectFactory factory = _commandFactoryCache.GetOrAdd(command.Type, (key) =>
+            {
+                return ActivatorUtilities.CreateFactory(key, Array.Empty<Type>());
+            });
+
+            return (ICommand)factory(_serviceProvider, null);
         }
 
         private static Action<IDynamicCommand, IArgumentCollection> GetDynamicArgumentsSetter()

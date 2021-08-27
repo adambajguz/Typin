@@ -10,15 +10,20 @@
 
     public sealed class ExecutionTimingMiddleware : IMiddleware
     {
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
-        {
-            var context = args;
+        private readonly IConsole _console;
 
-            context.Console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
+        public ExecutionTimingMiddleware(IConsole console)
+        {
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        {
+            _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
             {
                 output.WriteLine("--- Handling command '{0}' with args '{1}'",
-                                 context.Input.CommandName ?? "<default>",
-                                 string.Join(' ', context.Input.Arguments));
+                                 args.Input?.CommandName ?? "<default>",
+                                 string.Join(' ', args.Input?.Arguments ?? Array.Empty<string>()));
             });
 
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -27,10 +32,10 @@
 
             stopwatch.Stop();
 
-            int? exitCode = context.ExitCode;
-            if (context.ExitCode == 0)
+            int? exitCode = args.ExitCode;
+            if (args.ExitCode == 0)
             {
-                context.Console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
+                _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
                 {
                     output.WriteLine("--- Command finished successfully after {0} ms.",
                                      stopwatch.Elapsed.TotalMilliseconds);
@@ -38,10 +43,10 @@
             }
             else
             {
-                context.Console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
+                _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
                 {
                     output.WriteLine("--- Command finished with exit code ({0}) after {1} ms.",
-                                     context.ExitCode ?? ExitCodes.Error,
+                                     args.ExitCode ?? ExitCodes.Error,
                                      stopwatch.Elapsed.TotalMilliseconds);
                 });
             }

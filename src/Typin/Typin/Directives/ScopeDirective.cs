@@ -1,5 +1,6 @@
 ﻿namespace Typin.Directives
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -32,25 +33,27 @@
     public sealed class ScopeDirective : IPipelinedDirective
     {
         private readonly InteractiveModeOptions _options;
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
 
         /// <summary>
         /// Initializes an instance of <see cref="ScopeDirective"/>.
         /// </summary>
-        public ScopeDirective(IOptions<InteractiveModeOptions> options)
+        public ScopeDirective(IOptions<InteractiveModeOptions> options, IRootSchemaAccessor rootSchemaAccessor)
         {
             _options = options.Value;
+            _rootSchemaAccessor = rootSchemaAccessor;
         }
 
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
         /// <inheritdoc/>
-        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            string? name = args.Input.CommandName ?? GetFallbackCommandName(args);
+            string? name = args.Input?.CommandName ?? GetFallbackCommandName(args);
 
             if (name is not null)
             {
@@ -61,14 +64,14 @@
             return default;
         }
 
-        private static string? GetFallbackCommandName(ICliContext context)
+        private string? GetFallbackCommandName(CliContext context)
         {
-            CommandInput input = context.Input;
+            CommandInput? input = context.Input ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
 
             string potentialName = input.Arguments.Skip(input.Directives.Count)
                                                   .JoinToString(' ');
 
-            if (context.RootSchema.IsCommandOrSubcommandPart(potentialName))
+            if (_rootSchemaAccessor.RootSchema.IsCommandOrSubcommandPart(potentialName))
             {
                 return potentialName;
             }

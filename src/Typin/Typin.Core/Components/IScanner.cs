@@ -7,8 +7,10 @@
     /// <summary>
     /// Represents a CLI component scanner.
     /// </summary>
-    public interface IComponentScanner
+    public interface IScanner
     {
+        //TODO: add flag to switch whether to add services or not.
+
         /// <summary>
         /// A component type.
         /// </summary>
@@ -29,71 +31,71 @@
         /// <summary>
         /// Adds a component of specified type to the application.
         /// </summary>
-        IComponentScanner Single(Type type);
+        IScanner Single(Type type);
 
         /// <summary>
         /// Adds multiple components to the application.
         /// </summary>
-        IComponentScanner Multiple(IEnumerable<Type> types);
+        IScanner Multiple(IEnumerable<Type> types);
 
         /// <summary>
         /// Adds components from the specified assembly to the application.
         /// Only adds public valid types.
         /// </summary>
-        IComponentScanner From(Assembly assembly);
+        IScanner From(Assembly assembly);
 
         /// <summary>
         /// Adds components from the specified assemblies to the application.
         /// Only adds public valid types.
         /// </summary>
-        IComponentScanner From(IEnumerable<Assembly> assemblies);
+        IScanner From(IEnumerable<Assembly> assemblies);
 
         /// <summary>
         /// Adds components from the calling assembly to the application.
         /// Only adds public valid types.
         /// </summary>
-        IComponentScanner FromThisAssembly();
+        IScanner FromThisAssembly();
     }
 
     /// <summary>
     /// Represents a CLI component.
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public interface IComponentScanner<TComponent> : IComponentScanner
+    public interface IScanner<TComponent> : IScanner
         where TComponent : notnull
     {
         /// <summary>
         /// Adds a component of specified type to the application.
         /// </summary>
-        IComponentScanner<TComponent> Single<T>()
+        IScanner<TComponent> Single<T>()
             where T : class, TComponent;
 
         /// <summary>
         /// Adds a component of specified type to the application.
         /// </summary>
-        new IComponentScanner<TComponent> Single(Type type);
+        new IScanner<TComponent> Single(Type type);
 
         /// <summary>
         /// Adds multiple components to the application.
         /// </summary>
-        new IComponentScanner<TComponent> Multiple(IEnumerable<Type> types);
+        new IScanner<TComponent> Multiple(IEnumerable<Type> types);
 
         /// <summary>
         /// Adds components from the specified assembly to the application.
         /// Only adds public valid types.
         /// </summary>
-        new IComponentScanner<TComponent> From(Assembly assembly);
+        new IScanner<TComponent> From(Assembly assembly);
 
         /// <summary>
         /// Adds components from the specified assemblies to the application.
         /// Only adds public valid types.
         /// </summary>
-        new IComponentScanner<TComponent> From(IEnumerable<Assembly> assemblies);
+        new IScanner<TComponent> From(IEnumerable<Assembly> assemblies);
 
         /// <summary>
         /// Adds components from the calling assembly to the application.
         /// Only adds public valid types.
         /// </summary>
-        new IComponentScanner<TComponent> FromThisAssembly();
+        new IScanner<TComponent> FromThisAssembly();
     }
 }

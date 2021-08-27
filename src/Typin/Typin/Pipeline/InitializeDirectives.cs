@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal.Pipeline
+﻿namespace Typin.Pipeline
 {
     using System;
     using System.Collections.Generic;
@@ -11,22 +11,31 @@
     using Typin.Internal.Exceptions;
     using Typin.Schemas;
 
-    internal sealed class InitializeDirectives : IMiddleware
+    /// <summary>
+    /// Initializes directives.
+    /// </summary>
+    public sealed class InitializeDirectives : IMiddleware
     {
+        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly IServiceProvider _serviceProvider;
 
-        public InitializeDirectives(IServiceProvider serviceProvider)
+        /// <summary>
+        /// Initializes an instance of <see cref="InitializeDirectives"/>.
+        /// </summary>
+        public InitializeDirectives(IRootSchemaAccessor rootSchemaAccessor, IServiceProvider serviceProvider)
         {
+            _rootSchemaAccessor = rootSchemaAccessor;
             _serviceProvider = serviceProvider;
         }
 
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            var context = args;
+            CommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
 
             //Get current CLI mode and input directives
             //Type currentModeType = _applicationLifetime.CurrentModeType!;
-            IReadOnlyList<DirectiveInput> directives = context.Input.Directives;
+            IReadOnlyList<DirectiveInput> directives = input.Directives;
 
             //Initialize collections
             List<IDirective> directivesInstances = new();
@@ -36,7 +45,7 @@
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = args.RootSchema.TryFindDirective(directiveInput.Name) ?? throw ArgumentBindingExceptions.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = _rootSchemaAccessor.RootSchema.TryFindDirective(directiveInput.Name) ?? throw ArgumentBindingExceptions.UnknownDirectiveName(directiveInput);
 
                 //// Handle interactive directives not supported in current mode
                 //if (!directive.CanBeExecutedInMode(currentModeType))
@@ -48,7 +57,7 @@
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);
 
                 //Initialize directive
-                await instance.OnInitializedAsync(cancellationToken);
+                await instance.InitializeAsync(cancellationToken);
 
                 //Add directive to list
                 directivesInstances.Add(instance);
@@ -60,9 +69,8 @@
             }
 
             //Set directives lists in context
-            CliContext internalCliContext = (CliContext)context;
-            internalCliContext.Directives = directivesInstances;
-            internalCliContext.PipelinedDirectives = pipelinedDirectivesInstances;
+            args.Directives = directivesInstances;
+            args.PipelinedDirectives = pipelinedDirectivesInstances;
 
             await next();
         }

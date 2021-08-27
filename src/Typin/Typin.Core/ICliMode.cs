@@ -1,6 +1,6 @@
 ﻿namespace Typin
 {
-    using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -11,6 +11,9 @@
         /// <summary>
         /// Executes CLI mode.
         /// </summary>
-        ValueTask<int> ExecuteAsync(IEnumerable<string> commandLineArguments, ICliCommandExecutor executor);
+        /// <param name="executor"></param>
+        /// <param name="isStartupContext"></param>
+        /// <param name="cancellationToken"></param>
+        ValueTask<int> ExecuteAsync(ICliCommandExecutor executor, bool isStartupContext, CancellationToken cancellationToken);
     }
 }

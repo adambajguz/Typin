@@ -16,16 +16,26 @@
     [Directive(BuiltInDirectives.Preview, Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
     public sealed class PreviewDirective : IPipelinedDirective
     {
+        private readonly IConsole _console;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="PreviewDirective"/>.
+        /// </summary>
+        public PreviewDirective(IConsole console)
+        {
+            _console = console;
+        }
+
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
         /// <inheritdoc/>
-        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            WriteCommandLineInput(args.Console, args.Input);
+            WriteCommandLineInput(_console, args.Input ?? throw new NullReferenceException("Input not set."));
             args.ExitCode ??= ExitCodes.Success;
 
             return default;

@@ -19,7 +19,7 @@
 
     internal class CliBuilder : ICliBuilder, IDisposable
     {
-        private readonly Dictionary<Type, IComponentScanner> _components = new();
+        private readonly Dictionary<Type, IScanner> _components = new();
 
         /// <inheritdoc/>
         public HostBuilderContext Context { get; }
@@ -45,46 +45,57 @@
             Configuration = context.Configuration;
             Services = services;
 
-            ApplicationMetadata metadata = new(string.Empty, string.Empty, string.Empty, string.Empty);
-
-            // Add core services
             services.AddOptions();
-            services.AddPipelining();
-            services.AddSingleton(typeof(ApplicationMetadata), metadata);
-            services.AddSingleton(typeof(IConsole), new SystemConsole());
+
+            services.AddOptions<ApplicationMetadata>()
+                    .PostConfigure(options =>
+                    {
+                        options.Title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
+                        options.ExecutableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
+                        options.VersionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
+                    });
+
+            services.AddOptions<CliOptions>()
+                    .PostConfigure(options =>
+                    {
+                        options.CommandLine ??= System.Environment.CommandLine;
+                        options.CommandLineStartsWithExecutableName = true;
+                    });
+
+            services.AddScoped<ICliContextAccessor, CliContextAccessor>();
             services.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
             services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
         }
 
         /// <inheritdoc/>
-        public ICliBuilder GetOrAddComponentScanner<TComponent>(Func<IServiceCollection, IComponentScanner<TComponent>> factory, Action<IComponentScanner<TComponent>> builder)
+        public ICliBuilder GetOrAddScanner<TComponent>(Func<IServiceCollection, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
             where TComponent : class
         {
-            if (!_components.TryGetValue(typeof(TComponent), out IComponentScanner? scanner))
+            if (!_components.TryGetValue(typeof(TComponent), out IScanner? componentScanner))
             {
-                scanner = factory(Services);
-                _components.Add(typeof(TComponent), scanner);
+                componentScanner = factory(Services);
+                _components.Add(typeof(TComponent), componentScanner);
             }
 
-            IComponentScanner<TComponent> componentScanner = (scanner as IComponentScanner<TComponent>)!;
-            builder(componentScanner);
+            IScanner<TComponent> genericComponentScanner = (componentScanner as IScanner<TComponent>)!;
+            scanner(genericComponentScanner);
 
             return this;
         }
 
         /// <inheritdoc/>
-        public ICliBuilder GetOrAddComponentScanner<TComponent>(Func<ICliBuilder, IComponentScanner<TComponent>> factory, Action<IComponentScanner<TComponent>> builder)
+        public ICliBuilder GetOrAddScanner<TComponent>(Func<ICliBuilder, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
             where TComponent : class
         {
-            if (_components.TryGetValue(typeof(TComponent), out IComponentScanner? scanner))
+            if (_components.TryGetValue(typeof(TComponent), out IScanner? componentScanner))
             {
-                scanner = factory(this);
-                _components.Add(typeof(TComponent), scanner);
+                componentScanner = factory(this);
+                _components.Add(typeof(TComponent), componentScanner);
             }
 
-            IComponentScanner<TComponent> componentScanner = (scanner as IComponentScanner<TComponent>)!;
-            builder(componentScanner);
+            IScanner<TComponent> genericComponentScanner = (componentScanner as IScanner<TComponent>)!;
+            scanner(genericComponentScanner);
 
             return this;
         }
@@ -97,10 +108,16 @@
             Dictionary<Type, IReadOnlyList<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
             ComponentProvider cliComponentProvider = new(cliComponents);
 
-            Services.AddSingleton(cliComponentProvider);
+            Services.AddSingleton<IComponentProvider>(cliComponentProvider);
+            Services.TryAddSingleton<IConsole, SystemConsole>();
 
             Services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
             Services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
+
+            Services.AddPipelining(builder =>
+            {
+                builder.AddInitializer<MiddlewaresInitailizer>();
+            });
 
             Services.AddHostedService<CliHostService>();
         }

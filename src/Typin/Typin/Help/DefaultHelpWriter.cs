@@ -6,6 +6,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
+    using Microsoft.Extensions.Options;
     using Typin.Console;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
@@ -29,7 +30,9 @@
         private const ConsoleColor OptionNameColor = ConsoleColor.White;
         private const ConsoleColor CommentColor = ConsoleColor.DarkGray;
 
-        private readonly ICliContext _context;
+        private readonly RootSchema _rootSchema;
+        private readonly CliContext? _context;
+        private readonly IOptionsMonitor<ApplicationMetadata> _metadata;
         private readonly IConsole _console;
 
         private int _column;
@@ -40,25 +43,32 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(ICliContext cliContext)
+        public DefaultHelpWriter(IRootSchemaAccessor rootSchemaAccessor,
+                                 ICliContextAccessor cliContextAccessor,
+                                 IOptionsMonitor<ApplicationMetadata> metadata,
+                                 IConsole console)
         {
-            _context = cliContext;
-            _console = cliContext.Console;
+            _rootSchema = rootSchemaAccessor.RootSchema;
+            _context = cliContextAccessor.CliContext;
+            _console = console;
+            _metadata = metadata;
         }
 
         /// <inheritdoc/>
         public void Write()
         {
-            Write(_context.CommandSchema, _context.CommandDefaultValues);
+            if (_context?.CommandSchema is not null && _context.CommandDefaultValues is not null)
+            {
+                Write(_context.CommandSchema, _context.CommandDefaultValues);
+            }
         }
 
         /// <inheritdoc/>
         public void Write(CommandSchema command,
                           IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
         {
-            RootSchema root = _context.RootSchema;
-            IEnumerable<CommandSchema> childCommands = root.GetChildCommands(command.Name)
-                                                           .OrderBy(x => x.Name);
+            IEnumerable<CommandSchema> childCommands = _rootSchema.GetChildCommands(command.Name)
+                                                                  .OrderBy(x => x.Name);
 
             _console.ResetColor();
             _console.ForegroundColor = ConsoleColor.Gray;
@@ -69,12 +79,12 @@
             }
 
             WriteCommandDescription(command);
-            WriteCommandUsage(root.Directives, command, childCommands);
+            WriteCommandUsage(_rootSchema.Directives, command, childCommands);
             WriteCommandParameters(command);
             WriteCommandOptions(command, defaultValues);
             WriteModeRestrictionsManual(command);
             WriteCommandChildren(command, childCommands);
-            WriteDirectivesManual(root.Directives);
+            WriteDirectivesManual(_rootSchema.Directives);
             WriteCommandManual(command);
 
             WriteLine();
@@ -140,12 +150,12 @@
         #region Application Info
         private void WriteApplicationInfo()
         {
-            ApplicationMetadata metadata = _context.Metadata;
+            ApplicationMetadata metadata = _metadata.CurrentValue;
 
             // Title and version
-            Write(TitleColor, metadata.Title);
+            Write(TitleColor, metadata.Title ?? "<unknown>");
             Write(' ');
-            Write(VersionColor, metadata.VersionText);
+            Write(VersionColor, metadata.VersionText ?? "<unknown>");
             WriteLine();
 
             // Description
@@ -161,9 +171,9 @@
         #region Mode restrictions
         private void WriteModeRestrictionsManual(CommandSchema command)
         {
-            IReadOnlyList<Type> modesInApplication = null!;// _context.Configuration.ModeTypes;
+            IReadOnlyList<Type> modesInApplication = new List<Type>();// _context.Configuration.ModeTypes;
 
-            if (modesInApplication.Count == 1)
+            if (modesInApplication.Count <= 1)
             {
                 return;
             }
@@ -312,7 +322,7 @@
                 WriteHorizontalMargin();
             }
 
-            Write(CommentColor, _context.Metadata.ExecutableName);
+            Write(CommentColor, _metadata.CurrentValue.ExecutableName ?? "<executable>");
 
             // Child command placeholder
             if (directives.Any())

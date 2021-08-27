@@ -3,40 +3,26 @@
     /// <summary>
     /// Metadata associated with the application.
     /// </summary>
-    public class ApplicationMetadata
+    public sealed class ApplicationMetadata
     {
         /// <summary>
         /// Application title.
         /// </summary>
-        public string Title { get; }
+        public string? Title { get; set; }
 
         /// <summary>
-        /// Application executable name.
+        /// Applicatin executable name.
         /// </summary>
-        public string ExecutableName { get; }
+        public string? ExecutableName { get; set; }
 
         /// <summary>
-        /// Application version text.
+        /// Applicatin version text.
         /// </summary>
-        public string VersionText { get; }
+        public string? VersionText { get; set; }
 
         /// <summary>
         /// Application description.
         /// </summary>
-        public string? Description { get; }
-
-        /// <summary>
-        /// Initializes an instance of <see cref="ApplicationMetadata"/>.
-        /// </summary>
-        public ApplicationMetadata(string title,
-                                   string executableName,
-                                   string versionText,
-                                   string? description)
-        {
-            Title = title;
-            ExecutableName = executableName;
-            VersionText = versionText;
-            Description = description;
-        }
+        public string? Description { get; set; }
     }
 }

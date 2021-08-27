@@ -30,13 +30,13 @@
         }
 
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
         /// <inheritdoc/>
-        public ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             _options.Scope = string.Empty;
             args.ExitCode ??= ExitCodes.Success;

@@ -8,13 +8,13 @@
     /// <summary>
     /// <see cref="ICommand"/> component scanner.
     /// </summary>
-    public sealed class CommandComponentScanner : ComponentScanner<ICommand>
+    internal sealed class CommandScanner : Scanner<ICommand>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="CommandComponentScanner"/>.
+        /// Initializes a new instance of <see cref="CommandScanner"/>.
         /// </summary>
         /// <param name="services"></param>
-        public CommandComponentScanner(IServiceCollection services) : base(services)
+        public CommandScanner(IServiceCollection services) : base(services)
         {
 
         }

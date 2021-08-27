@@ -8,13 +8,13 @@
     /// <summary>
     /// <see cref="IDynamicCommand"/> component scanner.
     /// </summary>
-    public sealed class DynamicCommandComponentScanner : ComponentScanner<IDynamicCommand>
+    internal sealed class DynamicCommandScanner : Scanner<IDynamicCommand>
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="CommandComponentScanner"/>.
+        /// Initializes a new instance of <see cref="CommandScanner"/>.
         /// </summary>
         /// <param name="services"></param>
-        public DynamicCommandComponentScanner(IServiceCollection services) : base(services)
+        public DynamicCommandScanner(IServiceCollection services) : base(services)
         {
 
         }

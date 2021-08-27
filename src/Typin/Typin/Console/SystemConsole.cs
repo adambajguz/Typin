@@ -11,11 +11,8 @@
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
     /// </summary>
-    public class SystemConsole : IConsole, IDisposable
+    public sealed class SystemConsole : IConsole
     {
-        private CancellationTokenSource? _cancellationTokenSource;
-        private bool disposedValue;
-
         /// <inheritdoc />
         public StandardStreamReader Input { get; }
 
@@ -116,61 +113,6 @@
             set => Console.BufferHeight = value;
         }
 
-        /// <inheritdoc />
-        public CancellationToken GetCancellationToken()
-        {
-            if (_cancellationTokenSource is not null)
-            {
-                return _cancellationTokenSource.Token;
-            }
-
-            /* ====================================================================================================================
-             *
-             *  This methods must use local variable, because removing cts and using _cancellationTokenSource
-             *  would lead to very high RAM usage when many CliApplication were created in single process e.g. in benchmarks.
-             *
-             *  (Memory leak? - this needs further investigation)
-             *
-             * ====================================================================================================================
-             *
-             *   public CancellationToken GetCancellationToken()
-             *   {
-             *       if (_cancellationTokenSource is not null)
-             *           return _cancellationTokenSource.Token;
-             *
-             *       _cancellationTokenSource = new CancellationTokenSource();
-             *
-             *       Console.CancelKeyPress += (_, args) =>
-             *       {
-             *           // If cancellation hasn't been requested yet - cancel shutdown and fire the token
-             *           if (!_cancellationTokenSource.IsCancellationRequested)
-             *           {
-             *               args.Cancel = true;
-             *               _cancellationTokenSource.Cancel();
-             *           }
-             *       };
-             *
-             *       return _cancellationTokenSource.Token;
-             *   }
-             * ====================================================================================================================
-             */
-
-            CancellationTokenSource cts = new();
-
-            Console.CancelKeyPress += (_, args) =>
-            {
-                //TODO: remove token from console + add logging + add supprot for cancelling single command in interactive mode.
-                // If cancellation hasn't been requested yet - cancel shutdown and fire the token
-                if (!cts.IsCancellationRequested)
-                {
-                    args.Cancel = true;
-                    cts.Cancel();
-                }
-            };
-
-            return (_cancellationTokenSource = cts).Token;
-        }
-
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
         public void SetCursorPosition(int left, int top)
@@ -201,10 +143,8 @@
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
-        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        public async Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false, CancellationToken cancellationToken = default)
         {
-            CancellationToken cancellationToken = GetCancellationToken();
-
             char[] charsRead = new char[1];
 
             //TODO: fix double enter for \r\
@@ -241,32 +181,6 @@
             }
 
             return Console.ReadKey(intercept);
-        }
-
-        /// <summary>
-        /// Disposes console.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    Input.Dispose();
-                    Output.Dispose();
-                    Error.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
 
         #region Helpers
