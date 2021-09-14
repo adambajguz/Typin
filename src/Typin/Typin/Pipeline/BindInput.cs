@@ -41,8 +41,8 @@
 
             // Get command instance from context and bind arguments
             ICommand instance = args.Command ?? throw new NullReferenceException($"{nameof(CliContext.Command)} must be set in {nameof(CliContext)}.");
-            commandSchema.BindParameters(instance, input.Parameters);
-            commandSchema.BindOptions(instance, input.Options, _configuration);
+            commandSchema.BindParameters(instance, input);
+            commandSchema.BindOptions(instance, input, _configuration);
 
             await next();
         }

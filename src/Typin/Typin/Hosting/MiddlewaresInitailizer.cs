@@ -15,6 +15,7 @@
         {
             _ = PipelineBuilder.Create<CliContext>()
                  .Lifetime(InvokablePipelineLifetime.Scoped)
+                 .Step<HandleExceptions>()
                  .Step<ResolveCommandSchemaAndInstance>()
                  .Step<InitializeDirectives>()
                  .Step<ExecuteDirectivesSubpipeline>()

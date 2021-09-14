@@ -1,12 +1,12 @@
 ﻿namespace InteractiveModeExample.Commands
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using InteractiveModeExample.Services;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Exceptions;
 
     [Command("book remove", Description = "Remove a book from the library.")]
     public class BookRemoveCommand : ICommand
@@ -29,7 +29,7 @@
 
             if (book == null)
             {
-                throw new CommandException("Book not found.", 1);
+                throw new Exception("Book not found.");
             }
 
             _libraryService.RemoveBook(book);

@@ -27,7 +27,7 @@
 
             // Execute command
             await instance.ExecuteAsync(cancellationToken);
-            args.ExitCode ??= ExitCodes.Success;
+            args.ExitCode ??= ExitCode.Success;
 
             await next();
         }

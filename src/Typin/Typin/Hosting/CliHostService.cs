@@ -10,6 +10,7 @@
     using Typin.Console;
     using Typin.Modes;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     internal class CliHostService : BackgroundService
     {
@@ -72,7 +73,12 @@
                     return;
                 }
 
-                _logger.LogCritical(ex, "Fatal error");
+                _logger.LogCritical(ex, "Fatal error occurred in CLI application. Stopping application...");
+
+                _console.Error.WithForegroundColor(ConsoleColor.DarkRed, (error) => error.WriteLine($"Unhandled exception. Stopping application..."));
+                _console.Error.WriteLine();
+                _console.Error.WriteException(ex);
+
                 _hostApplicationLifetime.StopApplication();
             }
         }

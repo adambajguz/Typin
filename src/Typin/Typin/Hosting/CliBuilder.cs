@@ -11,7 +11,6 @@
     using Typin.Components;
     using Typin.Console;
     using Typin.DynamicCommands;
-    using Typin.Exceptions;
     using Typin.Help;
     using Typin.Internal;
     using Typin.Internal.Components;
@@ -50,7 +49,7 @@
             services.AddOptions<ApplicationMetadata>()
                     .PostConfigure(options =>
                     {
-                        options.Title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
+                        options.Title ??= Environment.ApplicationName;
                         options.ExecutableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
                         options.VersionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
                     });
@@ -62,7 +61,7 @@
                         options.CommandLineStartsWithExecutableName = true;
                     });
 
-            services.AddScoped<ICliContextAccessor, CliContextAccessor>();
+            services.AddSingleton<ICliContextAccessor, CliContextAccessor>();
             services.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
             services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
@@ -111,7 +110,6 @@
             Services.AddSingleton<IComponentProvider>(cliComponentProvider);
             Services.TryAddSingleton<IConsole, SystemConsole>();
 
-            Services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
             Services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
 
             Services.AddPipelining(builder =>

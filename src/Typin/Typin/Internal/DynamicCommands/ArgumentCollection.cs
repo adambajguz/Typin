@@ -39,11 +39,7 @@
         /// </summary>
         public ArgumentCollection(IEnumerable<KeyValuePair<string, InputValue>> values)
         {
-#if NETSTANDARD2_0
-            _values = System.Linq.Enumerable.ToDictionary(values, x => x.Key, x => x.Value);
-#else
             _values = new Dictionary<string, InputValue>(values);
-#endif
         }
 
         /// <inheritdoc/>

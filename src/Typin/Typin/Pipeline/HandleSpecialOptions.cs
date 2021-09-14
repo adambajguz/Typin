@@ -43,7 +43,7 @@
             {
                 _console.Output.WriteLine(_metadata.CurrentValue.VersionText);
 
-                args.ExitCode ??= ExitCodes.Success;
+                args.ExitCode ??= ExitCode.Success;
                 return;
             }
 
@@ -54,7 +54,7 @@
                 var commandDefaultValues = args.CommandDefaultValues ?? throw new NullReferenceException($"{nameof(CliContext.CommandDefaultValues)} must be set in {nameof(CliContext)}.");
                 _helpTextWriter.Write(commandSchema, commandDefaultValues);
 
-                args.ExitCode ??= ExitCodes.Success;
+                args.ExitCode ??= ExitCode.Success;
                 return;
             }
 

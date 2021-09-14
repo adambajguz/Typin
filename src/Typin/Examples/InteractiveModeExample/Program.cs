@@ -9,6 +9,7 @@
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     public static class Program
     {

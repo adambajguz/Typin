@@ -3,7 +3,6 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
     using Microsoft.Extensions.Options;
@@ -491,11 +490,7 @@
         #endregion
 
         #region Command Children
-#if !NETSTANDARD2_0
-        [SuppressMessage("Style", "IDE0057:Use range operator")]
-#endif
-        private void WriteCommandChildren(CommandSchema command,
-                                          IEnumerable<CommandSchema> childCommands)
+        private void WriteCommandChildren(CommandSchema command, IEnumerable<CommandSchema> childCommands)
         {
             if (!childCommands.Any())
             {
@@ -512,7 +507,7 @@
             foreach (CommandSchema childCommand in childCommands)
             {
                 string relativeCommandName = !string.IsNullOrWhiteSpace(command.Name)
-                    ? childCommand.Name!.Substring(command.Name.Length).Trim()
+                    ? childCommand.Name![command.Name.Length..].Trim()
                     : childCommand.Name!;
 
                 // Name

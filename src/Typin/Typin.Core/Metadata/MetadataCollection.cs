@@ -32,11 +32,7 @@
         /// </summary>
         public MetadataCollection(IEnumerable<KeyValuePair<Type, IArgumentMetadata>> values)
         {
-#if NETSTANDARD2_0
-            _values = System.Linq.Enumerable.ToDictionary(values, x => x.Key, x => x.Value);
-#else
             _values = new Dictionary<Type, IArgumentMetadata>(values);
-#endif
         }
 
         /// <summary>

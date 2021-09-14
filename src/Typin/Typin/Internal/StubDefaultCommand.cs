@@ -10,7 +10,7 @@
     [Command]
     internal class StubDefaultCommand : ICommand
     {
-        public static CommandSchema Schema { get; } = CommandSchemaResolver.Resolve(typeof(StubDefaultCommand), null);
+        public static CommandSchema Schema { get; } = CommandSchemaResolver.Resolve(typeof(StubDefaultCommand));
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {

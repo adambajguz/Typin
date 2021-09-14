@@ -18,7 +18,7 @@ In order to be a valid CLI mode type, it must:
 - Not be an abstract class
 - Implement {typeof(ICliMode).FullName}.";
 
-            return new TypinException(message.Trim());
+            return new TemporaryException(message.Trim());
         }
 
         public static TypinException DirectiveNameIsInvalid(string name)
@@ -29,7 +29,7 @@ Directive name '[{name}]' is invalid.
 Directives must have unique, non-empty names without whitespaces.
 Names are case-sensitive.";
 
-            return new TypinException(message.Trim());
+            return new TemporaryException(message.Trim());
         }
 
         public static TypinException InvalidOptionName(string name)
@@ -41,21 +41,21 @@ Options must have a name starting from letter, while short names must be a lette
 Option names must be at least 2 characters long to avoid confusion with short names.
 If you intended to set the short name instead, use the attribute overload that accepts a char.";
 
-            return new TypinException(message.Trim());
+            return new TemporaryException(message.Trim());
         }
 
         public static TypinException InvalidOptionShortName(char shortName)
         {
             string message = $"Command option short name '{shortName}' is invalid. Options must have a name starting from letter, while short names must be a letter.";
 
-            return new TypinException(message);
+            return new TemporaryException(message);
         }
 
         public static TypinException InvalidConverterType(Type converterType)
         {
             string message = $"Command argument has an invalid converter '{converterType.FullName}'. It must implement '{typeof(IBindingConverter).Name}'.";
 
-            return new TypinException(message);
+            return new TemporaryException(message);
         }
     }
 }

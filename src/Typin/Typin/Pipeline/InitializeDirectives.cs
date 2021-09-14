@@ -7,8 +7,8 @@
     using Microsoft.Extensions.DependencyInjection;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Exceptions.ArgumentBinding;
     using Typin.Input;
-    using Typin.Internal.Exceptions;
     using Typin.Schemas;
 
     /// <summary>
@@ -45,7 +45,8 @@
             foreach (DirectiveInput directiveInput in directives)
             {
                 // Try to get the directive matching the input or fallback to default
-                DirectiveSchema directive = _rootSchemaAccessor.RootSchema.TryFindDirective(directiveInput.Name) ?? throw ArgumentBindingExceptions.UnknownDirectiveName(directiveInput);
+                DirectiveSchema directive = _rootSchemaAccessor.RootSchema.TryFindDirective(directiveInput.Name) ??
+                    throw new UnknownDirectiveInputException(directiveInput, input);
 
                 //// Handle interactive directives not supported in current mode
                 //if (!directive.CanBeExecutedInMode(currentModeType))

@@ -5,7 +5,7 @@
     using Microsoft.Extensions.Hosting;
     using Typin;
     using Typin.Attributes;
-    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     [Command("quit", Description = "Quits the interactive mode",
              SupportedModes = new[] { typeof(InteractiveMode) })]

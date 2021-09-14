@@ -46,7 +46,7 @@
                 _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
                 {
                     output.WriteLine("--- Command finished with exit code ({0}) after {1} ms.",
-                                     args.ExitCode ?? ExitCodes.Error,
+                                     args.ExitCode ?? ExitCode.Error,
                                      stopwatch.Elapsed.TotalMilliseconds);
                 });
             }

@@ -58,7 +58,7 @@
                     break;
                 }
 
-                string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
+                string name = argument[1..^1];
 
                 result.Add(new DirectiveInput(name));
             }
@@ -100,7 +100,7 @@
         }
 
         private static IReadOnlyList<CommandParameterInput> ParseParameters(IReadOnlyList<string> commandLineArguments,
-                                                                            ref int index)
+                                                                         ref int index)
         {
             List<CommandParameterInput> result = new();
 
@@ -140,13 +140,13 @@
                         result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
                     }
 
-                    currentOptionAlias = argument.Substring(2);
+                    currentOptionAlias = argument[2..];
                     currentOptionValues = new List<string>();
                 }
                 // Short name
                 else if (CommandOptionInput.IsOptionAlias(argument))
                 {
-                    foreach (var alias in argument.Substring(1))
+                    foreach (var alias in argument[1..])
                     {
                         // Flush previous
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))

@@ -6,7 +6,7 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.",
                SupportedModes = new[] { typeof(InteractiveMode) })]

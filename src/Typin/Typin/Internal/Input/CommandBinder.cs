@@ -4,8 +4,8 @@
     using System.IO;
     using System.Linq;
     using Microsoft.Extensions.Configuration;
+    using Typin.Exceptions.ArgumentBinding;
     using Typin.Input;
-    using Typin.Internal.Exceptions;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
 
@@ -14,8 +14,9 @@
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, IReadOnlyList<CommandParameterInput> parameterInputs)
+        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, CommandInput input)
         {
+            IReadOnlyList<CommandParameterInput> parameterInputs = input.Parameters;
             IReadOnlyList<ParameterSchema> parameters = commandSchema.Parameters;
 
             // All inputs must be bound
@@ -24,7 +25,7 @@
 
             if (remainingParameters > remainingInputs)
             {
-                throw ArgumentBindingExceptions.ParameterNotSet(parameters.TakeLast(remainingParameters - remainingInputs));
+                throw new MissingParametersException(input, parameters.TakeLast(remainingParameters - remainingInputs));
             }
 
             // Scalar parameters
@@ -34,7 +35,7 @@
                 ParameterSchema parameter = parameters[i];
                 CommandParameterInput scalarInput = parameterInputs[i];
 
-                parameter.BindOn(instance, scalarInput.Value);
+                parameter.BindOn(instance, input, scalarInput.Value);
 
                 --remainingParameters;
                 --remainingInputs;
@@ -52,10 +53,10 @@
                 // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
                 if (!nonScalarValues.Any())
                 {
-                    throw ArgumentBindingExceptions.ParameterNotSet(new[] { nonScalarParameter });
+                    throw new MissingParametersException(input, nonScalarParameter);
                 }
 
-                nonScalarParameter.BindOn(instance, nonScalarValues);
+                nonScalarParameter.BindOn(instance, input, nonScalarValues);
                 --remainingParameters;
                 remainingInputs = 0;
             }
@@ -63,7 +64,7 @@
             // Ensure all inputs were bound
             if (remainingInputs > 0)
             {
-                throw ArgumentBindingExceptions.UnrecognizedParametersProvided(parameterInputs.TakeLast(remainingInputs));
+                throw new UnrecognizedParametersException(input, parameterInputs.TakeLast(remainingInputs));
             }
         }
 
@@ -72,9 +73,10 @@
         /// </summary>
         public static void BindOptions(this CommandSchema commandSchema,
                                        ICommand instance,
-                                       IReadOnlyList<CommandOptionInput> optionInputs,
+                                       CommandInput input,
                                        IConfiguration configuration)
         {
+            IReadOnlyList<CommandOptionInput> optionInputs = input.Options;
             IReadOnlyList<OptionSchema> options = commandSchema.Options;
 
             // All inputs must be bound
@@ -82,7 +84,7 @@
 
             // All required options must be set
             HashSet<OptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
-                                                                       .ToHashSet();
+                                                                .ToHashSet();
 
             // Direct or fallback input
             foreach (OptionSchema option in options)
@@ -98,7 +100,7 @@
                 {
                     string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
-                    option.BindOn(instance, values);
+                    option.BindOn(instance, input, values);
                     unsetRequiredOptions.Remove(option);
 
                     continue;
@@ -116,7 +118,7 @@
                 string[] inputValues = inputs.SelectMany(i => i.Values)
                                              .ToArray();
 
-                option.BindOn(instance, inputValues);
+                option.BindOn(instance, input, inputValues);
 
                 remainingOptionInputs.RemoveRange(inputs);
 
@@ -130,13 +132,13 @@
             // Ensure all inputs were bound
             if (remainingOptionInputs.Any())
             {
-                throw ArgumentBindingExceptions.UnrecognizedOptionsProvided(remainingOptionInputs);
+                throw new UnrecognizedOptionsException(input, remainingOptionInputs);
             }
 
             // Ensure all required options were set
             if (unsetRequiredOptions.Any())
             {
-                throw ArgumentBindingExceptions.RequiredOptionsNotSet(unsetRequiredOptions);
+                throw new RequiredOptionsMissingException(input, unsetRequiredOptions);
             }
         }
     }

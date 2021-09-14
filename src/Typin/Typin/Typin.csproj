@@ -63,7 +63,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
     <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
+    <ProjectReference Include="..\Typin.Utilities.CommandLineSplitter\Typin.Utilities.CommandLineSplitter.csproj" />
+    <ProjectReference Include="..\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />
   </ItemGroup>
 
 </Project>

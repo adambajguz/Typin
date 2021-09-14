@@ -15,13 +15,13 @@
                 CliContextHolder? holder = _cliContextCurrent.Value;
                 if (holder is not null)
                 {
-                    // Clear current HttpContext trapped in the AsyncLocals, as its done.
+                    // Clear current CliContext trapped in the AsyncLocals, as its done.
                     holder.Context = null;
                 }
 
                 if (value is not null)
                 {
-                    // Use an object indirection to hold the HttpContext in the AsyncLocal,
+                    // Use an object indirection to hold the CliContext in the AsyncLocal,
                     // so it can be cleared in all ExecutionContexts when its cleared.
                     _cliContextCurrent.Value = new CliContextHolder { Context = value };
                 }

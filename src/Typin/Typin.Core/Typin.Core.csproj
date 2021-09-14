@@ -58,4 +58,8 @@
     <PackageReference Include="PackSite.Library.Pipelining.Abstractions" Version="[1.0.0-dev-00004,]" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -14,10 +14,6 @@
         /// </summary>
         public static Assembly? EntryAssembly => LazyEntryAssembly.Value;
 
-        public static string? TryGetDefaultTitle()
-        {
-            return EntryAssembly?.GetName().Name;
-        }
 
         public static string? TryGetDefaultExecutableName()
         {

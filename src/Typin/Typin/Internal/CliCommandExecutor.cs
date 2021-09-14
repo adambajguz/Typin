@@ -9,7 +9,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using PackSite.Library.Pipelining;
-    using Typin.Exceptions;
     using Typin.Input;
     using Typin.Internal.Input;
     using Typin.Utilities;
@@ -71,19 +70,6 @@
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogDebug("Exception occured. Trying to find exception handler.");
-
-                    IEnumerable<ICliExceptionHandler> exceptionHandlers = provider.GetServices<ICliExceptionHandler>();
-                    foreach (ICliExceptionHandler handler in exceptionHandlers)
-                    {
-                        if (handler.HandleException(ex))
-                        {
-                            _logger.LogDebug(ex, "Exception handled by {ExceptionHandlerType}.", handler.GetType().FullName);
-
-                            return ExitCodes.FromException(ex);
-                        }
-                    }
-
                     _logger.LogCritical(ex, "Unhandled exception during command execution.");
 
                     throw;
@@ -96,7 +82,7 @@
                     _logger.LogDebug("Disposed scope with CliContext {CliContextId} after {Elapsed}.", cliContext.Id, stopwatch.Elapsed);
                 }
 
-                return cliContext.ExitCode ?? ExitCodes.Error;
+                return cliContext.ExitCode ?? ExitCode.Error;
             }
         }
     }

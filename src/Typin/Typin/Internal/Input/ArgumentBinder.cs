@@ -6,7 +6,8 @@ namespace Typin.Internal.Input
     using System.Linq;
     using System.Reflection;
     using Typin.Binding;
-    using Typin.Internal.Exceptions;
+    using Typin.Exceptions.ArgumentBinding;
+    using Typin.Input;
     using Typin.Internal.Extensions;
     using Typin.Schemas;
     using Typin.Utilities;
@@ -130,7 +131,7 @@ namespace Typin.Internal.Input
         }
 
         #region Value Converter
-        private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType, IBindingConverter? converterInstance)
+        private static object? ConvertScalar(this ArgumentSchema argumentSchema, CommandInput input, string? value, Type targetType, IBindingConverter? converterInstance)
         {
             try
             {
@@ -183,7 +184,7 @@ namespace Typin.Internal.Input
                 if (nullableUnderlyingType is not null)
                 {
                     return !string.IsNullOrWhiteSpace(value)
-                        ? ConvertScalar(argumentSchema, value, nullableUnderlyingType, converterInstance: null) // we can pass null because we have an extra check in the beginning of the method
+                        ? ConvertScalar(argumentSchema, input, value, nullableUnderlyingType, converterInstance: null) // we can pass null because we have an extra check in the beginning of the method
                         : null;
                 }
 
@@ -210,15 +211,15 @@ namespace Typin.Internal.Input
             }
             catch (Exception ex)
             {
-                throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, value, targetType, ex);
+                throw new TypeConversionException(argumentSchema, input, value, targetType, ex);
             }
 
-            throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, value, targetType);
+            throw new TypeConversionException(argumentSchema, input, value, targetType);
         }
 
-        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
+        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, CommandInput input, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
         {
-            Array array = values.Select(v => ConvertScalar(argumentSchema, v, targetElementType, converterInstance))
+            Array array = values.Select(v => ConvertScalar(argumentSchema, input, v, targetElementType, converterInstance))
                                 .ToNonGenericArray(targetElementType);
 
             Type arrayType = array.GetType();
@@ -231,12 +232,12 @@ namespace Typin.Internal.Input
 
             // Constructible from an array
             ConstructorInfo? arrayConstructor = targetEnumerableType.GetConstructor(new[] { arrayType });
-            _ = arrayConstructor ?? throw ArgumentBindingExceptions.CannotConvertNonScalar(argumentSchema, values, targetEnumerableType);
+            _ = arrayConstructor ?? throw new NonScalarNonConstructibleFromArrayException(argumentSchema, input, values, targetEnumerableType);
 
             return arrayConstructor.Invoke(new object[] { array });
         }
 
-        private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
+        private static object? Convert(this ArgumentSchema argumentSchema, CommandInput input, IReadOnlyCollection<string> values)
         {
             BindableArgument bindable = argumentSchema.Bindable;
 
@@ -257,8 +258,8 @@ namespace Typin.Internal.Input
                 if (enumerableUnderlyingType is null)
                 {
                     return values.Count <= 1
-                        ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, converterInstance)
-                        : throw ArgumentBindingExceptions.CannotConvertMultipleValuesToNonScalar(argumentSchema, values);
+                        ? ConvertScalar(argumentSchema, input, values.SingleOrDefault(), targetType, converterInstance)
+                        : throw new NonScalarInputExpectedException(argumentSchema, input, values);
                 }
                 // Non-scalar with conversion for collection
                 else if (targetType.IsAssignableFrom(converterInstance.TargetType))
@@ -269,13 +270,13 @@ namespace Typin.Internal.Input
                     }
                     catch (Exception ex)
                     {
-                        throw ArgumentBindingExceptions.CannotConvertToType(argumentSchema, values, targetType, ex);
+                        throw new TypeConversionException(argumentSchema, input, values, targetType, ex);
                     }
                 }
                 // Non-scalar with conversion for collection item type
                 else
                 {
-                    return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, converterInstance);
+                    return ConvertNonScalar(argumentSchema, input, values, targetType, enumerableUnderlyingType, converterInstance);
                 }
             }
 
@@ -284,13 +285,13 @@ namespace Typin.Internal.Input
             if (enumerableUnderlyingType is null)
             {
                 return values.Count <= 1
-                    ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, null)
-                    : throw ArgumentBindingExceptions.CannotConvertMultipleValuesToNonScalar(argumentSchema, values);
+                    ? ConvertScalar(argumentSchema, input, values.SingleOrDefault(), targetType, null)
+                    : throw new NonScalarInputExpectedException(argumentSchema, input, values);
             }
             // Non-scalar with conversion for collection item type
             else
             {
-                return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, null); ;
+                return ConvertNonScalar(argumentSchema, input, values, targetType, enumerableUnderlyingType, null); ;
             }
         }
         #endregion
@@ -298,18 +299,18 @@ namespace Typin.Internal.Input
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, CommandInput input, IReadOnlyCollection<string> values)
         {
-            object? value = argumentSchema.Convert(values);
+            object? value = argumentSchema.Convert(input, values);
             argumentSchema.Bindable.SetValue(command, value);
         }
 
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, string value)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, CommandInput input, string value)
         {
-            BindOn(argumentSchema, command, new[] { value });
+            BindOn(argumentSchema, command, input, new[] { value });
         }
     }
 }

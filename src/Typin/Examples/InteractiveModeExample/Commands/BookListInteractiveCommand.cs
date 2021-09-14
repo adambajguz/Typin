@@ -8,7 +8,7 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     [Command("book list-interactive", Description = "List books.",
              SupportedModes = new[] { typeof(InteractiveMode) },
