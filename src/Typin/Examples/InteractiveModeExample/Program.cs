@@ -26,8 +26,8 @@
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseDirectMode(true)
-                .UseInteractiveMode(options: (cfg) =>
+                .UseDirectMode()
+                .UseInteractiveMode(true, options: (cfg) =>
                 {
                     //cfg.IsAdvancedInputAvailable = false;
                 })

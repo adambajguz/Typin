@@ -15,7 +15,7 @@
     /// </summary>
     public class InteractiveMode : ICliMode
     {
-        private readonly bool firstEnter = true;
+        private bool firstEnter = true;
 
         private readonly InteractiveModeOptions _options;
         private readonly IConsole _console;
@@ -59,6 +59,7 @@
             if (firstEnter && _configuration.StartupMode == typeof(InteractiveMode) && commandLineArguments.Any())
             {
                 await executor.ExecuteCommandAsync(commandLineArguments);
+                firstEnter = false;
             }
 
             IEnumerable<string> interactiveArguments;
