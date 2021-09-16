@@ -1,3 +1,7 @@
+### v3.0.4 (06-Apr-2021)
+
+ - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
+
 ### v4.0.0 (xx-Jul-2021)
 
  - Added dynamic commands support.
