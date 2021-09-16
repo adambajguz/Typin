@@ -1,3 +1,7 @@
+### v3.0.4 (06-Apr-2021)
+
+ - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
+
 ### v3.0.3 (06-Apr-2021)
 
  - Fixed `DefaultDirective` (`[!]`) executes default command - unable to execute scoped command without parameters, e.g., `[>] books\r [!]\r` was executing default command.
