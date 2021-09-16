@@ -1,7 +1,3 @@
-### v3.0.4 (06-Apr-2021)
-
- - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
-
 ### v4.0.0 (xx-Jul-2021)
 
  - Added dynamic commands support.
@@ -22,6 +18,10 @@
  - Fixed console not being disposed when stopping the application.
  - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
  - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
+
+### v3.0.4 (06-Apr-2021)
+
+ - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
 
 ### v3.0.3 (06-Apr-2021)
 
