@@ -28,8 +28,8 @@
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
                 .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseDirectMode(true)
-                .UseInteractiveMode(options: (cfg) =>
+                .UseDirectMode()
+                .UseInteractiveMode(true, options: (cfg) =>
                 {
                     cfg.PromptForeground = ConsoleColor.Magenta;
                     //cfg.IsAdvancedInputAvailable = false;
