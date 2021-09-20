@@ -30,7 +30,7 @@
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, CommandInput input, string? value, Type targetType, Exception? innerException = null) :
+        public TypeConversionException(ArgumentSchema argument, ParsedCommandInput input, string? value, Type targetType, Exception? innerException = null) :
             this(argument, input, new[] { value }, targetType, innerException)
         {
 
@@ -44,7 +44,7 @@
         /// <param name="values"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, CommandInput input, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
+        public TypeConversionException(ArgumentSchema argument, ParsedCommandInput input, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
             base(argument,
                  input,
                  BuildMessage(argument, values, targetType, innerException),

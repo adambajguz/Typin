@@ -29,7 +29,6 @@
         protected override void RegisterService(Type type)
         {
             Services.AddSingleton(type);
-            Services.AddSingleton(typeof(ICliMode), (provider) => provider.GetRequiredService(type));
         }
     }
 }

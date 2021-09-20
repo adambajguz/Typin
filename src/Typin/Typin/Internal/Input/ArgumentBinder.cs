@@ -131,7 +131,7 @@ namespace Typin.Internal.Input
         }
 
         #region Value Converter
-        private static object? ConvertScalar(this ArgumentSchema argumentSchema, CommandInput input, string? value, Type targetType, IBindingConverter? converterInstance)
+        private static object? ConvertScalar(this ArgumentSchema argumentSchema, ParsedCommandInput input, string? value, Type targetType, IBindingConverter? converterInstance)
         {
             try
             {
@@ -217,7 +217,7 @@ namespace Typin.Internal.Input
             throw new TypeConversionException(argumentSchema, input, value, targetType);
         }
 
-        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, CommandInput input, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
+        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, ParsedCommandInput input, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
         {
             Array array = values.Select(v => ConvertScalar(argumentSchema, input, v, targetElementType, converterInstance))
                                 .ToNonGenericArray(targetElementType);
@@ -237,7 +237,7 @@ namespace Typin.Internal.Input
             return arrayConstructor.Invoke(new object[] { array });
         }
 
-        private static object? Convert(this ArgumentSchema argumentSchema, CommandInput input, IReadOnlyCollection<string> values)
+        private static object? Convert(this ArgumentSchema argumentSchema, ParsedCommandInput input, IReadOnlyCollection<string> values)
         {
             BindableArgument bindable = argumentSchema.Bindable;
 
@@ -299,7 +299,7 @@ namespace Typin.Internal.Input
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, CommandInput input, IReadOnlyCollection<string> values)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, ParsedCommandInput input, IReadOnlyCollection<string> values)
         {
             object? value = argumentSchema.Convert(input, values);
             argumentSchema.Bindable.SetValue(command, value);
@@ -308,7 +308,7 @@ namespace Typin.Internal.Input
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, CommandInput input, string value)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, ParsedCommandInput input, string value)
         {
             BindOn(argumentSchema, command, input, new[] { value });
         }

@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="input"></param>
         /// <param name="parameter"></param>
-        public MissingParametersException(CommandInput input, ParameterSchema parameter) :
+        public MissingParametersException(ParsedCommandInput input, ParameterSchema parameter) :
             base(null,
                  input,
                  BuildMessage(parameter))
@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="input"></param>
         /// <param name="parameters"></param>
-        public MissingParametersException(CommandInput input, IEnumerable<ParameterSchema> parameters) :
+        public MissingParametersException(ParsedCommandInput input, IEnumerable<ParameterSchema> parameters) :
             base(null,
                  input,
                  BuildMessage(parameters))

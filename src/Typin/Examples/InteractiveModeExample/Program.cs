@@ -10,6 +10,8 @@
     using Typin.Hosting;
     using Typin.Modes;
     using Typin.Modes.Interactive;
+    using Typin.Modes.Interactive.Commands;
+    using Typin.Modes.Interactive.Directives;
 
     public static class Program
     {
@@ -25,6 +27,8 @@
                     cliBuilder
                         .AddCommands(scanner =>
                         {
+                            scanner.Single<InteractiveCommand>();
+
                             scanner.FromThisAssembly();
                         })
                         .AddDynamicCommands(scanner =>
@@ -35,6 +39,8 @@
                         {
                             scanner.Single<DebugDirective>()
                                    .Single<PreviewDirective>();
+
+                            scanner.Single<InteractiveDirective>();
 
                             scanner.FromThisAssembly();
                         })
@@ -48,7 +54,7 @@
                             scanner.Single<InteractiveMode>();
                         });
 
-                    cliBuilder.SetStartupMode<InteractiveMode>();
+                    cliBuilder.SetStartupMode<DirectMode>();
 
                     cliBuilder.UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}");
                 })

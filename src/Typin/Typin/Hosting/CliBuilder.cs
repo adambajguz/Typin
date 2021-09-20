@@ -57,13 +57,20 @@
             services.AddOptions<CliOptions>()
                     .PostConfigure(options =>
                     {
-                        options.CommandLine ??= System.Environment.CommandLine;
-                        options.CommandLineStartsWithExecutableName = true;
+                        if (options.CommandLine is null)
+                        {
+                            options.CommandLine = System.Environment.CommandLine;
+                            options.StartupExecutionOptions = CommandExecutionOptions.TrimExecutable;
+                        }
                     });
 
             services.AddSingleton<ICliContextAccessor, CliContextAccessor>();
             services.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
-            services.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
+            services.AddSingleton<ICommandExecutor, CommandExecutor>();
+            services.AddSingleton<CliModeManager>();
+            services.AddSingleton<ICliModeSwitcher>((provider) => provider.GetRequiredService<CliModeManager>());
+            services.AddSingleton<ICliModeAccessor>((provider) => provider.GetRequiredService<CliModeManager>());
+
             services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
         }
 

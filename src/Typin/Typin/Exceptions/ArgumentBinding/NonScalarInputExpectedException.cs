@@ -23,7 +23,7 @@
         /// <param name="argument"></param>
         /// <param name="input"></param>
         /// <param name="values"></param>
-        public NonScalarInputExpectedException(ArgumentSchema argument, CommandInput input, IReadOnlyCollection<string> values) :
+        public NonScalarInputExpectedException(ArgumentSchema argument, ParsedCommandInput input, IReadOnlyCollection<string> values) :
             base(argument,
                  input,
                  BuildMessage(argument, values))

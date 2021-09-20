@@ -31,7 +31,7 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            CommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
+            ParsedCommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
 
             //Get current CLI mode and input directives
             //Type currentModeType = _applicationLifetime.CurrentModeType!;

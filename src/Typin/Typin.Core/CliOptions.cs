@@ -9,22 +9,22 @@
     public sealed class CliOptions
     {
         /// <summary>
-        /// Command line (default: null).
+        /// Command line.
         /// </summary>
-        public string? CommandLine { get; set; }
+        public string? CommandLine { get; set; } //TODO: change to enumerable
 
         /// <summary>
-        /// Whether <see cref="CommandLine"/> starts with executable name that should be ommited (default: false).
+        /// Startup <see cref="CommandLine"/> execution options.
         /// </summary>
-        public bool CommandLineStartsWithExecutableName { get; set; }
+        public CommandExecutionOptions StartupExecutionOptions { get; set; }
 
         /// <summary>
-        /// Startup mode (default: null).
+        /// Startup mode.
         /// </summary>
         public Type? StartupMode { get; set; }
 
         /// <summary>
-        /// Startup message or null when no message (default: null).
+        /// Startup message or null when no message.
         /// </summary>
         public Action<IServiceProvider, ApplicationMetadata, IConsole>? StartupMessage { get; set; }
     }

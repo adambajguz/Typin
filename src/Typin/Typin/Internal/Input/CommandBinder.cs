@@ -14,7 +14,7 @@
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, CommandInput input)
+        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, ParsedCommandInput input)
         {
             IReadOnlyList<CommandParameterInput> parameterInputs = input.Parameters;
             IReadOnlyList<ParameterSchema> parameters = commandSchema.Parameters;
@@ -73,7 +73,7 @@
         /// </summary>
         public static void BindOptions(this CommandSchema commandSchema,
                                        ICommand instance,
-                                       CommandInput input,
+                                       ParsedCommandInput input,
                                        IConfiguration configuration)
         {
             IReadOnlyList<CommandOptionInput> optionInputs = input.Options;

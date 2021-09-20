@@ -6,6 +6,7 @@
     using Microsoft.Extensions.Logging;
     using Typin.Directives;
     using Typin.Hosting;
+    using Typin.Modes;
 
     [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
     public static class Program
@@ -32,10 +33,15 @@
                         {
                             scanner.Single<DebugDirective>()
                                    .Single<PreviewDirective>();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
                         });
 
                     cliBuilder.OverrideCommandLine(ArgumentsWithHelp)
-                              .UseStartupMessage("Application");
+                              .UseStartupMessage("Welcome!")
+                              .SetStartupMode<DirectMode>();
                 })
                 .RunConsoleAsync();
 

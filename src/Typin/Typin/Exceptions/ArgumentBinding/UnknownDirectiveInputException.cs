@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="directive"></param>
         /// <param name="input"></param>
-        public UnknownDirectiveInputException(DirectiveInput directive, CommandInput input) :
+        public UnknownDirectiveInputException(DirectiveInput directive, ParsedCommandInput input) :
             base(null,
                  input,
                  $"Unknown directive '{directive}'.")

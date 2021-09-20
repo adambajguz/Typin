@@ -29,7 +29,6 @@
         protected override void RegisterService(Type type)
         {
             Services.AddTransient(type);
-            Services.AddTransient(typeof(IDirective), (provider) => provider.GetRequiredService(type));
         }
     }
 }

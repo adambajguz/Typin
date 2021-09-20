@@ -11,9 +11,7 @@
         /// <summary>
         /// Executes CLI mode.
         /// </summary>
-        /// <param name="executor"></param>
-        /// <param name="isStartupContext"></param>
         /// <param name="cancellationToken"></param>
-        ValueTask<int> ExecuteAsync(ICliCommandExecutor executor, bool isStartupContext, CancellationToken cancellationToken);
+        ValueTask<int> ExecuteAsync(CancellationToken cancellationToken);
     }
 }

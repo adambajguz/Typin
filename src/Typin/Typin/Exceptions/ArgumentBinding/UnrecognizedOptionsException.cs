@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="input"></param>
         /// <param name="optionsInputs"></param>
-        public UnrecognizedOptionsException(CommandInput input, IEnumerable<CommandOptionInput> optionsInputs) :
+        public UnrecognizedOptionsException(ParsedCommandInput input, IEnumerable<CommandOptionInput> optionsInputs) :
             base(null,
                  input,
                  BuildMessage(optionsInputs))

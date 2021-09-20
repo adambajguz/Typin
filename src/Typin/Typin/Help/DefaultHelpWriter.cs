@@ -539,14 +539,14 @@
 
             if (!string.IsNullOrWhiteSpace(command.Name))
             {
-                Write(ConsoleColor.Cyan, command.Name);
+                Write(CommandNameColor, command.Name);
+                Write(' ');
             }
 
+            Write(CommandNameColor, "[command]");
             Write(' ');
-            Write(ConsoleColor.Cyan, "[command]");
 
-            Write(' ');
-            Write(ConsoleColor.White, "--help");
+            Write(OptionNameColor, "--help");
 
             Write(CommentColor, "` to show help on a specific command.");
 

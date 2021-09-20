@@ -3,30 +3,39 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
+    using Typin.Extensions;
 
     /// <summary>
-    /// Direct CLI mode. If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
+    /// Direct CLI mode.
     /// </summary>
-    public class DirectMode : ICliMode
+    public sealed class DirectMode : ICliMode
     {
-        private readonly CliOptions _cliOptions;
+        private readonly IOptionsMonitor<CliOptions> _cliOptions;
+        private readonly ICliContextAccessor _cliContextAccessor;
+        private readonly ICommandExecutor _commandExecutor;
 
         /// <summary>
         /// Initializes an instance of <see cref="DirectMode"/>.
         /// </summary>
-        public DirectMode(IOptions<CliOptions> cliOptions)
+        public DirectMode(IOptionsMonitor<CliOptions> cliOptions,
+                          ICliContextAccessor cliContextAccessor,
+                          ICommandExecutor commandExecutor)
         {
-            _cliOptions = cliOptions.Value;
+            _cliOptions = cliOptions;
+            _cliContextAccessor = cliContextAccessor;
+            _commandExecutor = commandExecutor;
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(ICliCommandExecutor executor, bool isStartupContext, CancellationToken cancellationToken)
+        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken)
         {
-            if (isStartupContext)
+            if (_cliContextAccessor.CliContext.IsStartupContext()) //TODO: condition does not work
             {
-                return await executor.ExecuteCommandAsync(
-                    _cliOptions.CommandLine ?? string.Empty,
-                    _cliOptions.CommandLineStartsWithExecutableName,
+                CliOptions cliOptions = _cliOptions.CurrentValue;
+
+                return await _commandExecutor.ExecuteAsync(
+                    cliOptions.CommandLine ?? string.Empty,
+                    cliOptions.StartupExecutionOptions,
                     cancellationToken);
             }
 

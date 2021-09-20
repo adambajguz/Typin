@@ -41,7 +41,7 @@
             return default;
         }
 
-        private static void WriteCommandLineInput(IConsole console, CommandInput input)
+        private static void WriteCommandLineInput(IConsole console, ParsedCommandInput input)
         {
             // Directives
             foreach (DirectiveInput directive in input.Directives)

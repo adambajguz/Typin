@@ -35,7 +35,7 @@
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             // Get input and command schema from context
-            CommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
+            ParsedCommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
             CommandSchema commandSchema = args.CommandSchema ?? throw new NullReferenceException($"{nameof(CliContext.CommandSchema)} must be set in {nameof(CliContext)}.");
 
             // Version option

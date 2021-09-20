@@ -12,7 +12,7 @@
     /// Command schema is `{directives} {command name} {parameters} {options}`.
     /// </remarks>
     /// </summary>
-    public class CommandInput
+    public sealed class ParsedCommandInput
     {
         /// <summary>
         /// Raw command line input arguments.
@@ -55,9 +55,9 @@
         public bool IsDefaultCommandOrEmpty { get; }
 
         /// <summary>
-        /// Initializes an instance of <see cref="CommandInput"/>.
+        /// Initializes an instance of <see cref="ParsedCommandInput"/>.
         /// </summary>
-        public CommandInput(IReadOnlyList<string> commandLineArguments,
+        public ParsedCommandInput(IReadOnlyList<string> commandLineArguments,
                             IReadOnlyList<DirectiveInput> directives,
                             string? commandName,
                             IReadOnlyList<CommandParameterInput> parameters,

@@ -25,7 +25,7 @@
 
         private static string BuildMessage(Type type)
         {
-            return $"Mode '{type.FullName}' is not a valid directive type.{Environment.NewLine}" +
+            return $"Mode '{type.FullName}' is not a valid mode type.{Environment.NewLine}" +
                    Environment.NewLine +
                    $"In order to be a valid mode type, it must:{Environment.NewLine}" +
                    $"  - Not be an abstract class{Environment.NewLine}" +

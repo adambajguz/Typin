@@ -17,9 +17,29 @@
         public Guid Id { get; } = Guid.NewGuid();
 
         /// <summary>
+        /// Parent <see cref="CliContext"/> instance.
+        /// </summary>
+        public CliContext? Parent { get; }
+
+        /// <summary>
+        /// CLI context depth.
+        /// </summary>
+        public int Depth { get; }
+
+        /// <summary>
+        /// Raw command line input arguments.
+        /// </summary>
+        public IEnumerable<string> Arguments { get; set; }
+
+        /// <summary>
+        /// Command execution options.
+        /// </summary>
+        public CommandExecutionOptions ExecutionOptions { get; set; }
+
+        /// <summary>
         /// Parsed CLI input.
         /// </summary>
-        public CommandInput? Input { get; set; }
+        public ParsedCommandInput? Input { get; set; }
 
         /// <summary>
         /// Current command schema.
@@ -58,9 +78,15 @@
         /// <summary>
         /// Initializes an instance of <see cref="CliContext"/>.
         /// </summary>
-        public CliContext()
+        /// <param name="parent"></param>
+        /// <param name="arguments"></param>
+        /// <param name="executionOptions"></param>
+        public CliContext(CliContext? parent, IEnumerable<string> arguments, CommandExecutionOptions executionOptions)
         {
-
+            Parent = parent;
+            Arguments = arguments;
+            ExecutionOptions = executionOptions;
+            Depth = parent is null ? 0 : parent.Depth + 1;
         }
 
         /// <summary>

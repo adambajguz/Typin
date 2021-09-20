@@ -14,7 +14,6 @@
         /// </summary>
         public static Assembly? EntryAssembly => LazyEntryAssembly.Value;
 
-
         public static string? TryGetDefaultExecutableName()
         {
             string? entryAssemblyLocation = EntryAssembly?.Location;

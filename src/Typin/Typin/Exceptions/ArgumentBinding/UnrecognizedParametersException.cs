@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="input"></param>
         /// <param name="parameterInputs"></param>
-        public UnrecognizedParametersException(CommandInput input, IEnumerable<CommandParameterInput> parameterInputs) :
+        public UnrecognizedParametersException(ParsedCommandInput input, IEnumerable<CommandParameterInput> parameterInputs) :
             base(null,
                  input,
                  BuildMessage(parameterInputs))

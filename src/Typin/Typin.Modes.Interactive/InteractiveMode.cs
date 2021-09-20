@@ -19,10 +19,12 @@
     public class InteractiveMode : ICliMode
     {
         private readonly IOptionsMonitor<InteractiveModeOptions> _modeOptions;
-        private readonly CliOptions _cliOptions;
         private readonly IConsole _console;
         private readonly IOptionsMonitor<ApplicationMetadata> _metadataOptions;
         private readonly ILogger _logger;
+        private readonly ICommandExecutor _commandExecutor;
+        private readonly ICliContextAccessor _cliContextAccessor;
+        private readonly ICliModeSwitcher _cliModeSwitcher;
         private readonly IServiceProvider _serviceProvider;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
@@ -31,19 +33,22 @@
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
         public InteractiveMode(IOptionsMonitor<InteractiveModeOptions> modeOptions,
-                               IOptions<CliOptions> cliOptions,
                                IConsole console,
                                ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                IOptionsMonitor<ApplicationMetadata> metadataOptions,
+                               ICommandExecutor commandExecutor,
+                               ICliContextAccessor cliContextAccessor,
+                               ICliModeSwitcher cliModeSwitcher,
                                IServiceProvider serviceProvider)
         {
             _modeOptions = modeOptions;
-            _cliOptions = cliOptions.Value;
-
             _console = console;
             _logger = logger;
             _metadataOptions = metadataOptions;
+            _commandExecutor = commandExecutor;
+            _cliContextAccessor = cliContextAccessor;
+            _cliModeSwitcher = cliModeSwitcher;
             _serviceProvider = serviceProvider;
 
             InteractiveModeOptions modeOptionsValue = _modeOptions.CurrentValue;
@@ -59,15 +64,13 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(ICliCommandExecutor executor, bool isStartupContext, CancellationToken cancellationToken)
+        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
         {
-            if (isStartupContext)
+            await _cliModeSwitcher.WithModeAsync<DirectMode>(async (mode, ct) =>
             {
-                await executor.ExecuteCommandAsync(
-                    _cliOptions.CommandLine ?? string.Empty,
-                    _cliOptions.CommandLineStartsWithExecutableName,
-                    cancellationToken);
-            }
+                await mode.ExecuteAsync(ct);
+
+            }, cancellationToken);
 
             do
             {
@@ -76,7 +79,7 @@
                 {
                     interactiveArguments = await GetInputAsync(cancellationToken);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     _logger.LogInformation("Interactive mode input cancelled.");
                     return ExitCode.Error;
@@ -86,7 +89,7 @@
 
                 if (interactiveArguments.Any())
                 {
-                    await executor.ExecuteCommandAsync(interactiveArguments, false, cancellationToken);
+                    await _commandExecutor.ExecuteAsync(interactiveArguments, CommandExecutionOptions.Default, cancellationToken);
                     _console.ResetColor();
                 }
             } while (!cancellationToken.IsCancellationRequested);

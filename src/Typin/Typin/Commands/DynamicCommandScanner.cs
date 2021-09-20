@@ -29,7 +29,6 @@
         protected override void RegisterService(Type type)
         {
             Services.AddScoped(type);
-            Services.AddScoped(typeof(IDynamicCommand), (provider) => provider.GetRequiredService(type));
         }
     }
 }

@@ -24,7 +24,7 @@
         /// <param name="input"></param>
         /// <param name="values"></param>
         /// <param name="targetType"></param>
-        public NonScalarNonConstructibleFromArrayException(ArgumentSchema argument, CommandInput input, IReadOnlyCollection<string> values, Type targetType) :
+        public NonScalarNonConstructibleFromArrayException(ArgumentSchema argument, ParsedCommandInput input, IReadOnlyCollection<string> values, Type targetType) :
             base(argument,
                  input,
                  BuildMessage(argument, values, targetType))

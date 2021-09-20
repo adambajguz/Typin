@@ -18,7 +18,7 @@
     /// <summary>
     /// Resolves command schema and instance.
     /// </summary>
-    public sealed class ResolveCommandSchemaAndInstance : IMiddleware
+    public sealed class ResolveCommand : IMiddleware
     {
         private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
 
@@ -28,9 +28,9 @@
         private readonly ConcurrentDictionary<Type, ObjectFactory> _commandFactoryCache = new();
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ResolveCommandSchemaAndInstance"/>.
+        /// Initializes a new instance of <see cref="ResolveCommand"/>.
         /// </summary>
-        public ResolveCommandSchemaAndInstance(IRootSchemaAccessor rootSchemaAccessor, IServiceProvider serviceProvider)
+        public ResolveCommand(IRootSchemaAccessor rootSchemaAccessor, IServiceProvider serviceProvider)
         {
             _rootSchemaAccessor = rootSchemaAccessor;
             _serviceProvider = serviceProvider;
@@ -46,7 +46,7 @@
 
         private int? Execute(CliContext context)
         {
-            CommandInput input = context.Input ?? throw new NullReferenceException($"{nameof(CliContext.PipelinedDirectives)} must be set in {nameof(CliContext)}.");
+            ParsedCommandInput input = context.Input ?? throw new NullReferenceException($"{nameof(CliContext.PipelinedDirectives)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
             CommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;

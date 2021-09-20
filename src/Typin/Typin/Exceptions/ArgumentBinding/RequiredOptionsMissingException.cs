@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="input"></param>
         /// <param name="options"></param>
-        public RequiredOptionsMissingException(CommandInput input, IEnumerable<OptionSchema> options) :
+        public RequiredOptionsMissingException(ParsedCommandInput input, IEnumerable<OptionSchema> options) :
             base(null,
                  input,
                  BuildMessage(options))

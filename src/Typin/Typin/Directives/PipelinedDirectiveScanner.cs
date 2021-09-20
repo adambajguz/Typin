@@ -29,7 +29,6 @@
         protected override void RegisterService(Type type)
         {
             Services.AddTransient(type);
-            Services.AddTransient(typeof(IPipelinedDirective), (provider) => provider.GetRequiredService(type));
         }
     }
 }
