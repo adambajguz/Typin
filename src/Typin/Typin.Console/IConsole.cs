@@ -8,7 +8,7 @@
     /// <summary>
     /// Abstraction for interacting with the console.
     /// </summary>
-    public interface IConsole : IStandardInput, IStandardOutputAndError
+    public interface IConsole : IStandardInput, IStandardOutputAndError //TODO: add multiple consoles support
     {
         /// <summary>
         /// Current foreground color.

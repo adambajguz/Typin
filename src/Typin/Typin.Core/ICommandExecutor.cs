@@ -13,11 +13,11 @@
         /// <summary>
         /// Executes a command.
         /// </summary>
-        /// <param name="commandLineArguments"></param>
+        /// <param name="arguments"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<int> ExecuteAsync(IEnumerable<string> commandLineArguments, CommandExecutionOptions options = default, CancellationToken cancellationToken = default);
+        Task<int> ExecuteAsync(IEnumerable<string> arguments, CommandExecutionOptions options = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Executes a command.

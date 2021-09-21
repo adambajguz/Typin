@@ -49,17 +49,17 @@
         /// <summary>
         /// Executes a command.
         /// </summary>
-        /// <param name="commandLineArguments"></param>
+        /// <param name="arguments"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<int> ExecuteAsync(IEnumerable<string> commandLineArguments, CommandExecutionOptions options = default, CancellationToken cancellationToken = default)
+        public async Task<int> ExecuteAsync(IEnumerable<string> arguments, CommandExecutionOptions options = default, CancellationToken cancellationToken = default)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             using IServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope) ? null : _serviceProvider.CreateScope();
             IServiceProvider localProvider = serviceScope?.ServiceProvider ?? _serviceProvider;
 
-            CliContext cliContext = new(_cliContextAccessor.CliContext, commandLineArguments, options);
+            CliContext cliContext = new(_cliContextAccessor.CliContext, arguments, options);
             _cliContextAccessor.CliContext = cliContext;
 
             _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContext.Id);

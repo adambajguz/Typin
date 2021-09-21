@@ -12,6 +12,7 @@
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Commands;
     using Typin.Modes.Interactive.Directives;
+    using Typin.Modes.Programmatic;
 
     public static class Program
     {
@@ -52,6 +53,7 @@
                         {
                             scanner.Single<DirectMode>();
                             scanner.Single<InteractiveMode>();
+                            scanner.Single<ProgrammaticMode>();
                         });
 
                     cliBuilder.SetStartupMode<DirectMode>();

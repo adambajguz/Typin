@@ -16,7 +16,7 @@
     /// <summary>
     /// Interactive CLI mode.
     /// </summary>
-    public class InteractiveMode : ICliMode
+    public sealed class InteractiveMode : ICliMode
     {
         private readonly IOptionsMonitor<InteractiveModeOptions> _modeOptions;
         private readonly IConsole _console;
