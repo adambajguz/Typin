@@ -55,7 +55,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="PackSite.Library.Pipelining.Abstractions" Version="[1.0.0-dev-00004,]" />
+    <PackageReference Include="PackSite.Library.Pipelining.Abstractions" Version="[1.0.0-rc1,]" />
   </ItemGroup>
 
   <ItemGroup>
