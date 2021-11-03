@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using Typin.Attributes;
-    using Typin.Internal.Extensions;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Known types helpers.

@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Option duplicate by name exception.

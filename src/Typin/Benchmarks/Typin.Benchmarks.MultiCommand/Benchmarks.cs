@@ -4,7 +4,6 @@ namespace Typin.Benchmarks.MultiCommand
     using System.Threading.Tasks;
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
-    using BenchmarkDotNet.Jobs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
     using Microsoft.Extensions.Hosting;
@@ -210,7 +209,7 @@ namespace Typin.Benchmarks.MultiCommand
 
         public static void Main()
         {
-            BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator));
+            BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.WithOptions(ConfigOptions.DisableOptimizationsValidator));
         }
     }
 }

@@ -1,10 +1,18 @@
-﻿namespace Typin.Internal.Extensions
+﻿namespace Typin.Utilities.Extensions
 {
     using System;
     using System.Reflection;
 
-    internal static class PropertyInfoExtensions
+    /// <summary>
+    /// <see cref="PropertyInfo"/> extensions.
+    /// </summary>
+    public static class PropertyInfoExtensions
     {
+        /// <summary>
+        /// Tries to get enumerable underlying type.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
         public static Type? TryGetEnumerableArgumentUnderlyingType(this PropertyInfo? property)
         {
             return property is not null && property.PropertyType != typeof(string)
@@ -12,6 +20,11 @@
                        : null;
         }
 
+        /// <summary>
+        /// Tries to get enumerable underlying type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static Type? TryGetEnumerableArgumentUnderlyingType(this Type? type)
         {
             return type is not null && type != typeof(string)

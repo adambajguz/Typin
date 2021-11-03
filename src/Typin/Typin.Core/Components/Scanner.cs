@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin.Internal.Extensions;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// CLI component scanner.

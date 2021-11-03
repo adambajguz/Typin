@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Input;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Scalar input non-constructible exception.

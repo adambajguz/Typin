@@ -8,9 +8,9 @@ namespace Typin.Internal.Input
     using Typin.Binding;
     using Typin.Exceptions.ArgumentBinding;
     using Typin.Input;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
     using Typin.Utilities;
+    using Typin.Utilities.Extensions;
 
     internal static class ArgumentBinder
     {

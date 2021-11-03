@@ -7,9 +7,9 @@
     using System.Linq;
     using Microsoft.Extensions.Options;
     using Typin.Console;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
     using Typin.Utilities;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Default implementation of <see cref="IHelpWriter"/> that prints help to console.

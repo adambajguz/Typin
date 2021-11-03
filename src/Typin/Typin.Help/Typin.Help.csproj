@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
+    <ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>

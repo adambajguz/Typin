@@ -6,10 +6,10 @@
     using Typin.Binding;
     using Typin.Input;
     using Typin.Internal.Exceptions;
-    using Typin.Internal.Extensions;
     using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Resolves an instance of <see cref="OptionSchema"/>.

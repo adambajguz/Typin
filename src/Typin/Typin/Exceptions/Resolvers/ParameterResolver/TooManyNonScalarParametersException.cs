@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Too many non-scalar parameters exception.
@@ -23,9 +23,7 @@
 
         }
 
-        private static string BuildMessage(BaseCommandSchema command, IReadOnlyList<ParameterSchema> invalidParameters)
-        {
-            return $"Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:" +
+        private static string BuildMessage(BaseCommandSchema command, IReadOnlyList<ParameterSchema> invalidParameters) => $"Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:" +
                    $"{invalidParameters.JoinToString(Environment.NewLine)}" +
                    Environment.NewLine +
                    "Non-scalar parameter is such that is bound from more than one value (e.g. array)." +
@@ -34,6 +32,5 @@
                    Environment.NewLine +
                    Environment.NewLine +
                    "If it's not feasible to fit into these constraints, consider using options instead as they don't have these limitations.";
-        }
     }
 }

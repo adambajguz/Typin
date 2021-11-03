@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Typin.Internal.Extensions;
     using Typin.Metadata;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Represents a bindable <see cref="PropertyInfo"/>.

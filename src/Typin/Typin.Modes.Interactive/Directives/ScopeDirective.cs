@@ -8,7 +8,6 @@
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Input;
-    using Typin.Internal.Extensions;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Internal.Extensions;
 

@@ -3,7 +3,7 @@
     using System;
     using System.IO;
     using System.Reflection;
-    using Typin.Internal.Extensions;
+    using Typin.Utilities.Extensions;
 
     internal static class AssemblyUtils
     {
@@ -28,7 +28,9 @@
 
         public static string? TryGetDefaultVersionText()
         {
-            return EntryAssembly is not null ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}" : null;
+            return EntryAssembly is not null
+                ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}"
+                : null;
         }
     }
 }

@@ -60,6 +60,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
+    <ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
     <ProjectReference Include="..\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
   </ItemGroup>
 

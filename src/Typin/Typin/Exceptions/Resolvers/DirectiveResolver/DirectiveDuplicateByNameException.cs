@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Directive duplicate by name exception.
