@@ -41,7 +41,7 @@
         /// <param name="cancellationToken"></param>
         public async Task<int> ExecuteAsync(string commandLine, CommandExecutionOptions options = default, CancellationToken cancellationToken = default)
         {
-            IEnumerable<string> commandLineArguments = CommandLineSplitter.Split(commandLine);
+            IEnumerable<string> commandLineArguments = CommandLine.Split(commandLine);
 
             return await ExecuteAsync(commandLineArguments, options, cancellationToken);
         }

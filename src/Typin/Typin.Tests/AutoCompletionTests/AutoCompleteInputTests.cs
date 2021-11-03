@@ -5,13 +5,9 @@
     using System.IO;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.AutoCompletion;
     using Typin.Console;
     using Typin.Exceptions;
-    using Typin.Extensions;
-    using Typin.Tests.Data;
     using Xunit;
-    using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class AutoCompleteInputTests : IDisposable
     {

@@ -58,6 +58,11 @@
             ShortName = shortName;
             FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
+
+            if (shortName is null && name is null)
+            {
+                throw new ArgumentException($"Both {nameof(name)} and {nameof(shortName)} cannot be null.");
+            }
         }
 
         /// <summary>
@@ -79,6 +84,11 @@
             ShortName = shortName;
             FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
+
+            if (shortName is null && name is null)
+            {
+                throw new ArgumentException($"Both {nameof(name)} and {nameof(shortName)} cannot be null.");
+            }
         }
 
         /// <summary>
@@ -95,6 +105,15 @@
         public bool MatchesShortName(char shortName)
         {
             return ShortName is not null && ShortName == shortName;
+        }
+
+        /// <summary>
+        /// Gets a call name.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCallName()
+        {
+            return Name is null ? $"-{ShortName}" : $"--{Name}";
         }
 
         /// <summary>

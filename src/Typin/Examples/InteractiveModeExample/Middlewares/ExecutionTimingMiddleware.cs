@@ -23,7 +23,7 @@
             {
                 output.WriteLine("--- Handling command '{0}' with args '{1}'",
                                  args.Input?.CommandName ?? "<default>",
-                                 string.Join(' ', args.Input?.Arguments ?? Array.Empty<string>()));
+                                 string.Join(' ', args.Arguments ?? Array.Empty<string>()));
             });
 
             Stopwatch stopwatch = Stopwatch.StartNew();

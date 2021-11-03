@@ -6,14 +6,9 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Exceptions;
-    using Typin.Modes;
-    using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Valid;
     using Typin.Tests.Data.Modes.Valid;
-    using Typin.Tests.Data.Startups;
-    using Typin.Tests.Data.Valid.Extensions;
     using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
@@ -267,22 +262,6 @@
                 .UseConsole(console)
                 .UseDirectMode(true)
                 .UseInteractiveMode();
-
-            // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--help");
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll("USAGE", "OPTIONS");
-            stdErr.GetString().Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task Application_can_be_created_with_startup_class()
-        {
-            // Act
-            var builder = new CliApplicationBuilder()
-                .UseStartup<CustomStartupClass>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--help");

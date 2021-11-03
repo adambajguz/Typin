@@ -1,10 +1,12 @@
 ﻿namespace Typin.Input
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using Typin.Internal.Extensions;
+    using Typin.Schemas;
 
     /// <summary>
     /// Provides a command parser and command class represention.
@@ -14,11 +16,6 @@
     /// </summary>
     public sealed class ParsedCommandInput
     {
-        /// <summary>
-        /// Raw command line input arguments.
-        /// </summary>
-        public IReadOnlyList<string> Arguments { get; }
-
         /// <summary>
         /// Command direcitves list without special [interactive] directive.
         /// </summary>
@@ -57,13 +54,11 @@
         /// <summary>
         /// Initializes an instance of <see cref="ParsedCommandInput"/>.
         /// </summary>
-        public ParsedCommandInput(IReadOnlyList<string> commandLineArguments,
-                            IReadOnlyList<DirectiveInput> directives,
-                            string? commandName,
-                            IReadOnlyList<CommandParameterInput> parameters,
-                            IReadOnlyList<CommandOptionInput> options)
+        public ParsedCommandInput(IReadOnlyList<DirectiveInput> directives,
+                                  string? commandName,
+                                  IReadOnlyList<CommandParameterInput> parameters,
+                                  IReadOnlyList<CommandOptionInput> options)
         {
-            Arguments = commandLineArguments;
             Directives = directives;
             CommandName = commandName;
             Parameters = parameters;
@@ -80,12 +75,103 @@
         /// </summary>
         public bool HasDirective(string directive)
         {
-            string v = directive.Trim('[', ']')
-                                .ToLower();
+            string v = directive.Trim('[', ']');
 
             return Directives.Where(x => x.Name == v)
                              .Any();
         }
+
+        #region With
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with directives specified in parameter <paramref name="directives"/>.
+        /// </summary>
+        /// <param name="directives"></param>
+        /// <returns></returns>
+        public ParsedCommandInput WithDirectives(IEnumerable<DirectiveInput> directives)
+        {
+            return new ParsedCommandInput(directives.ToList(),
+                                          CommandName,
+                                          Parameters,
+                                          Options);
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> without a directive specified in parameter <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public ParsedCommandInput WithoutDirective(string name)
+        {
+            return WithDirectives(Directives.Where(x => !string.Equals(x.Name, name.Trim('[', ']'), StringComparison.Ordinal)));
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with command name specified in parameter <paramref name="commandName"/>.
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        public ParsedCommandInput WithCommandName(string? commandName)
+        {
+            return new ParsedCommandInput(Directives,
+                                          commandName?.Trim(),
+                                          Parameters,
+                                          Options);
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with parameters specified in parameter <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public ParsedCommandInput WithParameters(IEnumerable<CommandParameterInput> parameters)
+        {
+            return new ParsedCommandInput(Directives,
+                                          CommandName,
+                                          parameters.ToList(),
+                                          Options);
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with options specified in parameter <paramref name="options"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public ParsedCommandInput WithOptions(IEnumerable<CommandOptionInput> options)
+        {
+            return new ParsedCommandInput(Directives,
+                                          CommandName,
+                                          Parameters,
+                                          options.ToList());
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with help option.
+        /// </summary>
+        /// <returns></returns>
+        public ParsedCommandInput WithHelp()
+        {
+            CommandOptionInput helpOption = new(OptionSchema.HelpOption.GetCallName());
+
+            return new ParsedCommandInput(Directives,
+                                          CommandName,
+                                          Parameters,
+                                          Options.Concat(new[] { helpOption }).ToList());
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ParsedCommandInput"/> with version option.
+        /// </summary>
+        /// <returns></returns>
+        public ParsedCommandInput WithVersion()
+        {
+            CommandOptionInput versionOption = new(OptionSchema.VersionOption.GetCallName());
+
+            return new ParsedCommandInput(Directives,
+                                          CommandName,
+                                          Parameters,
+                                          Options.Concat(new[] { versionOption }).ToList());
+        }
+        #endregion
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]

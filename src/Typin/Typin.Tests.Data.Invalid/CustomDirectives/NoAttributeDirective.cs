@@ -5,7 +5,7 @@
 
     public class NoAttributeDirective : IDirective
     {
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }

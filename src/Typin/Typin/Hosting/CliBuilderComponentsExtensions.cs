@@ -2,7 +2,6 @@
 {
     using System;
     using Typin.Commands;
-    using Typin.Components;
     using Typin.Directives;
     using Typin.Modes;
 
@@ -17,12 +16,12 @@
         /// <param name="cliBuilder"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        public static ICliBuilder AddCommands(this ICliBuilder cliBuilder, Action<IScanner<ICommand>> scanner)
+        public static ICliBuilder AddCommands(this ICliBuilder cliBuilder, Action<ICommandScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<ICommand>(
-                services =>
+            return cliBuilder.GetOrAddScanner<ICommand, ICommandScanner>(
+                b =>
                 {
-                    return new CommandScanner(services);
+                    return new CommandScanner(b.Services);
                 }, scanner);
         }
 
@@ -32,12 +31,12 @@
         /// <param name="cliBuilder"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        public static ICliBuilder AddDynamicCommands(this ICliBuilder cliBuilder, Action<IScanner<IDynamicCommand>> scanner)
+        public static ICliBuilder AddDynamicCommands(this ICliBuilder cliBuilder, Action<IDynamicCommandScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<IDynamicCommand>(
-                services =>
+            return cliBuilder.GetOrAddScanner<IDynamicCommand, IDynamicCommandScanner>(
+                b =>
                 {
-                    return new DynamicCommandScanner(services);
+                    return new DynamicCommandScanner(b.Services);
                 }, scanner);
         }
 
@@ -47,12 +46,12 @@
         /// <param name="cliBuilder"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        public static ICliBuilder AddDirectives(this ICliBuilder cliBuilder, Action<IScanner<IDirective>> scanner)
+        public static ICliBuilder AddDirectives(this ICliBuilder cliBuilder, Action<IDirectiveScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<IDirective>(
-                services =>
+            return cliBuilder.GetOrAddScanner<IDirective, IDirectiveScanner>(
+                b =>
                 {
-                    return new DirectiveScanner(services);
+                    return new DirectiveScanner(b.Services);
                 },
                 scanner);
         }
@@ -63,12 +62,12 @@
         /// <param name="cliBuilder"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        public static ICliBuilder AddPipelinedDirectives(this ICliBuilder cliBuilder, Action<IScanner<IPipelinedDirective>> scanner)
+        public static ICliBuilder AddPipelinedDirectives(this ICliBuilder cliBuilder, Action<IPipelinedDirectiveScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<IPipelinedDirective>(
-                services =>
+            return cliBuilder.GetOrAddScanner<IPipelinedDirective, IPipelinedDirectiveScanner>(
+                b =>
                 {
-                    return new PipelinedDirectiveScanner(services);
+                    return new PipelinedDirectiveScanner(b.Services);
                 }, scanner);
         }
 
@@ -78,12 +77,12 @@
         /// <param name="cliBuilder"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        public static ICliBuilder AddModes(this ICliBuilder cliBuilder, Action<IScanner<ICliMode>> scanner)
+        public static ICliBuilder AddModes(this ICliBuilder cliBuilder, Action<ICliModeScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<ICliMode>(
-                services =>
+            return cliBuilder.GetOrAddScanner<ICliMode, ICliModeScanner>(
+                b =>
                 {
-                    return new CliModeScanner(services);
+                    return new CliModeScanner(b.Services);
                 }, scanner);
         }
     }

@@ -2,7 +2,6 @@
 {
     using System.Linq;
     using FluentAssertions;
-    using Typin.AutoCompletion;
     using Typin.Console;
     using Xunit;
 

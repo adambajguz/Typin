@@ -15,15 +15,15 @@
         {
             _ = PipelineBuilder.Create<CliContext>()
                  .Lifetime(InvokablePipelineLifetime.Scoped)
-                 .Step<HandleExceptions>()
-                 .Step<ResolveInput>()
-                 .Step<ResolveCommand>()
-                 .Step<InitializeDirectives>()
-                 .Step<ExecuteDirectivesSubpipeline>()
-                 .Step<HandleSpecialOptions>()
-                 .Step<BindInput>()
+                 .AddStep<HandleExceptions>()
+                 .AddStep<ResolveInput>()
+                 .AddStep<ResolveCommand>()
+                 .AddStep<InitializeDirectives>()
+                 .AddStep<ExecuteDirectivesSubpipeline>()
+                 .AddStep<HandleSpecialOptions>()
+                 .AddStep<BindInput>()
                  // user
-                 .Step<ExecuteCommand>()
+                 .AddStep<ExecuteCommand>()
                  .Build().TryAddTo(pipelines);
 
             return default;

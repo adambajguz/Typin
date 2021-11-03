@@ -6,11 +6,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.AutoCompletion;
     using Typin.Console;
-    using Typin.Extensions;
+    using Typin.Console.Extensions;
     using Xunit;
-    using static Typin.Extensions.ConsoleKeyInfoExtensions;
 
     public sealed class LineInputHandlerTests : IDisposable
     {

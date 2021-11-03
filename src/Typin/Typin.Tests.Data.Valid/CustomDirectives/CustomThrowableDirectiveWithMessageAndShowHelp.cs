@@ -1,11 +1,12 @@
 ﻿namespace Typin.Tests.Data.CustomDirectives.Valid
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Attributes;
-    using Typin.Exceptions;
+    using Typin.Console;
 
     [Directive("custom-throwable-with-message-and-show-help", Description = "Custom throwable directive with message and show help.")]
     public sealed class CustomThrowableDirectiveWithMessageAndShowHelp : IPipelinedDirective
@@ -14,16 +15,23 @@
         public const string ExpectedExceptionMessage = nameof(CustomThrowableDirectiveWithMessageAndShowHelp) + "ExMessage";
         public const int ExpectedExitCode = 2;
 
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        private readonly IConsole _console;
+
+        public CustomThrowableDirectiveWithMessageAndShowHelp(IConsole console)
+        {
+            _console = console;
+        }
+
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.Console.Output.Write(ExpectedOutput);
+            _console.Output.Write(ExpectedOutput);
 
-            throw new DirectiveException(ExpectedExceptionMessage, ExpectedExitCode, true);
+            throw new NullReferenceException(ExpectedExceptionMessage);
         }
     }
 }

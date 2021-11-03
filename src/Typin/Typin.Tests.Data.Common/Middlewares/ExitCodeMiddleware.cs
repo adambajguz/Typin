@@ -11,20 +11,27 @@
     {
         public const string ExpectedOutput = "Command finished succesfully.";
 
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        private readonly IConsole _console;
+
+        public ExitCodeMiddleware(IConsole console)
+        {
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             await next();
             int? exitCode = args.ExitCode;
 
             if (args.ExitCode == 0)
             {
-                args.Console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{args.Metadata.ExecutableName}: {ExpectedOutput}."));
+                _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
+                    output.WriteLine($"{args.Id}: {ExpectedOutput}."));
             }
             else
             {
-                args.Console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{args.Metadata.ExecutableName}: Command finished with exit code ({exitCode})."));
+                _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
+                    output.WriteLine($"{args.Id}: Command finished with exit code ({exitCode})."));
             }
         }
     }

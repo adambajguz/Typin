@@ -41,7 +41,7 @@
                 ref index
             );
 
-            return new ParsedCommandInput(tmp, directives, commandName, parameters, options);
+            return new ParsedCommandInput(directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,

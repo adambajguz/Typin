@@ -7,14 +7,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Debug;
-    using Typin.Exceptions;
     using Typin.Help;
-    using Typin.Internal;
-    using Typin.Internal.Pipeline;
     using Typin.Modes;
-    using Typin.OptionFallback;
     using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.Services;
     using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;

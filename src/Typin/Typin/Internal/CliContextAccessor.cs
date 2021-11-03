@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal
+namespace Typin.Internal
 {
     using System.Threading;
 

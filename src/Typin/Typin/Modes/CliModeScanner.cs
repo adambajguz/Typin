@@ -8,7 +8,7 @@
     /// <summary>
     /// <see cref="ICliMode"/> component scanner.
     /// </summary>
-    internal sealed class CliModeScanner : Scanner<ICliMode>
+    internal sealed class CliModeScanner : Scanner<ICliMode>, ICliModeScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CliModeScanner"/>.

@@ -59,14 +59,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="PackSite.Library.Pipelining" Version="[1.0.0-rc1,]" />
+    <PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
     <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
-    <ProjectReference Include="..\Typin.Utilities.CommandLineSplitter\Typin.Utilities.CommandLineSplitter.csproj" />
     <ProjectReference Include="..\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />
+    <ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,13 +4,12 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Typin.Console;
-    using Typin.Utilities;
+    using Typin.Console.IO;
     using Xunit.Abstractions;
 
     //TODO: maybe this should be a separate lib like Typin.Testing
     internal static class CliApplicationBuilderExtensions
     {
-
         #region Array based
         public static async ValueTask<(int exitCode, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)> BuildAndRunTestAsync(this CliApplicationBuilder applicationBuilder,
                                                                                                                                  ITestOutputHelper testOutput,

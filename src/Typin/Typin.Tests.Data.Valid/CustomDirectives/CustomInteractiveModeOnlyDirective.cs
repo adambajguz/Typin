@@ -5,21 +5,29 @@
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Attributes;
-    using Typin.Modes;
+    using Typin.Console;
+    using Typin.Modes.Interactive;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.", SupportedModes = new[] { typeof(InteractiveMode) })]
     public sealed class CustomInteractiveModeOnlyDirective : IPipelinedDirective
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);
 
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        private readonly IConsole _console;
+
+        public CustomInteractiveModeOnlyDirective(IConsole console)
+        {
+            _console = console;
+        }
+
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.Console.Output.Write(ExpectedOutput);
+            _console.Output.Write(ExpectedOutput);
 
             await next();
         }

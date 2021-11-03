@@ -1,11 +1,12 @@
 ﻿namespace Typin.Tests.Data.CustomDirectives.Valid
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Attributes;
-    using Typin.Exceptions;
+    using Typin.Console;
 
     [Directive("custom-throwable", Description = "Custom throwable directive.")]
     public sealed class CustomThrowableDirective : IPipelinedDirective
@@ -13,16 +14,23 @@
         public const string ExpectedOutput = nameof(CustomThrowableDirective);
         public const int ExpectedExitCode = 1;
 
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        private readonly IConsole _console;
+
+        public CustomThrowableDirective(IConsole console)
+        {
+            _console = console;
+        }
+
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
-        public async ValueTask ExecuteAsync(ICliContext args, StepDelegate next, IInvokablePipeline<ICliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.Console.Output.Write(ExpectedOutput);
+            _console.Output.Write(ExpectedOutput);
 
-            throw new DirectiveException();
+            throw new NullReferenceException();
         }
     }
 }

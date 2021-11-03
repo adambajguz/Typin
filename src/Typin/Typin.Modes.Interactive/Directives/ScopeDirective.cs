@@ -69,8 +69,8 @@
         {
             ParsedCommandInput? input = context.Input ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
 
-            string potentialName = input.Arguments.Skip(input.Directives.Count)
-                                                  .JoinToString(' ');
+            string potentialName = context.Arguments.Skip(input.Directives.Count)
+                                                    .JoinToString(' ');
 
             if (_rootSchemaAccessor.RootSchema.IsCommandOrSubcommandPart(potentialName))
             {

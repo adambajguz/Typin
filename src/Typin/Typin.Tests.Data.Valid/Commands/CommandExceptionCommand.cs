@@ -1,9 +1,9 @@
 ﻿namespace Typin.Tests.Data.Commands.Valid
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
-    using Typin.Exceptions;
 
     [Command(nameof(CommandExceptionCommand))]
     public class CommandExceptionCommand : ICommand
@@ -19,7 +19,7 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            throw new CommandException(Message, ExitCode, ShowHelp);
+            throw new NullReferenceException(Message);
         }
     }
 }

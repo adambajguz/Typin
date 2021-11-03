@@ -8,7 +8,7 @@
     /// <summary>
     /// <see cref="IDynamicCommand"/> component scanner.
     /// </summary>
-    internal sealed class DynamicCommandScanner : Scanner<IDynamicCommand>
+    internal sealed class DynamicCommandScanner : Scanner<IDynamicCommand>, IDynamicCommandScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CommandScanner"/>.

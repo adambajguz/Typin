@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.UtilitiesTests
+﻿namespace Typin.Utilities.Tests
 {
     using System.Linq;
     using FluentAssertions;

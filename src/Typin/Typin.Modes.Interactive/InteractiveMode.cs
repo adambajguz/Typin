@@ -9,6 +9,7 @@
     using Microsoft.Extensions.Options;
     using Typin;
     using Typin.Console;
+    using Typin.Extensions;
     using Typin.Modes.Interactive.AutoCompletion;
     using Typin.Modes.Interactive.Internal.Extensions;
     using Typin.Utilities;
@@ -18,13 +19,13 @@
     /// </summary>
     public sealed class InteractiveMode : ICliMode
     {
+        private readonly IOptionsMonitor<CliOptions> _cliOptions;
         private readonly IOptionsMonitor<InteractiveModeOptions> _modeOptions;
         private readonly IConsole _console;
         private readonly IOptionsMonitor<ApplicationMetadata> _metadataOptions;
         private readonly ILogger _logger;
         private readonly ICommandExecutor _commandExecutor;
         private readonly ICliContextAccessor _cliContextAccessor;
-        private readonly ICliModeSwitcher _cliModeSwitcher;
         private readonly IServiceProvider _serviceProvider;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
@@ -32,23 +33,23 @@
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
-        public InteractiveMode(IOptionsMonitor<InteractiveModeOptions> modeOptions,
+        public InteractiveMode(IOptionsMonitor<CliOptions> cliOptions,
+                               IOptionsMonitor<InteractiveModeOptions> modeOptions,
                                IConsole console,
                                ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                IOptionsMonitor<ApplicationMetadata> metadataOptions,
                                ICommandExecutor commandExecutor,
                                ICliContextAccessor cliContextAccessor,
-                               ICliModeSwitcher cliModeSwitcher,
                                IServiceProvider serviceProvider)
         {
+            _cliOptions = cliOptions;
             _modeOptions = modeOptions;
             _console = console;
             _logger = logger;
             _metadataOptions = metadataOptions;
             _commandExecutor = commandExecutor;
             _cliContextAccessor = cliContextAccessor;
-            _cliModeSwitcher = cliModeSwitcher;
             _serviceProvider = serviceProvider;
 
             InteractiveModeOptions modeOptionsValue = _modeOptions.CurrentValue;
@@ -66,11 +67,15 @@
         /// <inheritdoc/>
         public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
         {
-            await _cliModeSwitcher.WithModeAsync<DirectMode>(async (mode, ct) =>
+            if (_cliContextAccessor.CliContext.IsStartupContext())
             {
-                await mode.ExecuteAsync(ct);
+                CliOptions cliOptions = _cliOptions.CurrentValue;
 
-            }, cancellationToken);
+                await _commandExecutor.ExecuteAsync(
+                    cliOptions.CommandLine ?? string.Empty,
+                    cliOptions.StartupExecutionOptions,
+                    cancellationToken);
+            }
 
             do
             {
@@ -132,7 +137,7 @@
             {
                 if (hasScope) // handle scoped command input
                 {
-                    List<string> tmp = CommandLineSplitter.Split(line).ToList();
+                    List<string> tmp = CommandLine.Split(line).ToList();
 
                     int lastDirective = tmp.FindLastIndex(x => x.StartsWith('[') && x.EndsWith(']'));
                     tmp.Insert(lastDirective + 1, scope);
@@ -141,7 +146,7 @@
                 }
                 else // handle unscoped command input
                 {
-                    arguments = CommandLineSplitter.Split(line);
+                    arguments = CommandLine.Split(line);
                 }
             }
 

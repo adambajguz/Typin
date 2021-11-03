@@ -8,7 +8,7 @@
     /// <summary>
     /// <see cref="ICommand"/> component scanner.
     /// </summary>
-    internal sealed class CommandScanner : Scanner<ICommand>
+    internal sealed class CommandScanner : Scanner<ICommand>, ICommandScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CommandScanner"/>.

@@ -35,20 +35,12 @@
         /// Get or add CLI component scanner.
         /// </summary>
         /// <typeparam name="TComponent"></typeparam>
+        /// <typeparam name="TInterface"></typeparam>
         /// <param name="factory"></param>
         /// <param name="scanner"></param>
         /// <returns></returns>
-        ICliBuilder GetOrAddScanner<TComponent>(Func<IServiceCollection, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
-            where TComponent : class;
-
-        /// <summary>
-        /// Get or add CLI component scanner.
-        /// </summary>
-        /// <typeparam name="TComponent"></typeparam>
-        /// <param name="factory"></param>
-        /// <param name="scanner"></param>
-        /// <returns></returns>
-        ICliBuilder GetOrAddScanner<TComponent>(Func<ICliBuilder, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
-            where TComponent : class;
+        ICliBuilder GetOrAddScanner<TComponent, TInterface>(Func<ICliBuilder, TInterface> factory, Action<TInterface> scanner)
+            where TComponent : class
+            where TInterface : class, IScanner<TComponent>;
     }
 }

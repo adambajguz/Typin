@@ -8,7 +8,7 @@
     /// <summary>
     /// <see cref="IDirective"/> component scanner.
     /// </summary>
-    internal sealed class DirectiveScanner : Scanner<IDirective>
+    internal sealed class DirectiveScanner : Scanner<IDirective>, IDirectiveScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="DirectiveScanner"/>.

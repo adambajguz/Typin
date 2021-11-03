@@ -3,7 +3,7 @@
     using Typin.Attributes;
 
     [Command]
-    public class TypinCommands : TypinBaseCommand { }
+    public class TypinCommand : TypinBaseCommand { }
 
     [Command("named-command")]
     public class TypinNamedCommand : TypinBaseCommand { }

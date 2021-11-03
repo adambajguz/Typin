@@ -12,7 +12,7 @@
         /// <returns></returns>
         public static bool IsStartupContext(this CliContext? cliContext)
         {
-            return cliContext?.Parent is null; //TODO: condition does not work
+            return cliContext is null; //TODO: condition does not work
         }
     }
 }

@@ -8,7 +8,7 @@
     [Directive("preview", Description = "Duplicate directive.")]
     public class DuplicatedDirective : IDirective
     {
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }

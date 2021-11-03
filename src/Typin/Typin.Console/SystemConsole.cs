@@ -163,7 +163,7 @@
 
                 Output.Write(charsRead[0]);
 
-                return (charsRead[0]).ToConsoleKeyInfo();
+                return charsRead[0].ToConsoleKeyInfo();
             }
 
             while (!Console.KeyAvailable && !cancellationToken.IsCancellationRequested)

@@ -1,4 +1,4 @@
-﻿namespace InteractiveModeExample.Commands
+﻿namespace InteractiveModeExample.DynamicCommands
 {
     using System;
     using System.Linq;

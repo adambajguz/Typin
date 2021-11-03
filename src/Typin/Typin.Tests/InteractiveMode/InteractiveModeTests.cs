@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;

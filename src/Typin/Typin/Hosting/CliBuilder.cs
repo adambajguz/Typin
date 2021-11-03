@@ -75,32 +75,17 @@
         }
 
         /// <inheritdoc/>
-        public ICliBuilder GetOrAddScanner<TComponent>(Func<IServiceCollection, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
+        public ICliBuilder GetOrAddScanner<TComponent, TInterface>(Func<ICliBuilder, TInterface> factory, Action<TInterface> scanner)
             where TComponent : class
+            where TInterface : class, IScanner<TComponent>
         {
             if (!_components.TryGetValue(typeof(TComponent), out IScanner? componentScanner))
-            {
-                componentScanner = factory(Services);
-                _components.Add(typeof(TComponent), componentScanner);
-            }
-
-            IScanner<TComponent> genericComponentScanner = (componentScanner as IScanner<TComponent>)!;
-            scanner(genericComponentScanner);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public ICliBuilder GetOrAddScanner<TComponent>(Func<ICliBuilder, IScanner<TComponent>> factory, Action<IScanner<TComponent>> scanner)
-            where TComponent : class
-        {
-            if (_components.TryGetValue(typeof(TComponent), out IScanner? componentScanner))
             {
                 componentScanner = factory(this);
                 _components.Add(typeof(TComponent), componentScanner);
             }
 
-            IScanner<TComponent> genericComponentScanner = (componentScanner as IScanner<TComponent>)!;
+            TInterface genericComponentScanner = (componentScanner as TInterface)!;
             scanner(genericComponentScanner);
 
             return this;

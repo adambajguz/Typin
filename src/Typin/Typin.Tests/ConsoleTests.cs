@@ -44,7 +44,7 @@
         public void Real_implementation_of_console_can_be_used_to_execute_commands()
         {
             // Arrange
-            using SystemConsole console = new();
+            SystemConsole console = new();
 
             // Act
             console.ResetColor();

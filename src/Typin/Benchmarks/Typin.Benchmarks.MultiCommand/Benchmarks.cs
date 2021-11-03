@@ -7,8 +7,11 @@ namespace Typin.Benchmarks.MultiCommand
     using BenchmarkDotNet.Jobs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
-    using Typin.Benchmarks.MultiCommand.CliFxComands;
+    using Microsoft.Extensions.Hosting;
+    using Typin.Benchmarks.MultiCommand.CliFxCommands;
     using Typin.Benchmarks.MultiCommand.TypinCommands;
+    using Typin.Hosting;
+    using Typin.Modes;
 
     //[SimpleJob(RuntimeMoniker.Net48)]
     //[SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)]
@@ -23,60 +26,129 @@ namespace Typin.Benchmarks.MultiCommand
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
 
-#pragma warning disable CA1822 // Mark members as static
         #region Typin
         [Benchmark(Description = "Typin - 1 command", Baseline = true)]
-        public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
+        public async ValueTask ExecuteWithTypinDefaultCommandOnly()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.Single<TypinCommand>();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
 
         [Benchmark(Description = "Typin - 2 commands")]
-        public async ValueTask<int> ExecuteWithTypin2Commands()
+        public async ValueTask ExecuteWithTypin2Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
-                                                    .AddCommand<TypinNamedCommand>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.Single<TypinCommand>()
+                                   .Single<TypinNamedCommand>();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
 
         [Benchmark(Description = "Typin - 5 commands")]
-        public async ValueTask<int> ExecuteWithTypin5Commands()
+        public async ValueTask ExecuteWithTypin5Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
-                                                    .AddCommand<TypinNamedCommand>()
-                                                    .AddCommand<TypinNamedCommand00>()
-                                                    .AddCommand<TypinNamedCommand01>()
-                                                    .AddCommand<TypinNamedCommand02>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.Single<TypinCommand>()
+                                   .Single<TypinNamedCommand>()
+                                   .Single<TypinNamedCommand00>()
+                                   .Single<TypinNamedCommand01>()
+                                   .Single<TypinNamedCommand02>();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
 
         [Benchmark(Description = "Typin - 10 commands")]
-        public async ValueTask<int> ExecuteWithTypin10Commands()
+        public async ValueTask ExecuteWithTypin10Commands()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommands.TypinCommands>()
-                                                    .AddCommand<TypinNamedCommand>()
-                                                    .AddCommand<TypinNamedCommand00>()
-                                                    .AddCommand<TypinNamedCommand01>()
-                                                    .AddCommand<TypinNamedCommand02>()
-                                                    .AddCommand<TypinNamedCommand03>()
-                                                    .AddCommand<TypinNamedCommand04>()
-                                                    .AddCommand<TypinNamedCommand05>()
-                                                    .AddCommand<TypinNamedCommand06>()
-                                                    .AddCommand<TypinNamedCommand07>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.Single<TypinCommand>()
+                                   .Single<TypinNamedCommand>()
+                                   .Single<TypinNamedCommand00>()
+                                   .Single<TypinNamedCommand01>()
+                                   .Single<TypinNamedCommand02>()
+                                   .Single<TypinNamedCommand03>()
+                                   .Single<TypinNamedCommand04>()
+                                   .Single<TypinNamedCommand05>()
+                                   .Single<TypinNamedCommand06>()
+                                   .Single<TypinNamedCommand07>();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
 
         [Benchmark(Description = "Typin - 20 commands")]
-        public async ValueTask<int> ExecuteWithTypin22Commands()
+        public async ValueTask ExecuteWithTypin20Commands()
         {
-            return await new CliApplicationBuilder().AddCommandsFromThisAssembly()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
         #endregion
 
@@ -84,7 +156,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 1 command")]
         public async ValueTask<int> ExecuteWithCliFxDefaultCommandOnly()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<Typin.Benchmarks.MultiCommand.CliFxCommands.CliFxCommands>()
                                                           .Build()
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
         }
@@ -92,7 +164,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 2 commands")]
         public async ValueTask<int> ExecuteWithCliFx2Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<Typin.Benchmarks.MultiCommand.CliFxCommands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .Build()
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
@@ -101,7 +173,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 5 commands")]
         public async ValueTask<int> ExecuteWithCliFx5Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<Typin.Benchmarks.MultiCommand.CliFxCommands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .AddCommand<CliFxNamedCommand00>()
                                                           .AddCommand<CliFxNamedCommand01>()
@@ -113,7 +185,7 @@ namespace Typin.Benchmarks.MultiCommand
         [Benchmark(Description = "CliFx - 10 commands")]
         public async ValueTask<int> ExecuteWithCliFx10Commands()
         {
-            return await new CliFx.CliApplicationBuilder().AddCommand<CliFxComands.CliFxCommands>()
+            return await new CliFx.CliApplicationBuilder().AddCommand<Typin.Benchmarks.MultiCommand.CliFxCommands.CliFxCommands>()
                                                           .AddCommand<CliFxNamedCommand>()
                                                           .AddCommand<CliFxNamedCommand00>()
                                                           .AddCommand<CliFxNamedCommand01>()
@@ -135,7 +207,6 @@ namespace Typin.Benchmarks.MultiCommand
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
         }
         #endregion
-#pragma warning restore CA1822 // Mark members as static
 
         public static void Main()
         {

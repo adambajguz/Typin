@@ -1,7 +1,6 @@
-﻿namespace Typin.Benchmarks.MultiCommand.CliFxComands
+﻿namespace Typin.Benchmarks.MultiCommand.CliFxCommands
 {
     using CliFx.Attributes;
-    using Typin.Benchmarks.MultiCommand.CliFxCommands;
 
     [Command]
     public class CliFxCommands : CliFxBaseCommand { }

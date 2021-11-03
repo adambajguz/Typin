@@ -8,7 +8,7 @@
     /// <summary>
     /// <see cref="IPipelinedDirective"/> component scanner.
     /// </summary>
-    internal sealed class PipelinedDirectiveScanner : Scanner<IPipelinedDirective>
+    internal sealed class PipelinedDirectiveScanner : Scanner<IPipelinedDirective>, IPipelinedDirectiveScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="PipelinedDirectiveScanner"/>.

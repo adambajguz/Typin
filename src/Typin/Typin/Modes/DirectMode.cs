@@ -29,7 +29,7 @@
         /// <inheritdoc/>
         public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken)
         {
-            if (_cliContextAccessor.CliContext.IsStartupContext()) //TODO: condition does not work
+            if (_cliContextAccessor.CliContext.IsStartupContext())
             {
                 CliOptions cliOptions = _cliOptions.CurrentValue;
 
