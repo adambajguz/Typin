@@ -29,12 +29,11 @@
 
             if (pipelinedDirectives.Count > 0)
             {
-                IPipelineBuilder<CliContext> builder = PipelineBuilder.Create<CliContext>()
+                IPipeline<CliContext> pipeline = PipelineBuilder.Create<CliContext>()
                                     .Description(args.Id.ToString())
-                                    .Lifetime(InvokablePipelineLifetime.Transient);
-
-                builder.AddSteps(pipelinedDirectives);
-                IPipeline<CliContext> pipeline = builder.Build();
+                                    .Lifetime(InvokablePipelineLifetime.Transient)
+                                    .AddSteps(pipelinedDirectives)
+                                    .Build();
 
                 IInvokablePipeline<CliContext> invokableSubPipeline = pipeline.CreateInvokable(_stepActivator);
                 await invokableSubPipeline.InvokeAsync(args, next, cancellationToken);

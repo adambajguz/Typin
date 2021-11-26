@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Typin.Tests.Data.Invalid.DuplicatedCommands\Typin.Tests.Data.Invalid.DuplicatedCommands.csproj" />
-    <ProjectReference Include="..\Typin.Tests.Data.Invalid\Typin.Tests.Data.Invalid.csproj" />
-    <ProjectReference Include="..\Typin.Tests.Data.Valid.DefaultCommands\Typin.Tests.Data.Valid.DefaultCommands.csproj" />
-    <ProjectReference Include="..\Typin.Tests.Data.Valid\Typin.Tests.Data.Valid.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Tests.Data.Invalid.DuplicatedCommands\Typin.Tests.Data.Invalid.DuplicatedCommands.csproj" />
+		<ProjectReference Include="..\Typin.Tests.Data.Invalid\Typin.Tests.Data.Invalid.csproj" />
+		<ProjectReference Include="..\Typin.Tests.Data.Valid.DefaultCommands\Typin.Tests.Data.Valid.DefaultCommands.csproj" />
+		<ProjectReference Include="..\Typin.Tests.Data.Valid\Typin.Tests.Data.Valid.csproj" />
+	</ItemGroup>
 
 </Project>

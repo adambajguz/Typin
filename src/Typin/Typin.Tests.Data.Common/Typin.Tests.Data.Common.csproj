@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
-    <ProjectReference Include="..\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
-    <ProjectReference Include="..\Typin\Typin.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
+		<ProjectReference Include="..\Typin\Typin.csproj" />
+	</ItemGroup>
 
 </Project>

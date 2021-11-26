@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <RootNamespace>Typin.Help</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<RootNamespace>Typin.Help</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
+	</ItemGroup>
 
 </Project>
