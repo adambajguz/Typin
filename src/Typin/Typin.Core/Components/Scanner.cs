@@ -14,7 +14,7 @@
     public abstract class Scanner<TComponent> : IScanner<TComponent>
         where TComponent : notnull
     {
-        private readonly List<Type> _types = new();
+        private readonly HashSet<Type> _types = new();
 
         /// <summary>
         /// Services collection.
@@ -29,7 +29,7 @@
         /// <summary>
         /// Added types to the block.
         /// </summary>
-        public IReadOnlyList<Type> Types => _types;
+        public IReadOnlyCollection<Type> Types => _types;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Scanner{TComponent}"/>.
@@ -50,10 +50,16 @@
         }
 
         /// <summary>
-        /// Registers component service.
+        /// Registers component services.
         /// </summary>
         /// <param name="type"></param>
-        protected abstract void RegisterService(Type type);
+        protected abstract void RegisterServices(Type type);
+
+        /// <summary>
+        /// Implementation should provide with invalid component exception.
+        /// </summary>
+        /// <param name="type"></param>
+        protected abstract Exception GetInvalidComponentException(Type type);
 
         /// <inheritdoc/>
         public IScanner<TComponent> Single<T>()
@@ -71,11 +77,14 @@
 
             if (!IsValidComponent(type))
             {
-                throw new ArgumentException($"Type '{type.FullName}' does not match component type '{ComponentType.FullName}'.", nameof(type));
+                throw GetInvalidComponentException(type);
             }
 
-            _types.Add(type);
-            RegisterService(type);
+            if (!_types.Contains(type))
+            {
+                _types.Add(type);
+                RegisterServices(type);
+            }
 
             return this;
         }
@@ -96,8 +105,11 @@
         {
             foreach (Type type in assembly.ExportedTypes.Where(IsValidComponent))
             {
-                _types.Add(type);
-                RegisterService(type);
+                if (!_types.Contains(type))
+                {
+                    _types.Add(type);
+                    RegisterServices(type);
+                }
             }
 
             return this;

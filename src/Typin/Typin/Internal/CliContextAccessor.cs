@@ -10,10 +10,7 @@ namespace Typin.Internal
         public CliContext? CliContext
         {
             get => _cliContextCurrent.Value?.Context;
-            set
-            {
-                _cliContextCurrent.Value = new CliContextHolder { Context = value };
-            }
+            set => _cliContextCurrent.Value = new CliContextHolder { Context = value };
         }
 
         private class CliContextHolder

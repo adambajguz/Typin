@@ -27,7 +27,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -43,7 +43,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -58,7 +58,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -74,7 +74,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }

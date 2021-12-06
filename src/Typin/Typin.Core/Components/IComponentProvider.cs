@@ -18,13 +18,13 @@
         /// </summary>
         /// <param name="componentType"></param>
         /// <returns></returns>
-        IReadOnlyList<Type> Get(Type componentType);
+        IReadOnlyCollection<Type> Get(Type componentType);
 
         /// <summary>
         /// Get components by base type.
         /// </summary>
         /// <typeparam name="TComponent"></typeparam>
         /// <returns></returns>
-        IReadOnlyList<Type> Get<TComponent>();
+        IReadOnlyCollection<Type> Get<TComponent>();
     }
 }

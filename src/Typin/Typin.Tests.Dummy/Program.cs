@@ -32,7 +32,7 @@
                             scanner.Single<DirectMode>();
                         });
 
-                    //cliBuilder.SetStartupMode<DirectMode>();
+                    cliBuilder.SetStartupMode<DirectMode>();
                 })
                 .RunConsoleAsync();
 

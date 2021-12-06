@@ -31,12 +31,7 @@
         {
             if (_cliContextAccessor.CliContext.IsStartupContext())
             {
-                CliOptions cliOptions = _cliOptions.CurrentValue;
-
-                return await _commandExecutor.ExecuteAsync(
-                    cliOptions.CommandLine ?? string.Empty,
-                    cliOptions.StartupExecutionOptions,
-                    cancellationToken);
+                return await _commandExecutor.ExecuteAsync(_cliOptions.CurrentValue, cancellationToken);
             }
 
             return ExitCode.Success;

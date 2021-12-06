@@ -17,9 +17,9 @@
         Type ComponentType { get; }
 
         /// <summary>
-        /// Added types to the block.
+        /// Added types to the scanner.
         /// </summary>
-        IReadOnlyList<Type> Types { get; }
+        IReadOnlyCollection<Type> Types { get; }
 
         /// <summary>
         /// Whether component is a valid component for scanner.

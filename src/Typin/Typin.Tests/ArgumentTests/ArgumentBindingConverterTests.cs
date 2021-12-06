@@ -30,7 +30,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "cmd" }, isInputRedirected: false);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain($"Command argument has an invalid converter");
@@ -54,7 +54,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":");
             stdOut.GetString().Should().ContainAll(@"{""Value"":1235,""Day"":6}", @""":null");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -78,7 +78,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -100,7 +100,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":");
             stdOut.GetString().Should().ContainAll(@"{""Value"":0,""Day"":0}", @""":null", @"[""Monday"",""1235"",""1213""]");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -120,7 +120,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().BeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -145,7 +145,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().NotStartWith(@"{""StringInitializable"":");
             stdOut.GetString().Should().NotContainAll(@"{""Value"":1235,""Day"":6}", @""":null");
             stdErr.GetString().Should().ContainAll("The method or operation is not implemented.", "Can't convert value \"", optionName);
@@ -168,7 +168,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().DeserializeJson<SupportedArgumentTypesViaConverterCommand>().Should().NotBeEquivalentTo(new SupportedArgumentTypesViaConverterCommand(null!));
             stdOut.GetString().Should().NotStartWith(@"{""StringInitializable"":null,""StringNullableInitializableStruct"":null,""StringNullableInitializableStructByNonNullableConverter"":null,""StringInitializableStruct"":{""Value"":0,""Day"":0},""StringEnumerableInitializable"":null,""IndirectlyStringEnumerableInitializable"":null}");
             stdErr.GetString().Should().ContainAll("The method or operation is not implemented.", "Can't convert value \"", optionName);
@@ -190,7 +190,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().NotStartWith(@"{""StringInitializable"":");
             stdOut.GetString().Should().NotContainAll(@"{""Value"":1235,""Day"":6}", @""":null");
             stdErr.GetString().Should().Contain("The method or operation is not implemented.");

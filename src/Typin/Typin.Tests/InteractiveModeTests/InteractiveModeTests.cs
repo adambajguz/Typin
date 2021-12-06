@@ -1,7 +1,9 @@
-﻿namespace Typin.Tests.InteractiveMode
+﻿namespace Typin.Tests.InteractiveModeTests
 {
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Modes;
+    using Typin.Modes.Interactive;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -28,8 +30,8 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -38,7 +40,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().StartWith("dotnet testhost.dll> ");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -54,8 +56,8 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -64,7 +66,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", "COMMANDS", "DIRECTIVES");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -77,8 +79,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "named-interactive-only" }.JoinToInteractiveCommand();
 
@@ -89,7 +91,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", NamedInteractiveOnlyCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -102,8 +104,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "unknown-command-only" }.JoinToInteractiveCommand();
 
@@ -114,7 +116,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ");
             stdErr.GetString().Should().Contain("Unrecognized parameters provided: unknown-command-only");
         }
@@ -127,8 +129,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "[!]" }.JoinToInteractiveCommand();
 
@@ -139,7 +141,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", DefaultCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -152,8 +154,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "[>] named-interactive-only", "[!]", "[..]" }.JoinToInteractiveCommand();
 
@@ -164,7 +166,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", NamedInteractiveOnlyCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -177,8 +179,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "[>] named-interactive-only", "[>]", "[>] unknown command", "[>] named-interactive-only", "[!]", "[..]" }.JoinToInteractiveCommand();
 
@@ -189,7 +191,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", NamedInteractiveOnlyCommand.ExpectedOutputText);
             stdErr.GetString().Should().NotContain("Unrecognized parameters provided");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -203,8 +205,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "[>] named-interactive-only", "[>]", "[>] unknown command", "[>] named-interactive-only", "[..]" }.JoinToInteractiveCommand();
 
@@ -215,7 +217,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("dotnet testhost.dll> ");
             stdOut.GetString().Should().NotContain(NamedInteractiveOnlyCommand.ExpectedOutputText);
             stdErr.GetString().Should().NotContain("Unrecognized parameters provided");
@@ -230,8 +232,8 @@
                 .AddCommand<DefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddCommand<ExitCommand>()
-                .UseDirectMode(asStartup: true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             string input = new[] { "[>] named-interactive-only", "[!]", "[.]" }.JoinToInteractiveCommand();
 
@@ -242,7 +244,7 @@
                                                                                 input: input);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("dotnet testhost.dll> ", NamedInteractiveOnlyCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

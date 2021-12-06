@@ -3,6 +3,7 @@
     using System;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Components;
+    using Typin.Exceptions.Mode;
     using Typin.Schemas;
 
     /// <summary>
@@ -26,7 +27,13 @@
         }
 
         /// <inheritdoc/>
-        protected override void RegisterService(Type type)
+        protected override Exception GetInvalidComponentException(Type type)
+        {
+            return new InvalidModeException(type);
+        }
+
+        /// <inheritdoc/>
+        protected override void RegisterServices(Type type)
         {
             Services.AddSingleton(type);
         }

@@ -1,5 +1,6 @@
 ﻿namespace Typin.Tests.Extensions
 {
+    using Typin.Console.IO;
     using Xunit.Abstractions;
 
     internal static class OutputExtensions

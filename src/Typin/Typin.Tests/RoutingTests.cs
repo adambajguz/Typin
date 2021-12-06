@@ -30,7 +30,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Trim().Should().Be(DefaultCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -48,7 +48,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Trim().Should().Be(NamedCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -66,7 +66,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Trim().Should().Be(NamedSubCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -84,7 +84,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, Array.Empty<string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -102,7 +102,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll("Default command description", "Usage".ToUpperInvariant());
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -120,7 +120,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("This will be visible in help");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -138,7 +138,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named command description",
                 "Usage".ToUpperInvariant(),
@@ -160,7 +160,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named", "sub", "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "Named sub command description",
                 "Usage".ToUpperInvariant(),
@@ -183,7 +183,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "--version" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Trim().Should().Be("v6.9");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

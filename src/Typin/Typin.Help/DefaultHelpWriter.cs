@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.Linq;
     using Microsoft.Extensions.Options;
+    using Typin.Components;
     using Typin.Console;
     using Typin.Schemas;
     using Typin.Utilities;
@@ -32,6 +33,7 @@
         private readonly RootSchema _rootSchema;
         private readonly CliContext? _context;
         private readonly IOptionsMonitor<ApplicationMetadata> _metadata;
+        private readonly IComponentProvider _componentProvider;
         private readonly IConsole _console;
 
         private int _column;
@@ -45,11 +47,13 @@
         public DefaultHelpWriter(IRootSchemaAccessor rootSchemaAccessor,
                                  ICliContextAccessor cliContextAccessor,
                                  IOptionsMonitor<ApplicationMetadata> metadata,
+                                 IComponentProvider componentProvider,
                                  IConsole console)
         {
             _rootSchema = rootSchemaAccessor.RootSchema;
             _context = cliContextAccessor.CliContext;
             _console = console;
+            _componentProvider = componentProvider;
             _metadata = metadata;
         }
 
@@ -170,7 +174,7 @@
         #region Mode restrictions
         private void WriteModeRestrictionsManual(CommandSchema command)
         {
-            IReadOnlyList<Type> modesInApplication = new List<Type>();// _context.Configuration.ModeTypes;
+            IReadOnlyCollection<Type> modesInApplication = _componentProvider.Get<ICliMode>();
 
             if (modesInApplication.Count <= 1)
             {

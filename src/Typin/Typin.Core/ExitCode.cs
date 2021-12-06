@@ -3,7 +3,7 @@
     /// <summary>
     /// Static exit codes helper class.
     /// </summary>
-    public static class ExitCode
+    public readonly struct ExitCode
     {
         /// <summary>
         /// Success exit code.

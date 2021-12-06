@@ -15,7 +15,7 @@
     /// </summary>
     public sealed class BindInput : IMiddleware
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; //TODO: wrap IConfiguration with Typin interface to allow decoupling from IConfiguration
 
         /// <summary>
         /// Initializes a new instance of <see cref="BindInput"/>.

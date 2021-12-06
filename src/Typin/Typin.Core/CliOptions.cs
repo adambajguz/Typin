@@ -9,9 +9,14 @@
     public sealed class CliOptions
     {
         /// <summary>
-        /// Command line.
+        /// Command line. <see cref="CommandLine"/> has a higher priority than <see cref="CommandLineArguments"/>.
         /// </summary>
-        public string? CommandLine { get; set; } //TODO: change to enumerable
+        public string? CommandLine { get; set; }
+
+        /// <summary>
+        /// Command line arguments. <see cref="CommandLine"/> has a higher priority than <see cref="CommandLineArguments"/>.
+        /// </summary>
+        public string[]? CommandLineArguments { get; set; }
 
         /// <summary>
         /// Startup <see cref="CommandLine"/> execution options.

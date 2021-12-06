@@ -33,7 +33,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Can't convert");

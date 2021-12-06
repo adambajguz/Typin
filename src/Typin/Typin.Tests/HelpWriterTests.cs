@@ -4,6 +4,9 @@
     using FluentAssertions;
     using Typin.Directives;
     using Typin.Modes;
+    using Typin.Modes.Interactive;
+    using Typin.Modes.Interactive.Commands;
+    using Typin.Modes.Interactive.Directives;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -29,7 +32,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithParametersCommand), "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "USAGE",
                 "PARAMETERS",
@@ -49,7 +52,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithParametersCommand), "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "USAGE",
                 "PARAMETERS",
@@ -64,23 +67,28 @@
         {
             // Arrange
             var builder = new CliApplicationBuilder()
+                .AddCommand<InteractiveCommand>()
                 .AddCommand<WithParametersCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddDirective<DebugDirective>()
-                .UseDirectMode(true)
-                .UseInteractiveMode();
+                .AddDirective<InteractiveDirective>()
+                .AddDirective<ScopeDirective>()
+                .AddDirective<ScopeResetDirective>()
+                .AddDirective<ScopeUpDirective>()
+                .RegisterMode<DirectMode>(true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "USAGE",
                 "DIRECTIVES",
                 "SUPPORTED MODES",
                 typeof(DirectMode).FullName,
-                typeof(Modes.InteractiveMode).FullName,
+                typeof(InteractiveMode).FullName,
                 nameof(WithParametersCommand),
                 "@ interactive",
                 "@ named-interactive-only",
@@ -88,55 +96,7 @@
                 "@ [..]",
                 "@ [>]",
                 "@ [interactive]",
-                "[debug]",
-                "[!]"
-            );
-        }
-
-        [Fact]
-        public async Task Help_text_should_not_show_interactive_mode_addons_when_switched_off()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<WithParametersCommand>()
-                .AddCommand<NamedInteractiveOnlyCommand>()
-                .AddDirective<DebugDirective>()
-                .UseDirectMode(true)
-                .UseInteractiveMode(
-                    false,
-                    (options) =>
-                    {
-
-                    },
-                    new InteractiveModeBuilderSettings
-                    {
-                        AddInteractiveCommand = false,
-                        AddInteractiveDirective = false,
-                        AddScopeDirectives = false,
-                    });
-
-            // Act
-            var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
-
-            // Assert
-            exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().ContainAll(
-                "USAGE",
-                "DIRECTIVES",
-                "SUPPORTED MODES",
-                typeof(DirectMode).FullName,
-                typeof(Modes.InteractiveMode).FullName,
-                "@ named-interactive-only",
-                "[debug]",
-                "[!]",
-                nameof(WithParametersCommand)
-            );
-            stdOut.GetString().Should().NotContainAll(
-                "@ interactive",
-                "@ [.]",
-                "@ [..]",
-                "@ [>]",
-                "@ [interactive]"
+                "[debug]"
             );
         }
 
@@ -151,7 +111,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithRequiredOptionsCommand), "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "USAGE",
                 nameof(WithRequiredOptionsCommand), "--opt-a <value>", "--opt-c <values...>", "[options]",
@@ -173,7 +133,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithEnumArgumentsCommand), "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "PARAMETERS",
                 "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
@@ -194,7 +154,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { nameof(WithEnvironmentVariablesCommand), "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "OPTIONS",
                 "-a|--opt-a", "Fallback variable:", "ENV_OPT_A",
@@ -213,7 +173,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "OPTIONS",
                 "--obj", "Default: \"42\"",
@@ -241,7 +201,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "cmd", "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "OPTIONS",
                 "--object", "Default: \"42\"",
@@ -269,7 +229,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "PARAMETERS",
                 "OPTIONS",
@@ -297,7 +257,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "--help" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "PARAMETERS",
                 "OPTIONS",

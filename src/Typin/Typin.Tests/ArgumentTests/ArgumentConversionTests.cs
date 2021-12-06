@@ -216,7 +216,7 @@
             var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
             commandInstance.Should().BeEquivalentTo(testInstance);
         }
@@ -237,7 +237,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
             commandInstance.Should().BeEquivalentTo(new SupportedArgumentTypesCommand(null!)
             {
@@ -269,7 +269,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll($"Value:{half.Trim().Trim('.')}", $"NullableValue:{(string.IsNullOrWhiteSpace(nullableHalf) ? "null" : nullableHalf.Trim().Trim('.'))}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -291,7 +291,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }

@@ -124,7 +124,7 @@
             _output.Print(stdOut, stdErr);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain(WithColorsCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -147,7 +147,7 @@
             _output.Print(stdOut, stdErr);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain(WithColorsAndResetCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

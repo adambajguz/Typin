@@ -39,6 +39,7 @@
         /// Configures the application to use the specified implementation of <see cref="IConsole"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="cliBuilder"></param>
         public static ICliBuilder UseConsole<T>(this ICliBuilder cliBuilder)
             where T : class, IConsole
         {

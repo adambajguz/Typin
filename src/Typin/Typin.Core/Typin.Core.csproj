@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
 		<Authors>$(Company)</Authors>
 		<Description>Declarative framework for interactive CLI applications</Description>
 		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
@@ -41,6 +41,11 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Typin.Tests.Data.Common</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[6.0,]" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">

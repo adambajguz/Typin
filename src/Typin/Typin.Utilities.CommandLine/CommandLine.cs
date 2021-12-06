@@ -49,7 +49,7 @@
         /// <remarks>https://stackoverflow.com/a/37646895</remarks>
         public static string EncodeArgument(string argument, bool forceQuotes = false)
         {
-            if (argument == null) throw new ArgumentNullException(nameof(argument));
+            _ = argument ?? throw new ArgumentNullException(nameof(argument));
 
             // Unless we're told otherwise, don't quote unless we actually
             // need to do so --- hopefully avoid problems if programs won't

@@ -35,7 +35,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithStringArrayOptionCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithStringArrayOptionCommand(null!)
@@ -58,7 +58,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -77,7 +77,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -96,7 +96,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -115,7 +115,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace()
                                        .And.NotContain("Exception")
@@ -142,7 +142,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
             commandInstance.Should().BeEquivalentTo(new WithParametersCommand(null!)
@@ -169,7 +169,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
 
             stdErr.GetString().Should().BeNullOrWhiteSpace();
 
@@ -199,7 +199,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -222,7 +222,7 @@
             });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -238,7 +238,7 @@
             var (exitCode, _, stdErr) = await builder.BuildAndRunTestAsync(_output, nameof(WithSingleParameterCommand));
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -256,7 +256,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
 
@@ -277,7 +277,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -295,7 +295,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "named" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();

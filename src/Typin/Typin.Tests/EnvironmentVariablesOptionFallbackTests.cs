@@ -77,7 +77,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptA = "correct"
@@ -102,7 +102,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptB = new[] { "foo", "bar" }
@@ -127,7 +127,7 @@
             var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             commandInstance.Should().BeEquivalentTo(new WithEnvironmentVariablesCommand(null!)
             {
                 OptA = $"foo{Path.PathSeparator}bar"

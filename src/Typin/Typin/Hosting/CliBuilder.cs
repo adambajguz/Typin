@@ -18,6 +18,7 @@
 
     internal class CliBuilder : ICliBuilder, IDisposable
     {
+        private readonly bool _subsequentCall;
         private readonly Dictionary<Type, IScanner> _components = new();
 
         /// <inheritdoc/>
@@ -44,6 +45,12 @@
             Configuration = context.Configuration;
             Services = services;
 
+            if (services.Any(x => x.ServiceType == typeof(CliModeManager)))
+            {
+                _subsequentCall = true;
+                return;
+            }
+
             services.AddOptions();
 
             services.AddOptions<ApplicationMetadata>()
@@ -57,7 +64,7 @@
             services.AddOptions<CliOptions>()
                     .PostConfigure(options =>
                     {
-                        if (options.CommandLine is null)
+                        if (options.CommandLine is null && options.CommandLineArguments is null)
                         {
                             options.CommandLine = System.Environment.CommandLine;
                             options.StartupExecutionOptions = CommandExecutionOptions.TrimExecutable;
@@ -96,12 +103,29 @@
         /// </summary>
         public void Dispose()
         {
-            Dictionary<Type, IReadOnlyList<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
+            if (_subsequentCall && _components.Count <= 0)
+            {
+                return;
+            }
+
+            Dictionary<Type, IReadOnlyCollection<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
             ComponentProvider cliComponentProvider = new(cliComponents);
+
+            if (_subsequentCall)
+            {
+                ServiceDescriptor sd = Services.Where(x => x.ServiceType == typeof(IComponentProvider)).First();
+                Services.RemoveAll<IComponentProvider>();
+
+                ComponentProvider prev = sd.ImplementationInstance as ComponentProvider ?? throw new NullReferenceException($"Invalid {typeof(ComponentProvider)}");
+                ComponentProvider n = prev.Merge(cliComponentProvider);
+
+                Services.AddSingleton<IComponentProvider>(n);
+
+                return;
+            }
 
             Services.AddSingleton<IComponentProvider>(cliComponentProvider);
             Services.TryAddSingleton<IConsole, SystemConsole>();
-
             Services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
 
             Services.AddPipelining(builder =>

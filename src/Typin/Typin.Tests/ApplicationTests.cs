@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Modes;
+    using Typin.Modes.Interactive;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Extensions;
     using Xunit;
@@ -33,7 +34,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("[Startup message]");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -54,7 +55,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("[Startup message tITle veRSion eXe DesC]");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -75,7 +76,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain("[Startup message tITle veRSion eXe DesC]");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -100,15 +101,15 @@
 
             if (interactive)
             {
-                builder.UseDirectMode(true)
-                       .UseInteractiveMode();
+                builder.RegisterMode<DirectMode>(asStartup: true)
+                       .RegisterMode<InteractiveMode>();
             }
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -126,15 +127,15 @@
 
             if (interactive)
             {
-                builder.UseDirectMode(true)
-                       .UseInteractiveMode();
+                builder.RegisterMode<DirectMode>(asStartup: true)
+                       .RegisterMode<InteractiveMode>();
             }
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLineArguments, interactive);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().NotContainEquivalentOf(result);
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -161,14 +162,14 @@
 
             if (interactive)
             {
-                builder.UseInteractiveMode();
+                builder.RegisterMode<InteractiveMode>();
             }
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, commandLine, containsExecutable, isInputRedirected: interactive);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainEquivalentOf(result);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -185,7 +186,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain($"Command '{typeof(NamedInteractiveOnlyCommand).FullName}' contains invalid supported mode(s)");
@@ -203,7 +204,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-direct-excluded-only" }, isInputRedirected: false);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().ContainAll($"Command '{typeof(NamedDirectExcludedCommand).FullName}' cannot run in modes");
@@ -216,14 +217,14 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<BenchmarkDefaultCommand>()
                 .AddCommand<NamedInteractiveOnlyCommand>()
-                .UseDirectMode(true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "named-interactive-only" }, isInputRedirected: false);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain($"This application is running in '{typeof(DirectMode).FullName}' mode.");
@@ -240,7 +241,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "--str", "hello world", "-i", "-13", "-b" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainEquivalentOf("{\"StrOption\":\"hello world\",\"IntOption\":-13,\"BoolOption\":true}");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

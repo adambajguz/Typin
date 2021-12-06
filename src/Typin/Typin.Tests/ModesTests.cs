@@ -3,6 +3,8 @@ namespace Typin.Tests
     using System;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Exceptions.Mode;
+    using Typin.Modes;
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.Modes.Invalid;
     using Typin.Tests.Data.Modes.Valid;
@@ -31,7 +33,7 @@ namespace Typin.Tests
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(DefaultCommand.ExpectedOutputText);
             stdOut.GetString().Should().ContainAll(nameof(ValidCustomMode), nameof(ValidCustomMode) + "END");
             stdOut.GetString().Should().NotContainAll("-h", "--help");
@@ -50,57 +52,62 @@ namespace Typin.Tests
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(nameof(ValidCustomMode), nameof(ValidCustomMode) + "END");
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
         [Fact]
-        public void Mode_should_not_be_abstract_when_registered_with_typeof()
+        public async Task Mode_should_not_be_abstract_when_registered_with_typeof()
         {
             // Arrange
-            Action act = () =>
-            {
-                var builder = new CliApplicationBuilder()
-                                 .UseDirectMode(true)
-                                 .RegisterMode(typeof(InvalidCustomMode), true);
-            };
+            Func<Task> func = async () =>
+             {
+                 var builder = await new CliApplicationBuilder()
+                     .RegisterMode<DirectMode>(asStartup: true)
+                     .RegisterMode(typeof(InvalidCustomMode), true)
+                     .Build()
+                     .RunAsync();
+             };
 
             // Assert
-            act.Should().Throw<ArgumentException>().WithMessage("Invalid CLI mode type*");
+            await func.Should().ThrowAsync<InvalidModeException>().WithMessage("Invalid CLI mode type*");
         }
 
         [Fact]
-        public void Mode_should_not_be_abstract()
+        public async Task Mode_should_not_be_abstract()
         {
             // Arrange
-            Action act = () =>
+            Func<Task> act = async () =>
             {
-                var builder = new CliApplicationBuilder()
-                                 .UseDirectMode(true)
-                                 .RegisterMode<InvalidAbstractCustomMode>(true);
+                var builder = await new CliApplicationBuilder()
+                    .RegisterMode<DirectMode>(asStartup: true)
+                    .RegisterMode<InvalidAbstractCustomMode>(true)
+                    .Build()
+                    .RunAsync();
             };
 
             // Assert
-            act.Should().Throw<ArgumentException>().WithMessage("Invalid CLI mode type*");
+            await act.Should().ThrowAsync<InvalidModeException>().WithMessage("Invalid CLI mode type*");
         }
 
         [Fact]
-        public void Invalid_mode_type_should_throw_error()
+        public async Task Invalid_mode_type_should_throw_error()
         {
             // Arrange
-            Action act = () =>
+            Func<Task> act = async () =>
             {
-                var builder = new CliApplicationBuilder()
-                                 .UseDirectMode(true)
-                                 .RegisterMode(typeof(InvalidCustomMode), true);
+                var builder = await new CliApplicationBuilder()
+                    .RegisterMode<DirectMode>(asStartup: true)
+                    .RegisterMode(typeof(InvalidCustomMode), true)
+                    .Build()
+                    .RunAsync();
             };
 
             // Assert
-            act.Should().Throw<ArgumentException>().WithMessage("Invalid CLI mode type*");
+            await act.Should().ThrowAsync<InvalidModeException>().WithMessage("Invalid CLI mode type*");
         }
-
 
         [Fact]
         public async Task When_no_startup_mode_was_registered_direct_mode_should_be_executed()
@@ -114,7 +121,7 @@ namespace Typin.Tests
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(DefaultCommand.ExpectedOutputText);
             stdOut.GetString().Should().NotContainAll(nameof(ValidCustomMode), nameof(ValidCustomMode) + "END");
             stdOut.GetString().Should().NotContainAll("-h", "--help");
@@ -123,18 +130,20 @@ namespace Typin.Tests
         }
 
         [Fact]
-        public void Only_one_startup_mode_can_be_registered()
+        public async Task Only_one_startup_mode_can_be_registered()
         {
             // Arrange
-            Action act = () =>
+            Func<Task> func = async () =>
             {
-                var builder = new CliApplicationBuilder()
-                                 .UseDirectMode(true)
-                                 .RegisterMode<ValidCustomMode>(true);
+                var builder = await new CliApplicationBuilder()
+                    .RegisterMode<DirectMode>(asStartup: true)
+                    .RegisterMode<ValidCustomMode>(true)
+                    .Build()
+                    .RunAsync();
             };
 
             // Assert
-            act.Should().Throw<ArgumentException>().WithMessage("*Only one mode can be registered as startup mode.*");
+            await func.Should().ThrowAsync<ArgumentException>().WithMessage("*Only one mode can be registered as startup mode.*");
         }
     }
 }

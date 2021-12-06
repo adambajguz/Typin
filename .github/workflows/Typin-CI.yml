@@ -33,18 +33,18 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.3.3
+      uses: actions/checkout@v2.4.0
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1.7.2
+      uses: actions/setup-dotnet@v1.9.0
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
     - name: Build & test
       run: dotnet test src/Typin/Typin.sln --configuration Release-CI
 
     - name: Upload coverage
-      uses: codecov/codecov-action@v1.0.14
+      uses: codecov/codecov-action@v2.1.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./src/Typin/Typin.Tests/bin/Release/Coverage.xml

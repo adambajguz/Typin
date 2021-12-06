@@ -30,7 +30,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
@@ -48,7 +48,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -65,7 +65,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -81,7 +81,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -98,7 +98,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -115,7 +115,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }

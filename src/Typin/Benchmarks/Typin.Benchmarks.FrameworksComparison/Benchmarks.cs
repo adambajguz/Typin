@@ -89,7 +89,7 @@
 
         public static void Main()
         {
-            BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator));
+            BenchmarkRunner.Run<Benchmarks>(DefaultConfig.Instance.WithOptions(ConfigOptions.StopOnFirstError));
         }
     }
 }

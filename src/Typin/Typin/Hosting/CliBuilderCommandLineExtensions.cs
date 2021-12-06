@@ -1,6 +1,7 @@
 ﻿namespace Typin.Hosting
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
@@ -9,7 +10,7 @@
     public static class CliBuilderCommandLineExtensions
     {
         /// <summary>
-        /// Sets a custom command line.
+        /// Sets <see cref="CliOptions.CommandLine"/> (resets <see cref="CliOptions.CommandLineArguments"/> to null).
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="commandLine">Command line override.</param>
@@ -20,6 +21,7 @@
             builder.Services.Configure<CliOptions>(options =>
             {
                 options.CommandLine = commandLine;
+                options.CommandLineArguments = null;
                 options.StartupExecutionOptions = startupExecutionOptions;
             });
 
@@ -27,7 +29,7 @@
         }
 
         /// <summary>
-        /// Sets a custom command line that does not contain an executable name.
+        /// Sets <see cref="CliOptions.CommandLineArguments"/> (resets <see cref="CliOptions.CommandLine"/> to null) that does not contain an executable name.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="args">Command arguments override.</param>
@@ -38,7 +40,7 @@
         }
 
         /// <summary>
-        /// Sets a custom command line.
+        /// Sets <see cref="CliOptions.CommandLineArguments"/> (resets <see cref="CliOptions.CommandLine"/> to null).
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="args">Command arguments override.</param>
@@ -46,13 +48,18 @@
         /// <returns></returns>
         public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, CommandExecutionOptions startupExecutionOptions, params string[] args)
         {
-            string commandLine = '"' + string.Join(@""" """, args) + '"';
+            builder.Services.Configure<CliOptions>(options =>
+            {
+                options.CommandLine = null;
+                options.CommandLineArguments = args;
+                options.StartupExecutionOptions = startupExecutionOptions;
+            });
 
-            return builder.OverrideCommandLine(commandLine, startupExecutionOptions);
+            return builder;
         }
 
         /// <summary>
-        /// Sets a custom command line.
+        /// Sets <see cref="CliOptions.CommandLineArguments"/> (resets <see cref="CliOptions.CommandLine"/> to null).
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="args">Command arguments override.</param>
@@ -60,9 +67,14 @@
         /// <returns></returns>
         public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, IEnumerable<string> args, CommandExecutionOptions startupExecutionOptions = default)
         {
-            string commandLine = '"' + string.Join(@""" """, args) + '"';
+            builder.Services.Configure<CliOptions>(options =>
+            {
+                options.CommandLine = null;
+                options.CommandLineArguments = args.ToArray();
+                options.StartupExecutionOptions = startupExecutionOptions;
+            });
 
-            return builder.OverrideCommandLine(commandLine, startupExecutionOptions);
+            return builder;
         }
     }
 }
