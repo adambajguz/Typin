@@ -26,13 +26,13 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            bool trimExecutable = args.ExecutionOptions.HasFlag(CommandExecutionOptions.TrimExecutable);
+            bool trimExecutable = args.Input.ExecutionOptions.HasFlag(CommandExecutionOptions.TrimExecutable);
 
             ParsedCommandInput input = InputResolver.Parse(
-                args.Arguments.Skip(trimExecutable ? 1 : 0),
+                args.Input.Arguments.Skip(trimExecutable ? 1 : 0),
                 _rootSchemaAccessor.RootSchema.GetCommandNames());
 
-            args.Input = input;
+            args.Input.Parsed = input;
 
             await next();
         }

@@ -10,6 +10,7 @@
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.DynamicCommands;
+    using Typin.Features;
     using Typin.Input;
     using Typin.Internal;
     using Typin.Internal.DynamicCommands;
@@ -39,14 +40,14 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.ExitCode ??= Execute(args);
+            args.Output.ExitCode ??= Execute(args);
 
             await next();
         }
 
         private int? Execute(CliContext context)
         {
-            ParsedCommandInput input = context.Input ?? throw new NullReferenceException($"{nameof(CliContext.PipelinedDirectives)} must be set in {nameof(CliContext)}.");
+            ParsedCommandInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
             CommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
@@ -61,12 +62,9 @@
             //    commandSchema = StubDefaultCommand.Schema;
             //}
 
-            // Update CommandSchema
-            context.CommandSchema = commandSchema;
-
             // Get command instance (default values are used in help so we need command instance)
+
             ICommand instance = GetCommandInstance(commandSchema);
-            context.Command = instance;
 
             if (commandSchema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
             {
@@ -77,7 +75,8 @@
             // To avoid instantiating the command twice, we need to get default values
             // before the arguments are bound to the properties
             IReadOnlyDictionary<ArgumentSchema, object?> defaultValues = commandSchema.GetArgumentValues(instance);
-            context.CommandDefaultValues = defaultValues;
+
+            context.Features.Set<ICommandFeature>(new CommandFeature(commandSchema, instance, defaultValues));
 
             return null;
         }

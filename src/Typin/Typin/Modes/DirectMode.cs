@@ -27,7 +27,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken)
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken)
         {
             if (_cliContextAccessor.CliContext.IsStartupContext())
             {

@@ -11,15 +11,35 @@
     /// </summary>
     public class OptionSchema : ArgumentSchema
     {
+        private static readonly IMetadataCollection _emptyMetadata = new MetadataCollection();
+
         /// <summary>
         /// Gets a help option schema instance.
         /// </summary>
-        public static OptionSchema HelpOption { get; } = new(typeof(bool), "  __ShowHelp", false, "help", 'h', null, false, "Shows help text.", null, MetadataCollection.Empty);
+        public static OptionSchema HelpOption { get; } = new(typeof(bool),
+                                                             "  __ShowHelp",
+                                                             false,
+                                                             "help",
+                                                             'h',
+                                                             null,
+                                                             false,
+                                                             "Shows help text.",
+                                                             null,
+                                                             _emptyMetadata);
 
         /// <summary>
         /// Gets a version option schema instance.
         /// </summary>
-        public static OptionSchema VersionOption { get; } = new(typeof(bool), "  __ShowVersion", false, "version", null, null, false, "Shows version information.", null, MetadataCollection.Empty);
+        public static OptionSchema VersionOption { get; } = new(typeof(bool),
+                                                                "  __ShowVersion",
+                                                                false,
+                                                                "version",
+                                                                null,
+                                                                null,
+                                                                false,
+                                                                "Shows version information.",
+                                                                null,
+                                                                _emptyMetadata);
 
         /// <summary>
         /// Option name.

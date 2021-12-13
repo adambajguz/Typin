@@ -130,7 +130,7 @@
 
             Services.AddPipelining(builder =>
             {
-                builder.AddInitializer<MiddlewaresInitailizer>();
+                builder.AddInitializer<MiddlewaresInitializer>();
             });
 
             Services.AddHostedService<CliHostService>();

@@ -21,17 +21,17 @@
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             await next();
-            int? exitCode = args.ExitCode;
+            int? exitCode = args.Output.ExitCode;
 
-            if (args.ExitCode == 0)
+            if (exitCode == 0)
             {
                 _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{args.Id}: {ExpectedOutput}."));
+                    output.WriteLine($"{args.Call.Identifier}: {ExpectedOutput}."));
             }
             else
             {
                 _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{args.Id}: Command finished with exit code ({exitCode})."));
+                    output.WriteLine($"{args.Call.Identifier}: Command finished with exit code ({exitCode})."));
             }
         }
     }

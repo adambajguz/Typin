@@ -13,7 +13,7 @@
             _console = console;
         }
 
-        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken)
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken)
         {
             await _console.Output.WriteLineAsync(nameof(InvalidCustomMode));
 

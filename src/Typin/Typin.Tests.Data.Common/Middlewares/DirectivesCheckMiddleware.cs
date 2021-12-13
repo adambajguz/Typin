@@ -12,7 +12,7 @@
 
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            if (args.Input?.HasDirective("custom") ?? false)
+            if (args.Input.Parsed?.HasDirective("custom") ?? false)
             {
                 throw new ApplicationException("custom directive detected");
             }

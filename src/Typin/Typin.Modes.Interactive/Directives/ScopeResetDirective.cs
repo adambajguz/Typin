@@ -39,7 +39,7 @@
         public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             _options.Scope = string.Empty;
-            args.ExitCode ??= ExitCode.Success;
+            args.Output.ExitCode ??= ExitCode.Success;
 
             return default;
         }

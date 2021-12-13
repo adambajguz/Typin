@@ -59,7 +59,7 @@
                 attribute.IsRequired,
                 attribute.Description,
                 attribute.Converter,
-                MetadataCollection.Empty
+                new MetadataCollection()
             );
         }
     }

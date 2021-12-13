@@ -8,6 +8,7 @@
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Exceptions.ArgumentBinding;
+    using Typin.Features;
     using Typin.Input;
     using Typin.Schemas;
 
@@ -31,7 +32,8 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            ParsedCommandInput input = args.Input ?? throw new NullReferenceException($"{nameof(CliContext.Input)} must be set in {nameof(CliContext)}.");
+            ParsedCommandInput input = args.Input.Parsed ??
+                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Parsed)} has not been configured for this application or call.");
 
             //Get current CLI mode and input directives
             //Type currentModeType = _applicationLifetime.CurrentModeType!;
@@ -70,8 +72,7 @@
             }
 
             //Set directives lists in context
-            args.Directives = directivesInstances;
-            args.PipelinedDirectives = pipelinedDirectivesInstances;
+            args.Features.Set<IDirectivesFeature>(new DirectivesFeature(directivesInstances, pipelinedDirectivesInstances));
 
             await next();
         }

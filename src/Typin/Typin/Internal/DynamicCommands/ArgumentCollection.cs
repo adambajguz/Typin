@@ -112,7 +112,7 @@
             }
             else
             {
-                _values[propertyName] = new InputValue(MetadataCollection.Empty, typeof(object), value);
+                _values[propertyName] = new InputValue(new MetadataCollection(), typeof(object), value);
             }
         }
 

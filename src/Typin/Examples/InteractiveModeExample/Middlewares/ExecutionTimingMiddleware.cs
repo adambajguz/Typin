@@ -22,8 +22,8 @@
             _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
             {
                 output.WriteLine("--- Handling command '{0}' with args '{1}'",
-                                 args.Input?.CommandName ?? "<default>",
-                                 string.Join(' ', args.Arguments ?? Array.Empty<string>()));
+                                 args.Input.Parsed?.CommandName ?? "<default>",
+                                 string.Join(' ', args.Input.Arguments ?? Array.Empty<string>()));
             });
 
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -32,8 +32,8 @@
 
             stopwatch.Stop();
 
-            int? exitCode = args.ExitCode;
-            if (args.ExitCode == 0)
+            int? exitCode = args.Output.ExitCode;
+            if (exitCode == 0)
             {
                 _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
                 {
@@ -46,7 +46,7 @@
                 _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
                 {
                     output.WriteLine("--- Command finished with exit code ({0}) after {1} ms.",
-                                     args.ExitCode ?? ExitCode.Error,
+                                     args.Output.ExitCode ?? ExitCode.Error,
                                      stopwatch.Elapsed.TotalMilliseconds);
                 });
             }

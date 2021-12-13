@@ -3,24 +3,26 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
+    using Typin.Help;
     using Typin.Pipeline;
 
     /// <summary>
     /// Initializes middlewares.
     /// </summary>
-    internal sealed class MiddlewaresInitailizer : IPipelineInitializer
+    internal sealed class MiddlewaresInitializer : IPipelineInitializer
     {
         /// <inheritdoc/>
         public ValueTask RegisterAsync(IPipelineCollection pipelines, CancellationToken cancellationToken)
         {
             _ = PipelineBuilder.Create<CliContext>()
                  .Lifetime(InvokablePipelineLifetime.Scoped)
-                 .AddStep<HandleExceptions>()
+                 .AddStep<TypinExceptionsHandler>()
                  .AddStep<ResolveInput>()
                  .AddStep<ResolveCommand>()
                  .AddStep<InitializeDirectives>()
-                 .AddStep<ExecuteDirectivesSubpipeline>()
-                 .AddStep<HandleSpecialOptions>()
+                 .AddStep<PipelinedDirectivesHandler>()
+                 .AddStep<HelpHandler>()
+                 .AddStep<VersionHandler>()
                  .AddStep<BindInput>()
                  // user
                  .AddStep<ExecuteCommand>()

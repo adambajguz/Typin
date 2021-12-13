@@ -40,7 +40,7 @@
             string? param1 = Arguments.Get("Str").GetValueOrDefault<string>();
 
             var filteredArgs = Arguments
-                .Where(x => x.Value.Metadata.GetValueOrDefault<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
+                .Where(x => x.Value.Metadata.Get<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
                 .ToList();
 
             return default;

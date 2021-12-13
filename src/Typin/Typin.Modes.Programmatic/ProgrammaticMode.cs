@@ -73,7 +73,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
         {
             while (!_queue.IsEmpty)
             {

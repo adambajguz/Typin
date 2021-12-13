@@ -14,7 +14,6 @@
 
         private readonly ConcurrentDictionary<Type, ICliMode> _cliModes = new();
         private readonly IServiceProvider _serviceProvider;
-        private readonly ICliContextAccessor _cliContextAccessor;
 
         /// <summary>
         /// Gets or sets mode.
@@ -44,10 +43,9 @@
         /// <summary>
         /// Initializes a new instance of <see cref="CliModeManager"/>.
         /// </summary>
-        public CliModeManager(IServiceProvider serviceProvider, ICliContextAccessor cliContextAccessor)
+        public CliModeManager(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _cliContextAccessor = cliContextAccessor;
         }
 
         /// <inheritdoc/>

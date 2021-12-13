@@ -28,7 +28,7 @@
         public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             _console.Output.Write(ExpectedOutput);
-            args.ExitCode ??= ExpectedExitCode;
+            args.Output.ExitCode ??= ExpectedExitCode;
 
             return default;
         }

@@ -20,7 +20,7 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            _console.Output.WriteLine($"plot xy | {_cliContextAccessor.CliContext!.Depth}");
+            _console.Output.WriteLine($"plot xy | {_cliContextAccessor.CliContext!.Call.ContextDepth}");
 
             return default;
         }

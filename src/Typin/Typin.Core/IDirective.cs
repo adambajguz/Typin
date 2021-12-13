@@ -5,7 +5,7 @@
     using Typin.Console;
 
     /// <summary>
-    /// Directive handler.
+    /// Standard directive handler.
     /// </summary>
     public interface IDirective
     {

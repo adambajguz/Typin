@@ -41,7 +41,7 @@
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            _console.Output.WriteLine($"ContextId: {_cliContextAccessor.CliContext!.Depth} | '{Author}' '{AuthorX}' '{Ch}'");
+            _console.Output.WriteLine($"ContextId: {_cliContextAccessor.CliContext!.Call.ContextDepth} | '{Author}' '{AuthorX}' '{Ch}'");
 
             await _commandExecutor.ExecuteAsync("plot xy", CommandExecutionOptions.UseCurrentScope, cancellationToken);
 

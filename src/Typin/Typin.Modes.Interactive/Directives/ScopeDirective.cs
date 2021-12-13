@@ -53,12 +53,12 @@
         /// <inheritdoc/>
         public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            string? name = args.Input?.CommandName ?? GetFallbackCommandName(args);
+            string? name = args.Input.Parsed?.CommandName ?? GetFallbackCommandName(args);
 
             if (name is not null)
             {
                 _options.Scope = name;
-                args.ExitCode ??= ExitCode.Success;
+                args.Output.ExitCode ??= ExitCode.Success;
             }
 
             return default;
@@ -66,10 +66,10 @@
 
         private string? GetFallbackCommandName(CliContext context)
         {
-            ParsedCommandInput? input = context.Input ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
+            ParsedCommandInput? input = context.Input.Parsed ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
 
-            string potentialName = context.Arguments.Skip(input.Directives.Count)
-                                                    .JoinToString(' ');
+            string potentialName = context.Input.Arguments.Skip(input.Directives.Count)
+                                                          .JoinToString(' ');
 
             if (_rootSchemaAccessor.RootSchema.IsCommandOrSubcommandPart(potentialName))
             {

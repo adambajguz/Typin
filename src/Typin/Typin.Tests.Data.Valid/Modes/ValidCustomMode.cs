@@ -16,11 +16,11 @@
             _console = console;
         }
 
-        public ValueTask<int> ExecuteAsync(CancellationToken cancellationToken)
+        public Task<int> ExecuteAsync(CancellationToken cancellationToken)
         {
             _console.Output.WriteLine(nameof(ValidCustomMode));
 
-            return ValueTask.FromResult(0);
+            return Task.FromResult(0);
         }
     }
 }

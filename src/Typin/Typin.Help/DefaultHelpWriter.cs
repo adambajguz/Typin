@@ -60,9 +60,9 @@
         /// <inheritdoc/>
         public void Write()
         {
-            if (_context?.CommandSchema is not null && _context.CommandDefaultValues is not null)
+            if (_context is not null)
             {
-                Write(_context.CommandSchema, _context.CommandDefaultValues);
+                Write(_context.Command.Schema, _context.Command.DefaultValues);
             }
         }
 
@@ -572,7 +572,7 @@
             }
 
             // Enumerable
-            if (!(defaultValue is string) && defaultValue is IEnumerable defaultValues)
+            if (defaultValue is not string && defaultValue is IEnumerable defaultValues)
             {
                 Type elementType = defaultValues.GetType().TryGetEnumerableUnderlyingType() ?? typeof(object);
 

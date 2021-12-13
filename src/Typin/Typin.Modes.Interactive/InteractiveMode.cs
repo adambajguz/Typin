@@ -1,4 +1,4 @@
-﻿namespace Typin.Modes.Interactive
+namespace Typin.Modes.Interactive
 {
     using System;
     using System.Collections.Generic;
@@ -65,7 +65,7 @@
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken) //TODO: maybe replace Task<int> with Task
         {
             if (_cliContextAccessor.CliContext.IsStartupContext())
             {

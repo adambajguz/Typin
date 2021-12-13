@@ -12,6 +12,6 @@
         /// Executes CLI mode.
         /// </summary>
         /// <param name="cancellationToken"></param>
-        ValueTask<int> ExecuteAsync(CancellationToken cancellationToken);
+        Task<int> ExecuteAsync(CancellationToken cancellationToken);
     }
 }

@@ -23,11 +23,11 @@
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             // Get command instance from context
-            ICommand instance = args.Command ?? throw new NullReferenceException($"{nameof(CliContext.Command)} must be set in {nameof(CliContext)}.");
+            ICommand instance = args.Command.Instance;
 
             // Execute command
             await instance.ExecuteAsync(cancellationToken);
-            args.ExitCode ??= ExitCode.Success;
+            args.Output.ExitCode ??= ExitCode.Success;
 
             await next();
         }

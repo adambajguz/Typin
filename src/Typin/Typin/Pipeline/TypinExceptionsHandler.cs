@@ -9,16 +9,16 @@
     using Typin.Exceptions;
 
     /// <summary>
-    /// Handle exceptions.
+    /// A middleware that handles all <see cref="TypinException"/> exceptions.
     /// </summary>
-    public sealed class HandleExceptions : IMiddleware
+    public sealed class TypinExceptionsHandler : IMiddleware
     {
         private readonly IConsole _console;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="HandleExceptions"/>.
+        /// Initializes a new instance of <see cref="TypinExceptionsHandler"/>.
         /// </summary>
-        public HandleExceptions(IConsole console)
+        public TypinExceptionsHandler(IConsole console)
         {
             _console = console;
         }

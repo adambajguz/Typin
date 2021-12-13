@@ -9,6 +9,7 @@
     using Microsoft.Extensions.Logging;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Features;
     using Typin.Utilities;
 
     /// <summary>
@@ -17,6 +18,7 @@
     internal class CommandExecutor : ICommandExecutor
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly ICliModeAccessor _cliModeAccessor;
         private readonly ICliContextAccessor _cliContextAccessor;
         private readonly ILogger _logger;
 
@@ -24,11 +26,16 @@
         /// Initializes a new instance of <see cref="CommandExecutor"/>.
         /// </summary>
         /// <param name="serviceProvider"></param>
+        /// <param name="cliModeAccessor"></param>
         /// <param name="cliContextAccessor"></param>
         /// <param name="logger"></param>
-        public CommandExecutor(IServiceProvider serviceProvider, ICliContextAccessor cliContextAccessor, ILogger<CommandExecutor> logger)
+        public CommandExecutor(IServiceProvider serviceProvider,
+                               ICliModeAccessor cliModeAccessor,
+                               ICliContextAccessor cliContextAccessor,
+                               ILogger<CommandExecutor> logger)
         {
             _serviceProvider = serviceProvider;
+            _cliModeAccessor = cliModeAccessor;
             _cliContextAccessor = cliContextAccessor;
             _logger = logger;
         }
@@ -56,13 +63,17 @@
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            using IServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope) ? null : _serviceProvider.CreateScope();
+            using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            using IServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope) // TODO: use IAsyncServiceProvider
+                ? null
+                : _serviceProvider.CreateScope();
+
             IServiceProvider localProvider = serviceScope?.ServiceProvider ?? _serviceProvider;
 
-            CliContext cliContext = new(_cliContextAccessor.CliContext, arguments, options);
-            _cliContextAccessor.CliContext = cliContext;
+            CliContext cliContext = InitializeCliContext(arguments, options, cancellationTokenSource);
 
-            _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContext.Id);
+            _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContext.Call.Identifier);
 
             try
             {
@@ -70,7 +81,7 @@
                 IInvokablePipelineFactory pipelineFactory = localProvider.GetRequiredService<IInvokablePipelineFactory>();
                 IInvokablePipeline<CliContext> cliPipeline = pipelineFactory.GetRequiredPipeline<CliContext>();
 
-                await cliPipeline.InvokeAsync(cliContext, cancellationToken);
+                await cliPipeline.InvokeAsync(cliContext, cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
@@ -83,10 +94,30 @@
                 _cliContextAccessor.CliContext = null;
 
                 stopwatch.Stop();
-                _logger.LogDebug("Disposed scope with CliContext {CliContextId} after {Elapsed}.", cliContext.Id, stopwatch.Elapsed);
+                _logger.LogDebug("Disposed scope with CliContext {CliContextId} after {Elapsed}.", cliContext.Call.Identifier, stopwatch.Elapsed);
             }
 
-            return cliContext.ExitCode ?? ExitCode.Error;
+            return cliContext.Output.ExitCode ?? ExitCode.Error;
+        }
+
+        private CliContext InitializeCliContext(IEnumerable<string> arguments,
+                                                CommandExecutionOptions options,
+                                                CancellationTokenSource cancellationTokenSource)
+        {
+            CliContext cliContext = new DefaultCliContext();
+
+            cliContext.Features.Set<ICallInfoFeature>(new CallInfoFeature(Guid.NewGuid(), cliContext, _cliContextAccessor.CliContext));
+
+            ICliMode instance = _cliModeAccessor.Instance ?? throw new InvalidOperationException("CliMode has not been configured for this application.");
+            cliContext.Features.Set<ICliModeFeature>(new CliModeFeature(instance));
+            cliContext.Features.Set<ICallLifetimeFeature>(new CallLifetimeFeature(cancellationTokenSource));
+
+            cliContext.Features.Set<IInputFeature>(new InputFeature(arguments, options));
+            cliContext.Features.Set<IOutputFeature>(new OutputFeature());
+
+            _cliContextAccessor.CliContext = cliContext;
+
+            return cliContext;
         }
     }
 }

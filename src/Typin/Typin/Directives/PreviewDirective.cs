@@ -35,8 +35,8 @@
         /// <inheritdoc/>
         public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            WriteCommandLineInput(_console, args.Input ?? throw new NullReferenceException("Input not set."));
-            args.ExitCode ??= ExitCode.Success;
+            WriteCommandLineInput(_console, args.Input.Parsed ?? throw new NullReferenceException("Input not set."));
+            args.Output.ExitCode ??= ExitCode.Success;
 
             return default;
         }

@@ -39,7 +39,7 @@
         {
             await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
             {
-                string? commandLine = args.Input?.WithoutDirective(InteractiveOnlyDirectives.Interactive).ToString();
+                string? commandLine = args.Input.Parsed?.WithoutDirective(InteractiveOnlyDirectives.Interactive).ToString();
                 if (!string.IsNullOrWhiteSpace(commandLine))
                 {
                     await _commandExecutor.ExecuteAsync(commandLine, cancellationToken: ct);
