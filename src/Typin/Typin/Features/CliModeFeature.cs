@@ -22,5 +22,13 @@
             Type = instance.GetType();
             Instance = instance;
         }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"Mode = {Type}";
+        }
     }
 }

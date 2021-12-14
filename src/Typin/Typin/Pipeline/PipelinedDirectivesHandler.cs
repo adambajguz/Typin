@@ -1,4 +1,4 @@
-﻿namespace Typin.Pipeline
+namespace Typin.Pipeline
 {
     using System.Collections.Generic;
     using System.Threading;
@@ -29,13 +29,21 @@
             if (pipelinedDirectives.Count > 0)
             {
                 IPipeline<CliContext> pipeline = PipelineBuilder.Create<CliContext>()
-                    .Description(args.Call.Identifier.ToString())
+                    .Description(args.Call.TraceIdentifier)
                     .Lifetime(InvokablePipelineLifetime.Transient)
                     .AddSteps(pipelinedDirectives)
                     .Build();
 
                 IInvokablePipeline<CliContext> invokableSubPipeline = pipeline.CreateInvokable(_stepActivator);
-                await invokableSubPipeline.InvokeAsync(args, next, cancellationToken);
+
+                try
+                {
+                    await invokableSubPipeline.InvokeAsync(args, next, cancellationToken);
+                }
+                catch (PipelineInvocationException ex)
+                {
+                    throw new System.Exception("Failed to execute pipelined directives.", ex.InnerException); //TODO: replace with custom exception
+                }
             }
             else
             {

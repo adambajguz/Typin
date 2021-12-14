@@ -29,5 +29,14 @@
             Instance = instance;
             DefaultValues = defaultValues;
         }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Schema)}{nameof(CommandSchema.Name)} = {Schema.Name}, " +
+                $"{nameof(Schema)}{nameof(CommandSchema.Type)} = {Schema.Type}";
+        }
     }
 }

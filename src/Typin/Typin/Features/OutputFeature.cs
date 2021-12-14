@@ -20,5 +20,13 @@
         {
 
         }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(ExitCode)} = {ExitCode?.ToString() ?? "null"}";
+        }
     }
 }

@@ -7,12 +7,16 @@
     /// <summary>
     /// <see cref="ICallInfoFeature"/> implementation.
     /// </summary>
+    [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     internal sealed class CallInfoFeature : ICallInfoFeature
     {
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
         /// <inheritdoc/>
         public Guid Identifier { get; }
+
+        /// <inheritdoc/>
+        public string TraceIdentifier { get; }
 
         /// <inheritdoc/>
         public CliContext CurrentContext { get; }
@@ -46,6 +50,15 @@
             ContextDepth = parent is null ? 0 : parent.Call.ContextDepth + 1;
 
             StartedAt = DateTimeOffset.UtcNow;
+
+            TraceIdentifier = $"{ContextDepth}:{Identifier}:{ParentContext?.Call.Identifier.ToString() ?? "root"}";
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString() +
+                " | " +
+                $"{nameof(TraceIdentifier)} = {TraceIdentifier}";
         }
     }
 }

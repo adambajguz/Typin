@@ -13,6 +13,11 @@
         Guid Identifier { get; }
 
         /// <summary>
+        /// Context trace identifier meeting the format "{<see cref="ContextDepth"/>}:{<see cref="Identifier"/>}:{<see cref="ParentContext"/>?Call.Identifier ?? "root"}".
+        /// </summary>
+        string TraceIdentifier { get; }
+
+        /// <summary>
         /// Current <see cref="CliContext"/> instance.
         /// </summary>
         CliContext? CurrentContext { get; }

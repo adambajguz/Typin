@@ -7,6 +7,7 @@ namespace Typin.Modes.Interactive
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Console;
     using Typin.Extensions;
@@ -89,7 +90,15 @@ namespace Typin.Modes.Interactive
 
                 if (interactiveArguments.Any())
                 {
-                    await _commandExecutor.ExecuteAsync(interactiveArguments, CommandExecutionOptions.Default, cancellationToken);
+                    try
+                    {
+                        await _commandExecutor.ExecuteAsync(interactiveArguments, CommandExecutionOptions.Default, cancellationToken);
+                    }
+                    catch (PipelineInvocationException ex)
+                    {
+                        throw new System.Exception("Failed to execute pipelined directives.", ex.InnerException); //TODO: replace with custom exception
+                    }
+
                     _console.ResetColor();
                 }
             } while (!cancellationToken.IsCancellationRequested);

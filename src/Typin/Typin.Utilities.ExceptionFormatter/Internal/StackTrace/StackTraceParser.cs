@@ -51,8 +51,13 @@
         {
             Match[] matches = Pattern.Matches(stackTrace).Cast<Match>().ToArray();
 
+            IEnumerable<string> lines = stackTrace
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                //Filter "--- End of stack trace from previous location ---" and "--- End of stack trace from previous location where exception was thrown --"
+                .Where(x => !x.Contains("--- "));
+
             // Ensure success (all lines should be parsed)
-            bool isSuccess = matches.Length == stackTrace.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+            bool isSuccess = matches.Length == lines.Count();
 
             if (!isSuccess)
             {

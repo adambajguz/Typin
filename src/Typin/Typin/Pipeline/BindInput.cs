@@ -1,4 +1,4 @@
-﻿namespace Typin.Pipeline
+namespace Typin.Pipeline
 {
     using System;
     using System.Threading;
@@ -48,6 +48,12 @@
 
             commandSchema.BindParameters(instance, input);
             commandSchema.BindOptions(instance, input, _configuration);
+
+            //await Task.Delay(500, cancellationToken); //TODO: remove
+
+            //args.Lifetime.Abort(); //TODO: remove
+
+            //await Task.Delay(500, cancellationToken); //TODO: remove
 
             await next();
         }

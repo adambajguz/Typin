@@ -27,5 +27,14 @@
             Arguments = arguments;
             ExecutionOptions = executionOptions;
         }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Arguments)} = [\"{string.Join("\", ", Arguments)}\"], " +
+                $"{nameof(ExecutionOptions)} = {ExecutionOptions}";
+        }
     }
 }

@@ -32,5 +32,13 @@
         {
             _cancellationTokenSource.CancelAfter(timeSpan);
         }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(CallAborted)} = {CallAborted.IsCancellationRequested}";
+        }
     }
 }
