@@ -55,9 +55,9 @@
         /// <returns></returns>
         /// <exception cref="InvalidCastException">Throws when failes to cast <see cref="Value"/> to <typeparamref name="T"/>.</exception>
         [return: MaybeNull]
-        public T GetValueOrDefault<T>()
+        public T GetValue<T>()
         {
-            if (Value is null)
+            if (Value == default)
             {
                 return default;
             }

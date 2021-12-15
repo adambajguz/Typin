@@ -9,13 +9,13 @@
     public interface IReadOnlyArgumentCollection : IReadOnlyCollection<KeyValuePair<string, InputValue>>
     {
         /// <summary>
-        /// Gets or sets argument value.
+        /// Gets argument value.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
         /// <exception cref="KeyNotFoundException">Throws when <paramref name="propertyName"/> was not found.</exception>
-        InputValue this[string propertyName] { get; }
+        InputValue? this[string propertyName] { get; }
 
         /// <summary>
         /// Whether collection contains an argument.
@@ -40,6 +40,6 @@
         /// <param name="propertyName">Property name.</param>
         /// <returns>Property value.</returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="propertyName"/> is null or whitespace.</exception>
-        InputValue? TryGet(string propertyName);
+        InputValue? GetOrDefault(string propertyName);
     }
 }

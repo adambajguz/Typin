@@ -36,7 +36,7 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-#if NET5_0
+#if NET5_0_OR_GREATER
             int processId = Environment.ProcessId;
 #else
             int processId = Process.GetCurrentProcess().Id;

@@ -124,7 +124,7 @@
         {
             if (Kind == BindableArgumentKind.Dynamic && commandInstance is IDynamicCommand dynamicCommandInstance)
             {
-                return dynamicCommandInstance.Arguments.TryGet(Name);
+                return dynamicCommandInstance.Arguments.GetOrDefault(Name);
             }
 
             return Property?.GetValue(commandInstance);

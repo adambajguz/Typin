@@ -32,12 +32,13 @@
         {
             _console.Output.WriteLine(JsonConvert.SerializeObject(this, Formatting.Indented));
 
-            InputValue? numberInput = Arguments.TryGet("Number");
-            int? number = Arguments["Number"].GetValueOrDefault<int?>();
-            int number2 = Arguments["Number"].GetValueOrDefault<int>();
-            int? number5 = Arguments["Opt5"].GetValueOrDefault<int?>();
-            string? param0 = Arguments.Get("Str").GetValueOrDefault<string?>();
-            string? param1 = Arguments.Get("Str").GetValueOrDefault<string>();
+            InputValue? numberInput = Arguments.GetOrDefault("Number");
+            int? number = Arguments["Number"]?.GetValue<int?>();
+            int number2 = Arguments["Number"].GetValue<int>(0);
+            int? number5 = Arguments["Opt5"]?.GetValue<int?>();
+            string? param0 = Arguments.Get("Str").GetValue<string?>();
+            string? param1 = Arguments.Get("Str").GetValue<string>();
+            string param2 = Arguments.Get("Str").GetValue<string>("str");
 
             var filteredArgs = Arguments
                 .Where(x => x.Value.Metadata.Get<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
