@@ -136,10 +136,13 @@
             exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().ContainAll(
                 "PARAMETERS",
-                "enum", "Valid values: \"Value1\", \"Value2\", \"Value3\".",
+                "enum",
+                "(One of: \"Value1\", \"Value2\", \"Value3\")",
                 "OPTIONS",
-                "--enum", "Valid values: \"Value1\", \"Value2\", \"Value3\", \"\".",
-                "* --required-enum", "Valid values: \"Value1\", \"Value2\", \"Value3\"."
+                "--enum",
+                "--arr-enum",
+                "(Array of: \"Value1\", \"Value2\", \"Value3\", \"\")",
+                "* --required-enum"
             );
         }
 

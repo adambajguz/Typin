@@ -112,6 +112,11 @@ namespace Typin.Internal.Input
                 return Guid.Parse(value);
             }
 
+            if (targetType == typeof(TimeSpan))
+            {
+                return TimeSpan.Parse(value, FormatProvider);
+            }
+
             if (targetType == typeof(DateTime))
             {
                 return DateTime.Parse(value, FormatProvider);
@@ -122,10 +127,17 @@ namespace Typin.Internal.Input
                 return DateTimeOffset.Parse(value, FormatProvider);
             }
 
-            if (targetType == typeof(TimeSpan))
+#if NET6_0_OR_GREATER
+            if (targetType == typeof(DateOnly))
             {
-                return TimeSpan.Parse(value, FormatProvider);
+                return DateOnly.Parse(value, FormatProvider);
             }
+
+            if (targetType == typeof(TimeOnly))
+            {
+                return TimeOnly.Parse(value, FormatProvider);
+            }
+#endif
 
             return null;
         }

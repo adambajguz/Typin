@@ -56,7 +56,9 @@
             // Assert
             exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":");
-            stdOut.GetString().Should().ContainAll(@"{""Value"":1235,""Day"":6}", @""":null");
+            stdOut.GetString().Should().ContainAll(
+                @"{""Value"":1235,""Day"":6}",
+                @""":null");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 
@@ -87,7 +89,7 @@
         [Theory]
         [InlineData("--str-enumerable")]
         [InlineData("--str-indirect-enumerable")]
-        public async Task Property_of_custom_enumerable_type_can_be_initialized_via_binding_converter(string optionName)
+        public async Task Property_of_custom_enumerable_type_can_be_initialized_via_binding_converter_Convert(string optionName)
         {
             // Arrange
             var builder = new CliApplicationBuilder()
@@ -96,13 +98,41 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                nameof(SupportedArgumentTypesViaConverterCommand), optionName, "Monday:1235", "1213"
+                "cmd", optionName, "Monday:1235"
             });
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().StartWith(@"{""StringInitializable"":");
-            stdOut.GetString().Should().ContainAll(@"{""Value"":0,""Day"":0}", @""":null", @"[""Monday"",""1235"",""1213""]");
+            stdOut.GetString().Should().ContainAll(
+                @"{""Value"":0,""Day"":0}",
+                @""":null",
+                @"[""Monday"",""1235""]");
+            stdErr.GetString().Should().BeNullOrWhiteSpace();
+        }
+
+        [Theory]
+        [InlineData("--str-enumerable")]
+        [InlineData("--str-indirect-enumerable")]
+        public async Task Property_of_custom_enumerable_type_can_be_initialized_via_binding_converter_ConvertCollection(string optionName)
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<SupportedArgumentTypesViaConverterCommand>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
+            {
+                "cmd", optionName, "Monday:1235", "Friday:7890", "0875"
+            });
+
+            // Assert
+            exitCode.Should().Be(ExitCodes.Success);
+            stdOut.GetString().Should().StartWith(@"{""StringInitializable"":");
+            stdOut.GetString().Should().ContainAll(
+                @"{""Value"":0,""Day"":0}",
+                @""":null",
+                @"""Monday"",""1235"",""Friday"",""7890"",""0875""");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 

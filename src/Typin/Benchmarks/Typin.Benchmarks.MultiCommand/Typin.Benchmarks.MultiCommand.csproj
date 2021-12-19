@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<Configurations>Debug;Release</Configurations>
-		<WarningsAsErrors>NU1605</WarningsAsErrors>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Configurations>Debug;Release</Configurations>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-		<PackageReference Include="CliFx" Version="2.0.6" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="CliFx" Version="2.0.6" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Typin\Typin.csproj" />

@@ -1,4 +1,4 @@
-### v4.0.0 (xx-Jul-2021)
+### v4.0.0 (xx-Dec-2021)
 
  - Added dynamic commands support.
  - Replaced `ICommand.ExecuteAsync(CancellationToken cancellationToken)` with `IConsole.ExecuteAsync(CancellationToken cancellationToken)`.
@@ -7,17 +7,22 @@
  - Renamed `CommandOptionSchema` to `OptionSchema`.
  - Renamed `CommandParameterSchema` to `ParameterSchema`.
 
+### v3.1.0 (19-Dec-2021)
+
+ - .NET 6 support (including `DateOnly` and `TimeOnly`).
  - Added `InteractiveModeOptions.Prompt`, `InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
- - Added `BindableArgument` and `ArgumentSchema.Bindable`.
- - Removed `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and `ArgumentSchema.GetValidValues()`.
- - Removed `IDisposable` from `CliContext`.
+ - Added support for custom binding converters `BindingConverter<T>` - see `ArgumentBindingConverterTests` for examples.
+ - Added `BindableArgument` and `BindableArgument.Bindable`, as well as marked `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and `ArgumentSchema.GetValidValues()` obsolete - will be removed in Typin 4.0.
+ - `BindableArgument.IsScalar` and `BindableArgument.GetValidValues()` are now optimized with a simple cache (backing field).
  - Faster `Guid` binding by explicit `Guid.Parse()` call (added `Guid` to `ArgumentBinder.PrimitiveConverters`).
- - Changed default values format in help - now in round brackets.
- - `ArgumentSchema.IsScalar` and `ArgumentSchema.GetValidValues()` are now optimized with a simple cache (backing field).
- - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
- - Fixed console not being disposed when stopping the application.
+ - Changed default values format in help - now in round brackets. 
+ - Fixed `StackTraceParser`: add a filter for `--- End of stack trace from previous location ---` and `--- End of stack trace from previous location where exception was thrown ---`.
  - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
+ - Fixed default version format (complex versions like `3.0.0-beta1` were incorrectly dispalyed as `3.0.0`).
+ - Fixed console not being disposed when stopping the application (for consoles that were created within `CliApplicationBuilder`).
  - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
+ - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
+ - Removed `IDisposable` from `CliContext`.
 
 ### v3.0.4 (06-Apr-2021)
 

@@ -7,7 +7,7 @@
 
     public class LibraryService
     {
-        private string StorageFilePath => Path.Combine(Directory.GetCurrentDirectory(), "Data.json");
+        private static string StorageFilePath => Path.Combine(Directory.GetCurrentDirectory(), "Data.json");
 
         private void StoreLibrary(Library library)
         {

@@ -14,6 +14,15 @@
                 MissingMemberHandling = MissingMemberHandling.Error,
                 DefaultValueHandling = DefaultValueHandling.Include
             };
+
+            _settings.Converters.Add(new NullableHalfJsonConverter());
+            _settings.Converters.Add(new HalfJsonConverter());
+
+            _settings.Converters.Add(new NullableDateOnlyJsonConverter());
+            _settings.Converters.Add(new DateOnlyJsonConverter());
+
+            _settings.Converters.Add(new NullableTimeOnlyJsonConverter());
+            _settings.Converters.Add(new TimeOnlyJsonConverter());
         }
 
         public static T DeserializeJson<T>(this string json)

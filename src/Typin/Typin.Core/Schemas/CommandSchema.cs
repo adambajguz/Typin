@@ -137,7 +137,6 @@
         {
             return (SupportedModes?.Count ?? 0) > 0 || (ExcludedModes?.Count ?? 0) > 0;
         }
-
         /// <inheritdoc/>
         public override string ToString()
         {
