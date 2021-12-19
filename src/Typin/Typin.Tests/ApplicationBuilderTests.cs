@@ -202,7 +202,8 @@
                .UseDirectMode(true)
                .UseInteractiveMode()
                .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
-               .UseConsole<SystemConsole>();
+               .UseConsole<SystemConsole>()
+               .Build();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--help");

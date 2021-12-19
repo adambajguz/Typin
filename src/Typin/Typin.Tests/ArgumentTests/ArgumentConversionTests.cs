@@ -58,8 +58,8 @@
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --long 15", @"{ ""long"": 15 }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --ulong 15", @"{ ""ulong"": 15 }")]
 
-        //[InlineData(nameof(SupportedArgumentTypesCommand) + @" --half -15.123", @"{ ""half"": -15.123 }")]
-        //[InlineData(nameof(SupportedArgumentTypesCommand) + @" --half 15.123", @"{ ""half"": 15.123 }")]
+        [InlineData(@"cmd --half -15.123", @"{ ""half"": -15.123 }")]
+        [InlineData(@"cmd --half 15.123", @"{ ""half"": 15.123 }")]
 
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --float -15.123", @"{ ""float"": -15.123 }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --float 15.123", @"{ ""float"": 15.123 }")]
@@ -76,8 +76,14 @@
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime 2020-11-12", @"{ ""datetime"": ""2020-11-12T00:00:00"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime ""2020-11-12 12:00:56""", @"{ ""datetime"": ""2020-11-12T12:00:56"" }")]
 
-        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset ""28 Apr 1995""", @"{ ""datetime-offset"": ""1995-04-28T00:00:00"" }")]
-        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset 2020-11-12", @"{ ""datetime-offset"": ""2020-11-12T00:00:00"" }")]
+        [InlineData(@"cmd --dateonly ""28 Apr 1995""", @"{ ""dateonly"": ""1995-04-28"" }")]
+        [InlineData(@"cmd --dateonly 2020-11-12", @"{ ""dateonly"": ""2020-11-12"" }")]
+
+        [InlineData(@"cmd --timeonly 00:14:59", @"{ ""timeonly"": ""00:14:59"" }")]
+        [InlineData(@"cmd --timeonly 23:59:59.120", @"{ ""timeonly"": ""23:59:59.120"" }")]
+
+        [InlineData(@"cmd --datetime-offset ""28 Apr 1995""", @"{ ""datetime-offset"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset 2020-11-12", @"{ ""datetime-offset"": ""2020-11-12T00:00:00"" }")]
 
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timespan 00:14:59", @"{ ""timespan"": ""00:14:59"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timespan 40:17:00", @"{ ""timespan"": ""40:17:00"" }")]
@@ -124,8 +130,8 @@
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --ulong-nullable 15", @"{ ""ulong-nullable"": 15 }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --ulong-nullable", @"{ ""ulong-nullable"": null }")]
 
-        //[InlineData(nameof(SupportedArgumentTypesCommand) + @" --half-nullable -15.123", @"{ ""half"": -15.123 }")]
-        //[InlineData(nameof(SupportedArgumentTypesCommand) + @" --half-nullable 15.123", @"{ ""half"": 15.123 }")]
+        [InlineData(@"cmd --half-nullable -15.123", @"{ ""half-nullable"": -15.123 }")]
+        [InlineData(@"cmd --half-nullable 15.123", @"{ ""half-nullable"": 15.123 }")]
 
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --float-nullable -15.123", @"{ ""float-nullable"": -15.123 }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --float-nullable 15.123", @"{ ""float-nullable"": 15.123 }")]
@@ -147,9 +153,17 @@
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-nullable ""2020-11-12 12:00:56""", @"{ ""datetime-nullable"": ""2020-11-12T12:00:56"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-nullable", @"{ ""datetime-nullable"": null }")]
 
-        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset-nullable ""28 Apr 1995""", @"{ ""datetime-offset-nullable"": ""1995-04-28T00:00:00"" }")]
-        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset-nullable 2020-11-12", @"{ ""datetime-offset-nullable"": ""2020-11-12T00:00:00"" }")]
-        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset-nullable", @"{ ""datetime-offset-nullable"": null }")]
+        [InlineData(@"cmd --dateonly-nullable ""28 Apr 1995""", @"{ ""dateonly-nullable"": ""1995-04-28"" }")]
+        [InlineData(@"cmd --dateonly-nullable 2020-11-12", @"{ ""dateonly-nullable"": ""2020-11-12"" }")]
+        [InlineData(@"cmd --dateonly-nullable", @"{ ""dateonly-nullable"": null }")]
+
+        [InlineData(@"cmd --timeonly-nullable 00:14:59", @"{ ""timeonly-nullable"": ""00:14:59"" }")]
+        [InlineData(@"cmd --timeonly-nullable 23:59:59.145", @"{ ""timeonly-nullable"": ""23:59:59.145"" }")]
+        [InlineData(@"cmd --timeonly-nullable", @"{ ""timeonly-nullable"": null }")]
+
+        [InlineData(@"cmd --datetime-offset-nullable ""28 Apr 1995""", @"{ ""datetime-offset-nullable"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset-nullable 2020-11-12", @"{ ""datetime-offset-nullable"": ""2020-11-12T00:00:00"" }")]
+        [InlineData(@"cmd --datetime-offset-nullable", @"{ ""datetime-offset-nullable"": null }")]
 
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timespan-nullable 00:14:59", @"{ ""timespan-nullable"": ""00:14:59"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timespan-nullable 40:17:00", @"{ ""timespan-nullable"": ""40:17:00"" }")]

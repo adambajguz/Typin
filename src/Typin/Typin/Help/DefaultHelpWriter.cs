@@ -392,9 +392,9 @@
 
                 // Valid values
                 var validValues = parameter.Bindable.GetValidValues();
-                if (validValues.Any())
+                if (validValues.Count > 0)
                 {
-                    Write($"Valid values: {FormatValidValues(validValues)}.");
+                    WriteValidValues(parameter.Bindable.IsScalar, validValues);
                 }
 
                 WriteLine();
@@ -451,11 +451,9 @@
 
                 // Valid values
                 var validValues = option.Bindable.GetValidValues();
-                if (validValues.Any())
+                if (validValues.Count > 0)
                 {
-                    Write("Valid values: ");
-                    Write(FormatValidValues(validValues));
-                    Write(". ");
+                    WriteValidValues(option.Bindable.IsScalar, validValues);
                 }
 
                 // Environment variable
@@ -568,9 +566,30 @@
         #endregion
 
         #region Helpers
-        private static string FormatValidValues(IReadOnlyList<string> values)
+        private void WriteValidValues(bool isScalar, IReadOnlyList<string> values)
         {
-            return values.Select(v => v.Quote()).JoinToString(", ");
+            if (isScalar)
+            {
+                Write("(One of: ");
+            }
+            else
+            {
+                Write("(Array of: ");
+            }
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                string value = values[i];
+
+                Write(ConsoleColor.DarkGray, value.Quote());
+
+                if (i != values.Count - 1)
+                {
+                    Write(", ");
+                }
+            }
+
+            Write(") ");
         }
 
         private static string? FormatDefaultValue(object? defaultValue)
@@ -581,7 +600,7 @@
             }
 
             // Enumerable
-            if (!(defaultValue is string) && defaultValue is IEnumerable defaultValues)
+            if (defaultValue is not string && defaultValue is IEnumerable defaultValues)
             {
                 Type elementType = defaultValues.GetType().TryGetEnumerableUnderlyingType() ?? typeof(object);
 

@@ -27,7 +27,7 @@ namespace Typin.Internal.Input
         //                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
         //                [typeof(long)] = v => long.Parse(v, FormatProvider),
         //                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-        //#if NET5_0
+        //#if NET5_0_OR_GREATER
         //                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
         //#endif
         //                [typeof(float)] = v => float.Parse(v, FormatProvider),
@@ -83,7 +83,7 @@ namespace Typin.Internal.Input
                     return ulong.Parse(value, FormatProvider);
                 }
 
-#if NET5_0
+#if NET5_0_OR_GREATER
                 if (targetType == typeof(Half))
                 {
                     return Half.Parse(value, FormatProvider);
@@ -111,6 +111,11 @@ namespace Typin.Internal.Input
                 return Guid.Parse(value);
             }
 
+            if (targetType == typeof(TimeSpan))
+            {
+                return TimeSpan.Parse(value, FormatProvider);
+            }
+
             if (targetType == typeof(DateTime))
             {
                 return DateTime.Parse(value, FormatProvider);
@@ -121,10 +126,17 @@ namespace Typin.Internal.Input
                 return DateTimeOffset.Parse(value, FormatProvider);
             }
 
-            if (targetType == typeof(TimeSpan))
+#if NET6_0_OR_GREATER
+            if (targetType == typeof(DateOnly))
             {
-                return TimeSpan.Parse(value, FormatProvider);
+                return DateOnly.Parse(value, FormatProvider);
             }
+
+            if (targetType == typeof(TimeOnly))
+            {
+                return TimeOnly.Parse(value, FormatProvider);
+            }
+#endif
 
             return null;
         }

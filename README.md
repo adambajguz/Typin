@@ -2,9 +2,8 @@
 
 <p align="center">
 
-[![Build](https://github.com/adambajguz/Typin/workflows/Typin-CI/badge.svg?branch=master)](https://github.com/adambajguz/Typin/actions)
-[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=14)](https://codecov.io/gh/adambajguz/Typin)
-![CodeQL](https://github.com/adambajguz/Typin/workflows/CodeQL/badge.svg?branch=master)
+[![Build](https://github.com/adambajguz/Typin/workflows/Typin-CI/badge.svg?branch=master&v=15)](https://github.com/adambajguz/Typin/actions)
+[![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=15)](https://codecov.io/gh/adambajguz/Typin)
 [![Version](https://img.shields.io/nuget/v/Typin.svg?label=NuGet)](https://nuget.org/packages/Typin)
 [![Downloads of Typin](https://img.shields.io/nuget/dt/Typin.svg?label=Typin)](https://nuget.org/packages/Typin)
 [![Downloads of Typin.Core](https://img.shields.io/nuget/dt/Typin.Core.svg?label=Typin.Core)](https://nuget.org/packages/Typin.Core)
@@ -65,7 +64,7 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Logging with `Microsoft.Extensions.Logging`.
 - Optional option and parameter names by automatically generated kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
-- Native support for parsing `Half` type in .NET 5 targeted applications.
+- Native support for `Half`, `DateOnly`, and `TimeOnly`.
 - Validation can be easily added with [FluentValidation](https://github.com/FluentValidation/FluentValidation) and [a middleware](https://github.com/adambajguz/Typin/blob/master/src/TypinExamples/Examples/TypinExamples.Validation/Middleware/FluentValidationMiddleware.cs).
 - Console input/output targeted extensions through `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 
@@ -93,7 +92,7 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 - Provides comprehensive and colorful auto-generated help text.
 - Highly testable and easy to debug.
 - Automatic generation of option and parameter names by transforming property name with kebab-case formatter.
-- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0.
+- Targets .NET Standard 2.0, .NET Standard 2.1., .NET 5.0, and .NET 6.0.
 - Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies.
 
 ## Installing Typin
@@ -152,42 +151,40 @@ See [wiki](https://github.com/adambajguz/Typin/wiki) for detailed instructions a
 
 Here's how Typin's execution overhead compares to that of other libraries (single command comparison) and with increasing number of commands.
 
-### Typin 3.0
+### Typin 3.1
 
 ```ini
-BenchmarkDotNet=v0.12.0, OS=Windows 10.0.19042
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1415 (21H2)
 Intel Core i7-4790 CPU 3.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=5.0.201
-  [Host]     : .NET Core 3.1.13 (CoreCLR 4.700.21.11102, CoreFX 4.700.21.11602), X64 RyuJIT
-  DefaultJob : .NET Core 3.1.13 (CoreCLR 4.700.21.11102, CoreFX 4.700.21.11602), X64 RyuJIT
+.NET SDK=6.0.101
+  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
 ```
 
-|                               Method |         Mean |     Error |    StdDev | Ratio | Rank |
-|------------------------------------- |-------------:|----------:|----------:|------:|-----:|
-|                    CommandLineParser |     2.493 us | 0.0488 us | 0.0543 us |  0.01 |    1 |
-|                                CliFx |    57.011 us | 0.6366 us | 0.5955 us |  0.28 |    2 |
-| McMaster.Extensions.CommandLineUtils |   124.041 us | 0.5860 us | 0.5481 us |  0.62 |    3 |
-|                                Clipr |   131.431 us | 0.8456 us | 0.7496 us |  0.65 |    4 |
-|                                Typin |   200.611 us | 3.9823 us | 8.0445 us |  1.00 |    5 |
-|                   System.CommandLine |   204.289 us | 0.5544 us | 0.4915 us |  1.01 |    6 |
-|                            PowerArgs |   256.863 us | 0.6894 us | 0.6448 us |  1.28 |    7 |
-|                               Cocona | 1,261.204 us | 4.5188 us | 4.2269 us |  6.27 |    8 |
+|                               Method |         Mean |      Error |      StdDev | Ratio | Rank |
+|------------------------------------- |-------------:|-----------:|------------:|------:|-----:|
+|                    CommandLineParser |     1.810 us |  0.0283 us |   0.0265 us | 0.009 |    1 |
+|                                CliFx |    70.937 us |  0.8013 us |   0.7103 us | 0.373 |    2 |
+|                                Clipr |    81.382 us |  1.3975 us |   1.3725 us | 0.428 |    3 |
+| McMaster.Extensions.CommandLineUtils |    88.881 us |  1.0713 us |   1.0021 us | 0.468 |    4 |
+|                                Typin |   190.249 us |  0.3856 us |   0.3220 us | 1.000 |    5 |
+|                   System.CommandLine |   278.502 us |  5.5451 us |   5.9332 us | 1.462 |    6 |
+|                            PowerArgs |   300.629 us |  1.3090 us |   1.1604 us | 1.579 |    7 |
+|                               Cocona | 1,283.562 us | 88.6368 us | 244.1316 us | 6.492 |    8 |
 
 
 |                Method |      Mean |    Error |   StdDev | Ratio | Rank |
 |---------------------- |----------:|---------:|---------:|------:|-----:|
-|   'CliFx - 1 command' |  53.84 us | 1.017 us | 0.951 us |  0.28 |    1 |
-|  'CliFx - 2 commands' |  70.78 us | 0.604 us | 0.565 us |  0.37 |    2 |
-|  'CliFx - 5 commands' | 122.28 us | 2.725 us | 3.994 us |  0.65 |    3 |
-|   'Typin - 1 command' | 191.65 us | 0.913 us | 0.810 us |  1.00 |    4 |
-| 'CliFx - 10 commands' | 195.04 us | 1.284 us | 1.139 us |  1.02 |    5 |
-|  'Typin - 2 commands' | 215.12 us | 2.679 us | 2.506 us |  1.12 |    6 |
-|  'Typin - 5 commands' | 279.66 us | 2.766 us | 2.587 us |  1.46 |    7 |
-| 'CliFx - 20 commands' | 376.77 us | 2.897 us | 2.419 us |  1.97 |    8 |
-| 'Typin - 10 commands' | 384.75 us | 2.404 us | 2.249 us |  2.01 |    9 |
-| 'Typin - 20 commands' | 629.36 us | 2.848 us | 2.664 us |  3.28 |   10 |
-
- > Typin 4.0 will focus on optimizations, further API improvements, and usage of source code generators.
+|   'CliFx - 1 command' |  68.67 us | 0.207 us | 0.173 us |  0.36 |    1 |
+|  'CliFx - 2 commands' |  77.32 us | 0.577 us | 0.512 us |  0.40 |    2 |
+|  'CliFx - 5 commands' |  98.64 us | 0.260 us | 0.230 us |  0.51 |    3 |
+| 'CliFx - 10 commands' | 135.11 us | 0.317 us | 0.297 us |  0.70 |    4 |
+|   'Typin - 1 command' | 192.11 us | 0.662 us | 0.553 us |  1.00 |    5 |
+|  'Typin - 2 commands' | 202.54 us | 0.851 us | 0.754 us |  1.05 |    6 |
+| 'CliFx - 20 commands' | 231.62 us | 0.502 us | 0.445 us |  1.21 |    7 |
+|  'Typin - 5 commands' | 237.19 us | 0.388 us | 0.363 us |  1.23 |    8 |
+| 'Typin - 10 commands' | 298.32 us | 2.848 us | 2.378 us |  1.55 |    9 |
+| 'Typin - 20 commands' | 440.23 us | 0.773 us | 0.646 us |  2.29 |   10 |
 
 ### Typin <= 2.1.1
 

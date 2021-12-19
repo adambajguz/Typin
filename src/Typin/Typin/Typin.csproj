@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <Authors>$(Company)</Authors>
     <Description>Declarative framework for interactive CLI applications</Description>
     <PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
@@ -43,6 +43,12 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="[6.0,]" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="[6.0,]" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0,]" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="[5.0,]" />
@@ -60,7 +66,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
