@@ -2,10 +2,10 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class UnsupportedArgumentConversionTests
     {
@@ -33,7 +33,7 @@
             });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Can't convert");

@@ -1,65 +1,31 @@
-namespace Typin
+﻿namespace Typin
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Typin.Console;
-    using Typin.DynamicCommands;
-    using Typin.Exceptions;
     using Typin.Help;
-    using Typin.Internal;
-    using Typin.Internal.DependencyInjection;
-    using Typin.Internal.DynamicCommands;
-    using Typin.Internal.Pipeline;
+    using Typin.Hosting;
     using Typin.Modes;
-    using Typin.OptionFallback;
-    using Typin.Schemas;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
     /// </summary>
     public sealed class CliApplicationBuilder
     {
-        private bool _cliApplicationBuilt;
-
-        //Directives and commands settings
-        private readonly HashSet<Type> _commandTypes = new();
-        private readonly HashSet<Type> _dynamicCommandTypes = new();
-        private readonly HashSet<Type> _directivesTypes = new();
-
-        //Metadata settings
-        private string? _title;
-        private string? _executableName;
-        private string? _versionText;
-        private string? _description;
-        private Action<ApplicationMetadata, IConsole>? _startupMessage;
-
-        //Console
-        private IConsole? _console;
-        private bool _isSelfCreatedConsoleInstance;
-
-        //Dependency injection
-        private IServiceFactoryAdapter _serviceProviderAdapter = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
-        private readonly List<Action<IServiceCollection>> _configureServicesActions = new();
-        private readonly List<IConfigureContainerAdapter> _configureContainerActions = new();
-
-        //Modes
-        private readonly List<Type> _modeTypes = new();
-        private Type? _startupMode;
-
-        //Middleware
-        private readonly LinkedList<Type> _middlewareTypes = new();
+        private readonly List<Action<IHostBuilder>> _hostBuilderActions = new();
+        private readonly List<Action<ICliBuilder>> _cliBuilderActions = new();
 
         /// <summary>
         /// Initializes an instance of <see cref="CliApplicationBuilder"/>.
         /// </summary>
         public CliApplicationBuilder()
         {
-            this.AddBeforeUserMiddlewares();
+
         }
 
         #region Directives
@@ -68,14 +34,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirective(Type directiveType)
         {
-            if (_directivesTypes.Add(directiveType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                _configureServicesActions.Add(services =>
+                cliBuilder.AddDirectives(directives =>
                 {
-                    services.TryAddTransient(directiveType);
-                    services.AddTransient(typeof(IDirective), directiveType);
+                    directives.Single(directiveType);
                 });
-            }
+            });
 
             return this;
         }
@@ -84,7 +49,7 @@ namespace Typin
         /// Add a custom directive to the application.
         /// </summary>
         public CliApplicationBuilder AddDirective<T>()
-            where T : IDirective
+            where T : class, IDirective
         {
             return AddDirective(typeof(T));
         }
@@ -94,10 +59,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectives(IEnumerable<Type> directiveTypes)
         {
-            foreach (Type directiveType in directiveTypes)
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddDirective(directiveType);
-            }
+                cliBuilder.AddDirectives(directives =>
+                {
+                    directives.Multiple(directiveTypes);
+                });
+            });
 
             return this;
         }
@@ -108,10 +76,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
-            foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(KnownTypesHelpers.IsDirectiveType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddDirective(directiveType);
-            }
+                cliBuilder.AddDirectives(directives =>
+                {
+                    directives.From(directiveAssembly);
+                });
+            });
 
             return this;
         }
@@ -122,10 +93,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)
         {
-            foreach (Assembly directiveType in directiveAssemblies)
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddDirectivesFrom(directiveType);
-            }
+                cliBuilder.AddDirectives(directives =>
+                {
+                    directives.From(directiveAssemblies);
+                });
+            });
 
             return this;
         }
@@ -136,7 +110,15 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddDirectivesFromThisAssembly()
         {
-            return AddDirectivesFrom(Assembly.GetCallingAssembly());
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.AddDirectives(directives =>
+                {
+                    directives.FromThisAssembly();
+                });
+            });
+
+            return this;
         }
         #endregion
 
@@ -146,14 +128,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommand(Type commandType)
         {
-            if (_commandTypes.Add(commandType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                _configureServicesActions.Add(services =>
+                cliBuilder.AddCommands(commands =>
                 {
-                    services.TryAddTransient(commandType);
-                    services.AddTransient(typeof(ICommand), commandType);
+                    commands.Single(commandType);
                 });
-            }
+            });
 
             return this;
         }
@@ -162,7 +143,7 @@ namespace Typin
         /// Adds a command of specified type to the application.
         /// </summary>
         public CliApplicationBuilder AddCommand<T>()
-            where T : ICommand
+            where T : class, ICommand
         {
             return AddCommand(typeof(T));
         }
@@ -172,10 +153,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommands(IEnumerable<Type> commandTypes)
         {
-            foreach (Type commandType in commandTypes)
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddCommand(commandType);
-            }
+                cliBuilder.AddCommands(commands =>
+                {
+                    commands.Multiple(commandTypes);
+                });
+            });
 
             return this;
         }
@@ -186,10 +170,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
-            foreach (Type commandType in commandAssembly.ExportedTypes.Where(KnownTypesHelpers.IsCommandType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddCommand(commandType);
-            }
+                cliBuilder.AddCommands(commands =>
+                {
+                    commands.From(commandAssembly);
+                });
+            });
 
             return this;
         }
@@ -200,10 +187,13 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFrom(IEnumerable<Assembly> commandAssemblies)
         {
-            foreach (Assembly commandAssembly in commandAssemblies)
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                AddCommandsFrom(commandAssembly);
-            }
+                cliBuilder.AddCommands(commands =>
+                {
+                    commands.From(commandAssemblies);
+                });
+            });
 
             return this;
         }
@@ -214,88 +204,17 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder AddCommandsFromThisAssembly()
         {
-            return AddCommandsFrom(Assembly.GetCallingAssembly());
-        }
-        #endregion
-
-        #region DynamicCommands
-        /// <summary>
-        /// Adds a command of specified type to the application.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommand(Type commandType)
-        {
-            if (_dynamicCommandTypes.Add(commandType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                _configureServicesActions.Add(services =>
+                cliBuilder.AddCommands(commands =>
                 {
-                    services.TryAddTransient(commandType);
-                    services.AddTransient(typeof(IDynamicCommand), commandType);
+                    commands.FromThisAssembly();
                 });
-            }
+            });
 
             return this;
-        }
-
-        /// <summary>
-        /// Adds a command of specified type to the application.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommand<T>()
-            where T : ICommand
-        {
-            return AddDynamicCommand(typeof(T));
-        }
-
-        /// <summary>
-        /// Adds multiple commands to the application.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommand(IEnumerable<Type> commandTypes)
-        {
-            foreach (Type commandType in commandTypes)
-            {
-                AddCommand(commandType);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Adds commands from the specified assembly to the application.
-        /// Only adds public valid command types.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommandsFrom(Assembly commandAssembly)
-        {
-            foreach (Type commandType in commandAssembly.ExportedTypes.Where(KnownTypesHelpers.IsDynamicCommandType))
-            {
-                AddDynamicCommand(commandType);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Adds commands from the specified assemblies to the application.
-        /// Only adds public valid command types.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommandsFrom(IEnumerable<Assembly> commandAssemblies)
-        {
-            foreach (Assembly commandAssembly in commandAssemblies)
-            {
-                AddDynamicCommandsFrom(commandAssembly);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Adds commands from the calling assembly to the application.
-        /// Only adds public valid command types.
-        /// </summary>
-        public CliApplicationBuilder AddDynamicCommandsFromThisAssembly()
-        {
-            return AddDynamicCommandsFrom(Assembly.GetCallingAssembly());
         }
         #endregion
-
 
         #region Metadata
         /// <summary>
@@ -303,7 +222,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseTitle(string title)
         {
-            _title = title;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseTitle(title);
+            });
 
             return this;
         }
@@ -313,7 +235,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseExecutableName(string executableName)
         {
-            _executableName = executableName;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseExecutableName(executableName);
+            });
 
             return this;
         }
@@ -323,7 +248,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseVersionText(string versionText)
         {
-            _versionText = versionText;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseVersionText(versionText);
+            });
 
             return this;
         }
@@ -333,7 +261,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseDescription(string? description)
         {
-            _description = description;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseDescription(description);
+            });
 
             return this;
         }
@@ -345,10 +276,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseStartupMessage(string message, ConsoleColor messageColor = ConsoleColor.DarkYellow)
         {
-            _startupMessage = (metadata, console) =>
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                console.Output.WithForegroundColor(messageColor, (output) => output.WriteLine(message));
-            };
+                cliBuilder.UseStartupMessage(message, messageColor);
+            });
 
             return this;
         }
@@ -358,12 +289,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseStartupMessage(Func<ApplicationMetadata, string> message, ConsoleColor messageColor = ConsoleColor.DarkYellow)
         {
-            _startupMessage = (metadata, console) =>
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                string tmp = message(metadata);
-
-                console.Output.WithForegroundColor(messageColor, (output) => output.WriteLine(tmp));
-            };
+                cliBuilder.UseStartupMessage(message, messageColor);
+            });
 
             return this;
         }
@@ -373,7 +302,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseStartupMessage(Action<ApplicationMetadata, IConsole> message)
         {
-            _startupMessage = message;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseStartupMessage(message);
+            });
 
             return this;
         }
@@ -382,12 +314,13 @@ namespace Typin
         #region Console
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="IConsole"/>.
-        /// Console will be automatically diposed before exiting from <see cref="CliApplication.RunAsync(IEnumerable{string}, IReadOnlyDictionary{string, string})"/>.
         /// </summary>
         public CliApplicationBuilder UseConsole(IConsole console)
         {
-            _console = console;
-            _isSelfCreatedConsoleInstance = false;
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseConsole(console);
+            });
 
             return this;
         }
@@ -398,78 +331,42 @@ namespace Typin
         public CliApplicationBuilder UseConsole<T>()
             where T : class, IConsole, new()
         {
-            _console = new T();
-            _isSelfCreatedConsoleInstance = true;
-
-            return this;
-        }
-        #endregion
-
-        #region Exceptions
-        /// <summary>
-        /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
-        /// Exception handler is configured as scoped service.
-        /// </summary>
-        public CliApplicationBuilder UseExceptionHandler(Type exceptionHandlerType)
-        {
-            _configureServicesActions.Add(services =>
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                services.AddScoped(typeof(ICliExceptionHandler), exceptionHandlerType);
+                cliBuilder.UseConsole<T>();
             });
 
             return this;
-        }
-
-        /// <summary>
-        /// Configures the application to use the specified implementation of <see cref="ICliExceptionHandler"/>.
-        /// Exception handler is configured as scoped service.
-        /// </summary>
-        public CliApplicationBuilder UseExceptionHandler<T>()
-            where T : class, ICliExceptionHandler
-        {
-            return UseExceptionHandler(typeof(T));
         }
         #endregion
 
         #region Modes
         /// <summary>
         /// Registers a CLI mode. Only one mode can be registered as startup mode.
-        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
-        ///
-        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
         /// </summary>
         public CliApplicationBuilder RegisterMode<T>(bool asStartup = false)
-            where T : ICliMode
+            where T : class, ICliMode
         {
             return RegisterMode(typeof(T), asStartup);
         }
 
         /// <summary>
         /// Registers a CLI mode. Only one mode can be registered as startup mode.
-        /// If no mode was registered or none of the registered modes was marked as startup, <see cref="DirectMode"/> will be registered.
-        ///
-        /// Do not call RegisterMode directly from builder, instead call UseXMode method, e.g. UseDirectMode().
         /// </summary>
         public CliApplicationBuilder RegisterMode(Type modeType, bool asStartup = false)
         {
-            Type cliMode = modeType;
-            _modeTypes.Add(cliMode);
-
-            if (!KnownTypesHelpers.IsCliModeType(modeType))
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                throw new ArgumentException($"Invalid CLI mode type '{modeType}'.", nameof(modeType));
-            }
+                cliBuilder.AddModes(modes =>
+                {
+                    modes.Single(modeType);
+                });
 
-            _configureServicesActions.Add(services =>
-            {
-                services.TryAddSingleton(cliMode);
-                services.AddSingleton(typeof(ICliMode), (IServiceProvider sp) => sp.GetRequiredService(cliMode));
+                if (asStartup)
+                {
+                    cliBuilder.SetStartupMode(modeType);
+                }
             });
-
-            if (asStartup)
-            {
-                _startupMode = _startupMode is null ? cliMode : throw new ArgumentException($"Only one mode can be registered as startup mode.", nameof(asStartup));
-            }
 
             return this;
         }
@@ -482,13 +379,14 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder UseMiddleware(Type middleware)
         {
-            _configureServicesActions.Add(services =>
-            {
-                services.AddScoped(typeof(IMiddleware), middleware);
-                services.AddScoped(middleware);
-            });
+            throw new NotImplementedException();
+            //_configureServicesActions.Add(services =>
+            //{
+            //    services.AddScoped(typeof(IMiddleware), middleware);
+            //    services.AddScoped(middleware);
+            //});
 
-            _middlewareTypes.AddLast(middleware);
+            //_middlewareTypes.AddLast(middleware);
 
             return this;
         }
@@ -505,23 +403,20 @@ namespace Typin
 
         #region Value fallback
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider(Type fallbackProviderType, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
-            _configureServicesActions.Add(services =>
-            {
-                services.Add(new ServiceDescriptor(typeof(IOptionFallbackProvider), fallbackProviderType, lifetime));
-            });
+            throw new NotImplementedException();
 
             return this;
         }
 
         /// <summary>
-        /// Configures to use a specific option fallback provider with desired lifetime <see cref="EnvironmentVariableFallbackProvider"/>.
+        /// Configures to use a specific option fallback provider with desired lifetime.
         /// </summary>
         public CliApplicationBuilder UseOptionFallbackProvider<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
-            where T : IOptionFallbackProvider
+            where T : class//, IOptionFallbackProvider
         {
             return UseOptionFallbackProvider(typeof(T), lifetime);
         }
@@ -531,11 +426,11 @@ namespace Typin
         /// <summary>
         /// Configures to use a specific help writer with transient lifetime.
         /// </summary>
-        public CliApplicationBuilder UseHelpWriter(Type helpWriterType)
+        public CliApplicationBuilder UseHelpWriter(Type helpWriterType, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         {
-            _configureServicesActions.Add(services =>
+            _cliBuilderActions.Add((cliBuilder) =>
             {
-                services.AddTransient(typeof(IHelpWriter), helpWriterType);
+                cliBuilder.UseHelpWriter(helpWriterType);
             });
 
             return this;
@@ -544,16 +439,19 @@ namespace Typin
         /// <summary>
         /// Configures to use a specific help writer with transient lifetime.
         /// </summary>
-        public CliApplicationBuilder UseHelpWriter<T>()
-            where T : IHelpWriter
+        public CliApplicationBuilder UseHelpWriter<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
+            where T : class, IHelpWriter
         {
-            return UseHelpWriter(typeof(T));
+            _cliBuilderActions.Add((cliBuilder) =>
+            {
+                cliBuilder.UseHelpWriter<T>();
+            });
+
+            return this;
         }
         #endregion
 
         #region Configuration
-        //TODO: add configuration builder on actions https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
-
         /// <summary>
         /// Configures application services.
         /// </summary>
@@ -569,7 +467,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder ConfigureServices(Action<IServiceCollection> action)
         {
-            _configureServicesActions.Add(action);
+            _hostBuilderActions.Add((hostBuilder) => hostBuilder.ConfigureServices(action));
 
             return this;
         }
@@ -579,27 +477,10 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder ConfigureLogging(Action<ILoggingBuilder> action)
         {
-            _configureServicesActions.Add(services =>
-            {
-                services.AddLogging(action);
-            });
+            _hostBuilderActions.Add((hostBuilder) => hostBuilder.ConfigureLogging(action));
 
             return this;
         }
-
-        /// <summary>
-        /// Configures application using <see cref="ICliStartup"/> class instance.
-        /// </summary>
-        public CliApplicationBuilder UseStartup<T>()
-            where T : class, ICliStartup, new()
-        {
-            ICliStartup t = new T();
-            _configureServicesActions.Add(t.ConfigureServices);
-            t.Configure(this);
-
-            return this;
-        }
-
 
         //https://github.com/aspnet/Hosting/blob/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.Extensions.Hosting/HostBuilder.cs
 
@@ -609,7 +490,7 @@ namespace Typin
         public CliApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
             where TContainerBuilder : notnull
         {
-            _serviceProviderAdapter = new ServiceFactoryAdapter<TContainerBuilder>(factory ?? throw new ArgumentNullException(nameof(factory)));
+            _hostBuilderActions.Add((hostBuilder) => hostBuilder.UseServiceProviderFactory(factory));
 
             return this;
         }
@@ -620,8 +501,7 @@ namespace Typin
         /// </summary>
         public CliApplicationBuilder ConfigureContainer<TContainerBuilder>(Action<TContainerBuilder> configureDelegate)
         {
-            _configureContainerActions.Add(new ConfigureContainerAdapter<TContainerBuilder>(configureDelegate
-                ?? throw new ArgumentNullException(nameof(configureDelegate))));
+            _hostBuilderActions.Add((hostBuilder) => hostBuilder.ConfigureContainer(configureDelegate));
 
             return this;
         }
@@ -634,108 +514,32 @@ namespace Typin
         /// </summary>
         public CliApplication Build()
         {
-            if (_cliApplicationBuilt)
+            IHostBuilder hostBuilder = CliHost.CreateDefaultBuilder()
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.SetMinimumLevel(LogLevel.Warning);
+                });
+
+            foreach (Action<IHostBuilder> action in _hostBuilderActions)
             {
-                throw new InvalidOperationException("Build can only be called once.");
+                action(hostBuilder);
             }
 
-            _cliApplicationBuilt = true;
+            RegisterMode<DirectMode>(asStartup: true);
 
-            // Set default values
-            _title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
-            _executableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
-            _versionText ??= AssemblyUtils.GetDefaultVersionText();
+            ExitCodeProvider exitCodeProvider = new();
 
-            if (_console is null)
+            hostBuilder.ConfigureCliHost(cliBuilder =>
             {
-                UseConsole<SystemConsole>();
-            }
+                cliBuilder.CaptureExitCode(exitCodeProvider);
 
-            if (_startupMode is null || _modeTypes.Count == 0)
-            {
-                this.UseDirectMode(true);
-            }
-
-            // Add core middlewares to the end of the pipeline
-            this.AddAfterUserMiddlewares();
-
-            // Create context
-            ServiceCollection _serviceCollection = new();
-
-            ApplicationMetadata metadata = new(_title, _executableName, _versionText, _description);
-            ApplicationConfiguration configuration = new(_modeTypes,
-                                                         _commandTypes,
-                                                         _dynamicCommandTypes,
-                                                         _directivesTypes,
-                                                         _middlewareTypes,
-                                                         _startupMode!,
-                                                         _serviceCollection);
-
-            EnvironmentVariablesAccessor environmentVariablesAccessor = new();
-
-            // Add core services
-            _serviceCollection.AddOptions();
-            _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
-            _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
-            _serviceCollection.AddSingleton(typeof(IConsole), _console ?? throw new NullReferenceException("'_console' must not be null."));
-            _serviceCollection.AddSingleton(typeof(IEnvironmentVariablesAccessor), environmentVariablesAccessor);
-            _serviceCollection.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
-            _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
-            _serviceCollection.AddSingleton<ICliApplicationLifetime, CliApplicationLifetime>();
-
-            if (_dynamicCommandTypes.Count > 0)
-            {
-                _serviceCollection.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
-            }
-
-            _serviceCollection.AddScoped(typeof(ICliContext), (provider) =>
-            {
-                IRootSchemaAccessor rootSchemaAccessor = provider.GetRequiredService<IRootSchemaAccessor>();
-
-                return new CliContext(metadata,
-                                      configuration,
-                                      rootSchemaAccessor.RootSchema,
-                                      environmentVariablesAccessor.EnvironmentVariables,
-                                      _console);
+                foreach (Action<ICliBuilder> action in _cliBuilderActions)
+                {
+                    action(cliBuilder);
+                }
             });
 
-            _serviceCollection.AddLogging(cfg =>
-            {
-                cfg.ClearProviders();
-                cfg.AddDebug();
-                cfg.SetMinimumLevel(LogLevel.Information);
-            });
-
-            IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
-
-            return new CliApplication(serviceProvider,
-                                      _console,
-                                      _isSelfCreatedConsoleInstance,
-                                      environmentVariablesAccessor,
-                                      metadata,
-                                      _startupMessage);
-        }
-
-        private IServiceProvider CreateServiceProvider(ServiceCollection services)
-        {
-            foreach (Action<IServiceCollection> configureServicesAction in _configureServicesActions)
-            {
-                configureServicesAction(services);
-            }
-
-            services.TryAddSingleton<IOptionFallbackProvider, EnvironmentVariableFallbackProvider>();
-            services.TryAddScoped<ICliExceptionHandler, DefaultExceptionHandler>();
-            services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
-
-            object? containerBuilder = _serviceProviderAdapter.CreateBuilder(services);
-            foreach (IConfigureContainerAdapter containerAction in _configureContainerActions)
-            {
-                containerAction.ConfigureContainer(containerBuilder);
-            }
-
-            IServiceProvider? appServices = _serviceProviderAdapter.CreateServiceProvider(containerBuilder);
-
-            return appServices ?? throw new InvalidOperationException($"{nameof(IServiceFactoryAdapter)} returned a null instance of object implementing {nameof(IServiceProvider)}.");
+            return new CliApplication(hostBuilder, exitCodeProvider);
         }
     }
 }

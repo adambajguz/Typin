@@ -3,7 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Extensions;
 
     public abstract class SelfSerializeCommandBase : ICommand
     {

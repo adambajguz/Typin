@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<Authors>$(Company)</Authors>
+		<Description>Declarative framework for interactive CLI applications</Description>
+		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
+		<PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
+		<PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md</PackageReleaseNotes>
+		<PackageIcon>typin-favicon-64px.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+		<WarningsAsErrors>nullable;CS1591,CS1591,NU1605</WarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Typin\Typin.csproj" />
+	</ItemGroup>
+
+</Project>

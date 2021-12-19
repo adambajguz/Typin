@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using System.Collections.Generic;
     using Typin.Attributes;

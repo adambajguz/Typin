@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Console
+﻿namespace Typin.Tests.Data.Common.Console
 {
     using System;
     using System.IO;
@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using Typin.Console;
     using Typin.Console.IO;
-    using Typin.Utilities;
 
     public class VirtualAnsiConsole : IConsole, IDisposable
     {
@@ -133,7 +132,7 @@
             throw new NotImplementedException();
         }
 
-        public Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
+        public Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

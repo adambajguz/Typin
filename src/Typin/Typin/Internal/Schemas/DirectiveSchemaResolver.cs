@@ -1,10 +1,11 @@
 ﻿namespace Typin.Internal.Schemas
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Typin.Attributes;
+    using Typin.Exceptions.Mode;
+    using Typin.Exceptions.Resolvers.DirectiveResolver;
     using Typin.Internal.Exceptions;
     using Typin.Schemas;
 
@@ -16,11 +17,11 @@
         /// <summary>
         /// Resolves <see cref="DirectiveSchema"/>.
         /// </summary>
-        public static DirectiveSchema Resolve(Type type, IReadOnlyList<Type> modeTypes)
+        public static DirectiveSchema Resolve(Type type)
         {
             if (!KnownTypesHelpers.IsDirectiveType(type))
             {
-                throw DirectiveResolverExceptions.InvalidDirectiveType(type);
+                throw new InvalidDirectiveException(type);
             }
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
@@ -31,16 +32,23 @@
                 throw AttributesExceptions.DirectiveNameIsInvalid(directiveName);
             }
 
-            if (modeTypes is not null)
+            if (attribute.SupportedModes is not null)
             {
-                if (attribute.SupportedModes is not null && attribute.SupportedModes.Except(modeTypes).Any())
-                {
-                    throw DirectiveResolverExceptions.InvalidSupportedModesInDirective(type, attribute);
-                }
+                Type? invalidMode = attribute.SupportedModes.FirstOrDefault(x => !KnownTypesHelpers.IsCliModeType(x));
 
-                if (attribute.ExcludedModes is not null && attribute.ExcludedModes.Except(modeTypes).Any())
+                if (invalidMode is not null)
                 {
-                    throw DirectiveResolverExceptions.InvalidExcludedModesInDirective(type, attribute);
+                    throw new InvalidModeException(invalidMode);
+                }
+            }
+
+            if (attribute.ExcludedModes is not null)
+            {
+                Type? invalidMode = attribute.ExcludedModes.FirstOrDefault(x => !KnownTypesHelpers.IsCliModeType(x));
+
+                if (invalidMode is not null)
+                {
+                    throw new InvalidModeException(invalidMode);
                 }
             }
 

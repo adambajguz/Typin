@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Typin.Tests.Data.Common\Typin.Tests.Data.Common.csproj" />
-    <ProjectReference Include="..\Typin\Typin.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Tests.Data.Common\Typin.Tests.Data.Common.csproj" />
+		<ProjectReference Include="..\Typin\Typin.csproj" />
+	</ItemGroup>
 
 </Project>

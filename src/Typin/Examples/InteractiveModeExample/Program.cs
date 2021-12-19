@@ -2,46 +2,80 @@
 {
     using System;
     using System.Threading.Tasks;
-    using InteractiveModeExample.Directives;
-    using InteractiveModeExample.Middlewares;
     using InteractiveModeExample.Services;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Typin;
     using Typin.Directives;
+    using Typin.Hosting;
     using Typin.Modes;
+    using Typin.Modes.Interactive;
+    using Typin.Modes.Interactive.Commands;
+    using Typin.Modes.Interactive.Directives;
+    using Typin.Modes.Programmatic;
 
     public static class Program
     {
-        private static void GetServiceCollection(IServiceCollection services)
-        {
-            services.AddSingleton<LibraryService>();
-        }
-
         public static async Task<int> Main()
         {
-            return await new CliApplicationBuilder()
-                .ConfigureServices(GetServiceCollection)
-                .AddCommandsFromThisAssembly()
-                .AddDynamicCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseMiddleware<ExecutionTimingMiddleware>()
-                .UseDirectMode()
-                .UseInteractiveMode(true, options: (cfg) =>
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureLogging((context, builder) =>
                 {
-                    cfg.PromptForeground = ConsoleColor.Magenta;
-                    //cfg.IsAdvancedInputAvailable = false;
-                    cfg.SetPrompt("~$ ");
+                    builder.SetMinimumLevel(LogLevel.Trace);
                 })
-                .ConfigureLogging(cfg =>
+                .ConfigureCliHost((cliBuilder) =>
                 {
-                    cfg.SetMinimumLevel(LogLevel.Debug);
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.Single<InteractiveCommand>();
+
+                            scanner.FromThisAssembly();
+                        })
+                        .AddDynamicCommands(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .AddDirectives(scanner =>
+                        {
+                            scanner.Single<DebugDirective>()
+                                   .Single<PreviewDirective>();
+
+                            scanner.Single<InteractiveDirective>();
+
+                            scanner.FromThisAssembly();
+                        })
+                        .AddPipelinedDirectives(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                            scanner.Single<InteractiveMode>();
+                            scanner.Single<ProgrammaticMode>();
+                        });
+
+                    cliBuilder.SetStartupMode<DirectMode>();
+
+                    cliBuilder.UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}");
                 })
-                .UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
-                .Build()
-                .RunAsync();
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<LibraryService>();
+
+                    services.Configure<InteractiveModeOptions>(options =>
+                    {
+                        options.PromptForeground = ConsoleColor.Magenta;
+                        options.IsAdvancedInputAvailable = false;
+                        options.SetPrompt("~$ ");
+                    });
+                })
+                .RunConsoleAsync();
+
+            //.UseMiddleware<ExecutionTimingMiddleware>()
+
+            return 0;
         }
     }
 }

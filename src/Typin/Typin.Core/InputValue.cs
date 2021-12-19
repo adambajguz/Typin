@@ -55,9 +55,9 @@
         /// <returns></returns>
         /// <exception cref="InvalidCastException">Throws when failes to cast <see cref="Value"/> to <typeparamref name="T"/>.</exception>
         [return: MaybeNull]
-        public T GetValueOrDefault<T>()
+        public T GetValue<T>()
         {
-            if (Value is null)
+            if (Value == default)
             {
                 return default;
             }
@@ -83,19 +83,7 @@
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-#if NETSTANDARD2_0
-            unchecked // Allow arithmetic overflow, numbers will just "wrap around"
-            {
-                int hashcode = 1430287;
-                hashcode = hashcode * 7302013 ^ Metadata.GetHashCode();
-                hashcode = hashcode * 7302013 ^ ExpectedType.GetHashCode();
-                hashcode = hashcode * 7302013 ^ (Value?.GetHashCode() ?? 0);
-
-                return hashcode;
-            }
-#else
             return HashCode.Combine(Metadata, ExpectedType, Value);
-#endif
         }
 
         /// <summary>

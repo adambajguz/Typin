@@ -3,7 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Internal.Exceptions;
+    using Typin.Exceptions.Resolvers.CommandResolver;
+    using Typin.Exceptions.Resolvers.DirectiveResolver;
     using Typin.Schemas;
 
     /// <summary>
@@ -14,7 +15,6 @@
         private readonly IReadOnlyCollection<Type> _commandTypes;
         private readonly IReadOnlyCollection<Type> _dynamicCommandTypes;
         private readonly IReadOnlyCollection<Type> _directiveTypes;
-        private readonly IReadOnlyList<Type> _modeTypes;
 
         public CommandSchema? DefaultCommand { get; private set; }
         public Dictionary<string, CommandSchema>? Commands { get; private set; }
@@ -25,13 +25,11 @@
         /// </summary>
         public RootSchemaResolver(IReadOnlyCollection<Type> commandTypes,
                                   IReadOnlyCollection<Type> dynamicCommandTypes,
-                                  IReadOnlyCollection<Type> directiveTypes,
-                                  IReadOnlyList<Type> modeTypes)
+                                  IReadOnlyCollection<Type> directiveTypes)
         {
             _commandTypes = commandTypes;
             _dynamicCommandTypes = dynamicCommandTypes;
             _directiveTypes = directiveTypes;
-            _modeTypes = modeTypes;
         }
 
         /// <summary>
@@ -60,11 +58,23 @@
 
             foreach (Type commandType in commandTypes)
             {
-                CommandSchema command = CommandSchemaResolver.Resolve(commandType, _modeTypes);
+                CommandSchema command = CommandSchemaResolver.Resolve(commandType);
 
                 if (command.IsDefault)
                 {
-                    defaultCommand = defaultCommand is null ? command : throw CommandResolverExceptions.TooManyDefaultCommands();
+                    if (defaultCommand is null)
+                    {
+                        defaultCommand = command;
+                    }
+                    else
+                    {
+                        if (!invalidCommands.Contains(defaultCommand))
+                        {
+                            invalidCommands.Add(defaultCommand);
+                        }
+
+                        invalidCommands.Add(command);
+                    }
                 }
                 else if (!commands.TryAdd(command.Name!, command))
                 {
@@ -74,7 +84,7 @@
 
             if (commands.Count == 0 && defaultCommand is null)
             {
-                throw CommandResolverExceptions.NoCommandsDefined();
+                defaultCommand = StubDefaultCommand.Schema;
             }
 
             if (invalidCommands.Count > 0)
@@ -83,7 +93,7 @@
                                                                                      .GroupBy(c => c.Name!, StringComparer.Ordinal)
                                                                                      .First();
 
-                throw CommandResolverExceptions.CommandsWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
+                throw new CommandDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
             DefaultCommand = defaultCommand;
@@ -97,7 +107,7 @@
 
             foreach (Type? directiveType in directiveTypes)
             {
-                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType, _modeTypes);
+                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType);
 
                 if (!directives.TryAdd(directive.Name, directive))
                 {
@@ -111,7 +121,7 @@
                                                                                          .GroupBy(c => c.Name, StringComparer.Ordinal)
                                                                                          .First();
 
-                throw DirectiveResolverExceptions.DirectiveWithSameName(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
+                throw new DirectiveDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
             Directives = directives;

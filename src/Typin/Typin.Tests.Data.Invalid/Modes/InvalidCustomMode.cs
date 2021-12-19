@@ -1,31 +1,15 @@
-﻿namespace Typin.Tests.Data.Modes.Invalid
+﻿namespace Typin.Tests.Data.Invalid.Modes
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Typin;
     using Typin.Console;
 
     public class InvalidCustomMode
     {
-        private readonly ICliApplicationLifetime _applicationLifetime;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
         private readonly IConsole _console;
 
-        public InvalidCustomMode(ICliApplicationLifetime applicationLifetime, IConsole console)
+        public InvalidCustomMode(IConsole console)
         {
-            _applicationLifetime = applicationLifetime;
             _console = console;
-        }
-
-        public async ValueTask<int> ExecuteAsync(IReadOnlyList<string> commandLineArguments, ICliCommandExecutor executor)
-        {
-            await _console.Output.WriteLineAsync(nameof(InvalidCustomMode));
-
-            int exitCode = await executor.ExecuteCommandAsync(commandLineArguments);
-            _applicationLifetime.RequestStop();
-
-            await _console.Output.WriteLineAsync(nameof(InvalidCustomMode) + "END");
-
-            return exitCode;
         }
     }
 }

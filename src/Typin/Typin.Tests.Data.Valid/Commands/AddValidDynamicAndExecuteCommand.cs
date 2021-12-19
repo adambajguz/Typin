@@ -9,7 +9,7 @@
     using Typin.DynamicCommands;
     using Typin.Metadata;
     using Typin.Schemas;
-    using Typin.Tests.Data.DynamicCommands.Valid;
+    using Typin.Tests.Data.Valid.DynamicCommands;
 
     [Command("add valid-dynamic-and-execute", Description = "Adds a dynamic command and executed it.")]
     public class AddValidDynamicAndExecuteCommand : ICommand
@@ -17,17 +17,17 @@
         private readonly IConsole _console;
         private readonly IDynamicCommandBuilderFactory _dynamicCommandBuilderFactory;
         private readonly RootSchema _rootSchema;
-        private readonly ICliCommandExecutor _cliCommandExecutor;
+        private readonly ICommandExecutor _commandExecutor;
 
         [Option("name")]
         public string Name { get; init; } = string.Empty;
 
-        public AddValidDynamicAndExecuteCommand(IConsole console, IDynamicCommandBuilderFactory dynamicCommandBuilderFactory, IRootSchemaAccessor rootSchemaAccessor, ICliCommandExecutor cliCommandExecutor)
+        public AddValidDynamicAndExecuteCommand(IConsole console, IDynamicCommandBuilderFactory dynamicCommandBuilderFactory, IRootSchemaAccessor rootSchemaAccessor, ICommandExecutor commandExecutor)
         {
             _console = console;
             _dynamicCommandBuilderFactory = dynamicCommandBuilderFactory;
             _rootSchema = rootSchemaAccessor.RootSchema;
-            _cliCommandExecutor = cliCommandExecutor;
+            _commandExecutor = commandExecutor;
         }
 
         public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
@@ -59,8 +59,8 @@
                 _console.Error.WithForegroundColor(ConsoleColor.Red, (err) => err.WriteLine($"Failed to add dynamic command '{Name}'."));
             }
 
-            await _cliCommandExecutor.ExecuteCommandAsync(new string[] { Name, "test1", "test2", "0", "--number", "2", "--price", "4.65" });
-            await _cliCommandExecutor.ExecuteCommandAsync($"{Name} abc def 1 --number 10 --price 0");
+            await _commandExecutor.ExecuteAsync(new string[] { Name, "test1", "test2", "0", "--number", "2", "--price", "4.65" }, cancellationToken: cancellationToken);
+            await _commandExecutor.ExecuteAsync($"{Name} abc def 1 --number 10 --price 0", cancellationToken: cancellationToken);
         }
     }
 }

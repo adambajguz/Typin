@@ -1,47 +1,51 @@
 ﻿namespace Typin.Internal
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using Microsoft.Extensions.Logging;
     using Typin;
+    using Typin.Components;
     using Typin.Internal.Schemas;
     using Typin.Schemas;
 
     /// <inheritdoc/>
     internal sealed class RootSchemaAccessor : IRootSchemaAccessor
     {
-        private readonly ApplicationConfiguration _configuration;
         private readonly Lazy<RootSchema> _rootSchema;
+
+        private readonly IComponentProvider _componentProvider;
         private readonly ILogger _logger;
 
         ///<inheritdoc/>
         public RootSchema RootSchema => _rootSchema.Value;
 
-        public RootSchemaAccessor(ApplicationConfiguration configuration, ILogger<RootSchemaAccessor> logger)
+        public RootSchemaAccessor(IComponentProvider componentProvider, ILogger<RootSchemaAccessor> logger)
         {
-            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema, true);
-            _configuration = configuration;
+            _componentProvider = componentProvider;
             _logger = logger;
+
+            _rootSchema = new Lazy<RootSchema>(ResolveRootSchema, true);
         }
 
         private RootSchema ResolveRootSchema()
         {
             _logger.LogDebug("Resolving root schema...");
 
-            Stopwatch timer = new();
-            timer.Start();
+            Stopwatch timer = Stopwatch.StartNew();
 
-            RootSchemaResolver rootSchemaResolver = new(_configuration.CommandTypes,
-                                                        _configuration.DynamicCommandTypes,
-                                                        _configuration.DirectiveTypes,
-                                                        _configuration.ModeTypes);
+            IReadOnlyCollection<Type> commands = _componentProvider.Get<ICommand>();
+            IReadOnlyCollection<Type> dynamicCommands = _componentProvider.Get<IDynamicCommand>();
+            IReadOnlyCollection<Type> directives = _componentProvider.Get<IDirective>();
 
-            RootSchema? rootScheam = rootSchemaResolver.Resolve();
+            RootSchemaResolver rootSchemaResolver = new(commands, dynamicCommands, directives);
+
+            RootSchema? rootSchema = rootSchemaResolver.Resolve();
             timer.Stop();
 
             _logger.LogInformation("Root schema resolved after {Duration}.", timer.Elapsed);
 
-            return rootScheam;
+            return rootSchema;
         }
     }
 }

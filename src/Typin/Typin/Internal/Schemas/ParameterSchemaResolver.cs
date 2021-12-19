@@ -5,10 +5,10 @@
     using Typin.Attributes;
     using Typin.Binding;
     using Typin.Internal.Exceptions;
-    using Typin.Internal.Extensions;
     using Typin.Metadata;
     using Typin.Schemas;
     using Typin.Utilities;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Resolves an instance of <see cref="ParameterSchema"/>.
@@ -39,7 +39,7 @@
                 name,
                 attribute.Description,
                 attribute.Converter,
-                MetadataCollection.Empty
+                new MetadataCollection()
             );
         }
     }

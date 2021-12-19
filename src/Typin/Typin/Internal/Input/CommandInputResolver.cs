@@ -1,20 +1,19 @@
 ﻿namespace Typin.Internal.Input
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Input;
-    using Typin.Internal.Extensions;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
-    /// Resolves an instance of <see cref="CommandInput"/>.
+    /// Resolves an instance of <see cref="ParsedCommandInput"/>.
     /// </summary>
     internal class InputResolver
     {
         /// <summary>
-        /// Resolves <see cref="CommandInput"/>.
+        /// Resolves <see cref="ParsedCommandInput"/>.
         /// </summary>
-        public static CommandInput Parse(IEnumerable<string> commandLineArguments,
+        public static ParsedCommandInput Parse(IEnumerable<string> commandLineArguments,
                                          ISet<string> availableCommandNamesSet)
         {
             int index = 0;
@@ -42,7 +41,7 @@
                 ref index
             );
 
-            return new CommandInput(tmp, directives, commandName, parameters, options);
+            return new ParsedCommandInput(directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
@@ -59,7 +58,7 @@
                     break;
                 }
 
-                string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
+                string name = argument[1..^1];
 
                 result.Add(new DirectiveInput(name));
             }
@@ -101,7 +100,7 @@
         }
 
         private static IReadOnlyList<CommandParameterInput> ParseParameters(IReadOnlyList<string> commandLineArguments,
-                                                                            ref int index)
+                                                                         ref int index)
         {
             List<CommandParameterInput> result = new();
 
@@ -141,13 +140,13 @@
                         result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
                     }
 
-                    currentOptionAlias = argument.Substring(2);
+                    currentOptionAlias = argument[2..];
                     currentOptionValues = new List<string>();
                 }
                 // Short name
                 else if (CommandOptionInput.IsOptionAlias(argument))
                 {
-                    foreach (var alias in argument.Substring(1))
+                    foreach (var alias in argument[1..])
                     {
                         // Flush previous
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))

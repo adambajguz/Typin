@@ -1,3 +1,12 @@
+### v4.0.0 (xx-Dec-2021)
+
+ - Added dynamic commands support.
+ - Replaced `ICommand.ExecuteAsync(CancellationToken cancellationToken)` with `IConsole.ExecuteAsync(CancellationToken cancellationToken)`.
+ - Renamed `CommandParameterAttribute` to `ParameterAttribute`.
+ - Renamed `CommandOptionAttribute` to `OptionAttribute`.
+ - Renamed `CommandOptionSchema` to `OptionSchema`.
+ - Renamed `CommandParameterSchema` to `ParameterSchema`.
+
 ### v3.1.0 (19-Dec-2021)
 
  - .NET 6 support (including `DateOnly` and `TimeOnly`).

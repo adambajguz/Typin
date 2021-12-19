@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Input;
@@ -15,22 +16,32 @@
     [Directive(BuiltInDirectives.Preview, Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
     public sealed class PreviewDirective : IPipelinedDirective
     {
+        private readonly IConsole _console;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="PreviewDirective"/>.
+        /// </summary>
+        public PreviewDirective(IConsole console)
+        {
+            _console = console;
+        }
+
         /// <inheritdoc/>
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }
 
         /// <inheritdoc/>
-        public ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            WriteCommandLineInput(context.Console, context.Input);
-            context.ExitCode ??= ExitCodes.Success;
+            WriteCommandLineInput(_console, args.Input.Parsed ?? throw new NullReferenceException("Input not set."));
+            args.Output.ExitCode ??= ExitCode.Success;
 
             return default;
         }
 
-        private static void WriteCommandLineInput(IConsole console, CommandInput input)
+        private static void WriteCommandLineInput(IConsole console, ParsedCommandInput input)
         {
             // Directives
             foreach (DirectiveInput directive in input.Directives)

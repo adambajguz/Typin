@@ -1,29 +1,44 @@
 ﻿namespace Typin.Benchmarks.FrameworksComparison
 {
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
     using CommandLine;
+    using Microsoft.Extensions.Hosting;
     using Typin.Benchmarks.FrameworksComparison.Commands;
+    using Typin.Hosting;
+    using Typin.Modes;
 
     [SimpleJob]
     [RankColumn]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public class Benchmarks
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };
 
         [Benchmark(Description = "Typin", Baseline = true)]
-        public async ValueTask<int> ExecuteWithTypinDefaultCommandOnly()
+        public async ValueTask ExecuteWithTypinDefaultCommandOnly()
         {
-            return await new CliApplicationBuilder().AddCommand<TypinCommand>()
-                                                    .Build()
-                                                    .RunAsync(Arguments, new Dictionary<string, string>());
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                        });
+
+                    cliBuilder.OverrideCommandLine(Arguments)
+                              .SetStartupMode<DirectMode>();
+                })
+                .RunConsoleAsync();
         }
 
         [Benchmark(Description = "CliFx")]

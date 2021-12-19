@@ -9,7 +9,6 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Exceptions;
 
     [Command("book add", Description = "Add a book to the library.",
             Manual = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer euismod nunc lorem, vitae cursus sem facilisis ut. Cras et nibh justo. Mauris eu elit lectus. Suspendisse potenti. Mauris luctus sapien quis arcu semper, vel venenatis elit ultrices. Quisque suscipit arcu vel massa vestibulum dapibus. Maecenas felis lacus, pharetra sed fermentum in, molestie vel ipsum. Nullam elementum arcu eget est tempor, blandit lacinia odio facilisis. Proin nulla odio, sodales et tellus nec, pulvinar ultrices nunc. Integer ornare, odio vel tincidunt congue, diam lorem facilisis lectus, id tempor sapien nibh vitae justo. Mauris ut odio justo. Etiam sed felis tellus. Nam sollicitudin neque in tempor scelerisque. Praesent sit amet nisi quis justo scelerisque placerat.")]
@@ -40,7 +39,7 @@
         {
             if (_libraryService.GetBook(Title) is not null)
             {
-                throw new CommandException("Book already exists.", 1);
+                throw new Exception("Book already exists.");
             }
 
             Book book = new(Title, Author, Published, Isbn);

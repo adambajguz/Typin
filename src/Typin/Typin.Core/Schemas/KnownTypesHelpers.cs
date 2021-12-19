@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using Typin.Attributes;
-    using Typin.Internal.Extensions;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// Known types helpers.
@@ -39,6 +39,16 @@
         public static bool IsCliModeType(Type type)
         {
             return type.Implements(typeof(ICliMode)) &&
+                   !type.IsAbstract &&
+                   !type.IsInterface;
+        }
+
+        /// <summary>
+        /// Checks whether type is a valid middleware.
+        /// </summary>
+        public static bool IsMiddlewareType(Type type)
+        {
+            return type.Implements(typeof(IMiddleware)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
         }

@@ -1,24 +1,33 @@
-﻿namespace Typin.Tests.Data.Middlewares
+﻿namespace Typin.Tests.Data.Common.Middlewares
 {
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Console;
 
     public sealed class ExecutionTimingMiddleware : IMiddleware
     {
         public const string ExpectedOutput0 = "-- Handling Command";
         public const string ExpectedOutput1 = "-- Finished Command after";
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        private readonly IConsole _console;
+
+        public ExecutionTimingMiddleware(IConsole console)
         {
-            context.Console.Output.WriteLine(ExpectedOutput0);
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
+        {
+            _console.Output.WriteLine(ExpectedOutput0);
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             await next();
 
             stopwatch.Stop();
-            context.Console.Output.WriteLine($"{ExpectedOutput1} {0} ms", stopwatch.Elapsed.TotalMilliseconds);
+            _console.Output.WriteLine($"{ExpectedOutput1} {0} ms", stopwatch.Elapsed.TotalMilliseconds);
         }
     }
 }

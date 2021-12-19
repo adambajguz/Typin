@@ -2,24 +2,25 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Hosting;
     using Typin;
     using Typin.Attributes;
-    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     [Command("quit", Description = "Quits the interactive mode",
-        SupportedModes = new[] { typeof(InteractiveMode) })]
+             SupportedModes = new[] { typeof(InteractiveMode) })]
     public class QuitCommand : ICommand
     {
-        private readonly ICliApplicationLifetime _applicationLifetime;
+        private readonly IHostApplicationLifetime _lifetime;
 
-        public QuitCommand(ICliApplicationLifetime applicationLifetime)
+        public QuitCommand(IHostApplicationLifetime lifetime)
         {
-            _applicationLifetime = applicationLifetime;
+            _lifetime = lifetime;
         }
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            _applicationLifetime.RequestStop();
+            _lifetime.StopApplication();
 
             return default;
         }

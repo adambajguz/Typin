@@ -1,6 +1,7 @@
 ﻿namespace Typin.Input
 {
     using System.Diagnostics.CodeAnalysis;
+    using Typin.Utilities;
 
     /// <summary>
     /// Stores command parameter input.
@@ -24,7 +25,7 @@
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return Value;
+            return CommandLine.EncodeArgument(Value);
         }
     }
 }

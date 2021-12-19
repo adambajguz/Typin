@@ -7,13 +7,14 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Modes;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.CustomDirectives.Invalid;
-    using Typin.Tests.Data.CustomDirectives.Valid;
-    using Typin.Tests.Data.Middlewares;
-    using Typin.Tests.Extensions;
+    using Typin.Modes.Interactive;
+    using Typin.Tests.Data.Invalid.CustomDirectives;
+    using Typin.Tests.Data.Valid.CustomDirectives;
+    using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class DirectivesTests
     {
@@ -30,14 +31,14 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<DefaultCommand>()
-                .AddDirective<CustomDirective>()
-                .UseMiddleware<DirectivesCheckMiddleware>();
+                .AddDirective<CustomDirective>();
+            //.UseMiddleware<DirectivesCheckMiddleware>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom]");
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().Contain(CustomDirective.ExpectedOutput);
             stdErr.GetString().Should().Contain("System.ApplicationException: custom directive detected");
         }
@@ -54,7 +55,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
@@ -74,7 +75,7 @@
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[] { "[interactive]" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
@@ -94,7 +95,7 @@
                 new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
                 "named", "<param>", "(-a)", "(-b)", "(-c)", "(--option \"foo\")"
@@ -107,7 +108,8 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseInteractiveMode()
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<DebugDirective>();
 
@@ -116,7 +118,7 @@
                 new[] { "[preview]", "[debug]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContain("Attach debugger to PID");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -131,7 +133,8 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseInteractiveMode()
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<FakeDebugDirective>();
 
@@ -140,7 +143,7 @@
                 new[] { "[debug]", "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain("Attach debugger to PID");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -155,7 +158,8 @@
             // Arrange
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
-                .UseInteractiveMode()
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>()
                 .AddDirective<PreviewDirective>()
                 .AddDirective<DebugDirective>(); //TODO: add test when UseInteractive and AddDirective<ScopeUp> are used and check if error is thrown
             //TODO: what if unknown directive is passed after [preview]? app wil throw ex => maybe some propery in app config to allow relaxed directive handling?
@@ -165,7 +169,7 @@
                 new[] { "[preview]", "[debug]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContain("Attach debugger to PID");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
@@ -205,7 +209,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "[custom]", "named" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().ContainAll(
                 CustomDirective.ExpectedOutput, NamedCommand.ExpectedOutputText
@@ -225,7 +229,7 @@
             var (exitCode, stdOut, _) = await builder.BuildAndRunTestAsync(_output, new[] { "[!]", "named" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().NotBeNullOrWhiteSpace();
             stdOut.GetString().Should().Contain(NamedCommand.ExpectedOutputText);
             stdOut.GetString().Should().NotContainAll(
@@ -251,7 +255,7 @@
                 new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().NotBe(ExitCodes.Success);
+            exitCode.Should().NotBe(ExitCode.Success);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll(
                 "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
@@ -268,12 +272,11 @@
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
-                .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseDirectMode(true)
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
@@ -283,7 +286,7 @@
             exitCode.Should().Be(CustomThrowableDirective.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirective.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(
-                "Exception of type 'Typin.Exceptions.DirectiveException' was thrown."
+                "An unhandled error occured while executing pipeline"
             );
         }
 
@@ -296,7 +299,6 @@
                 .AddDirective<PreviewDirective>()
                 .AddDirective<CustomThrowableDirective>()
                 .AddDirective<CustomThrowableDirectiveWithMessage>()
-                .AddDirective<CustomThrowableDirectiveWithInnerException>()
                 .AddDirective<CustomDirective>()
                 .AddDirective<CustomStopDirective>();
 
@@ -308,65 +310,6 @@
             exitCode.Should().Be(CustomThrowableDirectiveWithMessage.ExpectedExitCode);
             stdOut.GetString().Should().Be(CustomThrowableDirectiveWithMessage.ExpectedOutput);
             stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessage.ExpectedExceptionMessage);
-        }
-
-        [Fact]
-        public async Task Custom_throwable_directive_with_message_and_show_help_should_throw_exception()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<NamedCommand>()
-                .AddDirective<PreviewDirective>()
-                .AddDirective<CustomThrowableDirective>()
-                .AddDirective<CustomThrowableDirectiveWithMessage>()
-                .AddDirective<CustomThrowableDirectiveWithInnerException>()
-                .AddDirective<CustomThrowableDirectiveWithMessageAndShowHelp>()
-                .AddDirective<CustomDirective>()
-                .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseInteractiveMode();
-
-            // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom-throwable-with-message-and-show-help] named param -abc --option foo");
-
-            // Assert
-            exitCode.Should().Be(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExitCode);
-            stdOut.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedOutput);
-            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithMessageAndShowHelp.ExpectedExceptionMessage);
-
-            stdOut.GetString().Should().ContainAll(
-                "  [custom-throwable-with-message-and-show-help]",
-                "@ [custom-interactive]",
-                "Description".ToUpperInvariant(),
-                "Usage".ToUpperInvariant(),
-                "Directives".ToUpperInvariant(),
-                "[custom]"
-            );
-        }
-
-        [Fact]
-        public async Task Custom_throwable_directive_with_inner_exception_should_throw_exception()
-        {
-            // Arrange
-            var builder = new CliApplicationBuilder()
-                .AddCommand<NamedCommand>()
-                .AddDirective<PreviewDirective>()
-                .AddDirective<CustomThrowableDirective>()
-                .AddDirective<CustomThrowableDirectiveWithMessage>()
-                .AddDirective<CustomThrowableDirectiveWithInnerException>()
-                .AddDirective<CustomDirective>()
-                .AddDirective<CustomStopDirective>()
-                .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseInteractiveMode();
-
-            // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
-                new[] { "[custom-throwable-with-inner-exception]", "named", "param", "-abc", "--option", "foo" });
-
-            // Assert
-            exitCode.Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedExitCode);
-            stdOut.GetString().Should().Be(CustomThrowableDirectiveWithInnerException.ExpectedOutput);
-            stdErr.GetString().Should().ContainEquivalentOf(CustomThrowableDirectiveWithInnerException.ExpectedExceptionMessage);
         }
 
         [Fact]
@@ -401,7 +344,7 @@
                 new[] { "[invalid-no-interface]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -419,7 +362,7 @@
                 new[] { "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
@@ -439,7 +382,7 @@
                 new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("[preview]");
@@ -460,7 +403,7 @@
                 new Dictionary<string, string>());
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("[  ]");
@@ -478,7 +421,7 @@
                 new[] { "[preview]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
             stdErr.GetString().Should().Contain("Unknown directive '[preview]'.");
@@ -491,14 +434,15 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<NamedCommand>()
                 .AddDirective<CustomInteractiveModeOnlyDirective>()
-                .UseInteractiveMode();
+                .RegisterMode<DirectMode>(asStartup: true)
+                .RegisterMode<InteractiveMode>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output,
                 new[] { "[custom-interactive]", "named", "param", "-abc", "--option", "foo" });
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Error);
+            exitCode.Should().Be(ExitCode.Error);
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdOut.GetString().Should().NotContainAll("-h", "--help");
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
@@ -528,7 +472,7 @@
         //        new Dictionary<string, string>());
 
         //    // Assert
-        //    exitCode.Should().Be(ExitCodes.Success);
+        //    exitCode.Should().Be(ExitCode.Success);
         //    stdOut.GetString().Should().NotContainAll(
         //        "@ [custom-interactive]", "Description", "Usage", "Directives", "[custom]"
         //    );

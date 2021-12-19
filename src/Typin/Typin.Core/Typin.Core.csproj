@@ -1,66 +1,72 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;netstandard2.1;netstandard2.0</TargetFrameworks>
-    <Authors>$(Company)</Authors>
-    <Description>Declarative framework for interactive CLI applications</Description>
-    <PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
-    <PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md</PackageReleaseNotes>
-    <PackageIcon>typin-favicon-64px.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <RootNamespace>Typin</RootNamespace>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<Authors>$(Company)</Authors>
+		<Description>Declarative framework for interactive CLI applications</Description>
+		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
+		<PackageProjectUrl>https://github.com/adambajguz/Typin</PackageProjectUrl>
+		<PackageReleaseNotes>https://github.com/adambajguz/Typin/blob/master/CHANGELOG.md</PackageReleaseNotes>
+		<PackageIcon>typin-favicon-64px.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<RootNamespace>Typin</RootNamespace>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <WarningsAsErrors>nullable</WarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
-    <WarningsAsErrors>nullable;CS1591,CS1591,NU1605</WarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+		<WarningsAsErrors>nullable;CS1591,CS1591,NU1605</WarningsAsErrors>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Typin</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Typin.Tests</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Typin.Tests.Data.Common</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Typin</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Typin.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Typin.Tests.Data.Common</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[6.0,]" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0,]" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[5.0,]" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0,]" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[3.0,]" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[3.0,]" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[3.0,]" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+		<PackageReference Include="PackSite.Library.Pipelining.Abstractions" Version="1.0.0-rc3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
+		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
+		<ProjectReference Include="..\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
+	</ItemGroup>
 
 </Project>

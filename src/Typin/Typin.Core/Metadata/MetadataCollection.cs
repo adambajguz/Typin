@@ -9,22 +9,46 @@
     /// </summary>
     public sealed class MetadataCollection : IMetadataCollection
     {
-        /// <summary>
-        /// Empty metadata collection instance.
-        /// </summary>
-        public static IMetadataCollection Empty { get; } = new MetadataCollection();
-
         private readonly IReadOnlyDictionary<Type, IArgumentMetadata> _values;
 
         /// <inheritdoc/>
         public int Count => _values.Count;
 
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
         /// <summary>
         /// Initializes a new instace of <see cref="MetadataCollection"/>.
         /// </summary>
-        private MetadataCollection()
+        public MetadataCollection()
         {
             _values = new Dictionary<Type, IArgumentMetadata>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="MetadataCollection"/> with the specified initial capacity.
+        /// </summary>
+        /// <param name="initialCapacity">The initial number of elements that the collection can contain.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="initialCapacity"/> is less than 0</exception>
+        public MetadataCollection(int initialCapacity)
+        {
+            if (initialCapacity < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(initialCapacity));
+            }
+
+            _values = new Dictionary<Type, IArgumentMetadata>(initialCapacity);
+        }
+
+        /// <inheritdoc />
+        public IArgumentMetadata? this[Type key]
+        {
+            get
+            {
+                _ = key ?? throw new ArgumentNullException(nameof(key));
+
+                return _values.GetValueOrDefault(key);
+            }
         }
 
         /// <summary>
@@ -32,11 +56,7 @@
         /// </summary>
         public MetadataCollection(IEnumerable<KeyValuePair<Type, IArgumentMetadata>> values)
         {
-#if NETSTANDARD2_0
-            _values = System.Linq.Enumerable.ToDictionary(values, x => x.Key, x => x.Value);
-#else
             _values = new Dictionary<Type, IArgumentMetadata>(values);
-#endif
         }
 
         /// <summary>
@@ -48,22 +68,7 @@
         }
 
         /// <inheritdoc/>
-        public bool Contains(Type metadataType)
-        {
-            _ = metadataType ?? throw new ArgumentNullException(nameof(metadataType));
-
-            return _values.ContainsKey(metadataType);
-        }
-
-        /// <inheritdoc/>
-        public bool Contains<T>()
-            where T : class, IArgumentMetadata
-        {
-            return _values.ContainsKey(typeof(T));
-        }
-
-        /// <inheritdoc/>
-        public IArgumentMetadata? GetValueOrDefault(Type metadataType)
+        public IArgumentMetadata? Get(Type metadataType)
         {
             _ = metadataType ?? throw new ArgumentNullException(nameof(metadataType));
 
@@ -71,7 +76,7 @@
         }
 
         /// <inheritdoc/>
-        public T? GetValueOrDefault<T>()
+        public T? Get<T>()
             where T : class, IArgumentMetadata
         {
             return _values.GetValueOrDefault(typeof(T)) as T;

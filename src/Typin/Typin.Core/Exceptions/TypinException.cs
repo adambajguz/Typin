@@ -1,37 +1,48 @@
 ﻿namespace Typin.Exceptions
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Domain exception thrown within Typin.
     /// </summary>
-    public sealed class TypinException : Exception
+    public abstract class TypinException : Exception
     {
-        private readonly bool _isMessageSet;
-
         /// <summary>
-        /// Initializes an instance of <see cref="TypinException"/> with a specified error message.
+        /// Initializes an instance of <see cref="TypinException"/>.
         /// </summary>
-        public TypinException(string? message)
-            : base(message)
+        protected TypinException()
         {
-            _isMessageSet = !string.IsNullOrWhiteSpace(message);
+
         }
 
         /// <summary>
-        /// Initializes an instance of <see cref="TypinException"/> with a specified error
-        /// message and a reference to the inner exception that is the cause of this exception.
+        /// Initializes an instance of <see cref="TypinException"/>.
         /// </summary>
-        public TypinException(string? message, Exception? innerException)
-            : base(message, innerException!)
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        protected TypinException(string? message) : base(message)
         {
-            _isMessageSet = !string.IsNullOrWhiteSpace(message);
+
         }
 
-        /// <inheritdoc />
-        public override string ToString()
+        /// <summary>
+        /// Initializes an instance of <see cref="TypinException"/>.
+        /// </summary>
+        /// <param name="info"><see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context"><see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        protected TypinException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            return _isMessageSet ? Message : base.ToString();
+
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="TypinException"/>.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
+        protected TypinException(string? message, Exception? innerException) : base(message, innerException)
+        {
+
         }
     }
 }

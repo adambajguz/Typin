@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.CustomDirectives.Invalid
+﻿namespace Typin.Tests.Data.Invalid.CustomDirectives
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -8,7 +8,7 @@
     [Directive("preview", Description = "Duplicate directive.")]
     public class DuplicatedDirective : IDirective
     {
-        public ValueTask OnInitializedAsync(CancellationToken cancellationToken)
+        public ValueTask InitializeAsync(CancellationToken cancellationToken)
         {
             return default;
         }

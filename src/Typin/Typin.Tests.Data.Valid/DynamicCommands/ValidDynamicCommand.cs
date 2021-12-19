@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.DynamicCommands.Valid
+﻿namespace Typin.Tests.Data.Valid.DynamicCommands
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
@@ -34,16 +34,16 @@
         {
             _console.Output.WriteLine(JsonConvert.SerializeObject(this, Formatting.None));
 
-            InputValue? numberInput = Arguments.TryGet("Number");
+            InputValue? numberInput = Arguments.GetOrDefault("Number");
 
-            int number0 = Arguments["Number"].GetValueOrDefault<int>();
-            int number1 = Arguments["Opt4"].GetValueOrDefault<int>();
-            int? number2 = Arguments["Opt5"].GetValueOrDefault<int?>();
-            double number3 = Arguments["Price"].GetValueOrDefault<double>();
+            int number0 = Arguments["Number"].GetValue<int>(0);
+            int number1 = Arguments["Opt4"].GetValue<int>(0);
+            int? number2 = Arguments["Opt5"].GetValue<int?>(null);
+            double number3 = Arguments["Price"].GetValue<double>(0);
 
-            string? param0 = Arguments.Get("Parameter").GetValueOrDefault<string?>();
-            string? param2 = Arguments.Get("Param2").GetValueOrDefault<string>();
-            string? param1 = Arguments.Get("Str").GetValueOrDefault<string>();
+            string? param0 = Arguments.Get("Parameter").GetValue<string?>();
+            string? param2 = Arguments.Get("Param2").GetValue<string>();
+            string? param1 = Arguments.Get("Str").GetValue<string>();
 
             return default;
         }

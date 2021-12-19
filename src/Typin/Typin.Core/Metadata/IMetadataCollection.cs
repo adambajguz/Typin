@@ -9,20 +9,16 @@
     public interface IMetadataCollection : IReadOnlyCollection<IArgumentMetadata>
     {
         /// <summary>
-        /// Whether collection contains a metadata of type <paramref name="metadataType"/>.
+        /// Indicates if the collection can be modified.
         /// </summary>
-        /// <param name="metadataType">Metadata type.</param>
-        /// <returns>Whether collection contains a property.</returns>
-        /// <exception cref="ArgumentNullException">Throws when <paramref name="metadataType"/> is null.</exception>
-        bool Contains(Type metadataType);
+        bool IsReadOnly { get; }
 
         /// <summary>
-        /// Whether collection contains a metadata of type <typeparamref name="T"/>.
+        /// Gets metadata value.
         /// </summary>
-        /// <typeparam name="T">Metadata type.</typeparam>
-        /// <returns>Whether collection contains a property.</returns>
-        bool Contains<T>()
-            where T : class, IArgumentMetadata;
+        /// <param name="key"></param>
+        /// <returns>The requested feature, or null if it is not present.</returns>
+        IArgumentMetadata? this[Type key] { get; }
 
         /// <summary>
         /// Gets metadata value.
@@ -30,14 +26,14 @@
         /// <param name="metadataType">Metadata type.</param>
         /// <returns>Metadata value or default when not found.</returns>
         /// <exception cref="ArgumentNullException">Throws when <paramref name="metadataType"/> is null.</exception>
-        IArgumentMetadata? GetValueOrDefault(Type metadataType);
+        IArgumentMetadata? Get(Type metadataType);
 
         /// <summary>
         /// Gets metadata value.
         /// </summary>
         /// <typeparam name="T">Metadata type.</typeparam>
         /// <returns>Metadata value or default when not found.</returns>
-        T? GetValueOrDefault<T>()
+        T? Get<T>()
             where T : class, IArgumentMetadata;
     }
 }

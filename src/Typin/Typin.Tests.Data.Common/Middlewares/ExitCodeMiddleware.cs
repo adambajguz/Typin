@@ -1,8 +1,9 @@
-﻿namespace Typin.Tests.Data.Middlewares
+﻿namespace Typin.Tests.Data.Common.Middlewares
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Console;
 
@@ -10,20 +11,27 @@
     {
         public const string ExpectedOutput = "Command finished succesfully.";
 
-        public async Task HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
+        private readonly IConsole _console;
+
+        public ExitCodeMiddleware(IConsole console)
+        {
+            _console = console;
+        }
+
+        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             await next();
-            int? exitCode = context.ExitCode;
+            int? exitCode = args.Output.ExitCode;
 
-            if (context.ExitCode == 0)
+            if (exitCode == 0)
             {
-                context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{context.Metadata.ExecutableName}: {ExpectedOutput}."));
+                _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
+                    output.WriteLine($"{args.Call.Identifier}: {ExpectedOutput}."));
             }
             else
             {
-                context.Console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    output.WriteLine($"{context.Metadata.ExecutableName}: Command finished with exit code ({exitCode})."));
+                _console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
+                    output.WriteLine($"{args.Call.Identifier}: Command finished with exit code ({exitCode})."));
             }
         }
     }

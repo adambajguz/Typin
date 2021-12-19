@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Help
+﻿namespace Typin.Tests.Data.Common.Help
 {
     using System.Collections.Generic;
     using Typin.Console;

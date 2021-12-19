@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,16 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Tests.Data.Common.Commands;
-    using Typin.Tests.Data.CustomTypes.Initializable;
+    using Typin.Tests.Data.Common.CustomTypes.Initializable;
 
     [Command(nameof(SupportedArgumentTypesCommand))]
     public class SupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
+        public SupportedArgumentTypesCommand(IConsole console) : base(console)
+        {
+
+        }
+
         [JsonProperty("obj")]
         [Option("obj")]
         public object? Object { get; init; } = 42;
@@ -60,9 +65,9 @@
         [Option("ulong")]
         public ulong Ulong { get; init; }
 
-        //[JsonProperty("half")]
-        //[Option("half")]
-        //public Half Half { get; init; } = (Half)98.1245;
+        [JsonProperty("half")]
+        [Option("half")]
+        public Half Half { get; init; } = (Half)98.1245;
 
         [JsonProperty("float")]
         [Option("float")]
@@ -83,6 +88,14 @@
         [JsonProperty("datetime")]
         [Option("datetime")]
         public DateTime DateTime { get; init; }
+
+        [JsonProperty("dateonly")]
+        [Option("dateonly")]
+        public DateOnly DateOnly { get; init; }
+
+        [JsonProperty("timeonly")]
+        [Option("timeonly")]
+        public TimeOnly TimeOnly { get; init; }
 
         [JsonProperty("datetime-offset")]
         [Option("datetime-offset")]
@@ -134,9 +147,9 @@
         [Option("ulong-nullable")]
         public ulong? UlongNullable { get; init; } = 180;
 
-        //[JsonProperty("half-nullable")]
-        //[Option("half-nullable")]
-        //public Half? HalfNullable { get; init; } = (Half)98.1245;
+        [JsonProperty("half-nullable")]
+        [Option("half-nullable")]
+        public Half? HalfNullable { get; init; } = (Half)98.1245;
 
         [JsonProperty("float-nullable")]
         [Option("float-nullable")]
@@ -156,7 +169,15 @@
 
         [JsonProperty("datetime-nullable")]
         [Option("datetime-nullable")]
-        public DateTime? DateTimeNullable { get; init; } = new(1898, 10, 20);
+        public DateTime? DateTimeNullable { get; init; } = new(1898, 10, 20, 1, 2, 56);
+
+        [JsonProperty("dateonly-nullable")]
+        [Option("dateonly-nullable")]
+        public DateOnly? DateOnlyNullable { get; init; } = new(1234, 1, 22);
+
+        [JsonProperty("timeonly-nullable")]
+        [Option("timeonly-nullable")]
+        public TimeOnly? TimeOnlyNullable { get; init; } = new(1, 2, 3);
 
         [JsonProperty("datetime-offset-nullable")]
         [Option("datetime-offset-nullable")]
@@ -232,10 +253,5 @@
         [Option("int-nullable-array")]
         public int?[]? IntNullableArray { get; init; }
         #endregion
-
-        public SupportedArgumentTypesCommand(IConsole console) : base(console)
-        {
-
-        }
     }
 }

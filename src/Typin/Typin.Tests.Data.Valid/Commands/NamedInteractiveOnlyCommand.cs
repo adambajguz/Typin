@@ -1,11 +1,11 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     [Command("named-interactive-only", Description = "Named command description",
              SupportedModes = new[] { typeof(InteractiveMode) })]

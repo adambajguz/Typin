@@ -1,11 +1,13 @@
 ﻿namespace Typin.Internal.Schemas
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Typin.Attributes;
-    using Typin.Internal.Exceptions;
+    using Typin.Exceptions.Mode;
+    using Typin.Exceptions.Resolvers.CommandResolver;
+    using Typin.Exceptions.Resolvers.OptionResolver;
+    using Typin.Exceptions.Resolvers.ParameterResolver;
     using Typin.Schemas;
 
     /// <summary>
@@ -16,27 +18,14 @@
         /// <summary>
         /// Resolves <see cref="CommandSchema"/>.
         /// </summary>
-        public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
+        public static CommandSchema Resolve(Type type)
         {
             if (!KnownTypesHelpers.IsCommandType(type))
             {
-                throw CommandResolverExceptions.InvalidCommandType(type);
+                throw new InvalidCommandException(type);
             }
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
-
-            if (modeTypes is not null)
-            {
-                if (attribute.SupportedModes is not null && attribute.SupportedModes.Except(modeTypes).Any())
-                {
-                    throw CommandResolverExceptions.InvalidSupportedModesInCommand(type, attribute);
-                }
-
-                if (attribute.ExcludedModes is not null && attribute.ExcludedModes.Except(modeTypes).Any())
-                {
-                    throw CommandResolverExceptions.InvalidExcludedModesInCommand(type, attribute);
-                }
-            }
 
             string? name = attribute.Name;
 
@@ -45,6 +34,26 @@
                 : new[] { OptionSchema.HelpOption };
 
             BaseCommandSchema baseSchema = ResolveBase(type, builtInOptions);
+
+            if (attribute.SupportedModes is not null)
+            {
+                Type? invalidMode = attribute.SupportedModes.FirstOrDefault(x => !KnownTypesHelpers.IsCliModeType(x));
+
+                if (invalidMode is not null)
+                {
+                    throw new InvalidModeException(invalidMode);
+                }
+            }
+
+            if (attribute.ExcludedModes is not null)
+            {
+                Type? invalidMode = attribute.ExcludedModes.FirstOrDefault(x => !KnownTypesHelpers.IsCliModeType(x));
+
+                if (invalidMode is not null)
+                {
+                    throw new InvalidModeException(invalidMode);
+                }
+            }
 
             CommandSchema command = new(baseSchema,
                                         false,
@@ -64,7 +73,7 @@
         {
             if (!KnownTypesHelpers.IsDynamicCommandType(type))
             {
-                throw CommandResolverExceptions.InvalidCommandType(type);
+                throw new InvalidCommandException(type);
             }
 
             return ResolveBase(type, new[] { OptionSchema.HelpOption });
@@ -77,7 +86,7 @@
         {
             if (!KnownTypesHelpers.IsNormalOrDynamicCommandType(type))
             {
-                throw CommandResolverExceptions.InvalidCommandType(type);
+                throw new InvalidCommandException(type);
             }
 
             ParameterSchema[] parameters = type.GetProperties()
@@ -111,7 +120,7 @@
 
             if (duplicateOrderGroup is not null)
             {
-                throw ParameterResolverExceptions.ParametersWithSameOrder(
+                throw new ParameterDuplicateByOrderException(
                     command,
                     duplicateOrderGroup.Key,
                     duplicateOrderGroup.ToArray()
@@ -125,7 +134,7 @@
 
             if (duplicateNameGroup is not null)
             {
-                throw ParameterResolverExceptions.ParametersWithSameName(
+                throw new ParameterDuplicateByNameException(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -138,7 +147,7 @@
 
             if (nonScalarParameters.Length > 1)
             {
-                throw ParameterResolverExceptions.TooManyNonScalarParameters(
+                throw new TooManyNonScalarParametersException(
                     command,
                     nonScalarParameters
                 );
@@ -151,7 +160,7 @@
 
             if (nonLastNonScalarParameter is not null)
             {
-                throw ParameterResolverExceptions.NonLastNonScalarParameter(
+                throw new NonScalarParametersMustHaveHighestOrderException(
                     command,
                     nonLastNonScalarParameter
                 );
@@ -167,7 +176,7 @@
 
             if (duplicateNameGroup is not null)
             {
-                throw OptionResolverExceptions.OptionsWithSameName(
+                throw new OptionDuplicateByNameException(
                     command,
                     duplicateNameGroup.Key,
                     duplicateNameGroup.ToArray()
@@ -181,24 +190,10 @@
 
             if (duplicateShortNameGroup is not null)
             {
-                throw OptionResolverExceptions.OptionsWithSameShortName(
+                throw new OptionDuplicateByShortNameException(
                     command,
                     duplicateShortNameGroup.Key,
                     duplicateShortNameGroup.ToArray()
-                );
-            }
-
-            IGrouping<string, OptionSchema>? duplicateEnvironmentVariableNameGroup = command.Options
-                .Where(o => !string.IsNullOrWhiteSpace(o.FallbackVariableName))
-                .GroupBy(o => o.FallbackVariableName!, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault(g => g.Count() > 1);
-
-            if (duplicateEnvironmentVariableNameGroup is not null)
-            {
-                throw OptionResolverExceptions.OptionsWithSameEnvironmentVariableName(
-                    command,
-                    duplicateEnvironmentVariableNameGroup.Key,
-                    duplicateEnvironmentVariableNameGroup.ToArray()
                 );
             }
         }

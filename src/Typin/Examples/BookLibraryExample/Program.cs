@@ -1,28 +1,65 @@
 ﻿namespace BookLibraryExample
 {
+    using System;
     using System.Threading.Tasks;
     using BookLibraryExample.Services;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using Typin.Directives;
+    using Typin.Hosting;
+    using Typin.Modes;
+    using Typin.Modes.Interactive;
 
     public static class Program
     {
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            // Register services
-            services.AddSingleton<LibraryService>();
-        }
-
         public static async Task<int> Main()
         {
-            return await new CliApplicationBuilder()
-                .ConfigureServices(ConfigureServices)
-                .AddCommandsFromThisAssembly()
-                .AddDirective<DebugDirective>()
-                .AddDirective<PreviewDirective>()
-                .Build()
-                .RunAsync();
+            await CliHost.CreateDefaultBuilder()
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                })
+                .ConfigureCliHost((cliBuilder) =>
+                {
+                    cliBuilder
+                        .AddCommands(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .AddDirectives(scanner =>
+                        {
+                            scanner.Single<DebugDirective>()
+                                   .Single<PreviewDirective>();
+
+                            scanner.FromThisAssembly();
+                        })
+                        .AddModes(scanner =>
+                        {
+                            scanner.Single<DirectMode>();
+                            scanner.Single<InteractiveMode>();
+                        });
+
+                    cliBuilder.SetStartupMode<InteractiveMode>();
+
+                    cliBuilder.UseStartupMessage((metadata) => $"{metadata.Title} CLI {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}");
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<LibraryService>();
+
+                    services.Configure<InteractiveModeOptions>(options =>
+                    {
+                        options.PromptForeground = ConsoleColor.Magenta;
+                        options.IsAdvancedInputAvailable = false;
+                        options.SetPrompt("~$ ");
+                    });
+                })
+                .RunConsoleAsync();
+
+            //.UseMiddleware<ExecutionTimingMiddleware>()
+
+            return 0;
         }
     }
 }

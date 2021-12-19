@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using InteractiveModeExample.DynamicCommands;
     using Typin;
     using Typin.Attributes;
     using Typin.Console;

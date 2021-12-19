@@ -39,11 +39,7 @@
         /// </summary>
         public ArgumentCollection(IEnumerable<KeyValuePair<string, InputValue>> values)
         {
-#if NETSTANDARD2_0
-            _values = System.Linq.Enumerable.ToDictionary(values, x => x.Key, x => x.Value);
-#else
             _values = new Dictionary<string, InputValue>(values);
-#endif
         }
 
         /// <inheritdoc/>
@@ -74,14 +70,14 @@
         }
 
         /// <inheritdoc/>
-        public InputValue this[string propertyName]
+        public InputValue? this[string propertyName]
         {
-            get => Get(propertyName);
+            get => GetOrDefault(propertyName);
             set => Set(propertyName, value);
         }
 
         /// <inheritdoc/>
-        public InputValue? TryGet(string propertyName)
+        public InputValue? GetOrDefault(string propertyName)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -92,11 +88,16 @@
         }
 
         /// <inheritdoc/>
-        public void Set(string propertyName, InputValue value)
+        public void Set(string propertyName, InputValue? value)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
                 throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
+            }
+
+            if (value is null)
+            {
+                _values.Remove(propertyName);
             }
 
             _values[propertyName] = value ?? throw new ArgumentNullException(nameof(value));
@@ -116,8 +117,19 @@
             }
             else
             {
-                _values[propertyName] = new InputValue(MetadataCollection.Empty, typeof(object), value);
+                _values[propertyName] = new InputValue(new MetadataCollection(), typeof(object), value);
             }
+        }
+
+        /// <inheritdoc/>
+        public bool Remove(string propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or whitespace.", nameof(propertyName));
+            }
+
+            return _values.Remove(propertyName);
         }
 
         /// <inheritdoc/>

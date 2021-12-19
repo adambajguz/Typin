@@ -8,11 +8,11 @@
     using CliWrap.Buffered;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.Console;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Console;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class ConsoleTests
     {
@@ -44,7 +44,7 @@
         public void Real_implementation_of_console_can_be_used_to_execute_commands()
         {
             // Arrange
-            using SystemConsole console = new();
+            SystemConsole console = new();
 
             // Act
             console.ResetColor();
@@ -124,7 +124,7 @@
             _output.Print(stdOut, stdErr);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain(WithColorsCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
@@ -147,7 +147,7 @@
             _output.Print(stdOut, stdErr);
 
             // Assert
-            exitCode.Should().Be(ExitCodes.Success);
+            exitCode.Should().Be(ExitCode.Success);
             stdOut.GetString().Should().Contain(WithColorsAndResetCommand.ExpectedOutputText);
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }

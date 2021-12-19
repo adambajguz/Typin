@@ -3,14 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Typin.Internal.Extensions;
     using Typin.Schemas;
+    using Typin.Utilities;
 
     /// <summary>
     /// Stores command option input.
     /// </summary>
-    public class CommandOptionInput
+    public class CommandOptionInput //TODO: equality and comparison
     {
         /// <summary>
         /// Option alias.
@@ -31,6 +30,15 @@
         /// Whether option is version option (--version).
         /// </summary>
         public bool IsVersionOption => OptionSchema.VersionOption.MatchesNameOrShortName(Alias);
+
+        /// <summary>
+        /// Initializes an instance of <see cref="CommandOptionInput"/>.
+        /// </summary>
+        public CommandOptionInput(string alias)
+        {
+            Alias = alias;
+            Values = new List<string>();
+        }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandOptionInput"/>.
@@ -59,14 +67,14 @@
         /// </summary>
         public string GetRawValues()
         {
-            return Values.Select(v => v.Quote()).JoinToString(' ');
+            return CommandLine.EncodeArguments(Values);
         }
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"{GetRawAlias()} {GetRawValues()}";
+            return string.Concat(GetRawAlias(), " ", GetRawValues());
         }
 
         /// <summary>

@@ -24,7 +24,6 @@
         /// </summary>
         public IReadOnlyDictionary<string, CommandSchema> Commands => _commands;
 
-
         /// <summary>
         /// Default command (null if no default command).
         /// </summary>
