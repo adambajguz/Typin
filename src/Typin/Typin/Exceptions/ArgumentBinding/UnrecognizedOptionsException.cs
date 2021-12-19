@@ -13,11 +13,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="UnrecognizedParametersException"/>.
         /// </summary>
-        /// <param name="input"></param>
         /// <param name="optionsInputs"></param>
-        public UnrecognizedOptionsException(ParsedCommandInput input, IEnumerable<CommandOptionInput> optionsInputs) :
+        public UnrecognizedOptionsException(IEnumerable<CommandOptionInput> optionsInputs) :
             base(null,
-                 input,
                  BuildMessage(optionsInputs))
         {
 

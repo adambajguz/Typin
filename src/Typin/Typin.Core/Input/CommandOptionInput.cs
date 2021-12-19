@@ -22,16 +22,6 @@
         public IReadOnlyList<string> Values { get; }
 
         /// <summary>
-        /// Whether option is help option (--help|-h).
-        /// </summary>
-        public bool IsHelpOption => OptionSchema.HelpOption.MatchesNameOrShortName(Alias);
-
-        /// <summary>
-        /// Whether option is version option (--version).
-        /// </summary>
-        public bool IsVersionOption => OptionSchema.VersionOption.MatchesNameOrShortName(Alias);
-
-        /// <summary>
         /// Initializes an instance of <see cref="CommandOptionInput"/>.
         /// </summary>
         public CommandOptionInput(string alias)

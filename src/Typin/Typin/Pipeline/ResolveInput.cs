@@ -28,7 +28,7 @@
         {
             bool trimExecutable = args.Input.ExecutionOptions.HasFlag(CommandExecutionOptions.TrimExecutable);
 
-            ParsedCommandInput input = InputResolver.Parse(
+            ParsedInput input = InputResolver.Parse(
                 args.Input.Arguments.Skip(trimExecutable ? 1 : 0),
                 _rootSchemaAccessor.RootSchema.GetCommandNames());
 

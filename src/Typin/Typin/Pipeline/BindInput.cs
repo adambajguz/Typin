@@ -1,13 +1,11 @@
 namespace Typin.Pipeline
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Configuration;
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Features;
-    using Typin.Input;
     using Typin.Internal.Input;
     using Typin.Schemas;
 
@@ -30,8 +28,7 @@ namespace Typin.Pipeline
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             //Get input and command schema from context
-            ParsedCommandInput input = args.Input.Parsed ??
-                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Parsed)} has not been configured for this application or call.");
+            IBinderFeature binder = args.Binder;
 
             CommandSchema commandSchema = args.Command.Schema;
 
@@ -46,8 +43,8 @@ namespace Typin.Pipeline
             // Get command instance from context and bind arguments
             ICommand instance = args.Command.Instance;
 
-            commandSchema.BindParameters(instance, input);
-            commandSchema.BindOptions(instance, input, _configuration);
+            commandSchema.BindParameters(instance, binder.UnboundedInput);
+            commandSchema.BindOptions(instance, binder.UnboundedInput, _configuration);
 
             //await Task.Delay(500, cancellationToken); //TODO: remove
 

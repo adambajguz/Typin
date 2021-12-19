@@ -21,6 +21,6 @@
         /// <summary>
         /// Parsed CLI input.
         /// </summary>
-        ParsedCommandInput? Parsed { get; set; }
+        ParsedInput? Parsed { get; set; }
     }
 }

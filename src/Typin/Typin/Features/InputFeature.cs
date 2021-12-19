@@ -16,7 +16,7 @@
         public CommandExecutionOptions ExecutionOptions { get; }
 
         /// <inheritdoc/>
-        public ParsedCommandInput? Parsed { get; set; }
+        public ParsedInput? Parsed { get; set; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="InputFeature"/>.

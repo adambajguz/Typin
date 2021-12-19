@@ -7,7 +7,6 @@ namespace Typin.Internal.Input
     using System.Reflection;
     using Typin.Binding;
     using Typin.Exceptions.ArgumentBinding;
-    using Typin.Input;
     using Typin.Schemas;
     using Typin.Utilities;
     using Typin.Utilities.Extensions;
@@ -15,30 +14,6 @@ namespace Typin.Internal.Input
     internal static class ArgumentBinder
     {
         private static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
-
-        //TODO: benchmark PrimitiveConverters vs PrimitiveConverter()
-        //        private static readonly IReadOnlyDictionary<Type, Func<string, object?>> PrimitiveConverters =
-        //            new Dictionary<Type, Func<string, object?>>
-        //            {
-        //                [typeof(sbyte)] = v => sbyte.Parse(v, FormatProvider),
-        //                [typeof(byte)] = v => byte.Parse(v, FormatProvider),
-        //                [typeof(short)] = v => short.Parse(v, FormatProvider),
-        //                [typeof(ushort)] = v => ushort.Parse(v, FormatProvider),
-        //                [typeof(int)] = v => int.Parse(v, FormatProvider),
-        //                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
-        //                [typeof(long)] = v => long.Parse(v, FormatProvider),
-        //                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-        //#if NET5_0_OR_GREATER
-        //                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
-        //#endif
-        //                [typeof(float)] = v => float.Parse(v, FormatProvider),
-        //                [typeof(double)] = v => double.Parse(v, FormatProvider),
-        //                [typeof(decimal)] = v => decimal.Parse(v, FormatProvider),
-        //                [typeof(Guid)] = v => Guid.Parse(v),
-        //                [typeof(DateTime)] = v => DateTime.Parse(v, FormatProvider),
-        //                [typeof(DateTimeOffset)] = v => DateTimeOffset.Parse(v, FormatProvider),
-        //                [typeof(TimeSpan)] = v => TimeSpan.Parse(v, FormatProvider),
-        //            };
 
         private static object? PrimitiveConverter(Type targetType, string value)
         {
@@ -143,7 +118,7 @@ namespace Typin.Internal.Input
         }
 
         #region Value Converter
-        private static object? ConvertScalar(this ArgumentSchema argumentSchema, ParsedCommandInput input, string? value, Type targetType, IBindingConverter? converterInstance)
+        private static object? ConvertScalar(this ArgumentSchema argumentSchema, string? value, Type targetType, IBindingConverter? converterInstance)
         {
             try
             {
@@ -196,7 +171,7 @@ namespace Typin.Internal.Input
                 if (nullableUnderlyingType is not null)
                 {
                     return !string.IsNullOrWhiteSpace(value)
-                        ? ConvertScalar(argumentSchema, input, value, nullableUnderlyingType, converterInstance: null) // we can pass null because we have an extra check in the beginning of the method
+                        ? ConvertScalar(argumentSchema, value, nullableUnderlyingType, converterInstance: null) // we can pass null because we have an extra check in the beginning of the method
                         : null;
                 }
 
@@ -223,15 +198,15 @@ namespace Typin.Internal.Input
             }
             catch (Exception ex)
             {
-                throw new TypeConversionException(argumentSchema, input, value, targetType, ex);
+                throw new TypeConversionException(argumentSchema, value, targetType, ex);
             }
 
-            throw new TypeConversionException(argumentSchema, input, value, targetType);
+            throw new TypeConversionException(argumentSchema, value, targetType);
         }
 
-        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, ParsedCommandInput input, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
+        private static object ConvertNonScalar(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values, Type targetEnumerableType, Type targetElementType, IBindingConverter? converterInstance)
         {
-            Array array = values.Select(v => ConvertScalar(argumentSchema, input, v, targetElementType, converterInstance))
+            Array array = values.Select(v => ConvertScalar(argumentSchema, v, targetElementType, converterInstance))
                                 .ToNonGenericArray(targetElementType);
 
             Type arrayType = array.GetType();
@@ -244,12 +219,12 @@ namespace Typin.Internal.Input
 
             // Constructible from an array
             ConstructorInfo? arrayConstructor = targetEnumerableType.GetConstructor(new[] { arrayType });
-            _ = arrayConstructor ?? throw new NonScalarNonConstructibleFromArrayException(argumentSchema, input, values, targetEnumerableType);
+            _ = arrayConstructor ?? throw new NonScalarNonConstructibleFromArrayException(argumentSchema, values, targetEnumerableType);
 
             return arrayConstructor.Invoke(new object[] { array });
         }
 
-        private static object? Convert(this ArgumentSchema argumentSchema, ParsedCommandInput input, IReadOnlyCollection<string> values)
+        private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
         {
             BindableArgument bindable = argumentSchema.Bindable;
 
@@ -270,8 +245,8 @@ namespace Typin.Internal.Input
                 if (enumerableUnderlyingType is null)
                 {
                     return values.Count <= 1
-                        ? ConvertScalar(argumentSchema, input, values.SingleOrDefault(), targetType, converterInstance)
-                        : throw new NonScalarInputExpectedException(argumentSchema, input, values);
+                        ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, converterInstance)
+                        : throw new NonScalarInputExpectedException(argumentSchema, values);
                 }
                 // Non-scalar with conversion for collection
                 else if (targetType.IsAssignableFrom(converterInstance.TargetType))
@@ -282,13 +257,13 @@ namespace Typin.Internal.Input
                     }
                     catch (Exception ex)
                     {
-                        throw new TypeConversionException(argumentSchema, input, values, targetType, ex);
+                        throw new TypeConversionException(argumentSchema, values, targetType, ex);
                     }
                 }
                 // Non-scalar with conversion for collection item type
                 else
                 {
-                    return ConvertNonScalar(argumentSchema, input, values, targetType, enumerableUnderlyingType, converterInstance);
+                    return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, converterInstance);
                 }
             }
 
@@ -297,13 +272,13 @@ namespace Typin.Internal.Input
             if (enumerableUnderlyingType is null)
             {
                 return values.Count <= 1
-                    ? ConvertScalar(argumentSchema, input, values.SingleOrDefault(), targetType, null)
-                    : throw new NonScalarInputExpectedException(argumentSchema, input, values);
+                    ? ConvertScalar(argumentSchema, values.SingleOrDefault(), targetType, null)
+                    : throw new NonScalarInputExpectedException(argumentSchema, values);
             }
             // Non-scalar with conversion for collection item type
             else
             {
-                return ConvertNonScalar(argumentSchema, input, values, targetType, enumerableUnderlyingType, null); ;
+                return ConvertNonScalar(argumentSchema, values, targetType, enumerableUnderlyingType, null); ;
             }
         }
         #endregion
@@ -311,18 +286,18 @@ namespace Typin.Internal.Input
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, ParsedCommandInput input, IReadOnlyCollection<string> values)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
         {
-            object? value = argumentSchema.Convert(input, values);
+            object? value = argumentSchema.Convert(values);
             argumentSchema.Bindable.SetValue(command, value);
         }
 
         /// <summary>
         /// Binds input values to command.
         /// </summary>
-        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, ParsedCommandInput input, string value)
+        public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, string value)
         {
-            BindOn(argumentSchema, command, input, new[] { value });
+            BindOn(argumentSchema, command, new[] { value });
         }
     }
 }

@@ -6,14 +6,14 @@
     using Typin.Utilities.Extensions;
 
     /// <summary>
-    /// Resolves an instance of <see cref="ParsedCommandInput"/>.
+    /// Resolves an instance of <see cref="ParsedInput"/>.
     /// </summary>
     internal class InputResolver
     {
         /// <summary>
-        /// Resolves <see cref="ParsedCommandInput"/>.
+        /// Resolves <see cref="ParsedInput"/>.
         /// </summary>
-        public static ParsedCommandInput Parse(IEnumerable<string> commandLineArguments,
+        public static ParsedInput Parse(IEnumerable<string> commandLineArguments,
                                          ISet<string> availableCommandNamesSet)
         {
             int index = 0;
@@ -41,7 +41,7 @@
                 ref index
             );
 
-            return new ParsedCommandInput(directives, commandName, parameters, options);
+            return new ParsedInput(directives, commandName, parameters, options);
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,

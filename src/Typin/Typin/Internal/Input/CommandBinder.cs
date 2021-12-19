@@ -14,7 +14,7 @@
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, ParsedCommandInput input)
+        public static void BindParameters(this CommandSchema commandSchema, ICommand instance, UnboundedInput input)
         {
             IReadOnlyList<CommandParameterInput> parameterInputs = input.Parameters;
             IReadOnlyList<ParameterSchema> parameters = commandSchema.Parameters;
@@ -25,7 +25,7 @@
 
             if (remainingParameters > remainingInputs)
             {
-                throw new MissingParametersException(input, parameters.TakeLast(remainingParameters - remainingInputs));
+                throw new MissingParametersException(parameters.TakeLast(remainingParameters - remainingInputs));
             }
 
             // Scalar parameters
@@ -35,7 +35,7 @@
                 ParameterSchema parameter = parameters[i];
                 CommandParameterInput scalarInput = parameterInputs[i];
 
-                parameter.BindOn(instance, input, scalarInput.Value);
+                parameter.BindOn(instance, scalarInput.Value);
 
                 --remainingParameters;
                 --remainingInputs;
@@ -53,10 +53,10 @@
                 // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
                 if (!nonScalarValues.Any())
                 {
-                    throw new MissingParametersException(input, nonScalarParameter);
+                    throw new MissingParametersException(nonScalarParameter);
                 }
 
-                nonScalarParameter.BindOn(instance, input, nonScalarValues);
+                nonScalarParameter.BindOn(instance, nonScalarValues);
                 --remainingParameters;
                 remainingInputs = 0;
             }
@@ -64,7 +64,7 @@
             // Ensure all inputs were bound
             if (remainingInputs > 0)
             {
-                throw new UnrecognizedParametersException(input, parameterInputs.TakeLast(remainingInputs));
+                throw new UnrecognizedParametersException(parameterInputs.TakeLast(remainingInputs));
             }
         }
 
@@ -73,7 +73,7 @@
         /// </summary>
         public static void BindOptions(this CommandSchema commandSchema,
                                        ICommand instance,
-                                       ParsedCommandInput input,
+                                       UnboundedInput input,
                                        IConfiguration configuration)
         {
             IReadOnlyList<CommandOptionInput> optionInputs = input.Options;
@@ -100,7 +100,7 @@
                 {
                     string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
-                    option.BindOn(instance, input, values);
+                    option.BindOn(instance, values);
                     unsetRequiredOptions.Remove(option);
 
                     continue;
@@ -118,7 +118,7 @@
                 string[] inputValues = inputs.SelectMany(i => i.Values)
                                              .ToArray();
 
-                option.BindOn(instance, input, inputValues);
+                option.BindOn(instance, inputValues);
 
                 remainingOptionInputs.RemoveRange(inputs);
 
@@ -132,13 +132,13 @@
             // Ensure all inputs were bound
             if (remainingOptionInputs.Any())
             {
-                throw new UnrecognizedOptionsException(input, remainingOptionInputs);
+                throw new UnrecognizedOptionsException(remainingOptionInputs);
             }
 
             // Ensure all required options were set
             if (unsetRequiredOptions.Any())
             {
-                throw new RequiredOptionsMissingException(input, unsetRequiredOptions);
+                throw new RequiredOptionsMissingException(unsetRequiredOptions);
             }
         }
     }

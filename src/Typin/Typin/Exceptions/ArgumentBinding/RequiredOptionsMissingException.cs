@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Input;
     using Typin.Schemas;
     using Typin.Utilities.Extensions;
 
@@ -14,11 +13,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="RequiredOptionsMissingException"/>.
         /// </summary>
-        /// <param name="input"></param>
         /// <param name="options"></param>
-        public RequiredOptionsMissingException(ParsedCommandInput input, IEnumerable<OptionSchema> options) :
+        public RequiredOptionsMissingException(IEnumerable<OptionSchema> options) :
             base(null,
-                 input,
                  BuildMessage(options))
         {
 

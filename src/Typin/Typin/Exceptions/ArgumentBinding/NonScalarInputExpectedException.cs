@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Input;
     using Typin.Schemas;
     using Typin.Utilities.Extensions;
 
@@ -21,11 +20,9 @@
         /// Initializes an instance of <see cref="NonScalarInputExpectedException"/>.
         /// </summary>
         /// <param name="argument"></param>
-        /// <param name="input"></param>
         /// <param name="values"></param>
-        public NonScalarInputExpectedException(ArgumentSchema argument, ParsedCommandInput input, IReadOnlyCollection<string> values) :
+        public NonScalarInputExpectedException(ArgumentSchema argument, IReadOnlyCollection<string> values) :
             base(argument,
-                 input,
                  BuildMessage(argument, values))
         {
             Values = values;

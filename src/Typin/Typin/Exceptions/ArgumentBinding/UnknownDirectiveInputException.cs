@@ -16,10 +16,8 @@
         /// Initializes an instance of <see cref="UnknownDirectiveInputException"/>.
         /// </summary>
         /// <param name="directive"></param>
-        /// <param name="input"></param>
-        public UnknownDirectiveInputException(DirectiveInput directive, ParsedCommandInput input) :
+        public UnknownDirectiveInputException(DirectiveInput directive) :
             base(null,
-                 input,
                  $"Unknown directive '{directive}'.")
         {
             DirectiveInput = directive;

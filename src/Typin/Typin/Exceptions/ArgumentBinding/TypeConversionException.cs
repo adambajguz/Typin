@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Typin.Input;
     using Typin.Schemas;
 
     /// <summary>
@@ -26,12 +25,11 @@
         /// Initializes an instance of <see cref="TypeConversionException"/>.
         /// </summary>
         /// <param name="argument"></param>
-        /// <param name="input"></param>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, ParsedCommandInput input, string? value, Type targetType, Exception? innerException = null) :
-            this(argument, input, new[] { value }, targetType, innerException)
+        public TypeConversionException(ArgumentSchema argument, string? value, Type targetType, Exception? innerException = null) :
+            this(argument, new[] { value }, targetType, innerException)
         {
 
         }
@@ -40,13 +38,11 @@
         /// Initializes an instance of <see cref="TypeConversionException"/>.
         /// </summary>
         /// <param name="argument"></param>
-        /// <param name="input"></param>
         /// <param name="values"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, ParsedCommandInput input, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
+        public TypeConversionException(ArgumentSchema argument, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
             base(argument,
-                 input,
                  BuildMessage(argument, values, targetType, innerException),
                  innerException)
         {

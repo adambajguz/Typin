@@ -76,13 +76,13 @@
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime 2020-11-12", @"{ ""datetime"": ""2020-11-12T00:00:00"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime ""2020-11-12 12:00:56""", @"{ ""datetime"": ""2020-11-12T12:00:56"" }")]
 
-        [InlineData(nameof(SupportedArgumentTypesCommand) +@" --dateonly ""28 Apr 1995""", @"{ ""dateonly"": ""1995-04-28"" }")]
-        [InlineData(nameof(SupportedArgumentTypesCommand) +@" --dateonly 2020-11-12", @"{ ""dateonly"": ""2020-11-12"" }")]
+        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --dateonly ""28 Apr 1995""", @"{ ""dateonly"": ""1995-04-28"" }")]
+        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --dateonly 2020-11-12", @"{ ""dateonly"": ""2020-11-12"" }")]
 
-        [InlineData(nameof(SupportedArgumentTypesCommand) +@" --timeonly 00:14:59", @"{ ""timeonly"": ""00:14:59"" }")]
-        [InlineData(nameof(SupportedArgumentTypesCommand) +@" --timeonly 23:59:59.120", @"{ ""timeonly"": ""23:59:59.120"" }")]
+        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timeonly 00:14:59", @"{ ""timeonly"": ""00:14:59"" }")]
+        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timeonly 23:59:59.120", @"{ ""timeonly"": ""23:59:59.120"" }")]
 
-        [InlineData(nameof(SupportedArgumentTypesCommand) +@" --datetime-offset ""28 Apr 1995""", @"{ ""datetime-offset"": ""1995-04-28T00:00:00"" }")]
+        [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset ""28 Apr 1995""", @"{ ""datetime-offset"": ""1995-04-28T00:00:00"" }")]
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --datetime-offset 2020-11-12", @"{ ""datetime-offset"": ""2020-11-12T00:00:00"" }")]
 
         [InlineData(nameof(SupportedArgumentTypesCommand) + @" --timespan 00:14:59", @"{ ""timespan"": ""00:14:59"" }")]

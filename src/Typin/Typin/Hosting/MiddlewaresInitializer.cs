@@ -19,6 +19,7 @@
                  .AddStep<TypinExceptionsHandler>()
                  .AddStep<ResolveInput>()
                  .AddStep<ResolveCommand>()
+                 .AddStep<InitializeBinder>()
                  .AddStep<InitializeDirectives>()
                  .AddStep<PipelinedDirectivesHandler>()
                  .AddStep<HelpHandler>()

@@ -66,7 +66,7 @@
 
         private string? GetFallbackCommandName(CliContext context)
         {
-            ParsedCommandInput? input = context.Input.Parsed ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
+            ParsedInput? input = context.Input.Parsed ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
 
             string potentialName = context.Input.Arguments.Skip(input.Directives.Count)
                                                           .JoinToString(' ');

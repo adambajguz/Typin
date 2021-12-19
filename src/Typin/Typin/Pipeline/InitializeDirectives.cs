@@ -32,12 +32,11 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            ParsedCommandInput input = args.Input.Parsed ??
-                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Parsed)} has not been configured for this application or call.");
+            IBinderFeature binder = args.Binder;
 
             //Get current CLI mode and input directives
             //Type currentModeType = _applicationLifetime.CurrentModeType!;
-            IReadOnlyList<DirectiveInput> directives = input.Directives;
+            List<DirectiveInput> directives = binder.UnboundedInput.Directives;
 
             //Initialize collections
             List<IDirective> directivesInstances = new();
@@ -48,7 +47,7 @@
             {
                 // Try to get the directive matching the input or fallback to default
                 DirectiveSchema directive = _rootSchemaAccessor.RootSchema.TryFindDirective(directiveInput.Name) ??
-                    throw new UnknownDirectiveInputException(directiveInput, input);
+                    throw new UnknownDirectiveInputException(directiveInput);
 
                 //// Handle interactive directives not supported in current mode
                 //if (!directive.CanBeExecutedInMode(currentModeType))
@@ -70,6 +69,8 @@
                     pipelinedDirectivesInstances.Add(pd);
                 }
             }
+
+            directives.Clear();
 
             //Set directives lists in context
             args.Features.Set<IDirectivesFeature>(new DirectivesFeature(directivesInstances, pipelinedDirectivesInstances));

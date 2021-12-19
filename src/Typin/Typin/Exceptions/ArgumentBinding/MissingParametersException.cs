@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Input;
     using Typin.Schemas;
     using Typin.Utilities.Extensions;
 
@@ -14,11 +13,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="MissingParametersException"/>.
         /// </summary>
-        /// <param name="input"></param>
         /// <param name="parameter"></param>
-        public MissingParametersException(ParsedCommandInput input, ParameterSchema parameter) :
+        public MissingParametersException(ParameterSchema parameter) :
             base(null,
-                 input,
                  BuildMessage(parameter))
         {
 
@@ -27,11 +24,9 @@
         /// <summary>
         /// Initializes an instance of <see cref="MissingParametersException"/>.
         /// </summary>
-        /// <param name="input"></param>
         /// <param name="parameters"></param>
-        public MissingParametersException(ParsedCommandInput input, IEnumerable<ParameterSchema> parameters) :
+        public MissingParametersException(IEnumerable<ParameterSchema> parameters) :
             base(null,
-                 input,
                  BuildMessage(parameters))
         {
 
