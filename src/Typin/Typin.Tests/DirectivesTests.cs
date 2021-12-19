@@ -10,6 +10,7 @@
     using Typin.Tests.Data.Commands.Valid;
     using Typin.Tests.Data.CustomDirectives.Invalid;
     using Typin.Tests.Data.CustomDirectives.Valid;
+    using Typin.Tests.Data.Middlewares;
     using Typin.Tests.Extensions;
     using Xunit;
     using Xunit.Abstractions;
@@ -21,6 +22,24 @@
         public DirectivesTests(ITestOutputHelper output)
         {
             _output = output;
+        }
+
+        [Fact]
+        public async Task Custom_middleware_pipeline_should_throw_exception_after_detecting_middleware()
+        {
+            // Arrange
+            var builder = new CliApplicationBuilder()
+                .AddCommand<DefaultCommand>()
+                .AddDirective<CustomDirective>()
+                .UseMiddleware<DirectivesCheckMiddleware>();
+
+            // Act
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "[custom]");
+
+            // Asert
+            exitCode.Should().NotBe(ExitCodes.Success);
+            stdOut.GetString().Should().Contain(CustomDirective.ExpectedOutput);
+            stdErr.GetString().Should().Contain("System.ApplicationException: custom directive detected");
         }
 
         [Fact]

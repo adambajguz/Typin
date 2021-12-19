@@ -19,7 +19,9 @@
         public static CommandSchema Resolve(Type type, IReadOnlyList<Type>? modeTypes)
         {
             if (!KnownTypesHelpers.IsCommandType(type))
+            {
                 throw CommandResolverExceptions.InvalidCommandType(type);
+            }
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
@@ -101,7 +103,7 @@
             }
 
             CommandParameterSchema[]? nonScalarParameters = command.Parameters
-                                                                   .Where(p => !p.IsScalar)
+                                                                   .Where(p => !p.BindableProperty.IsScalar)
                                                                    .ToArray();
 
             if (nonScalarParameters.Length > 1)
@@ -115,7 +117,7 @@
             CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
                                                                        .OrderByDescending(a => a.Order)
                                                                        .Skip(1)
-                                                                       .LastOrDefault(p => !p.IsScalar);
+                                                                       .LastOrDefault(p => !p.BindableProperty.IsScalar);
 
             if (nonLastNonScalarParameter is not null)
             {

@@ -7,6 +7,19 @@
 
  - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
 
+### v3.1.0 (xx-Apr-2021)
+
+ - Added `InteractiveModeOptions.Prompt`, `InteractiveModeOptions.SetDefaultPrompt()` and `InteractiveModeOptions.SetPrompt()` for specifying custom prompt template. `PromptForeground` and `ScopeForeground` can still be used to configure foreground without changing prompt template.
+ - Added `BindableProperyInfo` and `ArgumentSchema.BindableProperty`, as well as marked `ArgumentSchema.Property`, `ArgumentSchema.IsScalar`, and `ArgumentSchema.GetValidValues()` obsolete - will be removed in Typin 4.0.
+ - Removed `IDisposable` from `CliContext`.
+ - Faster `Guid` binding by explicit `Guid.Parse()` call (added `Guid` to `ArgumentBinder.PrimitiveConverters`).
+ - Changed default values format in help - now in round brackets.
+ - `ArgumentSchema.IsScalar` and `ArgumentSchema.GetValidValues()` are now optimized with a simple cache (backing field).
+ - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
+ - Fixed console not being disposed when stopping the application.
+ - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
+ - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
+
 ### v3.0.3 (06-Apr-2021)
 
  - Fixed `DefaultDirective` (`[!]`) executes default command - unable to execute scoped command without parameters, e.g., `[>] books\r [!]\r` was executing default command.
@@ -40,7 +53,7 @@
 - Removed unnecessary casts to `CliContext` from `ICliContext`.
 - Removed `IDirective.ContinueExecution`, modified `IDirective`, and added `IPipelinedDirective`.
 - `CommandPipelineHandlerDelegate` now uses `ValueTask` instead of a `Task`.
-- Added logging with `Microsoft.Extensions.Logging` (default logger is Debug).
+- Added logging with `Microsoft.Extensions.Logging` (default logger is `DebugLogger`).
 - Added `IConsole.ReadKeyAsync()`.
 - Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).

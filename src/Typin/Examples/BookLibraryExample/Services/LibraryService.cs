@@ -18,7 +18,9 @@
         public Library GetLibrary()
         {
             if (!File.Exists(StorageFilePath))
+            {
                 return Library.Empty;
+            }
 
             string data = File.ReadAllText(StorageFilePath);
 

@@ -11,7 +11,7 @@
     /// <summary>
     /// Implementation of <see cref="IConsole"/> that wraps the default system console.
     /// </summary>
-    public class SystemConsole : IConsole
+    public class SystemConsole : IConsole, IDisposable
     {
         private CancellationTokenSource? _cancellationTokenSource;
         private bool disposedValue;

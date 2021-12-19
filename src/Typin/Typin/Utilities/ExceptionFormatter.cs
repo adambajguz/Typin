@@ -46,7 +46,9 @@
             }
 
             if (exception.StackTrace is null)
+            {
                 return;
+            }
 
             // Try to parse and pretty-print the stack trace
             try

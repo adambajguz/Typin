@@ -40,7 +40,9 @@
 
                 // Handle interactive directives not supported in current mode
                 if (!directive.CanBeExecutedInMode(currentModeType))
+                {
                     throw ModeEndUserExceptions.DirectiveExecutedInInvalidMode(directive, currentModeType);
+                }
 
                 // Get directive instance
                 IDirective instance = (IDirective)_serviceProvider.GetRequiredService(directive.Type);
@@ -52,7 +54,9 @@
                 directivesInstances.Add(instance);
 
                 if (directive.IsPipelinedDirective && instance is IPipelinedDirective pd)
+                {
                     pipelinedDirectivesInstances.Add(pd);
+                }
             }
 
             //Set directives lists in context

@@ -28,7 +28,10 @@
             {
                 // Margin
                 if (!isFirst)
+                {
                     console.Output.WriteLine();
+                }
+
                 isFirst = false;
 
                 // Render book
@@ -36,7 +39,9 @@
             }
 
             if (isFirst)
+            {
                 console.Output.WithForegroundColor(ConsoleColor.Red, (output) => output.WriteLine("No books"));
+            }
 
             return default;
         }

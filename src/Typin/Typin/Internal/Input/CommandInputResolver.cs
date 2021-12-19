@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Directives;
     using Typin.Input;
     using Typin.Internal.Extensions;
 
@@ -24,14 +23,12 @@
 
             IReadOnlyList<DirectiveInput> directives = ParseDirectives(
                 tmp,
-                ref index,
-                out bool isDefaultDirectiveSpecified
+                ref index
             );
 
             string? commandName = ParseCommandName(
                 tmp,
                 availableCommandNamesSet,
-                isDefaultDirectiveSpecified,
                 ref index
             );
 
@@ -49,11 +46,8 @@
         }
 
         private static IReadOnlyList<DirectiveInput> ParseDirectives(IReadOnlyList<string> commandLineArguments,
-                                                                     ref int index,
-                                                                     out bool isDefaultDirectiveSpecified)
+                                                                     ref int index)
         {
-            isDefaultDirectiveSpecified = false;
-
             List<DirectiveInput> result = new();
 
             for (; index < commandLineArguments.Count; index++)
@@ -61,11 +55,11 @@
                 string argument = commandLineArguments[index];
 
                 if (!argument.StartsWith('[') || !argument.EndsWith(']'))
+                {
                     break;
+                }
 
                 string name = argument.Substring(startIndex: 1, length: argument.Length - 2);
-
-                isDefaultDirectiveSpecified = name == BuiltInDirectives.Default;
 
                 result.Add(new DirectiveInput(name));
             }
@@ -75,7 +69,6 @@
 
         private static string? ParseCommandName(IReadOnlyList<string> commandLineArguments,
                                                 ISet<string> commandNames,
-                                                bool isDefaultDirectiveSpecified,
                                                 ref int index)
         {
             List<string> buffer = new();
@@ -100,7 +93,9 @@
 
             // Update the index only if command name was found in the arguments
             if (!string.IsNullOrWhiteSpace(commandName))
+            {
                 index = lastIndex + 1;
+            }
 
             return commandName;
         }
@@ -114,8 +109,10 @@
             {
                 string argument = commandLineArguments[index];
 
-                if (CommandOptionInput.IsOption(argument) | CommandOptionInput.IsOptionAlias(argument))
+                if (CommandOptionInput.IsOption(argument) || CommandOptionInput.IsOptionAlias(argument))
+                {
                     break;
+                }
 
                 result.Add(new CommandParameterInput(argument));
             }
@@ -140,7 +137,9 @@
                 {
                     // Flush previous
                     if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                    {
                         result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+                    }
 
                     currentOptionAlias = argument.Substring(2);
                     currentOptionValues = new List<string>();
@@ -152,7 +151,9 @@
                     {
                         // Flush previous
                         if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+                        {
                             result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+                        }
 
                         currentOptionAlias = alias.ToString();
                         currentOptionValues = new List<string>();
@@ -167,7 +168,9 @@
 
             // Flush last option
             if (!string.IsNullOrWhiteSpace(currentOptionAlias))
+            {
                 result.Add(new CommandOptionInput(currentOptionAlias, currentOptionValues));
+            }
 
             return result;
         }

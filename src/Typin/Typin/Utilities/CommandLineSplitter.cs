@@ -66,7 +66,9 @@
                 else if (chr == ' ' && !quoted)
                 {
                     if (started)
+                    {
                         yield return result.ToString();
+                    }
 
                     result.Clear();
                     started = false;
@@ -79,7 +81,9 @@
             }
 
             if (started)
+            {
                 yield return result.ToString();
+            }
         }
     }
 }

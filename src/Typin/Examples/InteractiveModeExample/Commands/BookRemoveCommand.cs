@@ -25,7 +25,9 @@
             var book = _libraryService.GetBook(Title);
 
             if (book == null)
+            {
                 throw new CommandException("Book not found.", 1);
+            }
 
             _libraryService.RemoveBook(book);
 

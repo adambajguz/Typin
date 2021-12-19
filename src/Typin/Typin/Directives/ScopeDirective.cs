@@ -70,7 +70,9 @@
                                                   .JoinToString(' ');
 
             if (_cliContext.RootSchema.IsCommandOrSubcommandPart(potentialName))
+            {
                 return potentialName;
+            }
 
             return null;
         }

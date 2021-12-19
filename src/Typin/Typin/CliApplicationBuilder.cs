@@ -90,7 +90,9 @@ namespace Typin
         public CliApplicationBuilder AddDirectives(IEnumerable<Type> directiveTypes)
         {
             foreach (Type directiveType in directiveTypes)
+            {
                 AddDirective(directiveType);
+            }
 
             return this;
         }
@@ -102,7 +104,9 @@ namespace Typin
         public CliApplicationBuilder AddDirectivesFrom(Assembly directiveAssembly)
         {
             foreach (Type directiveType in directiveAssembly.ExportedTypes.Where(KnownTypesHelpers.IsDirectiveType))
+            {
                 AddDirective(directiveType);
+            }
 
             return this;
         }
@@ -114,7 +118,9 @@ namespace Typin
         public CliApplicationBuilder AddDirectivesFrom(IEnumerable<Assembly> directiveAssemblies)
         {
             foreach (Assembly directiveType in directiveAssemblies)
+            {
                 AddDirectivesFrom(directiveType);
+            }
 
             return this;
         }
@@ -161,7 +167,9 @@ namespace Typin
         public CliApplicationBuilder AddCommands(IEnumerable<Type> commandTypes)
         {
             foreach (Type commandType in commandTypes)
+            {
                 AddCommand(commandType);
+            }
 
             return this;
         }
@@ -173,7 +181,9 @@ namespace Typin
         public CliApplicationBuilder AddCommandsFrom(Assembly commandAssembly)
         {
             foreach (Type commandType in commandAssembly.ExportedTypes.Where(KnownTypesHelpers.IsCommandType))
+            {
                 AddCommand(commandType);
+            }
 
             return this;
         }
@@ -185,7 +195,9 @@ namespace Typin
         public CliApplicationBuilder AddCommandsFrom(IEnumerable<Assembly> commandAssemblies)
         {
             foreach (Assembly commandAssembly in commandAssemblies)
+            {
                 AddCommandsFrom(commandAssembly);
+            }
 
             return this;
         }
@@ -285,6 +297,7 @@ namespace Typin
         #region Console
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="IConsole"/>.
+        /// Console will be automatically diposed before exiting from <see cref="CliApplication.RunAsync(IEnumerable{string}, IReadOnlyDictionary{string, string})"/>.
         /// </summary>
         public CliApplicationBuilder UseConsole(IConsole console)
         {
@@ -359,7 +372,9 @@ namespace Typin
             _modeTypes.Add(cliMode);
 
             if (!KnownTypesHelpers.IsCliModeType(modeType))
+            {
                 throw new ArgumentException($"Invalid CLI mode type '{modeType}'.", nameof(modeType));
+            }
 
             _configureServicesActions.Add(services =>
             {
@@ -368,7 +383,9 @@ namespace Typin
             });
 
             if (asStartup)
+            {
                 _startupMode = _startupMode is null ? cliMode : throw new ArgumentException($"Only one mode can be registered as startup mode.", nameof(asStartup));
+            }
 
             return this;
         }
@@ -534,7 +551,9 @@ namespace Typin
         public CliApplication Build()
         {
             if (_cliApplicationBuilt)
+            {
                 throw new InvalidOperationException("Build can only be called once.");
+            }
 
             _cliApplicationBuilt = true;
 
@@ -545,7 +564,9 @@ namespace Typin
             _console ??= new SystemConsole();
 
             if (_startupMode is null || _modeTypes.Count == 0)
+            {
                 this.UseDirectMode(true);
+            }
 
             // Add core middlewares to the end of the pipeline
             this.AddAfterUserMiddlewares();

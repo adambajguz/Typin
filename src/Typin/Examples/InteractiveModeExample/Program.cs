@@ -1,5 +1,6 @@
 ﻿namespace InteractiveModeExample
 {
+    using System;
     using System.Threading.Tasks;
     using InteractiveModeExample.Directives;
     using InteractiveModeExample.Middlewares;
@@ -29,7 +30,9 @@
                 .UseDirectMode()
                 .UseInteractiveMode(true, options: (cfg) =>
                 {
+                    cfg.PromptForeground = ConsoleColor.Magenta;
                     //cfg.IsAdvancedInputAvailable = false;
+                    cfg.SetPrompt("~$ ");
                 })
                 .ConfigureLogging(cfg =>
                 {

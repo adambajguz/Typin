@@ -19,7 +19,9 @@
         public static DirectiveSchema Resolve(Type type, IReadOnlyList<Type> modeTypes)
         {
             if (!KnownTypesHelpers.IsDirectiveType(type))
+            {
                 throw DirectiveResolverExceptions.InvalidDirectiveType(type);
+            }
 
             DirectiveAttribute attribute = type.GetCustomAttribute<DirectiveAttribute>()!;
 

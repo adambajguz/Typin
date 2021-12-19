@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     /// <summary>
@@ -63,10 +62,14 @@
         public bool IsCommandOrSubcommandPart(string? commandName)
         {
             if (string.IsNullOrWhiteSpace(commandName))
+            {
                 return false;
+            }
 
             if (Commands.ContainsKey(commandName))
+            {
                 return true;
+            }
 
             commandName = string.Concat(commandName.Trim(), " ");
 
@@ -79,7 +82,9 @@
         public CommandSchema? TryFindCommand(string? commandName)
         {
             if (string.IsNullOrWhiteSpace(commandName))
+            {
                 return DefaultCommand;
+            }
 
             Commands.TryGetValue(commandName, out CommandSchema? value);
 
@@ -92,15 +97,16 @@
         public DirectiveSchema? TryFindDirective(string directiveName)
         {
             if (string.IsNullOrWhiteSpace(directiveName))
+            {
                 return null;
+            }
 
             Directives.TryGetValue(directiveName, out DirectiveSchema? value);
 
             return value;
         }
 
-        [SuppressMessage("Performance", "CA1822:Mark members as static")]
-        private IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
+        private static IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
         {
             return potentialParentCommands.Where(c => string.IsNullOrWhiteSpace(parentCommandName) ||
                                                  c.Name!.StartsWith(parentCommandName + ' ', StringComparison.Ordinal));

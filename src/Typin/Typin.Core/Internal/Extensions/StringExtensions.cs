@@ -1,11 +1,15 @@
 ﻿namespace Typin.Internal.Extensions
 {
+    using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
 
     internal static class StringExtensions
     {
+        public static string? NullIfEmpty(this string str)
+        {
+            return string.IsNullOrWhiteSpace(str) ? null : str;
+        }
+
         public static string Quote(this string str)
         {
             return string.Concat("\"", str, "\"");
@@ -20,10 +24,16 @@
 #endif
         }
 
-        [ExcludeFromCodeCoverage]
-        public static StringBuilder AppendIfNotEmpty(this StringBuilder builder, char value)
+        public static string JoinToString<T>(this IEnumerable<T> source, string separator)
         {
-            return builder.Length > 0 ? builder.Append(value) : builder;
+            return string.Join(separator, source);
+        }
+
+        public static string ToFormattableString(this object obj,
+                                                 IFormatProvider? formatProvider = null,
+                                                 string? format = null)
+        {
+            return obj is IFormattable formattable ? formattable.ToString(format, formatProvider) : obj.ToString() ?? string.Empty;
         }
     }
 }

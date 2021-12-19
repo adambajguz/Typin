@@ -10,7 +10,7 @@
 
     public class InteractiveModeTests
     {
-        private const int Timeout = 2000;
+        private const int Timeout = 5000;
         private readonly ITestOutputHelper _output;
 
         public InteractiveModeTests(ITestOutputHelper output)
@@ -40,7 +40,7 @@
 
             // Assert
             exitCode.Should().Be(ExitCodes.Success);
-            stdOut.GetString().Should().Contain("dotnet testhost.dll> ");
+            stdOut.GetString().Should().StartWith("dotnet testhost.dll> ");
             stdErr.GetString().Should().BeNullOrWhiteSpace();
         }
 

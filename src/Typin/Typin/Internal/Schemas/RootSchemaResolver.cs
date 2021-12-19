@@ -61,7 +61,9 @@
             }
 
             if (commands.Count == 0 && defaultCommand is null)
+            {
                 throw CommandResolverExceptions.NoCommandsDefined();
+            }
 
             if (invalidCommands.Count > 0)
             {
@@ -86,7 +88,9 @@
                 DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType, _modeTypes);
 
                 if (!directives.TryAdd(directive.Name, directive))
+                {
                     invalidDirectives.Add(directive);
+                }
             }
 
             if (invalidDirectives.Count > 0)

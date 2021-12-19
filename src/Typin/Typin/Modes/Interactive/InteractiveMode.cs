@@ -22,6 +22,7 @@
         private readonly ApplicationMetadata _metadata;
         private readonly ApplicationConfiguration _configuration;
         private readonly ILogger _logger;
+        private readonly IServiceProvider _serviceProvider;
 
         private readonly AutoCompleteInput? _autoCompleteInput;
 
@@ -33,7 +34,8 @@
                                ILogger<InteractiveMode> logger,
                                IRootSchemaAccessor rootSchemaAccessor,
                                ApplicationMetadata metadata,
-                               ApplicationConfiguration configuration)
+                               ApplicationConfiguration configuration,
+                               IServiceProvider serviceProvider)
         {
             _options = options.Value;
 
@@ -41,6 +43,7 @@
             _logger = logger;
             _metadata = metadata;
             _configuration = configuration;
+            _serviceProvider = serviceProvider;
 
             if (_options.IsAdvancedInputAvailable && !_console.Input.IsRedirected)
             {
@@ -91,32 +94,24 @@
         {
             IConsole console = _console;
 
-            // Print prompt
-            ConsoleColor promptForeground = _options.PromptForeground;
-            console.Output.WithForegroundColor(promptForeground, (output) => output.Write(executableName));
-
             string scope = _options.Scope;
             bool hasScope = !string.IsNullOrWhiteSpace(scope);
 
-            if (hasScope)
-            {
-                console.Output.WithForegroundColor(_options.ScopeForeground, (output) =>
-                {
-                    output.Write(' ');
-                    output.Write(scope);
-                });
-            }
-
-            console.Output.WithForegroundColor(promptForeground, (output) => output.Write("> "));
+            // Print prompt
+            _options.Prompt(_serviceProvider, _metadata, _console);
 
             // Read user input
             console.ForegroundColor = _options.CommandForeground;
 
             string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
             if (_autoCompleteInput is null)
+            {
                 line = await console.Input.ReadLineAsync();
+            }
             else
+            {
                 line = await _autoCompleteInput.ReadLineAsync(console.GetCancellationToken());
+            }
 
             console.ForegroundColor = ConsoleColor.Gray;
 
