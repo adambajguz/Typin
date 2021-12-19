@@ -2,7 +2,7 @@
 
 <p align="center">
 
-[![Build](https://github.com/adambajguz/Typin/workflows/Typin-CI/badge.svg?branch=master?v=15)](https://github.com/adambajguz/Typin/actions)
+[![Build](https://github.com/adambajguz/Typin/workflows/Typin-CI/badge.svg?branch=master&v=15)](https://github.com/adambajguz/Typin/actions)
 [![Coverage](https://codecov.io/gh/adambajguz/Typin/branch/master/graph/badge.svg?v=15)](https://codecov.io/gh/adambajguz/Typin)
 [![Version](https://img.shields.io/nuget/v/Typin.svg?label=NuGet)](https://nuget.org/packages/Typin)
 [![Downloads of Typin](https://img.shields.io/nuget/dt/Typin.svg?label=Typin)](https://nuget.org/packages/Typin)
