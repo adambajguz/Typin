@@ -4,7 +4,7 @@
     using Typin.Console;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command("cmd")]
+    [Command(nameof(NonLetterOptionName0Command))]
     public class NonLetterOptionName0Command : SelfSerializeCommandBase
     {
         [Option("0a")]
@@ -16,7 +16,7 @@
         }
     }
 
-    [Command("cmd")]
+    [Command(nameof(NonLetterOptionName1Command))]
     public class NonLetterOptionName1Command : SelfSerializeCommandBase
     {
         [Option("=a")]
@@ -28,7 +28,7 @@
         }
     }
 
-    [Command("cmd")]
+    [Command(nameof(NonLetterOptionName2Command))]
     public class NonLetterOptionName2Command : SelfSerializeCommandBase
     {
         [Option("==a")]
@@ -40,7 +40,7 @@
         }
     }
 
-    [Command("cmd")]
+    [Command(nameof(NonLetterOptionName3Command))]
     public class NonLetterOptionName3Command : SelfSerializeCommandBase
     {
         [Option("+ag")]

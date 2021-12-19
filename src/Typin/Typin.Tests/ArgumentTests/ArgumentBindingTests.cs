@@ -196,7 +196,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "-h"
+                commandType.Name, "-h"
             });
 
             // Assert
@@ -219,7 +219,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", "-h"
+                commandType.Name, "-h"
             });
 
             // Assert

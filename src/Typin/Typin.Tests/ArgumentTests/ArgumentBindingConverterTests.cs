@@ -28,7 +28,7 @@
                 .AddCommand(commandType);
 
             // Act
-            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { "cmd" }, isInputRedirected: false);
+            var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new string[] { commandType.Name }, isInputRedirected: false);
 
             // Assert
             exitCode.Should().Be(ExitCode.Error);
@@ -99,7 +99,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Monday:1235"
+                nameof(SupportedArgumentTypesViaConverterCommand), optionName, "Monday:1235"
             });
 
             // Assert
@@ -124,7 +124,7 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, new[]
             {
-                "cmd", optionName, "Monday:1235", "Friday:7890", "0875"
+                nameof(SupportedArgumentTypesViaConverterCommand), optionName, "Monday:1235", "Friday:7890", "0875"
             });
 
             // Assert

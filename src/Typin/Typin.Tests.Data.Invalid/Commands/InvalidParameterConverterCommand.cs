@@ -5,7 +5,7 @@
     using Typin.Tests.Data.Common.Commands;
     using Typin.Tests.Data.Common.CustomTypes.InitializableByConverter;
 
-    [Command("cmd")]
+    [Command(nameof(InvalidParameterConverterCommand))]
     public class InvalidParameterConverterCommand : SelfSerializeCommandBase
     {
         [Parameter(0, Converter = typeof(object))]

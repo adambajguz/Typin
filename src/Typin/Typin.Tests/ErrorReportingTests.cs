@@ -2,11 +2,11 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Invalid.DuplicatedCommands;
     using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
-    using Typin.Tests.Data.Common.Extensions;
 
     public class ErrorReportingTests
     {

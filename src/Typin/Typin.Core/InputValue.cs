@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="metadata"></param>
         /// <param name="value"></param>
-        public InputValue Create<T>(IMetadataCollection metadata, T value)
+        public static InputValue Create<T>(IMetadataCollection metadata, T value)
         {
             return new InputValue(metadata, typeof(T), value);
         }

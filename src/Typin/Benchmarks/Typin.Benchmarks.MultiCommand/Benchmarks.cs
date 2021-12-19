@@ -12,15 +12,12 @@ namespace Typin.Benchmarks.MultiCommand
     using Typin.Hosting;
     using Typin.Modes;
 
-    //[SimpleJob(RuntimeMoniker.Net48)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)]
-    //[SimpleJob(RuntimeMoniker.CoreRt31)]
-    //[SimpleJob(RuntimeMoniker.Mono)]
     [SimpleJob]
     [RankColumn]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     //[RPlotExporter]
     //[MemoryDiagnoser]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static")]
     public class Benchmarks
     {
         private static readonly string[] Arguments = { "--str", "hello world", "-i", "13", "-b" };

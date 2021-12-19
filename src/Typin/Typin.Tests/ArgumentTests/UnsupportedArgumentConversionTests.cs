@@ -2,10 +2,10 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Xunit;
-    using Xunit.Abstractions;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Valid.Commands;
+    using Xunit;
+    using Xunit.Abstractions;
 
     public class UnsupportedArgumentConversionTests
     {

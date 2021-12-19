@@ -5,12 +5,12 @@ namespace Typin.Tests
     using FluentAssertions;
     using Typin.Exceptions.Mode;
     using Typin.Modes;
+    using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Invalid.Modes;
     using Typin.Tests.Data.Valid.DefaultCommands;
     using Typin.Tests.Data.Valid.Modes;
     using Xunit;
     using Xunit.Abstractions;
-    using Typin.Tests.Data.Common.Extensions;
 
     public class ModesTests
     {

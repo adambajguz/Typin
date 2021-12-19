@@ -9,10 +9,10 @@
     using FluentAssertions;
     using Typin.Console;
     using Typin.Tests.Data.Common.Console;
-    using Xunit;
-    using Xunit.Abstractions;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Valid.Commands;
+    using Xunit;
+    using Xunit.Abstractions;
 
     public class ConsoleTests
     {

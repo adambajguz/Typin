@@ -4,11 +4,11 @@
     using FluentAssertions;
     using Typin.Modes;
     using Typin.Modes.Interactive;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
     using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
-    using Typin.Tests.Data.Common.Extensions;
-    using Typin.Tests.Data.Valid.Commands;
 
     public class ApplicationTests
     {

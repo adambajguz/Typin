@@ -7,12 +7,12 @@
     using Typin.Directives;
     using Typin.Modes;
     using Typin.Modes.Interactive;
+    using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Valid.Commands;
     using Typin.Tests.Data.Valid.CustomDirectives;
     using Typin.Tests.Data.Valid.Modes;
     using Xunit;
     using Xunit.Abstractions;
-    using Typin.Tests.Data.Common.Extensions;
 
     public class ApplicationBuilderTests
     {
