@@ -24,7 +24,14 @@ jobs:
       run: dotnet pack src/Typin/Typin.sln --configuration Release-CD
 
     - name: Deploy
-      run: dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
-
-    - name: Deploy
-      run: dotnet nuget push src/Typin/Typin.Core/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+      run: |
+        dotnet nuget push src/Typin/Typin/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Core/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Console/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Abstractions/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Modes.Interactive/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Modes.Programmatic/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Modes.Utilities/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Modes.Utilities.CommandLine/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}
+        dotnet nuget push src/Typin/Typin.Help.Modes.Utilities.ExceptionFormatter/bin/Release/*.nupkg -s nuget.org -k ${{ secrets.NUGET_TOKEN }}

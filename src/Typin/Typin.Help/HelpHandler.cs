@@ -9,6 +9,9 @@
     using Typin.Input;
     using Typin.Schemas;
 
+    /// <summary>
+    /// A middleware that handles help.
+    /// </summary>
     public sealed class HelpHandler : IMiddleware
     {
         private readonly IHelpWriter _helpTextWriter;

@@ -21,7 +21,9 @@
         [Option("name")]
         public string Name { get; init; } = string.Empty;
 
-        public AddDynamicCommand(IConsole console, IDynamicCommandBuilderFactory dynamicCommandBuilderFactory, IRootSchemaAccessor rootSchemaAccessor)
+        public AddDynamicCommand(IConsole console,
+                                 IDynamicCommandBuilderFactory dynamicCommandBuilderFactory,
+                                 IRootSchemaAccessor rootSchemaAccessor)
         {
             _console = console;
             _dynamicCommandBuilderFactory = dynamicCommandBuilderFactory;

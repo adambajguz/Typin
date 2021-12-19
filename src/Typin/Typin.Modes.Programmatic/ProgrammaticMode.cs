@@ -10,7 +10,7 @@
     /// <summary>
     /// Programmatic CLI mode to run commands programmatically with advanced options.
     /// </summary>
-    public sealed class ProgrammaticMode : ICliMode
+    public class ProgrammaticMode : ICliMode
     {
         private readonly ConcurrentQueue<IEnumerable<string>> _queue = new();
 

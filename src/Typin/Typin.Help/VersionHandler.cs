@@ -9,6 +9,9 @@
     using Typin.Input;
     using Typin.Schemas;
 
+    /// <summary>
+    /// A middleware that handles version information.
+    /// </summary>
     public sealed class VersionHandler : IMiddleware
     {
         private readonly IHelpWriter _helpTextWriter;
