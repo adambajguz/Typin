@@ -61,9 +61,9 @@
         [CommandOption("ulong")]
         public ulong Ulong { get; init; }
 
-        //[JsonProperty("half")]
-        //[CommandOption("half")]
-        //public Half Half { get; init; } = (Half)98.1245;
+        [JsonProperty("half")]
+        [CommandOption("half")]
+        public Half Half { get; init; } = (Half)98.1245;
 
         [JsonProperty("float")]
         [CommandOption("float")]
@@ -84,6 +84,14 @@
         [JsonProperty("datetime")]
         [CommandOption("datetime")]
         public DateTime DateTime { get; init; }
+
+        [JsonProperty("dateonly")]
+        [CommandOption("dateonly")]
+        public DateOnly DateOnly { get; init; }
+
+        [JsonProperty("timeonly")]
+        [CommandOption("timeonly")]
+        public TimeOnly TimeOnly { get; init; }
 
         [JsonProperty("datetime-offset")]
         [CommandOption("datetime-offset")]
@@ -135,9 +143,9 @@
         [CommandOption("ulong-nullable")]
         public ulong? UlongNullable { get; init; } = 180;
 
-        //[JsonProperty("half-nullable")]
-        //[CommandOption("half-nullable")]
-        //public Half? HalfNullable { get; init; } = (Half)98.1245;
+        [JsonProperty("half-nullable")]
+        [CommandOption("half-nullable")]
+        public Half? HalfNullable { get; init; } = (Half)98.1245;
 
         [JsonProperty("float-nullable")]
         [CommandOption("float-nullable")]
@@ -157,7 +165,15 @@
 
         [JsonProperty("datetime-nullable")]
         [CommandOption("datetime-nullable")]
-        public DateTime? DateTimeNullable { get; init; } = new(1898, 10, 20);
+        public DateTime? DateTimeNullable { get; init; } = new(1898, 10, 20, 1, 2, 56);
+
+        [JsonProperty("dateonly-nullable")]
+        [CommandOption("dateonly-nullable")]
+        public DateOnly? DateOnlyNullable { get; init; } = new(1234, 1, 22);
+
+        [JsonProperty("timeonly-nullable")]
+        [CommandOption("timeonly-nullable")]
+        public TimeOnly? TimeOnlyNullable { get; init; } = new(1, 2, 3);
 
         [JsonProperty("datetime-offset-nullable")]
         [CommandOption("datetime-offset-nullable")]

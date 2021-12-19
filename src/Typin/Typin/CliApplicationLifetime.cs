@@ -119,7 +119,7 @@
 
         public void RequestStop()
         {
-            _logger.LogDebug("Requested CLI stop.", CurrentModeType, RequestedModeType);
+            _logger.LogDebug("Requested CLI stop.");
 
             State = CliLifetimes.StopRequested;
         }

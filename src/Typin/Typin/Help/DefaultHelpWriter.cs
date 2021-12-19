@@ -581,7 +581,7 @@
             }
 
             // Enumerable
-            if (!(defaultValue is string) && defaultValue is IEnumerable defaultValues)
+            if (defaultValue is not string && defaultValue is IEnumerable defaultValues)
             {
                 Type elementType = defaultValues.GetType().TryGetEnumerableUnderlyingType() ?? typeof(object);
 

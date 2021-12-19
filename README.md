@@ -65,7 +65,7 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Logging with `Microsoft.Extensions.Logging`.
 - Optional option and parameter names by automatically generated kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
-- Native support for parsing `Half` type in .NET 5 or above targeted applications.
+- Native support for `Half`, `DateOnly`, and `TimeOnly`.
 - Validation can be easily added with [FluentValidation](https://github.com/FluentValidation/FluentValidation) and [a middleware](https://github.com/adambajguz/Typin/blob/master/src/TypinExamples/Examples/TypinExamples.Validation/Middleware/FluentValidationMiddleware.cs).
 - Console input/output targeted extensions through `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 
