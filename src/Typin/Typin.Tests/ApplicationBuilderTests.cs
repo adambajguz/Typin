@@ -146,7 +146,7 @@
                .UseVersionText("test")
                .UseDescription("test")
                .UseInteractiveMode()
-                .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
+               .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
                .UseConsole<SystemConsole>()
                .Build();
 
