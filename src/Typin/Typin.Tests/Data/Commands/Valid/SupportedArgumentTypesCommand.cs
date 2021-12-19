@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
     using Typin.Attributes;
     using Typin.Tests.Data.Commands;
