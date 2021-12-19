@@ -7,7 +7,7 @@
 
     public class LibraryService
     {
-        private string StorageFilePath => Path.Combine(Directory.GetCurrentDirectory(), "Data.json");
+        private static string StorageFilePath => Path.Combine(Directory.GetCurrentDirectory(), "Data.json");
 
         private void StoreLibrary(Library library)
         {
@@ -22,7 +22,7 @@
 
             string data = File.ReadAllText(StorageFilePath);
 
-            return JsonConvert.DeserializeObject<Library>(data);
+            return JsonConvert.DeserializeObject<Library>(data) ?? Library.Empty;
         }
 
         public Book? GetBook(string title)

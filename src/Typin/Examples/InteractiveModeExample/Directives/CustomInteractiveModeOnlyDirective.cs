@@ -1,5 +1,6 @@
 ﻿namespace InteractiveModeExample.Directives
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
@@ -17,6 +18,7 @@
             return default;
         }
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static")]
         public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
             context.Console.Output.Write(ExpectedOutput);
