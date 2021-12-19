@@ -3,7 +3,6 @@
     using System;
     using System.IO;
     using System.Reflection;
-    using Typin.Internal.Extensions;
 
     internal static class AssemblyUtils
     {
@@ -31,9 +30,11 @@
                 : Path.GetFileNameWithoutExtension(entryAssemblyLocation);
         }
 
-        public static string? TryGetDefaultVersionText()
+        public static string GetDefaultVersionText()
         {
-            return EntryAssembly is not null ? $"v{EntryAssembly?.GetName()?.Version?.ToSemanticString() ?? "1.0.0"}" : null;
+            return EntryAssembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ??
+                EntryAssembly?.GetName()?.Version?.ToString() ??
+                "1.0.0";
         }
     }
 }

@@ -9,7 +9,6 @@
     using Typin.Tests.Data.CustomTypes.Initializable;
 
     [Command("cmd")]
-    [SuppressMessage("Performance", "CA1819:Properties should not return arrays")]
     public class SupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [JsonProperty("obj")]

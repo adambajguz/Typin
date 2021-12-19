@@ -28,10 +28,10 @@
         [CommandOption("d2N")]
         public DayOfWeek? Day2N { get; init; } = DayOfWeek.Friday;
 
-        [CommandOption("d2NN")]
+        [CommandOption("d2NN", Description = "Nullable enum.")]
         public DayOfWeek? Day2NN { get; init; } = null;
 
-        [CommandOption("d3N")]
+        [CommandOption("d3N", Description = "Days.")]
         public List<DayOfWeek?> Day3N { get; init; } = default!;
 
         [CommandOption("d4N")]

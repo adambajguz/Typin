@@ -560,7 +560,7 @@ namespace Typin
             // Set default values
             _title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
             _executableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
-            _versionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
+            _versionText ??= AssemblyUtils.GetDefaultVersionText();
 
             if (_console is null)
             {

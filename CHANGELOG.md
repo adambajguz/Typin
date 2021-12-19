@@ -9,6 +9,7 @@
  - Changed default values format in help - now in round brackets. 
  - Fixed `StackTraceParser`: add a filter for `--- End of stack trace from previous location ---` and `--- End of stack trace from previous location where exception was thrown ---`.
  - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
+ - Fixed default version format (complex versions like `3.0.0-beta1` were incorrectly dispalyed as `3.0.0`).
  - Fixed console not being disposed when stopping the application (for consoles that were created within `CliApplicationBuilder`).
  - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
  - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.

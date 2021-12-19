@@ -14,6 +14,9 @@
         [CommandOption("enum")]
         public CustomEnum? EnumOption { get; init; }
 
+        [CommandOption("arr-enum")]
+        public CustomEnum?[] ArrayEnumOption { get; init; } = default!;
+
         [CommandOption("required-enum", IsRequired = true)]
         public CustomEnum RequiredEnumOption { get; init; }
     }
