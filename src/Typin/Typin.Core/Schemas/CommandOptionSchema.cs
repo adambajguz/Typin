@@ -109,7 +109,7 @@
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{BindableProperty.PropertyName} ('{GetUserFacingDisplayString()}')";
+            return $"{Bindable.Name} ('{GetUserFacingDisplayString()}')";
         }
     }
 }

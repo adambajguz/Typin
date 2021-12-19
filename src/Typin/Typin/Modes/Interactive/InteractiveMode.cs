@@ -68,7 +68,7 @@
             IEnumerable<string> interactiveArguments;
             try
             {
-                interactiveArguments = await GetInputAsync(_metadata.ExecutableName);
+                interactiveArguments = await GetInputAsync();
             }
             catch (TaskCanceledException)
             {
@@ -90,7 +90,7 @@
         /// <summary>
         /// Gets user input and returns arguments or null if cancelled.
         /// </summary>
-        private async Task<IEnumerable<string>> GetInputAsync(string executableName)
+        private async Task<IEnumerable<string>> GetInputAsync()
         {
             IConsole console = _console;
 

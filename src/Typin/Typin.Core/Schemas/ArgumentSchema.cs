@@ -13,7 +13,7 @@
         /// <summary>
         /// Bindable property info.
         /// </summary>
-        public BindablePropertyInfo BindableProperty { get; }
+        public BindableArgument Bindable { get; }
 
         /// <summary>
         /// Command argument description, which is used in help text.
@@ -30,7 +30,7 @@
         /// </summary>
         protected ArgumentSchema(PropertyInfo? property, string? description, Type? converterType)
         {
-            BindableProperty = new BindablePropertyInfo(property);
+            Bindable = new BindableArgument(property);
             Description = description;
             ConverterType = converterType;
         }
@@ -39,15 +39,15 @@
         /// Property info may be null for built-in arguments (help and version options).
         /// </summary>
         [ExcludeFromCodeCoverage]
-        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty'.")]
-        public PropertyInfo? Property => BindableProperty.Property;
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'Bindable'.")]
+        public PropertyInfo? Property => Bindable.Property;
 
         /// <summary>
         /// Whether command argument is scalar.
         /// </summary>
         [ExcludeFromCodeCoverage]
-        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.IsScalar'.")]
-        public bool IsScalar => BindableProperty.IsScalar;
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'Bindable.IsScalar'.")]
+        public bool IsScalar => Bindable.IsScalar;
 
         /// <summary>
         /// Returns a list of valid values.
@@ -70,10 +70,10 @@
         /// The System.Exception.InnerException property indicates the reason for the error.
         /// </exception>
         [ExcludeFromCodeCoverage]
-        [Obsolete("This property will be removed in Typin 4.0, instead use 'BindableProperty.GetValidValues()'.")]
+        [Obsolete("This property will be removed in Typin 4.0, instead use 'Bindable.GetValidValues()'.")]
         public IReadOnlyList<string> GetValidValues()
         {
-            return BindableProperty.GetValidValues();
+            return Bindable.GetValidValues();
         }
     }
 }

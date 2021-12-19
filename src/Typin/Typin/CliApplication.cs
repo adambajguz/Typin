@@ -3,7 +3,6 @@ namespace Typin
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -24,6 +23,7 @@ namespace Typin
 
         private readonly ApplicationMetadata _metadata;
         private readonly IConsole _console;
+        private readonly bool _isSelfCreatedConsoleInstance;
         private readonly ICliCommandExecutor _cliCommandExecutor;
         private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly CliApplicationLifetime _applicationLifetime;
@@ -36,6 +36,7 @@ namespace Typin
         /// </summary>
         internal CliApplication(IServiceProvider serviceProvider,
                                 IConsole console,
+                                bool isSelfCreatedConsoleInstance,
                                 EnvironmentVariablesAccessor environmentVariablesAccessor,
                                 ApplicationMetadata metadata,
                                 Action<ApplicationMetadata, IConsole>? startupMessage)
@@ -46,6 +47,7 @@ namespace Typin
             _metadata = metadata;
             _startupMessage = startupMessage;
             _console = console;
+            _isSelfCreatedConsoleInstance = isSelfCreatedConsoleInstance;
 
             _logger = serviceProvider.GetRequiredService<ILogger<CliApplication>>();
             _cliCommandExecutor = serviceProvider.GetRequiredService<ICliCommandExecutor>();
@@ -132,7 +134,6 @@ namespace Typin
         /// it will be handled and routed to the console. Additionally, if the debugger is not attached (i.e. the app is running in production),
         /// all other exceptions thrown within this method will be handled and routed to the console as well.
         /// </remarks>
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public async ValueTask<int> RunAsync(IEnumerable<string> commandLineArguments,
                                              IReadOnlyDictionary<string, string> environmentVariables)
         {
@@ -196,9 +197,9 @@ namespace Typin
             }
             finally
             {
-                if (_console is IDisposable dc)
+                if (_isSelfCreatedConsoleInstance && _console is IDisposable selfCreatedDisposableConsole)
                 {
-                    dc.Dispose();
+                    selfCreatedDisposableConsole.Dispose();
                 }
             }
         }

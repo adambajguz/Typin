@@ -29,7 +29,7 @@
 
             // Scalar parameters
             int i = 0;
-            for (; i < parameters.Count && parameters[i].BindableProperty.IsScalar; ++i)
+            for (; i < parameters.Count && parameters[i].Bindable.IsScalar; ++i)
             {
                 CommandParameterSchema parameter = parameters[i];
                 CommandParameterInput scalarInput = parameterInputs[i];
@@ -41,7 +41,7 @@
             }
 
             // Non-scalar parameter (only one is allowed)
-            if (i < parameters.Count && !parameters[i].BindableProperty.IsScalar)
+            if (i < parameters.Count && !parameters[i].Bindable.IsScalar)
             {
                 CommandParameterSchema nonScalarParameter = parameters[i];
 
@@ -94,9 +94,9 @@
                 // Check fallback value
                 if (!inputsProvided &&
                     option.FallbackVariableName is string v &&
-                    optionFallbackProvider.TryGetValue(v, option.BindableProperty.Property!.PropertyType, out string? value))
+                    optionFallbackProvider.TryGetValue(v, option.Bindable.Property!.PropertyType, out string? value))
                 {
-                    string[] values = option.BindableProperty.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
+                    string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
 
                     option.BindOn(instance, values);
                     unsetRequiredOptions.Remove(option);

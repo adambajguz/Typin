@@ -7,13 +7,10 @@
     using System.Reflection;
     using Typin.Internal.Extensions;
 
-    //TODO: maybe we should abstract help and version options, and remove nulablility of BindablePropertyInfo.Property?
-    //TODO: maybye rename BindablePropertyInfo to BindableProperty?
-
     /// <summary>
     /// Represents a bindable <see cref="PropertyInfo"/>.
     /// </summary>
-    public sealed class BindablePropertyInfo
+    public sealed class BindableArgument
     {
         /// <summary>
         /// Property info (may be null for built-in arguments, i.e., help and version options)
@@ -23,12 +20,12 @@
         /// <summary>
         /// Property type (may be null for built-in arguments, i.e., help and version options)
         /// </summary>
-        public Type? PropertyType => Property?.PropertyType;
+        public Type? Type => Property?.PropertyType;
 
         /// <summary>
         /// Property type (may be <see cref="string.Empty"/> for built-in arguments, i.e., help and version options)
         /// </summary>
-        public string PropertyName => Property?.Name ?? string.Empty;
+        public string Name => Property?.Name ?? string.Empty;
 
         /// <summary>
         /// Whether property is actually a built-in argument (help and version options).
@@ -49,9 +46,9 @@
         }
 
         /// <summary>
-        /// Initializes an instance of <see cref="BindablePropertyInfo"/>.
+        /// Initializes an instance of <see cref="BindableArgument"/>.
         /// </summary>
-        internal BindablePropertyInfo(PropertyInfo? property)
+        internal BindableArgument(PropertyInfo? property)
         {
             Property = property;
         }
@@ -77,7 +74,7 @@
                     return Array.Empty<string>();
                 }
 
-                Type? underlyingType = PropertyType!.TryGetEnumerableUnderlyingType() ?? Property!.PropertyType;
+                Type? underlyingType = Type!.TryGetEnumerableUnderlyingType() ?? Property!.PropertyType;
                 Type? nullableType = underlyingType.TryGetNullableUnderlyingType();
                 underlyingType = nullableType ?? underlyingType;
 
@@ -122,10 +119,10 @@
         }
 
         /// <summary>
-        /// Converts <see cref="BindablePropertyInfo"/> to <see cref="PropertyInfo"/>.
+        /// Converts <see cref="BindableArgument"/> to <see cref="PropertyInfo"/>.
         /// </summary>
         /// <param name="bindablePropertyInfo">Bindable property info to convert.</param>
-        public static implicit operator PropertyInfo?(BindablePropertyInfo bindablePropertyInfo)
+        public static implicit operator PropertyInfo?(BindableArgument bindablePropertyInfo)
         {
             return bindablePropertyInfo.Property;
         }

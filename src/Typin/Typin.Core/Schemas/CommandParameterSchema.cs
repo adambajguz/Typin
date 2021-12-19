@@ -35,7 +35,7 @@
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{BindableProperty.PropertyName} ([{Order}] <{Name}>)";
+            return $"{Bindable.Name} ([{Order}] <{Name}>)";
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Typin.Internal.Input
         //                [typeof(uint)] = v => uint.Parse(v, FormatProvider),
         //                [typeof(long)] = v => long.Parse(v, FormatProvider),
         //                [typeof(ulong)] = v => ulong.Parse(v, FormatProvider),
-        //#if NET5_0
+        //#if NET5_0_OR_GREATER
         //                [typeof(Half)] = v => Half.Parse(v, FormatProvider),
         //#endif
         //                [typeof(float)] = v => float.Parse(v, FormatProvider),
@@ -239,12 +239,12 @@ namespace Typin.Internal.Input
         private static object? Convert(this ArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
         {
             // Short-circuit built-in arguments
-            if (argumentSchema.BindableProperty.Property is null)
+            if (argumentSchema.Bindable.Property is null)
             {
                 return null;
             }
 
-            PropertyInfo property = argumentSchema.BindableProperty.Property;
+            PropertyInfo property = argumentSchema.Bindable.Property;
             Type targetType = property.PropertyType;
             Type? enumerableUnderlyingType = property.TryGetEnumerableArgumentUnderlyingType();
 
@@ -300,13 +300,13 @@ namespace Typin.Internal.Input
         /// </summary>
         public static void BindOn(this ArgumentSchema argumentSchema, ICommand command, IReadOnlyCollection<string> values)
         {
-            if (argumentSchema.BindableProperty.Property is null)
+            if (argumentSchema.Bindable.Property is null)
             {
                 return;
             }
 
             object? value = argumentSchema.Convert(values);
-            argumentSchema.BindableProperty.SetValue(command, value);
+            argumentSchema.Bindable.SetValue(command, value);
         }
 
         /// <summary>

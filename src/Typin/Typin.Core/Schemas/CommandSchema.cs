@@ -164,12 +164,12 @@
             foreach (ArgumentSchema argument in GetArguments())
             {
                 // Skip built-in arguments
-                if (argument.BindableProperty.IsBuiltIn)
+                if (argument.Bindable.IsBuiltIn)
                 {
                     continue;
                 }
 
-                object? value = argument.BindableProperty.GetValue(instance);
+                object? value = argument.Bindable.GetValue(instance);
                 result[argument] = value;
             }
 

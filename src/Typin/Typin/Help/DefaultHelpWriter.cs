@@ -342,7 +342,7 @@
             foreach (CommandParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
-                Write(parameter.BindableProperty.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
+                Write(parameter.Bindable.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
@@ -352,7 +352,7 @@
                 Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
 
                 Write(' ');
-                Write(option.BindableProperty.IsScalar ? "<value>" : "<values...>");
+                Write(option.Bindable.IsScalar ? "<value>" : "<values...>");
             }
 
             // Options placeholder
@@ -391,7 +391,7 @@
                 }
 
                 // Valid values
-                var validValues = parameter.BindableProperty.GetValidValues();
+                var validValues = parameter.Bindable.GetValidValues();
                 if (validValues.Any())
                 {
                     Write($"Valid values: {FormatValidValues(validValues)}.");
@@ -450,7 +450,7 @@
                 }
 
                 // Valid values
-                var validValues = option.BindableProperty.GetValidValues();
+                var validValues = option.Bindable.GetValidValues();
                 if (validValues.Any())
                 {
                     Write("Valid values: ");

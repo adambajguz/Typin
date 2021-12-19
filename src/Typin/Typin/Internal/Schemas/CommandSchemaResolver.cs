@@ -103,7 +103,7 @@
             }
 
             CommandParameterSchema[]? nonScalarParameters = command.Parameters
-                                                                   .Where(p => !p.BindableProperty.IsScalar)
+                                                                   .Where(p => !p.Bindable.IsScalar)
                                                                    .ToArray();
 
             if (nonScalarParameters.Length > 1)
@@ -117,7 +117,7 @@
             CommandParameterSchema? nonLastNonScalarParameter = command.Parameters
                                                                        .OrderByDescending(a => a.Order)
                                                                        .Skip(1)
-                                                                       .LastOrDefault(p => !p.BindableProperty.IsScalar);
+                                                                       .LastOrDefault(p => !p.Bindable.IsScalar);
 
             if (nonLastNonScalarParameter is not null)
             {

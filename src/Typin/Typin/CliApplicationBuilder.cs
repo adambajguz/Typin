@@ -37,6 +37,7 @@ namespace Typin
 
         //Console
         private IConsole? _console;
+        private bool _isSelfCreatedConsoleInstance;
 
         //Dependency injection
         private IServiceFactoryAdapter _serviceProviderAdapter = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
@@ -302,11 +303,7 @@ namespace Typin
         public CliApplicationBuilder UseConsole(IConsole console)
         {
             _console = console;
-
-            _configureServicesActions.Add(services =>
-            {
-                services.AddSingleton<IConsole>(_console);
-            });
+            _isSelfCreatedConsoleInstance = false;
 
             return this;
         }
@@ -317,7 +314,10 @@ namespace Typin
         public CliApplicationBuilder UseConsole<T>()
             where T : class, IConsole, new()
         {
-            return UseConsole(new T());
+            _console = new T();
+            _isSelfCreatedConsoleInstance = true;
+
+            return this;
         }
         #endregion
 
@@ -561,7 +561,11 @@ namespace Typin
             _title ??= AssemblyUtils.TryGetDefaultTitle() ?? "App";
             _executableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
             _versionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
-            _console ??= new SystemConsole();
+
+            if (_console is null)
+            {
+                UseConsole<SystemConsole>();
+            }
 
             if (_startupMode is null || _modeTypes.Count == 0)
             {
@@ -588,7 +592,7 @@ namespace Typin
             _serviceCollection.AddOptions();
             _serviceCollection.AddSingleton(typeof(ApplicationMetadata), metadata);
             _serviceCollection.AddSingleton(typeof(ApplicationConfiguration), configuration);
-            _serviceCollection.AddSingleton(typeof(IConsole), _console);
+            _serviceCollection.AddSingleton(typeof(IConsole), _console ?? throw new NullReferenceException("'_console' must not be null."));
             _serviceCollection.AddSingleton(typeof(IEnvironmentVariablesAccessor), environmentVariablesAccessor);
             _serviceCollection.AddSingleton<IRootSchemaAccessor, RootSchemaAccessor>();
             _serviceCollection.AddSingleton<ICliCommandExecutor, CliCommandExecutor>();
@@ -614,7 +618,12 @@ namespace Typin
 
             IServiceProvider serviceProvider = CreateServiceProvider(_serviceCollection);
 
-            return new CliApplication(serviceProvider, _console, environmentVariablesAccessor, metadata, _startupMessage);
+            return new CliApplication(serviceProvider,
+                                      _console,
+                                      _isSelfCreatedConsoleInstance,
+                                      environmentVariablesAccessor,
+                                      metadata,
+                                      _startupMessage);
         }
 
         private IServiceProvider CreateServiceProvider(ServiceCollection services)
