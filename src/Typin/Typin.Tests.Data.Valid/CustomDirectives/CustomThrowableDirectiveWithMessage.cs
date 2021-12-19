@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.CustomDirectives.Valid
+﻿namespace Typin.Tests.Data.Valid.CustomDirectives
 {
     using System;
     using System.Threading;

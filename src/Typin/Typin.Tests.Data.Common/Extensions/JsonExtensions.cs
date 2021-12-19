@@ -1,6 +1,7 @@
-﻿namespace Typin.Tests.Extensions
+﻿namespace Typin.Tests.Data.Common.Extensions
 {
     using Newtonsoft.Json;
+    using Typin.Tests.Data.Common.Extensions.Converters;
 
     public static class JsonExtensions
     {

@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.CustomTypes.InitializableByConverter
+﻿namespace Typin.Tests.Data.Common.CustomTypes.InitializableByConverter
 {
     using System.Collections.Generic;
     using Typin.Binding;

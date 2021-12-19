@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.CustomTypes.Initializable
+﻿namespace Typin.Tests.Data.Common.CustomTypes.Initializable
 {
     public enum CustomEnum
     {

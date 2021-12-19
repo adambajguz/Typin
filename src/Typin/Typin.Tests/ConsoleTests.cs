@@ -8,11 +8,11 @@
     using CliWrap.Buffered;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.Console;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Console;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class ConsoleTests
     {

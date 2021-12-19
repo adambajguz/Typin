@@ -58,7 +58,7 @@
                     {
                         options.Title ??= Environment.ApplicationName;
                         options.ExecutableName ??= AssemblyUtils.TryGetDefaultExecutableName() ?? "app";
-                        options.VersionText ??= AssemblyUtils.TryGetDefaultVersionText() ?? "v1.0";
+                        options.VersionText ??= AssemblyUtils.GetDefaultVersionText();
                     });
 
             services.AddOptions<CliOptions>()

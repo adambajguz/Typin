@@ -4,9 +4,10 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Directives;
-    using Typin.Tests.Data.Commands.Invalid;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Invalid.Commands;
+    using Typin.Tests.Data.Valid.Commands;
+    using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
 

@@ -1,14 +1,15 @@
-﻿namespace Typin.Tests.Extensions
+﻿namespace Typin.Tests.Data.Common.Extensions
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Typin;
     using Typin.Console;
     using Typin.Console.IO;
     using Xunit.Abstractions;
 
     //TODO: maybe this should be a separate lib like Typin.Testing
-    internal static class CliApplicationBuilderExtensions
+    public static class CliApplicationBuilderExtensions
     {
 
         #region Array based
@@ -17,8 +18,7 @@
                                                                                                                                  bool isInputRedirected = true,
                                                                                                                                  string? input = null)
         {
-            return await BuildAndRunTestAsync(applicationBuilder,
-                                              testOutput,
+            return await applicationBuilder.BuildAndRunTestAsync(testOutput,
                                               Array.Empty<string>(),
                                               new Dictionary<string, string>(),
                                               isInputRedirected,
@@ -31,8 +31,7 @@
                                                                                                                                  bool isInputRedirected = true,
                                                                                                                                  string? input = null)
         {
-            return await BuildAndRunTestAsync(applicationBuilder,
-                                              testOutput,
+            return await applicationBuilder.BuildAndRunTestAsync(testOutput,
                                               commandLineArguments,
                                               new Dictionary<string, string>(),
                                               isInputRedirected,
@@ -73,8 +72,7 @@
                                                                                                                                  bool isInputRedirected = true,
                                                                                                                                  string? input = null)
         {
-            return await BuildAndRunTestAsync(applicationBuilder,
-                                              testOutput,
+            return await applicationBuilder.BuildAndRunTestAsync(testOutput,
                                               commandLine,
                                               new Dictionary<string, string>(),
                                               containsExecutable,

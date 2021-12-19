@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.DynamicCommands.Valid
+﻿namespace Typin.Tests.Data.Valid.DynamicCommands
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
@@ -36,10 +36,10 @@
 
             InputValue? numberInput = Arguments.GetOrDefault("Number");
 
-            int number0 = Arguments["Number"].GetValue<int>();
-            int number1 = Arguments["Opt4"].GetValue<int>();
-            int? number2 = Arguments["Opt5"].GetValue<int?>();
-            double number3 = Arguments["Price"].GetValue<double>();
+            int number0 = Arguments["Number"].GetValue<int>(0);
+            int number1 = Arguments["Opt4"].GetValue<int>(0);
+            int? number2 = Arguments["Opt5"].GetValue<int?>(null);
+            double number3 = Arguments["Price"].GetValue<double>(0);
 
             string? param0 = Arguments.Get("Parameter").GetValue<string?>();
             string? param2 = Arguments.Get("Param2").GetValue<string>();

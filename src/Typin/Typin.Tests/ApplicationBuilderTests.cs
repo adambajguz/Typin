@@ -7,13 +7,12 @@
     using Typin.Directives;
     using Typin.Modes;
     using Typin.Modes.Interactive;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.CustomDirectives.Valid;
-    using Typin.Tests.Data.Modes.Valid;
     using Typin.Tests.Data.Valid.Commands;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Valid.CustomDirectives;
+    using Typin.Tests.Data.Valid.Modes;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
 
     public class ApplicationBuilderTests
     {
@@ -179,8 +178,7 @@
                .RegisterMode<DirectMode>(asStartup: true)
                .RegisterMode<InteractiveMode>()
                .UseStartupMessage((metadata) => $"Startup message {metadata.Title} {metadata.VersionText} {metadata.ExecutableName} {metadata.Description}")
-               .UseConsole<SystemConsole>()
-               .Build();
+               .UseConsole<SystemConsole>();
 
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, "--help");

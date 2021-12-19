@@ -2,11 +2,11 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.Help;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Help;
+    using Typin.Tests.Data.Valid.Commands;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
 
     public class CustomHelpWriterTests
     {

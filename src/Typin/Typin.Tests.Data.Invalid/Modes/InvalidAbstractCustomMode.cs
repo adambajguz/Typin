@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Modes.Invalid
+﻿namespace Typin.Tests.Data.Invalid.Modes
 {
     using System.Threading;
     using System.Threading.Tasks;

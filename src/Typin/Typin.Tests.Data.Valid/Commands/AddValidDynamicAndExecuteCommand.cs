@@ -9,7 +9,7 @@
     using Typin.DynamicCommands;
     using Typin.Metadata;
     using Typin.Schemas;
-    using Typin.Tests.Data.DynamicCommands.Valid;
+    using Typin.Tests.Data.Valid.DynamicCommands;
 
     [Command("add valid-dynamic-and-execute", Description = "Adds a dynamic command and executed it.")]
     public class AddValidDynamicAndExecuteCommand : ICommand

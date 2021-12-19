@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.CustomTypes.NonInitializable
+﻿namespace Typin.Tests.Data.Common.CustomTypes.NonInitializable
 {
     using System;
     using System.Collections;

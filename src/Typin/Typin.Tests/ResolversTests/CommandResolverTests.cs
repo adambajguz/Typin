@@ -2,12 +2,13 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Tests.Data.Commands.Invalid;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.CustomDirectives.Valid;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Invalid.Commands;
+    using Typin.Tests.Data.Invalid.DuplicatedCommands;
+    using Typin.Tests.Data.Valid.CustomDirectives;
+    using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
 
     public class CommandResolverTests
     {

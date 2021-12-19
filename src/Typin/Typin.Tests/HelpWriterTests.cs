@@ -7,8 +7,9 @@
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Commands;
     using Typin.Modes.Interactive.Directives;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
+    using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
 

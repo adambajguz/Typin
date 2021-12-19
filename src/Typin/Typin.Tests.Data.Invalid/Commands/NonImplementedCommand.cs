@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Commands.Invalid
+﻿namespace Typin.Tests.Data.Invalid.Commands
 {
     using Typin.Attributes;
 

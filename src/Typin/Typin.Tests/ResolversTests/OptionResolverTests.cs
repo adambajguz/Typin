@@ -2,11 +2,11 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Tests.Data.Commands.Invalid;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Invalid.Commands;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class OptionResolverTests
     {

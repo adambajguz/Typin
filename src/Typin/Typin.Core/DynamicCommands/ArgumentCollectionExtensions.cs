@@ -18,7 +18,7 @@
         /// <returns>Property value.</returns>
         /// <exception cref="ArgumentNullException">Throws when <paramref name="default"/> is null.</exception>
         [return: NotNull]
-        public static T GetValue<T>(this InputValue? inputValue, [DisallowNull] T @default)
+        public static T GetValue<T>(this InputValue? inputValue, [MaybeNull] T @default)
         {
             _ = @default ?? throw new ArgumentNullException(nameof(@default));
 

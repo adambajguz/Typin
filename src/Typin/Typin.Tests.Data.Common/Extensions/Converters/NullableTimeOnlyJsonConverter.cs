@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Extensions
+﻿namespace Typin.Tests.Data.Common.Extensions.Converters
 {
     using System;
     using System.Globalization;

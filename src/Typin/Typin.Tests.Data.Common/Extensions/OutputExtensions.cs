@@ -1,9 +1,9 @@
-﻿namespace Typin.Tests.Extensions
+﻿namespace Typin.Tests.Data.Common.Extensions
 {
     using Typin.Console.IO;
     using Xunit.Abstractions;
 
-    internal static class OutputExtensions
+    public static class OutputExtensions
     {
         public static void Print(this ITestOutputHelper output, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr)
         {

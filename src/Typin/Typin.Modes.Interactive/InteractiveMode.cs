@@ -96,7 +96,7 @@ namespace Typin.Modes.Interactive
                     }
                     catch (PipelineInvocationException ex)
                     {
-                        throw new System.Exception("Failed to execute pipelined directives.", ex.InnerException); //TODO: replace with custom exception
+                        throw new Exception("Failed to execute pipelined directives.", ex.InnerException); //TODO: replace with custom exception
                     }
 
                     _console.ResetColor();

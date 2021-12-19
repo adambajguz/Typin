@@ -1,9 +1,9 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Tests.Data.Common.Commands;
-    using Typin.Tests.Data.CustomTypes.NonInitializable;
+    using Typin.Tests.Data.Common.CustomTypes.NonInitializable;
 
     [Command(nameof(UnsupportedArgumentTypesCommand))]
     public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase

@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.DynamicCommands.Invalid
+﻿namespace Typin.Tests.Data.Invalid.DynamicCommands
 {
     using System.Threading;
     using System.Threading.Tasks;

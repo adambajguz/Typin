@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Console
+﻿namespace Typin.Tests.Data.Common.Console
 {
     using System;
     using System.IO;

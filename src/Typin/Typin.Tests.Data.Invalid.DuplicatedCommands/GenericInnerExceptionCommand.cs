@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Invalid.DuplicatedCommands
 {
     using System;
     using System.Threading;

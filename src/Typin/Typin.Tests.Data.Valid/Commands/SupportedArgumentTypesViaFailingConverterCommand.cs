@@ -1,9 +1,9 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using Typin.Attributes;
     using Typin.Console;
     using Typin.Tests.Data.Common.Commands;
-    using Typin.Tests.Data.CustomTypes.InitializableByConverter;
+    using Typin.Tests.Data.Common.CustomTypes.InitializableByConverter;
 
     [Command(nameof(SupportedArgumentTypesViaFailingConverterCommand))]
     public class SupportedArgumentTypesViaFailingConverterCommand : SelfSerializeCommandBase

@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Commands.Valid
+﻿namespace Typin.Tests.Data.Valid.Commands
 {
     using System;
     using System.Threading;
@@ -6,7 +6,7 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Tests.Data.Console;
+    using Typin.Tests.Data.Common.Console;
 
     [Command("colors", Description = "With colors command description")]
     public class WithColorsCommand : ICommand

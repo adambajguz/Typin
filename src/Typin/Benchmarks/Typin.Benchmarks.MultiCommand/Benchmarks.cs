@@ -6,7 +6,6 @@ namespace Typin.Benchmarks.MultiCommand
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
-    using Typin.Benchmarks.MultiCommand.CliFxCommands;
     using Microsoft.Extensions.Hosting;
     using Typin.Benchmarks.MultiCommand.CliFxCommands;
     using Typin.Benchmarks.MultiCommand.TypinCommands;

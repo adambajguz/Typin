@@ -8,12 +8,13 @@
     using Typin.Directives;
     using Typin.Modes;
     using Typin.Modes.Interactive;
-    using Typin.Tests.Data.Commands.Valid;
-    using Typin.Tests.Data.CustomDirectives.Invalid;
-    using Typin.Tests.Data.CustomDirectives.Valid;
-    using Typin.Tests.Extensions;
+    using Typin.Tests.Data.Invalid.CustomDirectives;
+    using Typin.Tests.Data.Valid.CustomDirectives;
+    using Typin.Tests.Data.Valid.DefaultCommands;
     using Xunit;
     using Xunit.Abstractions;
+    using Typin.Tests.Data.Common.Extensions;
+    using Typin.Tests.Data.Valid.Commands;
 
     public class DirectivesTests
     {

@@ -1,4 +1,4 @@
-﻿namespace Typin.Tests.Data.Middlewares
+﻿namespace Typin.Tests.Data.Common.Middlewares
 {
     using System.Diagnostics;
     using System.Threading;
