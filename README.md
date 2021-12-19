@@ -65,7 +65,7 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - Logging with `Microsoft.Extensions.Logging`.
 - Optional option and parameter names by automatically generated kebab case name.
 - Better char parsing: support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A).
-- Native support for parsing `Half` type in .NET 5 targeted applications.
+- Native support for parsing `Half` type in .NET 5 or above targeted applications.
 - Validation can be easily added with [FluentValidation](https://github.com/FluentValidation/FluentValidation) and [a middleware](https://github.com/adambajguz/Typin/blob/master/src/TypinExamples/Examples/TypinExamples.Validation/Middleware/FluentValidationMiddleware.cs).
 - Console input/output targeted extensions through `IStandardInput`, `IStandardOuput`, `IStandardError`, `IStandardOutputAndError`, `IStandardRedirectableConsoleStream`, `StandardStreamReader`, `StandardStreamWriter`.
 
@@ -93,7 +93,7 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 - Provides comprehensive and colorful auto-generated help text.
 - Highly testable and easy to debug.
 - Automatic generation of option and parameter names by transforming property name with kebab-case formatter.
-- Targets .NET Standard 2.0, .NET Standard 2.1. .NET 5.0.
+- Targets .NET Standard 2.0, .NET Standard 2.1., .NET 5.0, and .NET 6.0.
 - Uses `Microsoft.Extensions.DependencyInjection`. `Microsoft.Extensions.Logging.Debug` and `Microsoft.Extensions.Options` but no other non essential dependencies.
 
 ## Installing Typin

@@ -25,7 +25,7 @@
         /// <inheritdoc/>
         public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-#if NET5_0
+#if NET5_0_OR_GREATER
             int processId = Environment.ProcessId;
 #else
             int processId = Process.GetCurrentProcess().Id;

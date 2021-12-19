@@ -16,11 +16,7 @@
 
         public async ValueTask HandleAsync(ICliContext context, CommandPipelineHandlerDelegate next, CancellationToken cancellationToken)
         {
-#if NET5_0
             int processId = Environment.ProcessId;
-#else
-            int processId = Process.GetCurrentProcess().Id;
-#endif
 
             context.Console.Output.WithForegroundColor(ConsoleColor.Green, (output) => output.WriteLine($"Attach debugger to PID {processId} to continue."));
 

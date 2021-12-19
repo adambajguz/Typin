@@ -1,3 +1,8 @@
+### v3.1.0 (19-Dec-2021)
+
+ - .NET 6 support.
+ - Fixed `StackTraceParser`: add a filter for `--- End of stack trace from previous location ---` and `--- End of stack trace from previous location where exception was thrown ---`.
+ 
 ### v3.0.4 (06-Apr-2021)
 
  - Fixed issue #208: interactive mode executes the command line arguments at every new commands.
