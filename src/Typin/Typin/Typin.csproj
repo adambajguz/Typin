@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Declarative framework for interactive CLI applications</Description>
 		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
 	</PropertyGroup>
@@ -45,7 +46,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-		<PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc4" />
+		<PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc5" />
 	</ItemGroup>
 
 	<ItemGroup>

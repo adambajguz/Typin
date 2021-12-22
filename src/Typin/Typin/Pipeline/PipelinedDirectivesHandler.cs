@@ -4,6 +4,7 @@ namespace Typin.Pipeline
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
+    using PackSite.Library.Pipelining.StepActivators;
     using Typin;
 
     /// <summary>
@@ -11,12 +12,12 @@ namespace Typin.Pipeline
     /// </summary>
     public sealed class PipelinedDirectivesHandler : IMiddleware
     {
-        private readonly IStepActivator _stepActivator;
+        private readonly IBaseStepActivator _stepActivator;
 
         /// <summary>
         /// Initializes a new instance of <see cref="PipelinedDirectivesHandler"/>.
         /// </summary>
-        public PipelinedDirectivesHandler(IStepActivator stepActivator)
+        public PipelinedDirectivesHandler(IScopedStepActivator stepActivator)
         {
             _stepActivator = stepActivator;
         }
