@@ -7,6 +7,8 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Models;
+    using Typin.Models.Builders;
     using Typin.Modes.Programmatic;
 
     [Command("test", Description = "Test command.")]
@@ -16,6 +18,9 @@
         private readonly ICliContextAccessor _cliContextAccessor;
         private readonly ICommandExecutor _commandExecutor;
         private readonly ICliModeSwitcher _cliModeSwitcher;
+
+        [Parameter(0)]
+        public string Param { get; init; } = string.Empty;
 
         [Option("xe", 'a')]
         public string Author { get; init; } = string.Empty;
@@ -59,6 +64,26 @@
 
             _console.Output.WriteLine();
             _console.Output.WriteLine($"Elapsed: {stopwatch.Elapsed}");
+        }
+
+        private sealed class Configure : IConfigureModel<TestCommand>
+        {
+            public ValueTask ConfigureAsync(IModelBuilder<TestCommand> builder, CancellationToken cancellationToken)
+            {
+                builder.Parameter(x => x.Param);
+
+                builder.Option(x => x.Author)
+                    .IsRequired();
+
+                builder.Option(x => x.AuthorX)
+                    .ShortName('x')
+                    .Description("Author X description.");
+
+                builder.Option(x => x.Date)
+                    .Description("Some date");
+
+                return default;
+            }
         }
     }
 }

@@ -7,9 +7,9 @@
     using Typin.Schemas;
 
     /// <summary>
-    /// <see cref="IDynamicCommand"/> component scanner.
+    /// <see cref="ICommandTemplate"/> component scanner.
     /// </summary>
-    internal sealed class DynamicCommandScanner : Scanner<IDynamicCommand>, IDynamicCommandScanner
+    internal sealed class DynamicCommandScanner : Scanner<ICommandTemplate>, IDynamicCommandScanner
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CommandScanner"/>.
@@ -23,7 +23,7 @@
         /// <inheritdoc/>
         public override bool IsValidComponent(Type type)
         {
-            return KnownTypesHelpers.IsDynamicCommandType(type);
+            return KnownTypesHelpers.IsCommandTemplateType(type);
         }
 
         /// <inheritdoc/>

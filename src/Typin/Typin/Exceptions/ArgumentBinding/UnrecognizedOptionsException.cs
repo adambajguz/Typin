@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Input;
+    using Typin.Features.Input;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -14,14 +14,14 @@
         /// Initializes an instance of <see cref="UnrecognizedParametersException"/>.
         /// </summary>
         /// <param name="optionsInputs"></param>
-        public UnrecognizedOptionsException(IEnumerable<CommandOptionInput> optionsInputs) :
+        public UnrecognizedOptionsException(IEnumerable<OptionInput> optionsInputs) :
             base(null,
                  BuildMessage(optionsInputs))
         {
 
         }
 
-        private static string BuildMessage(IEnumerable<CommandOptionInput> optionsInputs)
+        private static string BuildMessage(IEnumerable<OptionInput> optionsInputs)
         {
             string quotedParameters = optionsInputs.Select(o => o.GetRawAlias()).JoinToString(", ");
 

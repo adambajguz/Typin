@@ -8,6 +8,7 @@
     using Microsoft.Extensions.Options;
     using Typin.Components;
     using Typin.Console;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
     using Typin.Utilities;
     using Typin.Utilities.Extensions;
@@ -67,10 +68,10 @@
         }
 
         /// <inheritdoc/>
-        public void Write(CommandSchema command,
-                          IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
+        public void Write(ICommandSchema command,
+                          IReadOnlyDictionary<IArgumentSchema, object?> defaultValues)
         {
-            IEnumerable<CommandSchema> childCommands = _rootSchema.GetChildCommands(command.Name)
+            IEnumerable<ICommandSchema> childCommands = _rootSchema.GetChildCommands(command.Name)
                                                                   .OrderBy(x => x.Name);
 
             _console.ResetColor();
@@ -172,7 +173,7 @@
         #endregion
 
         #region Mode restrictions
-        private void WriteModeRestrictionsManual(CommandSchema command)
+        private void WriteModeRestrictionsManual(ICommandSchema command)
         {
             IReadOnlyCollection<Type> modesInApplication = _componentProvider.Get<ICliMode>();
 
@@ -261,7 +262,7 @@
         #endregion
 
         #region Command
-        private void WriteCommandDescription(CommandSchema command)
+        private void WriteCommandDescription(ICommandSchema command)
         {
             if (string.IsNullOrWhiteSpace(command.Description))
             {
@@ -280,7 +281,7 @@
             WriteLine();
         }
 
-        private void WriteCommandManual(CommandSchema command)
+        private void WriteCommandManual(ICommandSchema command)
         {
             if (string.IsNullOrWhiteSpace(command.Manual))
             {
@@ -304,8 +305,8 @@
         }
 
         private void WriteCommandUsage(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                                       CommandSchema command,
-                                       IEnumerable<CommandSchema> childCommands)
+                                       ICommandSchema command,
+                                       IEnumerable<ICommandSchema> childCommands)
         {
             if (!IsEmpty)
             {
@@ -349,14 +350,14 @@
             }
 
             // Parameters
-            foreach (ParameterSchema parameter in command.Parameters)
+            foreach (IParameterSchema parameter in command.Parameters)
             {
                 Write(' ');
                 Write(parameter.Bindable.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
-            foreach (OptionSchema option in command.Options.Where(o => o.IsRequired))
+            foreach (IOptionSchema option in command.Options.Where(o => o.IsRequired))
             {
                 Write(' ');
                 Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
@@ -372,7 +373,7 @@
             WriteLine();
         }
 
-        private void WriteCommandParameters(CommandSchema command)
+        private void WriteCommandParameters(ICommandSchema command)
         {
             if (!command.Parameters.Any())
             {
@@ -386,7 +387,7 @@
 
             WriteHeader("Parameters");
 
-            foreach (ParameterSchema parameter in command.Parameters.OrderBy(p => p.Order))
+            foreach (IParameterSchema parameter in command.Parameters.OrderBy(p => p.Order))
             {
                 Write(RequiredColor, "* ");
                 Write(RequiredParameterNameColor, $"{parameter.Name}");
@@ -411,8 +412,8 @@
             }
         }
 
-        private void WriteCommandOptions(CommandSchema command,
-                                         IReadOnlyDictionary<ArgumentSchema, object?> argumentDefaultValues)
+        private void WriteCommandOptions(ICommandSchema command,
+                                         IReadOnlyDictionary<IArgumentSchema, object?> argumentDefaultValues)
         {
             if (!IsEmpty)
             {
@@ -421,7 +422,7 @@
 
             WriteHeader("Options");
 
-            foreach (OptionSchema option in command.Options.OrderByDescending(o => o.IsRequired))
+            foreach (IOptionSchema option in command.Options.OrderByDescending(o => o.IsRequired))
             {
                 if (option.IsRequired)
                 {
@@ -492,7 +493,7 @@
         #endregion
 
         #region Command Children
-        private void WriteCommandChildren(CommandSchema command, IEnumerable<CommandSchema> childCommands)
+        private void WriteCommandChildren(ICommandSchema command, IEnumerable<ICommandSchema> childCommands)
         {
             if (!childCommands.Any())
             {
@@ -506,7 +507,7 @@
 
             WriteHeader("Commands");
 
-            foreach (CommandSchema childCommand in childCommands)
+            foreach (ICommandSchema childCommand in childCommands)
             {
                 string relativeCommandName = !string.IsNullOrWhiteSpace(command.Name)
                     ? childCommand.Name![command.Name.Length..].Trim()

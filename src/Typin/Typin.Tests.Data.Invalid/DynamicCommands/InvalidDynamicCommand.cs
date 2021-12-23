@@ -6,7 +6,7 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.DynamicCommands;
+    using Typin.Models.Collections;
 
     public class InvalidDynamicCommand : ICommand
     {

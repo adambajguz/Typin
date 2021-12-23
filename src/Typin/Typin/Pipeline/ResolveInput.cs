@@ -5,8 +5,7 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Input;
-    using Typin.Internal.Input;
+    using Typin.Features.Input;
 
     /// <summary>
     /// Resolves input.

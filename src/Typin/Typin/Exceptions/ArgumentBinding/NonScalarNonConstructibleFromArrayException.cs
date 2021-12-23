@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Schemas;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -22,14 +22,14 @@
         /// <param name="argument"></param>
         /// <param name="values"></param>
         /// <param name="targetType"></param>
-        public NonScalarNonConstructibleFromArrayException(ArgumentSchema argument, IReadOnlyCollection<string> values, Type targetType) :
+        public NonScalarNonConstructibleFromArrayException(IArgumentSchema argument, IReadOnlyCollection<string> values, Type targetType) :
             base(argument,
                  BuildMessage(argument, values, targetType))
         {
             Values = values;
         }
 
-        private static string BuildMessage(ArgumentSchema argument, IReadOnlyCollection<string> values, Type targetType)
+        private static string BuildMessage(IArgumentSchema argument, IReadOnlyCollection<string> values, Type targetType)
         {
             string argumentKind = argument switch
             {

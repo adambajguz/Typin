@@ -1,6 +1,7 @@
 ﻿namespace Typin.Help
 {
     using System.Collections.Generic;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
@@ -16,6 +17,6 @@
         /// <summary>
         /// Writes help for a command.
         /// </summary>
-        void Write(CommandSchema command, IReadOnlyDictionary<ArgumentSchema, object?> defaultValues);
+        void Write(ICommandSchema command, IReadOnlyDictionary<IArgumentSchema, object?> defaultValues);
     }
 }

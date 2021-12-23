@@ -7,7 +7,6 @@
     /// <summary>
     /// <see cref="ICallInfoFeature"/> implementation.
     /// </summary>
-    [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     internal sealed class CallInfoFeature : ICallInfoFeature
     {
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
@@ -54,9 +53,10 @@
             TraceIdentifier = $"{ContextDepth}:{Identifier}:{ParentContext?.Call.Identifier.ToString() ?? "root"}";
         }
 
-        private string GetDebuggerDisplay()
+        /// <inheritdoc/>
+        public override string ToString()
         {
-            return ToString() +
+            return base.ToString() +
                 " | " +
                 $"{nameof(TraceIdentifier)} = {TraceIdentifier}";
         }

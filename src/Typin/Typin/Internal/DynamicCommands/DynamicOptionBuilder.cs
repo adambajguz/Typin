@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Binding;
     using Typin.DynamicCommands;
-    using Typin.Metadata;
-    using Typin.Schemas;
+    using Typin.Models.Collections;
+    using Typin.Models.Converters;
+    using Typin.Models.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -23,7 +23,7 @@
 
         /// <inheritdoc/>
         public IDynamicOptionBuilder<T> WithBindingConverter<TConverter>()
-            where TConverter : BindingConverter<T>
+            where TConverter : IArgumentConverter<T>
         {
             WithBindingConverter(typeof(TConverter));
 
@@ -144,11 +144,10 @@
             return this;
         }
 
-        public OptionSchema Build()
+        public IOptionSchema Build()
         {
             return new OptionSchema(_type,
                                     _propertyName,
-                                    true,
                                     _name ?? TextUtils.ToKebabCase(_propertyName),
                                     _shortName,
                                     _fallbackVariableName,

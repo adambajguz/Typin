@@ -18,21 +18,21 @@
         /// <summary>
         /// Duplicated commands name.
         /// </summary>
-        public IReadOnlyList<CommandSchema> InvalidCommands { get; set; }
+        public IReadOnlyList<ICommandSchema> InvalidCommands { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CommandDuplicateByNameException"/>.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="invalidCommands"></param>
-        public CommandDuplicateByNameException(string name, IReadOnlyList<CommandSchema> invalidCommands) :
+        public CommandDuplicateByNameException(string name, IReadOnlyList<ICommandSchema> invalidCommands) :
             base(BuildMessage(name, invalidCommands))
         {
             Name = name;
             InvalidCommands = invalidCommands;
         }
 
-        private static string BuildMessage(string name, IReadOnlyList<CommandSchema> invalidCommands)
+        private static string BuildMessage(string name, IReadOnlyList<ICommandSchema> invalidCommands)
         {
             return $"Application configuration is invalid because it contains {invalidCommands.Count} commands with the same name ('{name}'):{Environment.NewLine}" +
                    $"{invalidCommands.JoinToString(Environment.NewLine)}{Environment.NewLine}" +

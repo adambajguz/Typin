@@ -3,9 +3,9 @@
     using Typin.Components;
 
     /// <summary>
-    /// <see cref="IDynamicCommand"/> component scanner.
+    /// <see cref="ICommandTemplate"/> component scanner.
     /// </summary>
-    public interface IDynamicCommandScanner : IScanner<IDynamicCommand>
+    public interface IDynamicCommandScanner : IScanner<ICommandTemplate>
     {
 
     }

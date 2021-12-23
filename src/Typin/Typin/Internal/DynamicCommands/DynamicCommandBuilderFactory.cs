@@ -22,10 +22,10 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder Create(Type dynamicCommandType, string commandName)
         {
-            if (!KnownTypesHelpers.IsDynamicCommandType(dynamicCommandType))
+            if (!KnownTypesHelpers.IsCommandTemplateType(dynamicCommandType))
             {
                 throw new ArgumentException(
-                    $"Type '{dynamicCommandType.FullName ?? dynamicCommandType.Name}' does not represent a dynamic command, i.e., does not implement '{nameof(IDynamicCommand)}'.",
+                    $"Type '{dynamicCommandType.FullName ?? dynamicCommandType.Name}' does not represent a dynamic command, i.e., does not implement '{nameof(ICommandTemplate)}'.",
                     nameof(dynamicCommandType));
             }
 
@@ -34,7 +34,7 @@
 
         /// <inheritdoc/>
         public IDynamicCommandBuilder Create<T>(string commandName)
-            where T : class, IDynamicCommand
+            where T : class, ICommandTemplate
         {
             return new DynamicCommandBuilder(_rootSchemaAccessor.RootSchema, typeof(T), commandName);
         }

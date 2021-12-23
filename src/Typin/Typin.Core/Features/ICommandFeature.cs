@@ -1,6 +1,7 @@
 ﻿namespace Typin.Features
 {
     using System.Collections.Generic;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
@@ -11,7 +12,7 @@
         /// <summary>
         /// Current command schema.
         /// </summary>
-        CommandSchema Schema { get; }
+        ICommandSchema Schema { get; }
 
         /// <summary>
         /// Current command instance.
@@ -21,6 +22,6 @@
         /// <summary>
         /// Collection of command's default values.
         /// </summary>
-        IReadOnlyDictionary<ArgumentSchema, object?> DefaultValues { get; }
+        IReadOnlyDictionary<IArgumentSchema, object?> DefaultValues { get; }
     }
 }

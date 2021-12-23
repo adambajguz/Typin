@@ -7,7 +7,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.DynamicCommands;
-    using Typin.Metadata;
+    using Typin.Models.Collections;
     using Typin.Schemas;
     using Typin.Tests.Data.Valid.DynamicCommands;
 
@@ -32,7 +32,7 @@
 
         public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            CommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<ValidDynamicCommand>(Name)
+            ICommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<ValidDynamicCommand>(Name)
                 .WithDescription("Test description.")
                 .WithManual("Some manual\nadd dynamic --name abc\nabc 5 j --number 4 -a aaaaaa\nabc --help.")
                 .AddOption<int>("Number", (ob) => ob

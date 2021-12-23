@@ -5,7 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Declarative framework for interactive CLI applications</Description>
 		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
-		<RootNamespace>Typin.Help</RootNamespace>
+		<RootNamespace>Typin</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -46,6 +46,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
+		<ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 		<ProjectReference Include="..\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
 	</ItemGroup>

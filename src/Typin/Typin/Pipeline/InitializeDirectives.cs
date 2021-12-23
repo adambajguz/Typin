@@ -9,7 +9,7 @@
     using Typin;
     using Typin.Exceptions.ArgumentBinding;
     using Typin.Features;
-    using Typin.Input;
+    using Typin.Features.Input;
     using Typin.Schemas;
 
     /// <summary>

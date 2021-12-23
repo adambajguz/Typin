@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Binding;
+    using Typin.Models.Converters;
 
-    public class InitializableClassTypeByConverter_Converter : BindingConverter<InitializableClassTypeByConverter>
+    public class InitializableClassTypeByConverter_Converter : IArgumentConverter<InitializableClassTypeByConverter>
     {
-        public override InitializableClassTypeByConverter? Convert(string? value)
+        public InitializableClassTypeByConverter? Convert(string? value)
         {
             if (value is null)
             {
@@ -26,7 +26,7 @@
             return new InitializableClassTypeByConverter { Value = v, Day = day };
         }
 
-        public override InitializableClassTypeByConverter ConvertCollection(IReadOnlyCollection<string> values)
+        public InitializableClassTypeByConverter ConvertCollection(IReadOnlyCollection<string> values)
         {
             throw new NotImplementedException();
         }

@@ -18,12 +18,11 @@
                  .Lifetime(InvokablePipelineLifetime.Scoped)
                  .AddStep<TypinExceptionsHandler>()
                  .AddStep<ResolveInput>()
-                 .AddStep<ResolveCommand>()
                  .AddStep<InitializeBinder>()
+                 .AddStep<ResolveCommand>()
                  .AddStep<InitializeDirectives>()
                  .AddStep<PipelinedDirectivesHandler>()
                  .AddStep<HelpHandler>()
-                 .AddStep<VersionHandler>()
                  .AddStep<BindInput>()
                  // user
                  .AddStep<ExecuteCommand>()

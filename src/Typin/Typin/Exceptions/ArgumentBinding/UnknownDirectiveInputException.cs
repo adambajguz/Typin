@@ -1,6 +1,6 @@
 ﻿namespace Typin.Exceptions.ArgumentBinding
 {
-    using Typin.Input;
+    using Typin.Features.Input;
 
     /// <summary>
     /// Unknown directive input exception.

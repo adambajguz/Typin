@@ -33,7 +33,7 @@
         /// <returns></returns>
         public static ICliBuilder AddDynamicCommands(this ICliBuilder cliBuilder, Action<IDynamicCommandScanner> scanner)
         {
-            return cliBuilder.GetOrAddScanner<IDynamicCommand, IDynamicCommandScanner>(
+            return cliBuilder.GetOrAddScanner<ICommandTemplate, IDynamicCommandScanner>(
                 b =>
                 {
                     return new DynamicCommandScanner(b.Services);

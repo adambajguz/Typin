@@ -16,8 +16,8 @@
         private readonly IReadOnlyCollection<Type> _dynamicCommandTypes;
         private readonly IReadOnlyCollection<Type> _directiveTypes;
 
-        public CommandSchema? DefaultCommand { get; private set; }
-        public Dictionary<string, CommandSchema>? Commands { get; private set; }
+        public ICommandSchema? DefaultCommand { get; private set; }
+        public Dictionary<string, ICommandSchema>? Commands { get; private set; }
         public Dictionary<string, DirectiveSchema>? Directives { get; private set; }
 
         /// <summary>
@@ -40,25 +40,25 @@
             ResolveCommands(_commandTypes);
             ResolveDirectives(_directiveTypes);
 
-            Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> _dynamicCommands = new(() =>
+            Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> commandTemplates = new(() =>
             {
                 return _dynamicCommandTypes.ToDictionary(
                     x => x,
-                    x => CommandSchemaResolver.ResolveDynamic(x));
+                    x => CommandSchemaResolver.ResolveTemplate(x));
             });
 
-            return new RootSchema(Directives!, _dynamicCommands, Commands!, DefaultCommand);
+            return new RootSchema(Directives!, commandTemplates, Commands!, DefaultCommand);
         }
 
         private void ResolveCommands(IReadOnlyCollection<Type> commandTypes)
         {
-            CommandSchema? defaultCommand = null;
-            Dictionary<string, CommandSchema> commands = new();
-            List<CommandSchema> invalidCommands = new();
+            ICommandSchema? defaultCommand = null;
+            Dictionary<string, ICommandSchema> commands = new();
+            List<ICommandSchema> invalidCommands = new();
 
             foreach (Type commandType in commandTypes)
             {
-                CommandSchema command = CommandSchemaResolver.Resolve(commandType);
+                ICommandSchema command = CommandSchemaResolver.Resolve(commandType);
 
                 if (command.IsDefault)
                 {
@@ -89,9 +89,9 @@
 
             if (invalidCommands.Count > 0)
             {
-                IGrouping<string, CommandSchema> duplicateNameGroup = invalidCommands.Union(commands.Values)
-                                                                                     .GroupBy(c => c.Name!, StringComparer.Ordinal)
-                                                                                     .First();
+                IGrouping<string, ICommandSchema> duplicateNameGroup = invalidCommands.Union(commands.Values)
+                                                                                      .GroupBy(c => c.Name!, StringComparer.Ordinal)
+                                                                                      .First();
 
                 throw new CommandDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }

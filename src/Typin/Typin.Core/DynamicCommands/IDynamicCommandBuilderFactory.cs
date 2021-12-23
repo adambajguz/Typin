@@ -24,6 +24,6 @@
         /// <returns></returns>
         /// <exception cref="ArgumentException">Throws when <paramref name="commandName"/> is null or whitespace.</exception>
         IDynamicCommandBuilder Create<T>(string commandName)
-            where T : class, IDynamicCommand;
+            where T : class, ICommandTemplate;
     }
 }

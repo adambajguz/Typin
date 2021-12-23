@@ -1,16 +1,31 @@
 ﻿namespace Typin.Features
 {
-    using System.Diagnostics;
-    using Typin.Input;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Microsoft.Extensions.Configuration;
+    using Typin.Exceptions.ArgumentBinding;
+    using Typin.Features.Binding;
+    using Typin.Features.Input;
+    using Typin.Models;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
+    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// <see cref="IBinderFeature"/> implementation.
     /// </summary>
-    [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     internal sealed class BinderFeature : IBinderFeature
     {
+        private readonly Dictionary<Type, BindableModel> _bindableMap = new();
+        private readonly List<BindableModel> _bindable = new();
+
         /// <inheritdoc/>
         public UnboundedInput UnboundedInput { get; }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<BindableModel> Bindable => _bindable;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BinderFeature"/>.
@@ -20,10 +35,200 @@
             UnboundedInput = unboundedInput;
         }
 
-        private string GetDebuggerDisplay()
+        /// <inheritdoc/>
+        public bool TryAdd(BindableModel model)
         {
-            return ToString() +
-                " | ";
+            if (_bindableMap.TryAdd(model.Schema.Type, model))
+            {
+                _bindable.Add(model);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool TryRemove(Type type)
+        {
+            if (_bindableMap.Remove(type, out BindableModel? model))
+            {
+                _bindable.Remove(model);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public BindableModel? Get(Type type)
+        {
+            return _bindableMap.GetValueOrDefault(type);
+        }
+
+        /// <inheritdoc/>
+        public T? Get<T>()
+            where T : class, IModel
+        {
+            return _bindableMap.GetValueOrDefault(typeof(T))?.Instance as T;
+        }
+
+        /// <inheritdoc/>
+        public void Bind(IConfiguration configuration) //TODO: wrap IConfiguration to allow for asp.net core configuration independent fallbacks or some filtering
+        {
+            foreach (BindableModel bindableModel in Bindable)
+            {
+                BindParameters(bindableModel);
+                BindOptions(bindableModel, configuration);
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool Validate()
+        {
+            UnboundedInput unboundedInput = UnboundedInput;
+
+            // Ensure all input parameters were bound
+            if (unboundedInput.Parameters.Count > 0)
+            {
+                throw new UnrecognizedParametersException(unboundedInput.Parameters);
+            }
+
+            // Ensure all input options were bound
+            if (unboundedInput.Options.Count > 0)
+            {
+                throw new UnrecognizedOptionsException(unboundedInput.Options);
+            }
+
+            return true;
+        }
+
+        #region Helpers
+        /// <summary>
+        /// Binds parameter inputs in command instance.
+        /// </summary>
+        private void BindParameters(BindableModel bindableModel)
+        {
+            IReadOnlyList<ParameterInput> parameterInputs = UnboundedInput.Parameters;
+            IReadOnlyList<IParameterSchema> parameters = bindableModel.Schema.Parameters;
+
+            // All inputs must be bound
+            int remainingParameters = parameters.Count;
+            int remainingInputs = parameterInputs.Count;
+
+            if (remainingParameters > remainingInputs)
+            {
+                throw new MissingParametersException(parameters.TakeLast(remainingParameters - remainingInputs));
+            }
+
+            // Scalar parameters
+            int i = 0;
+            for (; i < parameters.Count && parameters[i].Bindable.IsScalar; ++i)
+            {
+                IParameterSchema parameter = parameters[i];
+                ParameterInput scalarInput = parameterInputs[i];
+
+                parameter.BindOn(bindableModel.Instance, scalarInput.Value);
+
+                --remainingParameters;
+                --remainingInputs;
+            }
+
+            // Non-scalar parameter (only one is allowed)
+            if (i < parameters.Count && !parameters[i].Bindable.IsScalar)
+            {
+                IParameterSchema nonScalarParameter = parameters[i];
+
+                string[] nonScalarValues = parameterInputs.TakeLast(remainingInputs)
+                                                          .Select(p => p.Value)
+                                                          .ToArray();
+
+                // Parameters are required by default and so a non-scalar parameter must be bound to at least one value
+                if (!nonScalarValues.Any())
+                {
+                    throw new MissingParametersException(nonScalarParameter);
+                }
+
+                nonScalarParameter.BindOn(bindableModel.Instance, nonScalarValues);
+                --remainingParameters;
+                remainingInputs = 0;
+            }
+        }
+
+        /// <summary>
+        /// Binds option inputs in command instance.
+        /// </summary>
+        public void BindOptions(BindableModel bindableModel,
+                                IConfiguration configuration)
+        {
+            IReadOnlyList<OptionInput> optionInputs = UnboundedInput.Options;
+            IReadOnlyList<IOptionSchema> options = bindableModel.Schema.Options;
+
+            // All inputs must be bound
+            HashSet<OptionInput> remainingOptionInputs = optionInputs.ToHashSet();
+
+            // All required options must be set
+            HashSet<IOptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
+                                                                 .ToHashSet();
+
+            // Direct or fallback input
+            foreach (OptionSchema option in options)
+            {
+                IEnumerable<OptionInput> inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias));
+
+                bool inputsProvided = inputs.Any();
+
+                // Check fallback value
+                if (!inputsProvided &&
+                    option.FallbackVariableName is string v &&
+                    configuration[v] is string value)
+                {
+                    string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
+
+                    option.BindOn(bindableModel.Instance, values);
+                    unsetRequiredOptions.Remove(option);
+
+                    continue;
+                }
+                else if (!inputsProvided) // Skip if the inputs weren't provided for this option
+                {
+                    if (option.Bindable.Kind == BindableArgumentKind.Dynamic)
+                    {
+                        option.Bindable.SetValue(bindableModel.Instance, null);
+                    }
+
+                    continue;
+                }
+
+                string[] inputValues = inputs.SelectMany(i => i.Values)
+                                             .ToArray();
+
+                option.BindOn(bindableModel.Instance, inputValues);
+
+                remainingOptionInputs.RemoveRange(inputs);
+
+                // Required option implies that the value has to be set and also be non-empty
+                if (inputValues.Any())
+                {
+                    unsetRequiredOptions.Remove(option);
+                }
+            }
+
+            // Ensure all required options were set
+            if (unsetRequiredOptions.Any())
+            {
+                throw new RequiredOptionsMissingException(unsetRequiredOptions);
+            }
+        }
+        #endregion
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(UnboundedInput)} = {UnboundedInput}";
         }
     }
 }

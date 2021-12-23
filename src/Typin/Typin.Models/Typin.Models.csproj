@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Declarative framework for interactive CLI applications</Description>
+		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
+	</ItemGroup>
+
+</Project>

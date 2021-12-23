@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.DynamicCommands;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
@@ -20,8 +22,8 @@
 
         private readonly HashSet<string> _parameterNames;
 
-        private readonly List<OptionSchema> _options;
-        private readonly List<ParameterSchema> _parameters;
+        private readonly List<IOptionSchema> _options;
+        private readonly List<IParameterSchema> _parameters;
 
         /// <summary>
         /// Initializes a new instance of <see cref="DynamicCommandBuilder"/>.
@@ -36,7 +38,7 @@
             _type = dynamicCommandType ?? throw new ArgumentNullException(nameof(dynamicCommandType));
             _name = name;
 
-            BaseCommandSchema baseCommandSchema = rootSchema.TryFindDynamicCommandBase(_type) ??
+            IModelSchema baseCommandSchema = rootSchema.TryFindDynamicCommandBase(_type) ??
                 throw new NullReferenceException($"Dynamic command base not found for '{_type.FullName ?? _type.Name}'.");
 
             _options = baseCommandSchema.Options.ToList();
@@ -129,7 +131,7 @@
             DynamicOptionBuilder builder = new(propertyName, optionType);
             action(builder);
 
-            OptionSchema schema = builder.Build();
+            IOptionSchema schema = builder.Build();
             _options.Add(schema);
 
             if (schema.Name is not null)
@@ -151,7 +153,7 @@
             DynamicOptionBuilder<T> builder = new(propertyName);
             action(builder);
 
-            OptionSchema schema = builder.Build();
+            IOptionSchema schema = builder.Build();
             _options.Add(schema);
 
             if (schema.Name is not null)
@@ -215,7 +217,7 @@
             DynamicParameterBuilder builder = new(parameterType, propertyName, order);
             action(builder);
 
-            ParameterSchema schema = builder.Build();
+            IParameterSchema schema = builder.Build();
             _parameters.Add(schema);
 
             _parameterNames.Add(schema.Name);
@@ -229,7 +231,7 @@
             DynamicParameterBuilder<T> builder = new(propertyName, order);
             action(builder);
 
-            ParameterSchema schema = builder.Build();
+            IParameterSchema schema = builder.Build();
             _parameters.Add(schema);
 
             _parameterNames.Add(schema.Name);
@@ -238,7 +240,7 @@
         }
         #endregion
 
-        public CommandSchema Build()
+        public ICommandSchema Build()
         {
             return new CommandSchema(_type,
                                      true,

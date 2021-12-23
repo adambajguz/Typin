@@ -8,6 +8,8 @@
     using Typin.Exceptions.Resolvers.CommandResolver;
     using Typin.Exceptions.Resolvers.OptionResolver;
     using Typin.Exceptions.Resolvers.ParameterResolver;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
@@ -20,20 +22,17 @@
         /// </summary>
         public static CommandSchema Resolve(Type type)
         {
-            if (!KnownTypesHelpers.IsCommandType(type))
+            if (!KnownTypesHelpers.IsCommandOrTemplateType(type))
             {
                 throw new InvalidCommandException(type);
             }
 
             CommandAttribute attribute = type.GetCustomAttribute<CommandAttribute>()!;
 
-            string? name = attribute.Name;
+            string? name = attribute.Name; //TODO: add DynamicCommandSchema beacuse dynamic commands can only be descirbed by BindableModelSchema
 
-            OptionSchema[] builtInOptions = string.IsNullOrWhiteSpace(name)
-                ? new[] { OptionSchema.HelpOption, OptionSchema.VersionOption }
-                : new[] { OptionSchema.HelpOption };
-
-            BaseCommandSchema baseSchema = ResolveBase(type, builtInOptions);
+            IParameterSchema[] parameters = ResolveParameters(type);
+            IOptionSchema[] options = ResoveOptions(type);
 
             if (attribute.SupportedModes is not null)
             {
@@ -55,55 +54,15 @@
                 }
             }
 
-            CommandSchema command = new(baseSchema,
+            CommandSchema command = new(type,
                                         false,
                                         name,
                                         attribute.Description,
                                         attribute.Manual,
                                         attribute.SupportedModes,
-                                        attribute.ExcludedModes);
-
-            return command;
-        }
-
-        /// <summary>
-        /// Resolves <see cref="CommandSchema"/>.
-        /// </summary>
-        public static BaseCommandSchema ResolveDynamic(Type type)
-        {
-            if (!KnownTypesHelpers.IsDynamicCommandType(type))
-            {
-                throw new InvalidCommandException(type);
-            }
-
-            return ResolveBase(type, new[] { OptionSchema.HelpOption });
-        }
-
-        /// <summary>
-        /// Resolves <see cref="CommandSchema"/>.
-        /// </summary>
-        private static BaseCommandSchema ResolveBase(Type type, OptionSchema[] builtInOptions)
-        {
-            if (!KnownTypesHelpers.IsNormalOrDynamicCommandType(type))
-            {
-                throw new InvalidCommandException(type);
-            }
-
-            ParameterSchema[] parameters = type.GetProperties()
-                                               .Select(ParameterSchemaResolver.TryResolve)
-                                               .Where(p => p is not null)
-                                               .OrderBy(p => p!.Order)
-                                               .ToArray()!;
-
-            OptionSchema[] options = type.GetProperties()
-                                         .Select(OptionSchemaResolver.TryResolve!)
-                                         .Where(o => o is not null)
-                                         .Concat(builtInOptions)
-                                         .ToArray()!;
-
-            BaseCommandSchema command = new(type,
-                                                       parameters,
-                                                       options); ;
+                                        attribute.ExcludedModes,
+                                        parameters,
+                                        options);
 
             ValidateParameters(command);
             ValidateOptions(command);
@@ -111,12 +70,52 @@
             return command;
         }
 
-        #region Helpers
-        private static void ValidateParameters(BaseCommandSchema command)
+        /// <summary>
+        /// Resolves <see cref="CommandSchema"/>.
+        /// </summary>
+        public static ICommandTemplateSchema ResolveTemplate(Type type)
         {
-            IGrouping<int, ParameterSchema>? duplicateOrderGroup = command.Parameters
-                                                                          .GroupBy(a => a.Order)
-                                                                          .FirstOrDefault(g => g.Count() > 1);
+            if (!KnownTypesHelpers.IsCommandTemplateType(type))
+            {
+                throw new InvalidCommandException(type);
+            }
+
+            IParameterSchema[] parameters = ResolveParameters(type);
+            IOptionSchema[] options = ResoveOptions(type);
+
+            CommandTemplateSchema commandTempalte = new(type,
+                                                        parameters,
+                                                        options);
+
+            ValidateParameters(commandTempalte);
+            ValidateOptions(commandTempalte);
+
+            return commandTempalte;
+        }
+
+        #region Helpers
+        private static IParameterSchema[] ResolveParameters(Type type)
+        {
+            return type.GetProperties()
+                       .Select(ParameterSchemaResolver.TryResolve)
+                       .Where(p => p is not null)
+                       .OrderBy(p => p!.Order)
+                       .ToArray()!;
+        }
+
+        private static IOptionSchema[] ResoveOptions(Type type)
+        {
+            return type.GetProperties()
+                       .Select(OptionSchemaResolver.TryResolve!)
+                       .Where(o => o is not null)
+                       .ToArray()!;
+        }
+
+        private static void ValidateParameters(IModelSchema command)
+        {
+            IGrouping<int, IParameterSchema>? duplicateOrderGroup = command.Parameters
+                .GroupBy(a => a.Order)
+                .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateOrderGroup is not null)
             {
@@ -127,10 +126,10 @@
                 );
             }
 
-            IGrouping<string, ParameterSchema>? duplicateNameGroup = command.Parameters
-                                                                            .Where(a => !string.IsNullOrWhiteSpace(a.Name))
-                                                                            .GroupBy(a => a.Name!, StringComparer.Ordinal)
-                                                                            .FirstOrDefault(g => g.Count() > 1);
+            IGrouping<string, IParameterSchema>? duplicateNameGroup = command.Parameters
+                .Where(a => !string.IsNullOrWhiteSpace(a.Name))
+                .GroupBy(a => a.Name!, StringComparer.Ordinal)
+                .FirstOrDefault(g => g.Count() > 1);
 
             if (duplicateNameGroup is not null)
             {
@@ -141,9 +140,9 @@
                 );
             }
 
-            ParameterSchema[] nonScalarParameters = command.Parameters
-                                                           .Where(p => !p.Bindable.IsScalar)
-                                                           .ToArray();
+            IParameterSchema[] nonScalarParameters = command.Parameters
+                .Where(p => !p.Bindable.IsScalar)
+                .ToArray();
 
             if (nonScalarParameters.Length > 1)
             {
@@ -153,10 +152,10 @@
                 );
             }
 
-            ParameterSchema? nonLastNonScalarParameter = command.Parameters
-                                                                .OrderByDescending(a => a.Order)
-                                                                .Skip(1)
-                                                                .LastOrDefault(p => !p.Bindable.IsScalar);
+            IParameterSchema? nonLastNonScalarParameter = command.Parameters
+                .OrderByDescending(a => a.Order)
+                .Skip(1)
+                .LastOrDefault(p => !p.Bindable.IsScalar);
 
             if (nonLastNonScalarParameter is not null)
             {
@@ -167,9 +166,9 @@
             }
         }
 
-        private static void ValidateOptions(BaseCommandSchema command)
+        private static void ValidateOptions(IModelSchema command)
         {
-            IGrouping<string, OptionSchema>? duplicateNameGroup = command.Options
+            IGrouping<string, IOptionSchema>? duplicateNameGroup = command.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.Name))
                 .GroupBy(o => o.Name!, StringComparer.Ordinal)
                 .FirstOrDefault(g => g.Count() > 1);
@@ -183,7 +182,7 @@
                 );
             }
 
-            IGrouping<char, OptionSchema>? duplicateShortNameGroup = command.Options
+            IGrouping<char, IOptionSchema>? duplicateShortNameGroup = command.Options
                 .Where(o => o.ShortName is not null)
                 .GroupBy(o => o.ShortName!.Value)
                 .FirstOrDefault(g => g.Count() > 1);

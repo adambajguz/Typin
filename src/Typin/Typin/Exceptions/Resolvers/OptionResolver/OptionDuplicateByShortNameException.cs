@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Schemas;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -21,7 +22,7 @@
         /// <param name="command"></param>
         /// <param name="shortName"></param>
         /// <param name="invalidOptions"></param>
-        public OptionDuplicateByShortNameException(BaseCommandSchema command, char shortName, IReadOnlyList<OptionSchema> invalidOptions) :
+        public OptionDuplicateByShortNameException(IModelSchema command, char shortName, IReadOnlyList<IOptionSchema> invalidOptions) :
             base(command,
                  invalidOptions,
                  BuildMessage(command, shortName, invalidOptions))
@@ -29,7 +30,7 @@
             ShortName = shortName;
         }
 
-        private static string BuildMessage(BaseCommandSchema command, char shortName, IReadOnlyList<OptionSchema> invalidOptions)
+        private static string BuildMessage(IModelSchema command, char shortName, IReadOnlyList<IOptionSchema> invalidOptions)
         {
             return $"Command '{command.Type.FullName}' is invalid because it contains {invalidOptions.Count} options with the same short name ('{shortName}'):{Environment.NewLine}" +
                    $"{invalidOptions.JoinToString(Environment.NewLine)}{Environment.NewLine}" +

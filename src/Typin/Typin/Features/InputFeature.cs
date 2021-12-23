@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using Typin;
-    using Typin.Input;
+    using Typin.Features.Input;
 
     /// <summary>
     /// <see cref="IInputFeature"/> implementation.

@@ -27,7 +27,7 @@
         public static bool IsCommandType(Type type)
         {
             return type.Implements(typeof(ICommand)) &&
-                   !type.Implements(typeof(IDynamicCommand)) &&
+                   !type.Implements(typeof(ICommandTemplate)) &&
                    type.IsDefined(typeof(CommandAttribute)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
@@ -54,19 +54,19 @@
         }
 
         /// <summary>
-        /// Checks whether type is a valid dynamic command.
+        /// Checks whether type is a valid command template.
         /// </summary>
-        public static bool IsDynamicCommandType(Type type)
+        public static bool IsCommandTemplateType(Type type)
         {
-            return type.Implements(typeof(IDynamicCommand)) &&
+            return type.Implements(typeof(ICommandTemplate)) &&
                    !type.IsAbstract &&
                    !type.IsInterface;
         }
 
         /// <summary>
-        /// Checks whether type is a valid command or dynamic command.
+        /// Checks whether type is a valid command or command template.
         /// </summary>
-        public static bool IsNormalOrDynamicCommandType(Type type)
+        public static bool IsCommandOrTemplateType(Type type)
         {
             return type.Implements(typeof(ICommand)) &&
                    !type.IsAbstract &&

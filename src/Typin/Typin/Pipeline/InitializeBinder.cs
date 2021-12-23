@@ -6,7 +6,8 @@ namespace Typin.Pipeline
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Features;
-    using Typin.Input;
+    using Typin.Features.Binding;
+    using Typin.Features.Input;
 
     /// <summary>
     /// Initializes binder.
@@ -24,7 +25,6 @@ namespace Typin.Pipeline
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            //Get input and command schema from context
             ParsedInput input = args.Input.Parsed ??
                 throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Parsed)} has not been configured for this application or call.");
 

@@ -1,7 +1,8 @@
 ﻿namespace Typin.Exceptions.Resolvers.ParameterResolver
 {
     using System;
-    using Typin.Schemas;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Non-scalar parameter must have highest order exception.
@@ -13,7 +14,7 @@
         /// </summary>
         /// <param name="command"></param>
         /// <param name="invalidParameter"></param>
-        public NonScalarParametersMustHaveHighestOrderException(BaseCommandSchema command, ParameterSchema invalidParameter) :
+        public NonScalarParametersMustHaveHighestOrderException(IModelSchema command, IParameterSchema invalidParameter) :
             base(command,
                  new[] { invalidParameter },
                  BuildMessage(command, invalidParameter))
@@ -21,7 +22,7 @@
 
         }
 
-        private static string BuildMessage(BaseCommandSchema command, ParameterSchema invalidParameter)
+        private static string BuildMessage(IModelSchema command, IParameterSchema invalidParameter)
         {
             return $"Command '{command.Type.FullName}' is invalid because it contains a non-scalar parameter {invalidParameter.Name} that is not the last one in order:{Environment.NewLine}" +
                    $"Non-scalar parameter is such that is bound from more than one value (e.g. array).{Environment.NewLine}" +

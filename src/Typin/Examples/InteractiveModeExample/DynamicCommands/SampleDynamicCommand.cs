@@ -8,10 +8,10 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.DynamicCommands;
-    using Typin.Metadata;
+    using Typin.Models;
+    using Typin.Models.Collections;
 
-    public class SampleDynamicCommand : IDynamicCommand
+    public class SampleDynamicCommand : ICommandTemplate
     {
         private readonly IConsole _console;
 
@@ -32,7 +32,7 @@
         {
             _console.Output.WriteLine(JsonConvert.SerializeObject(this, Formatting.Indented));
 
-            InputValue? numberInput = Arguments.GetOrDefault("Number");
+            ArgumentValue? numberInput = Arguments.GetOrDefault("Number");
             int? number = Arguments["Number"]?.GetValue<int?>();
             int number2 = Arguments["Number"].GetValue<int>(0);
             int? number5 = Arguments["Opt5"]?.GetValue<int?>();

@@ -1,7 +1,7 @@
 ﻿namespace Typin.Features
 {
     using System.Collections.Generic;
-    using Typin.Input;
+    using Typin.Features.Input;
 
     /// <summary>
     /// Command line input feature.

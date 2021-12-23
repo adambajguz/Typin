@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Binding;
     using Typin.DynamicCommands;
-    using Typin.Metadata;
-    using Typin.Schemas;
+    using Typin.Models.Collections;
+    using Typin.Models.Converters;
+    using Typin.Models.Schemas;
     using Typin.Utilities;
 
     /// <summary>
@@ -23,7 +23,7 @@
 
         /// <inheritdoc/>
         public IDynamicParameterBuilder<T> WithBindingConverter<TConverter>()
-            where TConverter : BindingConverter<T>
+            where TConverter : IArgumentConverter<T>
         {
             WithBindingConverter(typeof(TConverter));
 
@@ -93,7 +93,7 @@
             return this;
         }
 
-        public ParameterSchema Build()
+        public IParameterSchema Build()
         {
             return new ParameterSchema(_type,
                                        _propertyName,

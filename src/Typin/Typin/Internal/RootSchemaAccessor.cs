@@ -35,7 +35,7 @@
             Stopwatch timer = Stopwatch.StartNew();
 
             IReadOnlyCollection<Type> commands = _componentProvider.Get<ICommand>();
-            IReadOnlyCollection<Type> dynamicCommands = _componentProvider.Get<IDynamicCommand>();
+            IReadOnlyCollection<Type> dynamicCommands = _componentProvider.Get<ICommandTemplate>();
             IReadOnlyCollection<Type> directives = _componentProvider.Get<IDirective>();
 
             RootSchemaResolver rootSchemaResolver = new(commands, dynamicCommands, directives);

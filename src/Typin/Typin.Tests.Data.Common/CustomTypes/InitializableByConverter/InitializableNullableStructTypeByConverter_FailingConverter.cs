@@ -2,16 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Binding;
+    using Typin.Models.Converters;
 
-    public class InitializableNullableStructTypeByConverter_FailingConverter : BindingConverter<InitializableStructTypeByConverter?>
+    public class InitializableNullableStructTypeByConverter_FailingConverter : IArgumentConverter<InitializableStructTypeByConverter?>
     {
-        public override InitializableStructTypeByConverter? Convert(string? value)
+        public InitializableStructTypeByConverter? Convert(string? value)
         {
             throw new NotImplementedException();
         }
 
-        public override InitializableStructTypeByConverter? ConvertCollection(IReadOnlyCollection<string> values)
+        public InitializableStructTypeByConverter? ConvertCollection(IReadOnlyCollection<string> values)
         {
             throw new NotImplementedException();
         }

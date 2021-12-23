@@ -5,9 +5,6 @@ namespace Typin.Pipeline
     using Microsoft.Extensions.Configuration;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Features;
-    using Typin.Internal.Input;
-    using Typin.Schemas;
 
     /// <summary>
     /// Binds input.
@@ -27,11 +24,6 @@ namespace Typin.Pipeline
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            //Get input and command schema from context
-            IBinderFeature binder = args.Binder;
-
-            CommandSchema commandSchema = args.Command.Schema;
-
             //Type currentModeType = _applicationLifetime.CurrentModeType!;
 
             //// Handle commands not supported in current mode
@@ -40,17 +32,7 @@ namespace Typin.Pipeline
             //    throw ModeEndUserExceptions.CommandExecutedInInvalidMode(commandSchema, currentModeType);
             //}
 
-            // Get command instance from context and bind arguments
-            ICommand instance = args.Command.Instance;
-
-            commandSchema.BindParameters(instance, binder.UnboundedInput);
-            commandSchema.BindOptions(instance, binder.UnboundedInput, _configuration);
-
-            //await Task.Delay(500, cancellationToken); //TODO: remove
-
-            //args.Lifetime.Abort(); //TODO: remove
-
-            //await Task.Delay(500, cancellationToken); //TODO: remove
+            args.Binder.Bind(_configuration);
 
             await next();
         }

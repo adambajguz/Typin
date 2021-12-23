@@ -8,7 +8,7 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.DynamicCommands;
-    using Typin.Metadata;
+    using Typin.Models.Collections;
     using Typin.Schemas;
 
     [Command("add dynamic", Description = "Adds a dynamic command.")]
@@ -32,7 +32,7 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            CommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<SampleDynamicCommand>(Name)
+            ICommandSchema commandSchema = _dynamicCommandBuilderFactory.Create<SampleDynamicCommand>(Name)
                 .WithDescription("Test description.")
                 .WithManual("Some manual\nadd dynamic --name abc\nabc 5 j --number 4 -a aaaaaa\nabc --help.")
                 .AddOption<int>("Number", (ob) => ob

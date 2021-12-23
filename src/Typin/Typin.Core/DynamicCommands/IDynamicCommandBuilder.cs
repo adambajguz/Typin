@@ -1,12 +1,13 @@
 ﻿namespace Typin.DynamicCommands
 {
     using System;
+    using Typin.Models.Builders;
     using Typin.Schemas;
 
     /// <summary>
     /// Dynamic command builder.
     /// </summary>
-    public interface IDynamicCommandBuilder
+    public interface IDynamicCommandBuilder : IBuilder<ICommandSchema>
     {
         /// <summary>
         /// Sets dynamic command description, which is used in help text.
@@ -205,11 +206,5 @@
         /// <returns></returns>
         IDynamicCommandBuilder AddParameter<T>(string propertyName, int order, Action<IDynamicParameterBuilder<T>> action);
         #endregion
-
-        /// <summary>
-        /// Builds a dynamic command schema.
-        /// </summary>
-        /// <returns></returns>
-        CommandSchema Build();
     }
 }

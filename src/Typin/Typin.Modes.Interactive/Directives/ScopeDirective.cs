@@ -7,7 +7,7 @@
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
-    using Typin.Input;
+    using Typin.Features.Input;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Internal.Extensions;
 

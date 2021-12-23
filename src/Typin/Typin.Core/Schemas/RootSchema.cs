@@ -3,16 +3,17 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Typin.Models.Binding;
 
     /// <summary>
     /// Stores all schemas of commands and directives in the application.
     /// </summary>
     public class RootSchema
     {
-        private readonly Dictionary<string, CommandSchema> _commands;
+        private readonly Dictionary<string, ICommandSchema> _commands;
         private HashSet<string>? _directiveNamesHashSet;
         private HashSet<string>? _commandNamesHashSet;
-        private readonly Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> _dynamicCommands;
+        private readonly Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> _commandTemplates;
 
         /// <summary>
         /// List of defined directives in the application.
@@ -22,30 +23,30 @@
         /// <summary>
         /// List of defined commands in the application.
         /// </summary>
-        public IReadOnlyDictionary<string, CommandSchema> Commands => _commands;
+        public IReadOnlyDictionary<string, ICommandSchema> Commands => _commands;
 
         /// <summary>
         /// Default command (null if no default command).
         /// </summary>
-        public CommandSchema? DefaultCommand { get; }
+        public ICommandSchema? DefaultCommand { get; }
 
         /// <summary>
-        /// Dynamic commands.
+        /// Command templates.
         /// </summary>
-        public IEnumerable<BaseCommandSchema> DynamicCommands => _dynamicCommands.Value.Values;
+        public IEnumerable<ICommandTemplateSchema> CommandTemplates => _commandTemplates.Value.Values;
 
         /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
         public RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                          Lazy<IReadOnlyDictionary<Type, BaseCommandSchema>> dynamicCommands,
-                          Dictionary<string, CommandSchema> commands,
-                          CommandSchema? defaultCommand)
+                          Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> commandTemplates,
+                          Dictionary<string, ICommandSchema> commands,
+                          ICommandSchema? defaultCommand)
         {
             Directives = directives;
             _commands = commands;
             DefaultCommand = defaultCommand;
-            _dynamicCommands = dynamicCommands;
+            _commandTemplates = commandTemplates;
         }
 
         /// <summary>
@@ -53,7 +54,7 @@
         /// </summary>
         /// <param name="commandSchema"></param>
         /// <returns>Whether dynamic command was added.</returns>
-        public bool TryAddDynamicCommand(CommandSchema commandSchema)
+        public bool TryAddDynamicCommand(ICommandSchema commandSchema)
         {
             if (commandSchema.IsDynamic && !commandSchema.IsDefault)
             {
@@ -75,10 +76,10 @@
         /// </summary>
         /// <param name="commandSchemas"></param>
         /// <returns>Whether all dynamic commands were added.</returns>
-        public bool TryAddDynamicCommandRange(IEnumerable<CommandSchema> commandSchemas)
+        public bool TryAddDynamicCommandRange(IEnumerable<ICommandSchema> commandSchemas)
         {
             bool allAdded = true;
-            foreach (CommandSchema schema in commandSchemas)
+            foreach (ICommandSchema schema in commandSchemas)
             {
                 if (schema.IsDynamic && !schema.IsDefault)
                 {
@@ -101,7 +102,7 @@
         /// <returns>Whether dynamic command was added.</returns>
         public bool TryRemoveDynamicCommand(string name)
         {
-            if (_commands.TryGetValue(name, out CommandSchema? commandSchema) && commandSchema.IsDynamic)
+            if (_commands.TryGetValue(name, out ICommandSchema? commandSchema) && commandSchema.IsDynamic)
             {
                 _commands.Remove(name);
                 _commandNamesHashSet = null;
@@ -122,7 +123,7 @@
             bool allRemoved = true;
             foreach (string name in names)
             {
-                if (_commands.TryGetValue(name, out CommandSchema? commandSchema) && commandSchema.IsDynamic)
+                if (_commands.TryGetValue(name, out ICommandSchema? commandSchema) && commandSchema.IsDynamic)
                 {
                     _commands.Remove(name);
                 }
@@ -176,7 +177,7 @@
         /// <summary>
         /// Finds command schema by name.
         /// </summary>
-        public CommandSchema? TryFindCommand(string? commandName)
+        public ICommandSchema? TryFindCommand(string? commandName)
         {
             if (string.IsNullOrWhiteSpace(commandName))
             {
@@ -189,9 +190,9 @@
         /// <summary>
         /// Finds dynamic command base schema by type.
         /// </summary>
-        public BaseCommandSchema? TryFindDynamicCommandBase(Type type)
+        public IModelSchema? TryFindDynamicCommandBase(Type type)
         {
-            return _dynamicCommands.Value.GetValueOrDefault(type);
+            return _commandTemplates.Value.GetValueOrDefault(type);
         }
 
         /// <summary>
@@ -207,7 +208,7 @@
             return Directives.GetValueOrDefault(directiveName);
         }
 
-        private static IEnumerable<CommandSchema> GetDescendantCommands(IEnumerable<CommandSchema> potentialParentCommands, string? parentCommandName)
+        private static IEnumerable<ICommandSchema> GetDescendantCommands(IEnumerable<ICommandSchema> potentialParentCommands, string? parentCommandName)
         {
             return potentialParentCommands.Where(c => string.IsNullOrWhiteSpace(parentCommandName) ||
                                                  c.Name!.StartsWith(parentCommandName + ' ', StringComparison.Ordinal));
@@ -216,7 +217,7 @@
         /// <summary>
         /// Finds all descendant commands of the parrent command by name.
         /// </summary>
-        public IReadOnlyList<CommandSchema> GetDescendantCommands(string? parentCommandName)
+        public IReadOnlyList<ICommandSchema> GetDescendantCommands(string? parentCommandName)
         {
             return GetDescendantCommands(Commands.Values, parentCommandName).ToArray();
         }
@@ -224,12 +225,12 @@
         /// <summary>
         /// Finds all child commands of the parrent command by name.
         /// </summary>
-        public IReadOnlyList<CommandSchema> GetChildCommands(string? parentCommandName)
+        public IReadOnlyList<ICommandSchema> GetChildCommands(string? parentCommandName)
         {
-            IEnumerable<CommandSchema> descendants = GetDescendantCommands(Commands.Values, parentCommandName);
+            IEnumerable<ICommandSchema> descendants = GetDescendantCommands(Commands.Values, parentCommandName);
 
             // Filter out descendants of descendants, leave only children
-            List<CommandSchema> result = new(descendants);
+            List<ICommandSchema> result = new(descendants);
 
             foreach (var descendant in descendants)
             {

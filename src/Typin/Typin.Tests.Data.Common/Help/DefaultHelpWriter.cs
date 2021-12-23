@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using Typin.Console;
     using Typin.Help;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     public class TestHelpWriter : IHelpWriter
@@ -27,8 +28,8 @@
         }
 
         /// <inheritdoc/>
-        public void Write(CommandSchema command,
-                          IReadOnlyDictionary<ArgumentSchema, object?> defaultValues)
+        public void Write(ICommandSchema command,
+                          IReadOnlyDictionary<IArgumentSchema, object?> defaultValues)
         {
             _console.Output.WriteLine(ExpectedStringOnStandardWrite);
         }

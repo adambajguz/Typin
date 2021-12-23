@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Schemas;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -21,14 +21,14 @@
         /// </summary>
         /// <param name="argument"></param>
         /// <param name="values"></param>
-        public NonScalarInputExpectedException(ArgumentSchema argument, IReadOnlyCollection<string> values) :
+        public NonScalarInputExpectedException(IArgumentSchema argument, IReadOnlyCollection<string> values) :
             base(argument,
                  BuildMessage(argument, values))
         {
             Values = values;
         }
 
-        private static string BuildMessage(ArgumentSchema argument, IReadOnlyCollection<string> values)
+        private static string BuildMessage(IArgumentSchema argument, IReadOnlyCollection<string> values)
         {
             string argumentKind = argument switch
             {

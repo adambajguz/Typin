@@ -7,7 +7,7 @@
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
     using Typin.Console;
-    using Typin.Input;
+    using Typin.Features.Input;
 
     /// <summary>
     /// When preview mode is specified (using the [preview] directive), the app will short-circuit by printing consumed command line arguments as they were parsed.
@@ -60,7 +60,7 @@
             }
 
             // Parameters
-            foreach (CommandParameterInput parameter in input.Parameters)
+            foreach (ParameterInput parameter in input.Parameters)
             {
                 console.Output.Write('<');
 
@@ -71,7 +71,7 @@
             }
 
             // Options
-            foreach (CommandOptionInput option in input.Options)
+            foreach (OptionInput option in input.Options)
             {
                 console.Output.Write('(');
 

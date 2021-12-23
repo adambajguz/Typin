@@ -9,11 +9,12 @@
     using Microsoft.Extensions.DependencyInjection;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.DynamicCommands;
     using Typin.Features;
-    using Typin.Input;
+    using Typin.Features.Binding;
+    using Typin.Features.Input;
     using Typin.Internal;
-    using Typin.Internal.DynamicCommands;
+    using Typin.Models.Collections;
+    using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
@@ -21,7 +22,7 @@
     /// </summary>
     public sealed class ResolveCommand : IMiddleware
     {
-        private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
+        private static Action<ICommandTemplate, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
 
         private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly IServiceProvider _serviceProvider;
@@ -50,7 +51,7 @@
             ParsedInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
-            CommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
+            ICommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
 
             // TODO: is the problem below still valid?
             // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
@@ -66,7 +67,7 @@
 
             ICommand instance = GetCommandInstance(commandSchema);
 
-            if (commandSchema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
+            if (commandSchema.IsDynamic && instance is ICommandTemplate dynamicCommandInstance)
             {
                 _dynamicCommandArgumentCollectionSetter ??= GetDynamicArgumentsSetter();
                 _dynamicCommandArgumentCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
@@ -74,14 +75,15 @@
 
             // To avoid instantiating the command twice, we need to get default values
             // before the arguments are bound to the properties
-            IReadOnlyDictionary<ArgumentSchema, object?> defaultValues = commandSchema.GetArgumentValues(instance);
+            IReadOnlyDictionary<IArgumentSchema, object?> defaultValues = commandSchema.GetArgumentValues(instance);
 
             context.Features.Set<ICommandFeature>(new CommandFeature(commandSchema, instance, defaultValues));
+            context.Binder.TryAdd(new BindableModel(commandSchema, instance));
 
             return null;
         }
 
-        private ICommand GetCommandInstance(CommandSchema command)
+        private ICommand GetCommandInstance(ICommandSchema command)
         {
             if (command == StubDefaultCommand.Schema)
             {
@@ -96,10 +98,10 @@
             return (ICommand)factory(_serviceProvider, null);
         }
 
-        private static Action<IDynamicCommand, IArgumentCollection> GetDynamicArgumentsSetter()
+        private static Action<ICommandTemplate, IArgumentCollection> GetDynamicArgumentsSetter()
         {
-            MethodInfo methodInfo = typeof(IDynamicCommand).GetProperty(nameof(IDynamicCommand.Arguments))!.GetSetMethod(true)!;
-            var @delegate = (Action<IDynamicCommand, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicCommand, IArgumentCollection>), methodInfo);
+            MethodInfo methodInfo = typeof(ICommandTemplate).GetProperty(nameof(ICommandTemplate.Arguments))!.GetSetMethod(true)!;
+            var @delegate = (Action<ICommandTemplate, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<ICommandTemplate, IArgumentCollection>), methodInfo);
 
             return @delegate;
         }

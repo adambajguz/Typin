@@ -2,11 +2,11 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Binding;
+    using Typin.Models.Converters;
 
-    public class InitializableEnumerableByConverter_Converter<T> : BindingConverter<InitializableEnumerableByConverter<T>>
+    public class InitializableEnumerableByConverter_Converter<T> : IArgumentConverter<InitializableEnumerableByConverter<T>>
     {
-        public override InitializableEnumerableByConverter<T>? Convert(string? value)
+        public InitializableEnumerableByConverter<T>? Convert(string? value)
         {
             if (value is null)
             {
@@ -18,7 +18,7 @@
             return new InitializableEnumerableByConverter<T>(values);
         }
 
-        public override InitializableEnumerableByConverter<T> ConvertCollection(IReadOnlyCollection<string> values)
+        public InitializableEnumerableByConverter<T> ConvertCollection(IReadOnlyCollection<string> values)
         {
             List<T> v = new();
 

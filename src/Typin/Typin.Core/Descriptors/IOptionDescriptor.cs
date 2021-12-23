@@ -27,7 +27,7 @@
         /// <summary>
         /// Option description, which is used in help text.
         /// </summary>
-        string? Description { get; }
+        string? Description { get; } //TODO: rename to summary
 
         /// <summary>
         /// Fallback variable that will be used as fallback if no option value is specified.

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Typin.Schemas;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Type conversion exception.
@@ -28,7 +28,7 @@
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, string? value, Type targetType, Exception? innerException = null) :
+        public TypeConversionException(IArgumentSchema argument, string? value, Type targetType, Exception? innerException = null) :
             this(argument, new[] { value }, targetType, innerException)
         {
 
@@ -41,7 +41,7 @@
         /// <param name="values"></param>
         /// <param name="targetType"></param>
         /// <param name="innerException"></param>
-        public TypeConversionException(ArgumentSchema argument, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
+        public TypeConversionException(IArgumentSchema argument, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException = null) :
             base(argument,
                  BuildMessage(argument, values, targetType, innerException),
                  innerException)
@@ -50,7 +50,7 @@
             TargetType = targetType;
         }
 
-        private static string BuildMessage(ArgumentSchema argument, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException)
+        private static string BuildMessage(IArgumentSchema argument, IReadOnlyCollection<string?> values, Type targetType, Exception? innerException)
         {
             string argumentKind = argument switch
             {

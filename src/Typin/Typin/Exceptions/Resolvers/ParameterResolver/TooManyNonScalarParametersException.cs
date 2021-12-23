@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Schemas;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -15,7 +16,7 @@
         /// </summary>
         /// <param name="command"></param>
         /// <param name="invalidParameters"></param>
-        public TooManyNonScalarParametersException(BaseCommandSchema command, IReadOnlyList<ParameterSchema> invalidParameters) :
+        public TooManyNonScalarParametersException(IModelSchema command, IReadOnlyList<IParameterSchema> invalidParameters) :
             base(command,
                  invalidParameters,
                  BuildMessage(command, invalidParameters))
@@ -23,9 +24,9 @@
 
         }
 
-        private static string BuildMessage(BaseCommandSchema command, IReadOnlyList<ParameterSchema> invalidParameters)
+        private static string BuildMessage(IModelSchema command, IReadOnlyList<IParameterSchema> invalidParameters)
         {
-            return $"Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:" +
+            return $"Command '{command}' is invalid because it contains {invalidParameters.Count} non-scalar parameters:" +
 $"{invalidParameters.JoinToString(Environment.NewLine)}" +
 Environment.NewLine +
 "Non-scalar parameter is such that is bound from more than one value (e.g. array)." +

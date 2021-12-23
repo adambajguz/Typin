@@ -52,8 +52,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
-		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Help\Typin.Help.csproj" />
+		<ProjectReference Include="..\Typin.Models\Typin.Models.csproj" />
 		<ProjectReference Include="..\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />
 	</ItemGroup>
 

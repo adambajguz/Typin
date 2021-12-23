@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Schemas;
+    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -21,7 +22,7 @@
         /// <param name="command"></param>
         /// <param name="name"></param>
         /// <param name="invalidParameters"></param>
-        public ParameterDuplicateByNameException(BaseCommandSchema command, string name, IReadOnlyList<ParameterSchema> invalidParameters) :
+        public ParameterDuplicateByNameException(IModelSchema command, string name, IReadOnlyList<IParameterSchema> invalidParameters) :
             base(command,
                  invalidParameters,
                  BuildMessage(command, name, invalidParameters))
@@ -29,7 +30,7 @@
             Name = name;
         }
 
-        private static string BuildMessage(BaseCommandSchema command, string name, IReadOnlyList<ParameterSchema> invalidParameters)
+        private static string BuildMessage(IModelSchema command, string name, IReadOnlyList<IParameterSchema> invalidParameters)
         {
             return $"Command '{command.Type.FullName}' is invalid because it contains {invalidParameters.Count} parameters with the same name ('{name}'):{Environment.NewLine}" +
                    $"{invalidParameters.JoinToString(Environment.NewLine)}{Environment.NewLine}" +

@@ -3,11 +3,12 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
+    using Typin.Models;
 
     /// <summary>
     /// Entry point in a command line application.
     /// </summary>
-    public interface ICommand
+    public interface ICommand : IModel
     {
         /// <summary>
         /// Executes the command using the specified implementation of <see cref="IConsole"/>.

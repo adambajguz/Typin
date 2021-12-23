@@ -29,7 +29,7 @@
                    Environment.NewLine +
                    $"In order to be a valid dynamic command type, it must:{Environment.NewLine}" +
                    $"  - Not be an abstract class{Environment.NewLine}" +
-                   $"  - Implement {typeof(IDynamicCommand).FullName}{Environment.NewLine}.";
+                   $"  - Implement {typeof(ICommandTemplate).FullName}{Environment.NewLine}.";
         }
     }
 }

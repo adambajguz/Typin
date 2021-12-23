@@ -1,8 +1,8 @@
 ﻿namespace Typin.DynamicCommands
 {
     using System;
-    using Typin.Binding;
-    using Typin.Metadata;
+    using Typin.Models.Collections;
+    using Typin.Models.Converters;
 
     /// <summary>
     /// Dynamic command parameter builder.
@@ -13,7 +13,7 @@
         /// Sets a binding converter for this parameter.
         /// </summary>
         IDynamicParameterBuilder<T> WithBindingConverter<TConverter>()
-            where TConverter : BindingConverter<T>;
+            where TConverter : IArgumentConverter<T>;
     }
 
     /// <summary>
