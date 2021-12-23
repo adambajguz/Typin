@@ -3,95 +3,65 @@
     using System;
     using System.Reflection;
     using Typin.Models.Collections;
-    using Typin.Models.Converters;
-    using Typin.Models.Schemas;
-    using Typin.Utilities;
 
     /// <summary>
     /// Prameter builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
-    internal sealed class ParameterBuilder<TModel> : ArgumentBuilder<TModel>, IParameterBuilder<TModel>
+    internal class ParameterBuilder<TModel> : ParameterBuilder, IParameterBuilder<TModel>
         where TModel : class, IModel
     {
-        private readonly int _defaultOrder;
-        private int _order;
-
-        private string? _name;
-        private string? _description;
-        private Type? _converterType;
-
         /// <summary>
         /// Initializes a new instance of <see cref="ParameterBuilder{TModel}"/>.
         /// </summary>
         /// <param name="defaultOrder"></param>
         /// <param name="propertyInfo"></param>
         public ParameterBuilder(int defaultOrder, PropertyInfo propertyInfo) :
-            base(propertyInfo)
+            base(typeof(TModel), defaultOrder, propertyInfo)
         {
-            _defaultOrder = defaultOrder;
-            _order = defaultOrder;
+
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel> Order(int? order)
+        IParameterBuilder<TModel> IManageExtensions<IParameterBuilder<TModel>>.ManageExtensions(Action<IExtensionsCollection> action)
         {
-            _order = order ?? _defaultOrder;
+            action(Extensions);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel> Name(string? name)
+        IParameterBuilder<TModel> IParameterBuilder<TModel>.Order(int? order)
         {
-            _name = name;
+            Order(order);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel> Description(string? description)
+        IParameterBuilder<TModel> IParameterBuilder<TModel>.Name(string? name)
         {
-            _description = description;
+            Name(name);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel> Converter<TConverter>()
-            where TConverter : IArgumentConverter
+        IParameterBuilder<TModel> IParameterBuilder<TModel>.Description(string? description)
         {
-            return Converter(typeof(TConverter));
-        }
-
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel> Converter(Type? type)
-        {
-            if (type is not null && !IArgumentConverter.IsValidType(type, Property.PropertyType))
-            {
-                throw new ArgumentException($"'{type}' is not a valid converter for parameter property of type 'Property.PropertyType' inside model '{typeof(TModel)}'.");
-            }
-
-            _converterType = type;
+            Description(description);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterSchema Build()
+        IParameterBuilder<TModel> IParameterBuilder<TModel>.Converter<TConverter>()
         {
-            // The user may mistakenly specify dashes, so trim them
-            string? parameterName = _name?.TrimStart('-') ??
-                TextUtils.ToKebabCase(Property.Name);
+            Converter(typeof(TConverter));
 
-            return new ParameterSchema(
-                    Property,
-                    _order,
-                    parameterName,
-                    _description,
-                    _converterType,
-                    new MetadataCollection()
-                );
+            return this;
+        }
+
+        IParameterBuilder<TModel> IParameterBuilder<TModel>.Converter(Type? type)
+        {
+            Converter(type);
+
+            return this;
         }
     }
 }

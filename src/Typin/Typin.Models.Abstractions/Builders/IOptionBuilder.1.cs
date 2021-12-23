@@ -9,7 +9,7 @@
     /// Model option builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
-    public interface IOptionBuilder<TModel> : IBuilder<IOptionSchema>
+    public interface IOptionBuilder<TModel> : IBuilder<IOptionSchema>, IManageExtensions<IOptionBuilder<TModel>>
         where TModel : class, IModel
     {
         /// <summary>
@@ -72,7 +72,7 @@
         IOptionBuilder<TModel> IsRequired(bool isRequired = true);
 
         /// <summary>
-        /// Sets option name.
+        /// Sets option description.
         /// When null is passed a value will be set to default (no description).
         /// </summary>
         /// <param name="description"></param>

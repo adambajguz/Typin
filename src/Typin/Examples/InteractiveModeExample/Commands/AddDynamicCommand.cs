@@ -8,7 +8,6 @@
     using Typin.Attributes;
     using Typin.Console;
     using Typin.DynamicCommands;
-    using Typin.Models.Collections;
     using Typin.Schemas;
 
     [Command("add dynamic", Description = "Adds a dynamic command.")]
@@ -38,19 +37,16 @@
                 .AddOption<int>("Number", (ob) => ob
                     .AsRequired()
                     .WithDescription("Some number.")
-                    .SetMetadata(new ArgumentMetadata("test"))
                 )
                 .AddOption(typeof(double))
-                .AddOption<int>((ob) => ob
-                    .SetMetadata(new ArgumentMetadata("test"))
-                )
+                .AddOption<int>()
                 .AddOption<string>("Str")
                 .AddOption(typeof(double), "Price")
                 .AddParameter<string>("Parameter", 0)
                 .AddParameter<string>(1)
                 .Build();
 
-            if (_rootSchema.TryAddDynamicCommand(commandSchema))
+            if (_rootSchema.TryAddCommand(commandSchema))
             {
                 _console.Output.WithForegroundColor(ConsoleColor.Green, (err) => err.WriteLine($"Successfully added dynamic command '{Name}'."));
             }

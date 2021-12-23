@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Typin.Models.Collections;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Argument value.
@@ -11,14 +11,9 @@
     public sealed class ArgumentValue : IEquatable<ArgumentValue?>
     {
         /// <summary>
-        /// Metadata.
+        /// Argument schema.
         /// </summary>
-        public IMetadataCollection Metadata { get; }
-
-        /// <summary>
-        /// Expected value type.
-        /// </summary>
-        public Type ExpectedType { get; }
+        public IArgumentSchema Schema { get; }
 
         /// <summary>
         /// Bounded input value.
@@ -28,24 +23,18 @@
         /// <summary>
         /// Initializes a new instance of <see cref="ArgumentValue"/>.
         /// </summary>
-        /// <param name="metadata"></param>
-        /// <param name="expectedType"></param>
+        /// <param name="argumentSchema"></param>
         /// <param name="value"></param>
-        public ArgumentValue(IMetadataCollection metadata, Type expectedType, object? value)
+        public ArgumentValue(IArgumentSchema argumentSchema, object? value)
         {
-            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
-            ExpectedType = expectedType;
-            Value = value;
-        }
+            Type? type = value?.GetType();
+            if (type is not null && argumentSchema.Bindable.Type != type)
+            {
+                throw new ArgumentException($"Instance should be of type '{argumentSchema.Bindable.Type}' but is '{type}'", nameof(value));
+            }
 
-        /// <summary>
-        /// Creates a new instance of <see cref="ArgumentValue"/>.
-        /// </summary>
-        /// <param name="metadata"></param>
-        /// <param name="value"></param>
-        public static ArgumentValue Create<T>(IMetadataCollection metadata, T value)
-        {
-            return new ArgumentValue(metadata, typeof(T), value);
+            Schema = argumentSchema ?? throw new ArgumentNullException(nameof(argumentSchema));
+            Value = value;
         }
 
         /// <summary>
@@ -75,15 +64,14 @@
         public bool Equals(ArgumentValue? other)
         {
             return other != null &&
-                   EqualityComparer<IMetadataCollection>.Default.Equals(Metadata, other.Metadata) &&
-                   EqualityComparer<Type>.Default.Equals(ExpectedType, other.ExpectedType) &&
+                   EqualityComparer<IArgumentSchema>.Default.Equals(Schema, other.Schema) &&
                    EqualityComparer<object?>.Default.Equals(Value, other.Value);
         }
 
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Metadata, ExpectedType, Value);
+            return HashCode.Combine(Schema, Value);
         }
 
         /// <summary>

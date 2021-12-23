@@ -9,7 +9,7 @@
     /// Model parameter builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
-    public interface IParameterBuilder<TModel> : IBuilder<IParameterSchema>
+    public interface IParameterBuilder<TModel> : IBuilder<IParameterSchema>, IManageExtensions<IParameterBuilder<TModel>>
         where TModel : class, IModel
     {
         /// <summary>
@@ -63,7 +63,7 @@
         IParameterBuilder<TModel> Name(string? name);
 
         /// <summary>
-        /// Sets parameter name.
+        /// Sets parameter description.
         /// When null is passed a value will be set to default (no description).
         /// </summary>
         /// <param name="description"></param>

@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Models;
-    using Typin.Models.Collections;
+    using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -18,35 +18,25 @@
         /// </summary>
         private PropertyInfo? Property { get; }
 
-        /// <summary>
-        /// Argument type.
-        /// </summary>
+        /// <inheritdoc/>
         public Type Type { get; }
 
-        /// <summary>
-        /// Enumerable argument underlying type.
-        /// </summary>
+        /// <inheritdoc/>
         public Type? EnumerableUnderlyingType { get; }
 
-        /// <summary>
-        /// Argument type.
-        /// </summary>
+        /// <inheritdoc/>
         public string Name { get; }
 
-        /// <summary>
-        /// Arguemnt type
-        /// </summary>
+        /// <inheritdoc/>
         public BindableArgumentKind Kind { get; }
 
-        /// <summary>
-        /// Argument metadata.
-        /// </summary>
-        public IMetadataCollection Metadata { get; }
+        /// <inheritdoc/>
+        public IArgumentSchema Schema { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="BindableArgument"/> that represents a property-based argument.
         /// </summary>
-        internal BindableArgument(IMetadataCollection metadata, PropertyInfo property)
+        internal BindableArgument(IArgumentSchema argumentSchema, PropertyInfo property)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
 
@@ -54,13 +44,13 @@
             EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = Property.Name;
             Kind = BindableArgumentKind.Property;
-            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
+            Schema = argumentSchema;
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="BindableArgument"/> that represents a built-in argument.
         /// </summary>
-        internal BindableArgument(IMetadataCollection metadata, Type propertyType, string propertyName)
+        internal BindableArgument(IArgumentSchema argumentSchema, Type propertyType, string propertyName)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -71,7 +61,7 @@
             EnumerableUnderlyingType = Type.TryGetEnumerableArgumentUnderlyingType();
             Name = propertyName;
             Kind = BindableArgumentKind.Dynamic;
-            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
+            Schema = argumentSchema;
         }
 
         private IReadOnlyList<string>? _validValues;
@@ -134,12 +124,22 @@
         {
             if (Kind is BindableArgumentKind.Dynamic && instance is IDynamicModel dynamic)
             {
-                dynamic.Arguments.Set(Name, new ArgumentValue(Metadata, Type, value));
+                dynamic.Arguments.Set(Name, new ArgumentValue(Schema, value));
             }
             else
             {
                 Property?.SetValue(instance, value);
             }
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Type)} = {Type}, " +
+                $"{nameof(Kind)} = {Kind}, " +
+                $"{nameof(Name)} = {Name}";
         }
     }
 }

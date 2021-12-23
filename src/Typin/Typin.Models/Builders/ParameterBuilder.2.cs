@@ -4,97 +4,72 @@
     using System.Linq.Expressions;
     using Typin.Models.Collections;
     using Typin.Models.Converters;
-    using Typin.Models.Schemas;
-    using Typin.Utilities;
+    using Typin.Models.Extensions;
 
     /// <summary>
     /// Prameter builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
-    internal sealed class ParameterBuilder<TModel, TProperty> : ArgumentBuilder<TModel, TProperty>, IParameterBuilder<TModel, TProperty>
+    internal class ParameterBuilder<TModel, TProperty> : ParameterBuilder<TModel>, IParameterBuilder<TModel, TProperty>
         where TModel : class, IModel
     {
-        private readonly int _defaultOrder;
-        private int _order;
-
-        private string? _name;
-        private string? _description;
-        private Type? _converterType;
-
         /// <summary>
         /// Initializes a new instance of <see cref="ParameterBuilder{TModel, TProperty}"/>.
         /// </summary>
         /// <param name="defaultOrder"></param>
         /// <param name="propertyAccessor"></param>
         public ParameterBuilder(int defaultOrder, Expression<Func<TModel, TProperty>> propertyAccessor) :
-            base(propertyAccessor)
+            base(defaultOrder, propertyAccessor.GetPropertyInfo())
         {
-            _defaultOrder = defaultOrder;
-            _order = defaultOrder;
+
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel, TProperty> Order(int? order)
+        IParameterBuilder<TModel, TProperty> IManageExtensions<IParameterBuilder<TModel, TProperty>>.ManageExtensions(Action<IExtensionsCollection> action)
         {
-            _order = order ?? _defaultOrder;
+            action(Extensions);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel, TProperty> Name(string? name)
+        IParameterBuilder<TModel, TProperty> IParameterBuilder<TModel, TProperty>.Order(int? order)
         {
-            _name = name;
+            Order(order);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel, TProperty> Description(string? description)
+        IParameterBuilder<TModel, TProperty> IParameterBuilder<TModel, TProperty>.Name(string? name)
         {
-            _description = description;
+            Name(name);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel, TProperty> Converter<TConverter>()
-            where TConverter : IArgumentConverter<TProperty>
+        IParameterBuilder<TModel, TProperty> IParameterBuilder<TModel, TProperty>.Description(string? description)
         {
-            _converterType = typeof(TConverter);
+            Description(description);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IParameterBuilder<TModel, TProperty> Converter(Type? type)
+        IParameterBuilder<TModel, TProperty> IParameterBuilder<TModel, TProperty>.Converter<TConverter>()
+        {
+            ConverterType = typeof(TConverter);
+
+            return this;
+        }
+
+        IParameterBuilder<TModel, TProperty> IParameterBuilder<TModel, TProperty>.Converter(Type? type)
         {
             if (type is not null && !IArgumentConverter<TProperty>.IsValidType(type))
             {
                 throw new ArgumentException($"'{type}' is not a valid converter for parameter property of type '{typeof(TProperty)}' inside model '{typeof(TModel)}'.");
             }
 
-            _converterType = type;
+            ConverterType = type;
 
             return this;
-        }
-
-        /// <inheritdoc/>
-        public IParameterSchema Build()
-        {
-            // The user may mistakenly specify dashes, so trim them
-            string? parameterName = _name?.TrimStart('-') ??
-                TextUtils.ToKebabCase(Property.Name);
-
-            return new ParameterSchema(
-                    Property,
-                    _order,
-                    parameterName,
-                    _description,
-                    _converterType,
-                    new MetadataCollection()
-                );
         }
     }
 }

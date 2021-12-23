@@ -10,7 +10,6 @@
     using Typin.Console;
     using Typin.Models.Schemas;
     using Typin.Schemas;
-    using Typin.Utilities;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -175,39 +174,39 @@
         #region Mode restrictions
         private void WriteModeRestrictionsManual(ICommandSchema command)
         {
-            IReadOnlyCollection<Type> modesInApplication = _componentProvider.Get<ICliMode>();
+            //IReadOnlyCollection<Type> modesInApplication = _componentProvider.Get<ICliMode>();
 
-            if (modesInApplication.Count <= 1)
-            {
-                return;
-            }
+            //if (modesInApplication.Count <= 1)
+            //{
+            //    return;
+            //}
 
-            if (!IsEmpty)
-            {
-                WriteVerticalMargin();
-            }
+            //if (!IsEmpty)
+            //{
+            //    WriteVerticalMargin();
+            //}
 
-            WriteHeader("Supported modes");
+            //WriteHeader("Supported modes");
 
-            IEnumerable<Type> commandModes = (command.SupportedModes?.Count ?? 0) > 0 ? command.SupportedModes! : modesInApplication;
+            //IEnumerable<Type> commandModes = (command.SupportedModes?.Count ?? 0) > 0 ? command.SupportedModes! : modesInApplication;
 
-            if ((command.ExcludedModes?.Count ?? 0) > 0)
-            {
-                commandModes = commandModes.Except(command.ExcludedModes!);
-            }
+            //if ((command.ExcludedModes?.Count ?? 0) > 0)
+            //{
+            //    commandModes = commandModes.Except(command.ExcludedModes!);
+            //}
 
-            foreach (Type mode in commandModes)
-            {
-                WriteHorizontalMargin();
-                Write(ModeRestrictedColor, mode.FullName ?? mode.Name);
-                WriteLine();
-            }
-            WriteLine();
+            //foreach (Type mode in commandModes)
+            //{
+            //    WriteHorizontalMargin();
+            //    Write(ModeRestrictedColor, mode.FullName ?? mode.Name);
+            //    WriteLine();
+            //}
+            //WriteLine();
 
-            Write(CommentColor, "TIP: Commands and directives marked with ");
-            Write(ModeRestrictedColor, "@");
-            Write(CommentColor, " cannot be executed in every mode in the app.");
-            WriteLine();
+            //Write(CommentColor, "TIP: Commands and directives marked with ");
+            //Write(ModeRestrictedColor, "@");
+            //Write(CommentColor, " cannot be executed in every mode in the app.");
+            //WriteLine();
         }
         #endregion
 
@@ -283,25 +282,25 @@
 
         private void WriteCommandManual(ICommandSchema command)
         {
-            if (string.IsNullOrWhiteSpace(command.Manual))
-            {
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(command.Manual))
+            //{
+            //    return;
+            //}
 
-            if (!IsEmpty)
-            {
-                WriteVerticalMargin();
-            }
+            //if (!IsEmpty)
+            //{
+            //    WriteVerticalMargin();
+            //}
 
-            WriteHeader("Manual");
-            WriteHorizontalMargin();
+            //WriteHeader("Manual");
+            //WriteHorizontalMargin();
 
-            string text = TextUtils.ConvertTabsToSpaces(command.Manual);
-            text = TextUtils.AdjustNewLines(text);
+            //string text = TextUtils.ConvertTabsToSpaces(command.Manual);
+            //text = TextUtils.AdjustNewLines(text);
 
-            Write(text);
+            //Write(text);
 
-            WriteLine();
+            //WriteLine();
         }
 
         private void WriteCommandUsage(IReadOnlyDictionary<string, DirectiveSchema> directives,
@@ -316,12 +315,12 @@
             WriteHeader("Usage");
 
             // Exe name
-            if (command.HasModeRestrictions())
-            {
-                Write(ModeRestrictedColor, "@");
-                WriteHorizontalMargin(1);
-            }
-            else
+            //if (command.HasModeRestrictions())
+            //{
+            //    Write(ModeRestrictedColor, "@");
+            //    WriteHorizontalMargin(1);
+            //}
+            //else
             {
                 WriteHorizontalMargin();
             }
@@ -350,14 +349,14 @@
             }
 
             // Parameters
-            foreach (IParameterSchema parameter in command.Parameters)
+            foreach (IParameterSchema parameter in command.Model.Parameters)
             {
                 Write(' ');
                 Write(parameter.Bindable.IsScalar ? $"<{parameter.Name}>" : $"<{parameter.Name}...>");
             }
 
             // Required options
-            foreach (IOptionSchema option in command.Options.Where(o => o.IsRequired))
+            foreach (IOptionSchema option in command.Model.Options.Where(o => o.IsRequired))
             {
                 Write(' ');
                 Write(ParametersColor, !string.IsNullOrWhiteSpace(option.Name) ? $"--{option.Name}" : $"-{option.ShortName}");
@@ -375,7 +374,7 @@
 
         private void WriteCommandParameters(ICommandSchema command)
         {
-            if (!command.Parameters.Any())
+            if (!command.Model.Parameters.Any())
             {
                 return;
             }
@@ -387,7 +386,7 @@
 
             WriteHeader("Parameters");
 
-            foreach (IParameterSchema parameter in command.Parameters.OrderBy(p => p.Order))
+            foreach (IParameterSchema parameter in command.Model.Parameters.OrderBy(p => p.Order))
             {
                 Write(RequiredColor, "* ");
                 Write(RequiredParameterNameColor, $"{parameter.Name}");
@@ -422,7 +421,7 @@
 
             WriteHeader("Options");
 
-            foreach (IOptionSchema option in command.Options.OrderByDescending(o => o.IsRequired))
+            foreach (IOptionSchema option in command.Model.Options.OrderByDescending(o => o.IsRequired))
             {
                 if (option.IsRequired)
                 {
@@ -514,12 +513,12 @@
                     : childCommand.Name!;
 
                 // Name
-                if (childCommand.HasModeRestrictions())
-                {
-                    Write(ModeRestrictedColor, "@");
-                    WriteHorizontalMargin(1);
-                }
-                else
+                //if (childCommand.HasModeRestrictions())
+                //{
+                //    Write(ModeRestrictedColor, "@");
+                //    WriteHorizontalMargin(1);
+                //}
+                //else
                 {
                     WriteHorizontalMargin();
                 }
@@ -586,7 +585,7 @@
 
         private static string? FormatDefaultValue(object? defaultValue)
         {
-            if (defaultValue == null)
+            if (defaultValue is null)
             {
                 return null;
             }

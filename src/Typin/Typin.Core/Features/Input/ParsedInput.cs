@@ -21,9 +21,9 @@
         public IReadOnlyList<DirectiveInput> Directives { get; }
 
         /// <summary>
-        /// Command name. Null or empty/whitespace if default or invalid command.
+        /// Command name. Empty when default command.
         /// </summary>
-        public string? CommandName { get; }
+        public string CommandName { get; }
 
         /// <summary>
         /// Parameters list.
@@ -44,12 +44,12 @@
         /// Initializes an instance of <see cref="ParsedInput"/>.
         /// </summary>
         public ParsedInput(IReadOnlyList<DirectiveInput> directives,
-                           string? commandName,
+                           string commandName,
                            IReadOnlyList<ParameterInput> parameters,
                            IReadOnlyList<OptionInput> options)
         {
             Directives = directives;
-            CommandName = commandName;
+            CommandName = commandName.Trim();
             Parameters = parameters;
             Options = options;
 
@@ -79,9 +79,9 @@
         public ParsedInput WithDirectives(IEnumerable<DirectiveInput> directives)
         {
             return new ParsedInput(directives.ToList(),
-                                          CommandName,
-                                          Parameters,
-                                          Options);
+                                   CommandName,
+                                   Parameters,
+                                   Options);
         }
 
         /// <summary>
@@ -99,12 +99,12 @@
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>
-        public ParsedInput WithCommandName(string? commandName)
+        public ParsedInput WithCommandName(string commandName)
         {
             return new ParsedInput(Directives,
-                                          commandName?.Trim(),
-                                          Parameters,
-                                          Options);
+                                   commandName,
+                                   Parameters,
+                                   Options);
         }
 
         /// <summary>
@@ -115,9 +115,9 @@
         public ParsedInput WithParameters(IEnumerable<ParameterInput> parameters)
         {
             return new ParsedInput(Directives,
-                                          CommandName,
-                                          parameters.ToList(),
-                                          Options);
+                                   CommandName,
+                                   parameters.ToList(),
+                                   Options);
         }
 
         /// <summary>
@@ -128,9 +128,9 @@
         public ParsedInput WithOptions(IEnumerable<OptionInput> options)
         {
             return new ParsedInput(Directives,
-                                          CommandName,
-                                          Parameters,
-                                          options.ToList());
+                                   CommandName,
+                                   Parameters,
+                                   options.ToList());
         }
         #endregion
 

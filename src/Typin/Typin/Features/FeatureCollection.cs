@@ -39,7 +39,7 @@ namespace Typin.Features
         /// Initializes a new instance of <see cref="FeatureCollection"/> with the specified initial capacity.
         /// </summary>
         /// <param name="initialCapacity">The initial number of elements that the collection can contain.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="initialCapacity"/> is less than 0</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="initialCapacity"/> is less than 0</exception>
         public FeatureCollection(int initialCapacity)
         {
             if (initialCapacity < 0)
@@ -72,7 +72,7 @@ namespace Typin.Features
             {
                 _ = key ?? throw new ArgumentNullException(nameof(key));
 
-                if (value == null)
+                if (value is null)
                 {
                     if (_features is not null && _features.Remove(key))
                     {

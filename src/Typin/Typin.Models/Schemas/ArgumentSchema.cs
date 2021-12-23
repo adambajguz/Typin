@@ -22,6 +22,9 @@
         /// <inheritdoc/>
         public Type? ConverterType { get; init; }
 
+        /// <inheritdoc/>
+        public IExtensionsCollection Extensions { get; }
+
         /// <summary>
         /// Initializes an instance of <see cref="ArgumentSchema"/> that represents a property-based argument.
         /// </summary>
@@ -29,12 +32,13 @@
                                  string? name,
                                  string? description,
                                  Type? converterType,
-                                 IMetadataCollection metadata)
+                                 IExtensionsCollection extensions)
         {
-            Bindable = new BindableArgument(metadata, property);
+            Bindable = new BindableArgument(this, property);
             Name = name;
             Description = description;
             ConverterType = converterType;
+            Extensions = extensions;
         }
 
         /// <summary>
@@ -45,12 +49,21 @@
                                  string? name,
                                  string? description,
                                  Type? converterType,
-                                 IMetadataCollection metadata)
+                                 IExtensionsCollection extensions)
         {
-            Bindable = new BindableArgument(metadata, propertyType, propertyName);
+            Bindable = new BindableArgument(this, propertyType, propertyName);
             Name = name;
             Description = description;
             ConverterType = converterType;
+            Extensions = extensions;
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Name)} = {Name}";
         }
     }
 }

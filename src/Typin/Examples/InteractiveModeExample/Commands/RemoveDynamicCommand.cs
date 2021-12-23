@@ -25,7 +25,7 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            if (_rootSchema.TryRemoveDynamicCommand(Name))
+            if (_rootSchema.TryRemoveCommand(Name))
             {
                 _console.Output.WithForegroundColor(ConsoleColor.Green, (err) => err.WriteLine($"Successfully removed dynamic command '{Name}'."));
             }

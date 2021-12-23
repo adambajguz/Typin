@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using InteractiveModeExample.Models;
     using Newtonsoft.Json;
     using Typin;
     using Typin.Attributes;
@@ -41,7 +42,7 @@
             string param2 = Arguments.Get("Str").GetValue<string>("str");
 
             var filteredArgs = Arguments
-                .Where(x => x.Value.Metadata.Get<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
+                .Where(x => x.Value.Schema.Extensions.Get<ArgumentMetadata>() is ArgumentMetadata a && a.Tags.Contains("test"))
                 .ToList();
 
             return default;

@@ -23,8 +23,8 @@
                                string name,
                                string? description,
                                Type? converter,
-                               IMetadataCollection metadata)
-            : base(property, name, description, converter, metadata)
+                               IExtensionsCollection extensions)
+            : base(property, name, description, converter, extensions)
         {
             Order = order;
         }
@@ -38,8 +38,8 @@
                                string name,
                                string? description,
                                Type? converter,
-                               IMetadataCollection metadata)
-            : base(propertyType, propertyName, name, description, converter, metadata)
+                               IExtensionsCollection extensions)
+            : base(propertyType, propertyName, name, description, converter, extensions)
         {
             Order = order;
         }

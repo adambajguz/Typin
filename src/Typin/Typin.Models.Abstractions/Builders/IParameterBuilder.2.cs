@@ -10,7 +10,7 @@
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
-    public interface IParameterBuilder<TModel, TProperty> : IBuilder<IParameterSchema>
+    public interface IParameterBuilder<TModel, TProperty> : IBuilder<IParameterSchema>, IManageExtensions<IParameterBuilder<TModel, TProperty>>
         where TModel : class, IModel
     {
         /// <summary>
@@ -64,7 +64,7 @@
         IParameterBuilder<TModel, TProperty> Name(string? name);
 
         /// <summary>
-        /// Sets parameter name.
+        /// Sets parameter description.
         /// When null is passed a value will be set to default (no description).
         /// </summary>
         /// <param name="description"></param>

@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Typin.Models.Binding;
 
     /// <summary>
     /// Stores all schemas of commands and directives in the application.
@@ -13,7 +12,6 @@
         private readonly Dictionary<string, ICommandSchema> _commands;
         private HashSet<string>? _directiveNamesHashSet;
         private HashSet<string>? _commandNamesHashSet;
-        private readonly Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> _commandTemplates;
 
         /// <summary>
         /// List of defined directives in the application.
@@ -31,22 +29,15 @@
         public ICommandSchema? DefaultCommand { get; }
 
         /// <summary>
-        /// Command templates.
-        /// </summary>
-        public IEnumerable<ICommandTemplateSchema> CommandTemplates => _commandTemplates.Value.Values;
-
-        /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
         public RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
-                          Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> commandTemplates,
                           Dictionary<string, ICommandSchema> commands,
                           ICommandSchema? defaultCommand)
         {
             Directives = directives;
             _commands = commands;
             DefaultCommand = defaultCommand;
-            _commandTemplates = commandTemplates;
         }
 
         /// <summary>
@@ -54,7 +45,7 @@
         /// </summary>
         /// <param name="commandSchema"></param>
         /// <returns>Whether dynamic command was added.</returns>
-        public bool TryAddDynamicCommand(ICommandSchema commandSchema)
+        public bool TryAddCommand(ICommandSchema commandSchema)
         {
             if (commandSchema.IsDynamic && !commandSchema.IsDefault)
             {
@@ -76,7 +67,7 @@
         /// </summary>
         /// <param name="commandSchemas"></param>
         /// <returns>Whether all dynamic commands were added.</returns>
-        public bool TryAddDynamicCommandRange(IEnumerable<ICommandSchema> commandSchemas)
+        public bool TryAddCommands(IEnumerable<ICommandSchema> commandSchemas)
         {
             bool allAdded = true;
             foreach (ICommandSchema schema in commandSchemas)
@@ -100,7 +91,7 @@
         /// </summary>
         /// <param name="name">Command name to remove.</param>
         /// <returns>Whether dynamic command was added.</returns>
-        public bool TryRemoveDynamicCommand(string name)
+        public bool TryRemoveCommand(string name)
         {
             if (_commands.TryGetValue(name, out ICommandSchema? commandSchema) && commandSchema.IsDynamic)
             {
@@ -118,7 +109,7 @@
         /// </summary>
         /// <param name="names">Command names to remove.</param>
         /// <returns>Whether all dynamic commands were removed.</returns>
-        public bool TryRemoveDynamicCommands(IEnumerable<string> names)
+        public bool TryRemoveCommands(IEnumerable<string> names)
         {
             bool allRemoved = true;
             foreach (string name in names)
@@ -185,14 +176,6 @@
             }
 
             return _commands.GetValueOrDefault(commandName);
-        }
-
-        /// <summary>
-        /// Finds dynamic command base schema by type.
-        /// </summary>
-        public IModelSchema? TryFindDynamicCommandBase(Type type)
-        {
-            return _commandTemplates.Value.GetValueOrDefault(type);
         }
 
         /// <summary>

@@ -17,6 +17,9 @@
         public ICommand Instance { get; }
 
         /// <inheritdoc/>
+        public ICommandHandler HandlerInstance { get; }
+
+        /// <inheritdoc/>
         public IReadOnlyDictionary<IArgumentSchema, object?> DefaultValues { get; }
 
         /// <summary>
@@ -24,10 +27,12 @@
         /// </summary>
         public CommandFeature(ICommandSchema schema,
                               ICommand instance,
+                              ICommandHandler commandHandler,
                               IReadOnlyDictionary<IArgumentSchema, object?> defaultValues)
         {
             Schema = schema;
             Instance = instance;
+            HandlerInstance = commandHandler;
             DefaultValues = defaultValues;
         }
 
@@ -36,8 +41,7 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Schema)}{nameof(ICommandSchema.Name)} = {Schema.Name}, " +
-                $"{nameof(Schema)}{nameof(ICommandSchema.Type)} = {Schema.Type}";
+                $"{nameof(Schema)} = {Schema}";
         }
     }
 }

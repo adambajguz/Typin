@@ -31,7 +31,7 @@
         public object? Convert(IReadOnlyCollection<string> values);
 
         /// <summary>
-        /// Checks whether type is a valid directive.
+        /// Checks whether type is a valid argument converter.
         /// </summary>
         public static bool IsValidType(Type type, Type propertyType)
         {
@@ -81,7 +81,7 @@
         T ConvertCollection(IReadOnlyCollection<string> values);
 
         /// <summary>
-        /// Checks whether type is a valid directive.
+        /// Checks whether type is a valid argument converter.
         /// </summary>
         public static bool IsValidType(Type type)
         {

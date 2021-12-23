@@ -9,10 +9,10 @@
     using Microsoft.Extensions.DependencyInjection;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Exceptions.ArgumentBinding;
     using Typin.Features;
     using Typin.Features.Binding;
     using Typin.Features.Input;
-    using Typin.Internal;
     using Typin.Models.Collections;
     using Typin.Models.Schemas;
     using Typin.Schemas;
@@ -51,7 +51,8 @@
             ParsedInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
-            ICommandSchema commandSchema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName) ?? StubDefaultCommand.Schema;
+            ICommandSchema schema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName)
+                ?? throw new UnknownCommandException(input.CommandName);
 
             // TODO: is the problem below still valid?
             // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
@@ -65,9 +66,10 @@
 
             // Get command instance (default values are used in help so we need command instance)
 
-            ICommand instance = GetCommandInstance(commandSchema);
+            ICommand instance = GetCommandInstance(schema);
+            ICommandHandler handlerInstance = GetCommandHandlerInstance(instance, schema);
 
-            if (commandSchema.IsDynamic && instance is ICommandTemplate dynamicCommandInstance)
+            if (schema.IsDynamic && instance is ICommandTemplate dynamicCommandInstance)
             {
                 _dynamicCommandArgumentCollectionSetter ??= GetDynamicArgumentsSetter();
                 _dynamicCommandArgumentCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
@@ -75,27 +77,37 @@
 
             // To avoid instantiating the command twice, we need to get default values
             // before the arguments are bound to the properties
-            IReadOnlyDictionary<IArgumentSchema, object?> defaultValues = commandSchema.GetArgumentValues(instance);
+            IReadOnlyDictionary<IArgumentSchema, object?> defaultValues = schema.Model.GetArgumentValues(instance);
 
-            context.Features.Set<ICommandFeature>(new CommandFeature(commandSchema, instance, defaultValues));
-            context.Binder.TryAdd(new BindableModel(commandSchema, instance));
+            context.Features.Set<ICommandFeature>(new CommandFeature(schema, instance, handlerInstance, defaultValues));
+            context.Binder.TryAdd(new BindableModel(schema.Model, instance));
 
             return null;
         }
 
-        private ICommand GetCommandInstance(ICommandSchema command)
+        private ICommand GetCommandInstance(ICommandSchema schema)
         {
-            if (command == StubDefaultCommand.Schema)
-            {
-                return new StubDefaultCommand();
-            }
-
-            ObjectFactory factory = _commandFactoryCache.GetOrAdd(command.Type, (key) =>
+            ObjectFactory factory = _commandFactoryCache.GetOrAdd(schema.Model.Type, (key) =>
             {
                 return ActivatorUtilities.CreateFactory(key, Array.Empty<Type>());
             });
 
             return (ICommand)factory(_serviceProvider, null);
+        }
+
+        private ICommandHandler GetCommandHandlerInstance(ICommand instance, ICommandSchema schema)
+        {
+            if (schema.Handler == schema.Model.Type)
+            {
+                return (ICommandHandler)instance;
+            }
+
+            ObjectFactory factory = _commandFactoryCache.GetOrAdd(schema.Handler, (key) =>
+            {
+                return ActivatorUtilities.CreateFactory(key, Array.Empty<Type>());
+            });
+
+            return (ICommandHandler)factory(_serviceProvider, null);
         }
 
         private static Action<ICommandTemplate, IArgumentCollection> GetDynamicArgumentsSetter()

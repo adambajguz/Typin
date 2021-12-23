@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Typin.Models.Collections;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Represents a bindable argument.
@@ -37,9 +37,9 @@
         bool IsScalar => EnumerableUnderlyingType is null;
 
         /// <summary>
-        /// Argument metadata.
+        /// Argument schema.
         /// </summary>
-        IMetadataCollection Metadata { get; }
+        IArgumentSchema Schema { get; }
 
         /// <summary>
         /// Returns a list of valid values.

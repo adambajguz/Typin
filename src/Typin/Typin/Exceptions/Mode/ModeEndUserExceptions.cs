@@ -17,35 +17,35 @@
             return new TemporaryException(message);
         }
 
-        public static TypinException CommandExecutedInInvalidMode(CommandSchema command, Type currentMode)
-        {
-            StringBuilder builder = new();
-            builder.AppendLine($"This application is running in '{currentMode}' mode.");
+        //public static TypinException CommandExecutedInInvalidMode(CommandSchema command, Type currentMode)
+        //{
+        //    StringBuilder builder = new();
+        //    builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
-            if (command.SupportedModes is not null)
-            {
-                builder.AppendLine();
-                builder.AppendLine($"Command '{command.Type.FullName}' supports modes:");
+        //    if (command.SupportedModes is not null)
+        //    {
+        //        builder.AppendLine();
+        //        builder.AppendLine($"Command '{command.Type.FullName}' supports modes:");
 
-                foreach (Type mode in command.SupportedModes)
-                {
-                    builder.AppendLine($"  - '{mode.FullName}'");
-                }
-            }
+        //        foreach (Type mode in command.SupportedModes)
+        //        {
+        //            builder.AppendLine($"  - '{mode.FullName}'");
+        //        }
+        //    }
 
-            if (command.ExcludedModes is not null)
-            {
-                builder.AppendLine();
-                builder.AppendLine($"Command '{command.Type.FullName}' cannot run in modes:");
+        //    if (command.ExcludedModes is not null)
+        //    {
+        //        builder.AppendLine();
+        //        builder.AppendLine($"Command '{command.Type.FullName}' cannot run in modes:");
 
-                foreach (Type mode in command.ExcludedModes)
-                {
-                    builder.AppendLine($"  - '{mode.FullName}'");
-                }
-            }
+        //        foreach (Type mode in command.ExcludedModes)
+        //        {
+        //            builder.AppendLine($"  - '{mode.FullName}'");
+        //        }
+        //    }
 
-            return new TemporaryException(builder.ToString());
-        }
+        //    return new TemporaryException(builder.ToString());
+        //}
 
         public static TypinException DirectiveExecutedInInvalidMode(DirectiveSchema directive, Type currentMode)
         {

@@ -20,6 +20,12 @@
         ICommand Instance { get; }
 
         /// <summary>
+        /// Current command handler instance.
+        /// Current command handler instance.
+        /// </summary>
+        ICommandHandler HandlerInstance { get; }
+
+        /// <summary>
         /// Collection of command's default values.
         /// </summary>
         IReadOnlyDictionary<IArgumentSchema, object?> DefaultValues { get; }

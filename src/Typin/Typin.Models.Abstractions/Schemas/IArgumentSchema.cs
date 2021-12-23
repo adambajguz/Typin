@@ -6,7 +6,7 @@
     /// <summary>
     /// Argument schema.
     /// </summary>
-    public interface IArgumentSchema
+    public interface IArgumentSchema : ISchema
     {
         /// <summary>
         /// Bindable argument.

@@ -1,4 +1,4 @@
-﻿namespace Typin.Models.Collections
+﻿namespace InteractiveModeExample.Models
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     /// <summary>
     /// Argument metadata base class.
     /// </summary>
-    public class ArgumentMetadata : IArgumentMetadata
+    public class ArgumentMetadata
     {
         /// <summary>
         /// Tags.

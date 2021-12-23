@@ -8,7 +8,7 @@
     /// <summary>
     /// Model schema.
     /// </summary>
-    public interface IModelSchema
+    public interface IModelSchema : ISchema
     {
         /// <summary>
         /// Model type.

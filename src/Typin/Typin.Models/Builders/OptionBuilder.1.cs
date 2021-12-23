@@ -3,135 +3,78 @@
     using System;
     using System.Reflection;
     using Typin.Models.Collections;
-    using Typin.Models.Converters;
-    using Typin.Models.Schemas;
-    using Typin.Utilities;
 
     /// <summary>
     /// Option builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
-    internal sealed class OptionBuilder<TModel> : ArgumentBuilder<TModel>, IOptionBuilder<TModel>
+    internal class OptionBuilder<TModel> : OptionBuilder, IOptionBuilder<TModel>
         where TModel : class, IModel
     {
-        private string? _name;
-        private char? _shortName;
-        private bool _isRequired;
-        private string? _description;
-        private string? _fallbackVariableName;
-        private Type? _converterType;
-
         /// <summary>
         /// Initializes a new instance of <see cref="OptionBuilder{TModel}"/>.
         /// </summary>
         /// <param name="propertyInfo"></param>
         public OptionBuilder(PropertyInfo propertyInfo) :
-            base(propertyInfo)
+            base(typeof(TModel), propertyInfo)
         {
 
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> Name(string? name)
+        IOptionBuilder<TModel> IManageExtensions<IOptionBuilder<TModel>>.ManageExtensions(Action<IExtensionsCollection> action)
         {
-            _name = name;
+            action(Extensions);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> ShortName(char? shortName)
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.Name(string? name)
         {
-            _shortName = shortName;
+            Name(name);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> IsRequired(bool isRequired = true)
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.ShortName(char? shortName)
         {
-            _isRequired = isRequired;
+            ShortName(shortName);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> Description(string? description)
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.IsRequired(bool isRequired)
         {
-            _description = description;
+            IsRequired(isRequired);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> Fallback(string? variableName)
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.Description(string? description)
         {
-            _fallbackVariableName = variableName;
+            Description(description);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> Converter<TConverter>()
-            where TConverter : IArgumentConverter
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.Fallback(string? variableName)
         {
-            return Converter(typeof(TConverter));
-        }
-
-        /// <inheritdoc/>
-        public IOptionBuilder<TModel> Converter(Type? type)
-        {
-            if (type is not null && !IArgumentConverter.IsValidType(type, Property.PropertyType))
-            {
-                throw new ArgumentException($"'{type}' is not a valid converter for option property of type '{Property.PropertyType}' inside model '{typeof(TModel)}'.");
-            }
-
-            _converterType = type;
+            Fallback(variableName);
 
             return this;
         }
 
-        /// <inheritdoc/>
-        public IOptionSchema Build()
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.Converter<TConverter>()
         {
-            // The user may mistakenly specify dashes, thinking it's required, so trim them
-            string? optionName = _name?.TrimStart('-');
+            Converter(typeof(TConverter));
 
-            if (optionName is null && _shortName is null)
-            {
-                _name = TextUtils.ToKebabCase(Property.Name);
-            }
-            else
-            {
-                if (optionName is string n && (n.Contains(' ') || !IOptionSchema.IsName("--" + n)))
-                {
-                    string message = $@"Command option name '{optionName}' is invalid.
+            return this;
+        }
 
-Options must have a name starting from letter, while short names must be a letter.
+        IOptionBuilder<TModel> IOptionBuilder<TModel>.Converter(Type? type)
+        {
+            Converter(type);
 
-Option names must be at least 2 characters long to avoid confusion with short names.
-If you intended to set the short name instead, use the attribute overload that accepts a char.";
-
-                    throw new InvalidOperationException(message.Trim());
-                }
-
-                if (_shortName is char sn && !IOptionSchema.IsShortName("-" + sn))
-                {
-                    string message = $"Command option short name '{_shortName}' is invalid. Options must have a name starting from letter, while short names must be a letter.";
-                    throw new InvalidOperationException(message.Trim());
-                }
-            }
-
-            return new OptionSchema(
-                    Property,
-                    optionName,
-                    _shortName,
-                    _fallbackVariableName,
-                    _isRequired,
-                    _description,
-                    _converterType,
-                    new MetadataCollection()
-                );
+            return this;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace Typin.DynamicCommands
 {
     using System;
-    using Typin.Models.Collections;
     using Typin.Models.Converters;
 
     /// <summary>
@@ -36,11 +35,5 @@
         /// Sets a binding converter for this parameter.
         /// </summary>
         IDynamicParameterBuilder WithBindingConverter(Type converter);
-
-        /// <summary>
-        /// Sets parameter metadata.
-        /// </summary>
-        /// <returns></returns>
-        IDynamicParameterBuilder WithMetadata(IArgumentMetadata metadata);
     }
 }

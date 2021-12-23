@@ -40,14 +40,7 @@
             ResolveCommands(_commandTypes);
             ResolveDirectives(_directiveTypes);
 
-            Lazy<IReadOnlyDictionary<Type, ICommandTemplateSchema>> commandTemplates = new(() =>
-            {
-                return _dynamicCommandTypes.ToDictionary(
-                    x => x,
-                    x => CommandSchemaResolver.ResolveTemplate(x));
-            });
-
-            return new RootSchema(Directives!, commandTemplates, Commands!, DefaultCommand);
+            return new RootSchema(Directives!, Commands!, DefaultCommand);
         }
 
         private void ResolveCommands(IReadOnlyCollection<Type> commandTypes)
@@ -56,36 +49,36 @@
             Dictionary<string, ICommandSchema> commands = new();
             List<ICommandSchema> invalidCommands = new();
 
-            foreach (Type commandType in commandTypes)
-            {
-                ICommandSchema command = CommandSchemaResolver.Resolve(commandType);
+            //foreach (Type commandType in commandTypes)
+            //{
+            //    ICommandSchema command = CommandSchemaResolver.Resolve(commandType);
 
-                if (command.IsDefault)
-                {
-                    if (defaultCommand is null)
-                    {
-                        defaultCommand = command;
-                    }
-                    else
-                    {
-                        if (!invalidCommands.Contains(defaultCommand))
-                        {
-                            invalidCommands.Add(defaultCommand);
-                        }
+            //    if (command.IsDefault)
+            //    {
+            //        if (defaultCommand is null)
+            //        {
+            //            defaultCommand = command;
+            //        }
+            //        else
+            //        {
+            //            if (!invalidCommands.Contains(defaultCommand))
+            //            {
+            //                invalidCommands.Add(defaultCommand);
+            //            }
 
-                        invalidCommands.Add(command);
-                    }
-                }
-                else if (!commands.TryAdd(command.Name!, command))
-                {
-                    invalidCommands.Add(command);
-                }
-            }
+            //            invalidCommands.Add(command);
+            //        }
+            //    }
+            //    else if (!commands.TryAdd(command.Name!, command))
+            //    {
+            //        invalidCommands.Add(command);
+            //    }
+            //}
 
-            if (commands.Count == 0 && defaultCommand is null)
-            {
-                defaultCommand = StubDefaultCommand.Schema;
-            }
+            //if (commands.Count == 0 && defaultCommand is null)
+            //{
+            //    defaultCommand = StubDefaultCommand.Schema;
+            //}
 
             if (invalidCommands.Count > 0)
             {
@@ -96,8 +89,8 @@
                 throw new CommandDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
             }
 
-            DefaultCommand = defaultCommand;
             Commands = commands;
+            DefaultCommand = defaultCommand;
         }
 
         private void ResolveDirectives(IReadOnlyCollection<Type> directiveTypes)

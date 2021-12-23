@@ -9,7 +9,7 @@
     /// Model builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
-    public interface IModelBuilder<TModel> : IBuilder<IModelSchema>
+    public interface IModelBuilder<TModel> : IBuilder<IModelSchema>, IManageExtensions<IModelBuilder<TModel>>
         where TModel : class, IModel
     {
         /// <summary>

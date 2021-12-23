@@ -14,7 +14,7 @@
         /// Resolves <see cref="ParsedInput"/>.
         /// </summary>
         public static ParsedInput Parse(IEnumerable<string> commandLineArguments,
-                                         ISet<string> availableCommandNamesSet)
+                                        ISet<string> availableCommandNamesSet)
         {
             int index = 0;
 
@@ -25,7 +25,7 @@
                 ref index
             );
 
-            string? commandName = ParseCommandName(
+            string commandName = ParseCommandName(
                 tmp,
                 availableCommandNamesSet,
                 ref index
@@ -66,9 +66,9 @@
             return result;
         }
 
-        private static string? ParseCommandName(IReadOnlyList<string> commandLineArguments,
-                                                ISet<string> commandNames,
-                                                ref int index)
+        private static string ParseCommandName(IReadOnlyList<string> commandLineArguments,
+                                               ISet<string> commandNames,
+                                               ref int index)
         {
             List<string> buffer = new();
 
@@ -96,7 +96,7 @@
                 index = lastIndex + 1;
             }
 
-            return commandName;
+            return commandName?.Trim() ?? string.Empty;
         }
 
         private static IReadOnlyList<ParameterInput> ParseParameters(IReadOnlyList<string> commandLineArguments,

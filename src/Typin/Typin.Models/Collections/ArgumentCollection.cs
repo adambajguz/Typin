@@ -111,11 +111,11 @@
 
             if (_values.TryGetValue(propertyName, out ArgumentValue? previous))
             {
-                _values[propertyName] = new ArgumentValue(previous.Metadata, previous.ExpectedType, value);
+                _values[propertyName] = new ArgumentValue(previous.Schema, value);
             }
             else
             {
-                _values[propertyName] = new ArgumentValue(new MetadataCollection(), typeof(object), value);
+                throw new InvalidOperationException($"Property with name '{propertyName}' not found. Cannot set a schemaless property.");
             }
         }
 

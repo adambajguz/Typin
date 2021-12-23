@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Models;
+    using Typin.Models.Collections;
     using Typin.Models.Schemas;
 
     /// <summary>
@@ -50,17 +51,22 @@
         /// </summary>
         public IReadOnlyList<IOptionSchema> RequiredOptions { get; }
 
+        /// <inheritdoc/>
+        public IExtensionsCollection Extensions { get; }
+
         /// <summary>
         /// Initializes an instance of <see cref="ModelSchema"/>.
         /// </summary>
         public ModelSchema(Type type,
                            IReadOnlyList<IParameterSchema> parameters,
-                           IReadOnlyList<IOptionSchema> options)
+                           IReadOnlyList<IOptionSchema> options,
+                           IExtensionsCollection extensions)
         {
             Type = type;
             Parameters = parameters;
             Options = options;
             RequiredOptions = options.Where(x => x.IsRequired).ToList();
+            Extensions = extensions;
         }
 
         /// <summary>
@@ -77,6 +83,14 @@
             }
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Type)} = {Type}";
         }
     }
 }

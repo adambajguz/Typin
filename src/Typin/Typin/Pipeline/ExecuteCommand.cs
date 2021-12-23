@@ -23,9 +23,10 @@
         {
             // Get command instance from context
             ICommand instance = args.Command.Instance;
+            ICommandHandler handlerInstance = args.Command.HandlerInstance;
 
             // Execute command
-            await instance.ExecuteAsync(cancellationToken);
+            await handlerInstance.ExecuteAsync(instance, cancellationToken);
             args.Output.ExitCode ??= ExitCode.Success;
 
             await next();

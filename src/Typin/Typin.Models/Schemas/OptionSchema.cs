@@ -30,8 +30,8 @@
                             bool isRequired,
                             string? description,
                             Type? converter,
-                            IMetadataCollection metadata)
-            : base(property, name, description, converter, metadata)
+                            IExtensionsCollection extensions)
+            : base(property, name, description, converter, extensions)
         {
             ShortName = shortName;
             FallbackVariableName = fallbackVariableName;
@@ -54,8 +54,8 @@
                             bool isRequired,
                             string? description,
                             Type? converter,
-                            IMetadataCollection metadata)
-            : base(propertyType, propertyName, name, description, converter, metadata)
+                            IExtensionsCollection extensions)
+            : base(propertyType, propertyName, name, description, converter, extensions)
         {
             ShortName = shortName;
             FallbackVariableName = fallbackVariableName;

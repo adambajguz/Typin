@@ -2,16 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Typin.DynamicCommands;
-    using Typin.Models.Binding;
+    using Typin.Models.Builders;
     using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
     /// Dynamic command builder.
     /// </summary>
-    internal sealed class DynamicCommandBuilder : IDynamicCommandBuilder
+    internal sealed class DynamicCommandBuilder : ModelBuilder, IDynamicCommandBuilder
     {
         private readonly Type _type;
         private readonly string _name;
@@ -20,15 +19,14 @@
         private readonly List<Type> _supportedModes = new();
         private readonly List<Type> _excludedModes = new();
 
-        private readonly HashSet<string> _parameterNames;
-
-        private readonly List<IOptionSchema> _options;
-        private readonly List<IParameterSchema> _parameters;
+        private readonly List<IOptionSchema> _options = new();
+        private readonly List<IParameterSchema> _parameters = new();
 
         /// <summary>
         /// Initializes a new instance of <see cref="DynamicCommandBuilder"/>.
         /// </summary>
-        public DynamicCommandBuilder(RootSchema rootSchema, Type dynamicCommandType, string name)
+        public DynamicCommandBuilder(RootSchema rootSchema, Type dynamicCommandType, string name) :
+            base(dynamicCommandType)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -38,16 +36,16 @@
             _type = dynamicCommandType ?? throw new ArgumentNullException(nameof(dynamicCommandType));
             _name = name;
 
-            IModelSchema baseCommandSchema = rootSchema.TryFindDynamicCommandBase(_type) ??
-                throw new NullReferenceException($"Dynamic command base not found for '{_type.FullName ?? _type.Name}'.");
+            //IModelSchema baseCommandSchema = rootSchema.TryFindDynamicCommandBase(_type) ??
+            //    throw new NullReferenceException($"Dynamic command base not found for '{_type.FullName ?? _type.Name}'.");
 
-            _options = baseCommandSchema.Options.ToList();
-            _parameters = baseCommandSchema.Parameters.ToList();
+            //_options = baseCommandSchema.Options.ToList();
+            //_parameters = baseCommandSchema.Parameters.ToList();
 
-            _parameterNames = baseCommandSchema.Parameters.Select(x => x.Name)
-                .Concat(baseCommandSchema.Options.Select(x => x.ShortName.ToString()).Where(x => x is not null))
-                .Concat(baseCommandSchema.Options.Select(x => x.Name).Where(x => x is not null))
-                .ToHashSet()!;
+            //_parameterNames = baseCommandSchema.Parameters.Select(x => x.Name)
+            //    .Concat(baseCommandSchema.Options.Select(x => x.ShortName.ToString()).Where(x => x is not null))
+            //    .Concat(baseCommandSchema.Options.Select(x => x.Name).Where(x => x is not null))
+            //    .ToHashSet()!;
         }
 
         /// <inheritdoc/>
@@ -128,21 +126,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddOption(Type optionType, string propertyName, Action<IDynamicOptionBuilder> action)
         {
-            DynamicOptionBuilder builder = new(propertyName, optionType);
-            action(builder);
-
-            IOptionSchema schema = builder.Build();
-            _options.Add(schema);
-
-            if (schema.Name is not null)
-            {
-                _parameterNames.Add(schema.Name);
-            }
-
-            if (schema.ShortName is not null)
-            {
-                _parameterNames.Add(schema.ShortName.ToString()!);
-            }
+            throw new NotImplementedException();
 
             return this;
         }
@@ -150,21 +134,8 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddOption<T>(string propertyName, Action<IDynamicOptionBuilder<T>> action)
         {
-            DynamicOptionBuilder<T> builder = new(propertyName);
-            action(builder);
+            throw new NotImplementedException();
 
-            IOptionSchema schema = builder.Build();
-            _options.Add(schema);
-
-            if (schema.Name is not null)
-            {
-                _parameterNames.Add(schema.Name);
-            }
-
-            if (schema.ShortName is not null)
-            {
-                _parameterNames.Add(schema.ShortName.ToString()!);
-            }
 
             return this;
         }
@@ -214,13 +185,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddParameter(Type parameterType, string propertyName, int order, Action<IDynamicParameterBuilder> action)
         {
-            DynamicParameterBuilder builder = new(parameterType, propertyName, order);
-            action(builder);
-
-            IParameterSchema schema = builder.Build();
-            _parameters.Add(schema);
-
-            _parameterNames.Add(schema.Name);
+            throw new NotImplementedException();
 
             return this;
         }
@@ -228,13 +193,7 @@
         /// <inheritdoc/>
         public IDynamicCommandBuilder AddParameter<T>(string propertyName, int order, Action<IDynamicParameterBuilder<T>> action)
         {
-            DynamicParameterBuilder<T> builder = new(propertyName, order);
-            action(builder);
-
-            IParameterSchema schema = builder.Build();
-            _parameters.Add(schema);
-
-            _parameterNames.Add(schema.Name);
+            throw new NotImplementedException();
 
             return this;
         }
@@ -242,15 +201,7 @@
 
         public ICommandSchema Build()
         {
-            return new CommandSchema(_type,
-                                     true,
-                                     _name,
-                                     _description,
-                                     _manual,
-                                     _supportedModes.Count == 0 ? null : _supportedModes,
-                                     _excludedModes.Count == 0 ? null : _excludedModes,
-                                     _parameters,
-                                     _options);
+            throw new NotImplementedException();
         }
     }
 }
