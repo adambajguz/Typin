@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.Resolvers.CommandResolver
 {
     using System;
-    using Typin;
 
     /// <summary>
     /// Invalid dynamic command exception.

@@ -1,8 +1,8 @@
 ﻿namespace Typin.Help
 {
     using System.Collections.Generic;
+    using Typin.Commands.Schemas;
     using Typin.Models.Schemas;
-    using Typin.Schemas;
 
     /// <summary>
     /// Help text writer.

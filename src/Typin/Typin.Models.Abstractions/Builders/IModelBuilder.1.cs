@@ -3,7 +3,7 @@
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Model builder.

@@ -4,8 +4,8 @@
     using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
 
     [Command("half", Description = "Command with half type")]

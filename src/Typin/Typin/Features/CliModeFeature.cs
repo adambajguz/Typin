@@ -1,7 +1,6 @@
 ﻿namespace Typin.Features
 {
     using System;
-    using Typin;
 
     /// <summary>
     /// <see cref="ICliModeFeature"/> implementation.

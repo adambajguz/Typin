@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.Mode
 {
     using System;
-    using Typin;
 
     /// <summary>
     /// Invalid mode exception.

@@ -3,7 +3,6 @@
     using System;
     using System.Text;
     using Typin.Internal.Exceptions;
-    using Typin.Schemas;
 
     /// <summary>
     /// End-user-facing exceptions. Avoid internal details and fix recommendations here

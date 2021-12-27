@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
 
     [Command("enum", Description = "Enum test command.")]
     public class EnumCommand : ICommand

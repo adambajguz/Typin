@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Commands
 {
     using System;
     using System.Linq;
@@ -12,7 +12,7 @@
         /// <summary>
         /// Checks whether type is a valid command.
         /// </summary>
-        public static bool IsValidType(Type type)
+        public static new bool IsValidType(Type type)
         {
             return type.GetInterfaces().Contains(typeof(IDynamicCommand)) &&
                 !type.IsAbstract &&

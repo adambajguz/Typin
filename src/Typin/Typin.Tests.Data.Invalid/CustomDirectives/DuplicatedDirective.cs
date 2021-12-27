@@ -2,7 +2,6 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Attributes;
 
     [Directive("preview", Description = "Duplicate directive.")]

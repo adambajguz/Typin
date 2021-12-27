@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Typin.Models.Binding;
     using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 

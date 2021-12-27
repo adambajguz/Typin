@@ -38,19 +38,9 @@
         public abstract IOutputFeature Output { get; }
 
         /// <summary>
-        /// Command feature.
-        /// </summary>
-        public abstract ICommandFeature Command { get; }
-
-        /// <summary>
         /// Binder feature.
         /// </summary>
         public abstract IBinderFeature Binder { get; }
-
-        /// <summary>
-        /// Directives feature.
-        /// </summary>
-        public abstract IDirectivesFeature Directives { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CliContext"/>.

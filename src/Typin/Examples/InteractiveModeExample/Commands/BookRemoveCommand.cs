@@ -4,8 +4,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using InteractiveModeExample.Services;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
 
     [Command("book remove", Description = "Remove a book from the library.")]

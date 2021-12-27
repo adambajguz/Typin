@@ -1,6 +1,5 @@
 ﻿namespace Typin.Help
 {
-    using Typin.Attributes;
     using Typin.Models;
 
     /// <summary>

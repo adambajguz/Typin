@@ -8,6 +8,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
 	</ItemGroup>
 

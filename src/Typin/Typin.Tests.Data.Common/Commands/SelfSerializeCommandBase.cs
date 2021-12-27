@@ -2,6 +2,7 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Typin.Commands;
     using Typin.Console;
     using Typin.Tests.Data.Common.Extensions;
 

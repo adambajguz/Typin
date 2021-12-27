@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Typin.Exceptions.Resolvers;
-    using Typin.Models.Binding;
     using Typin.Models.Schemas;
 
     /// <summary>

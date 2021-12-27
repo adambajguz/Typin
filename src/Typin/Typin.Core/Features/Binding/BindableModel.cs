@@ -1,7 +1,7 @@
 ﻿namespace Typin.Features.Binding
 {
     using Typin.Models;
-    using Typin.Models.Binding;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Bindable model that encapsulated <see cref="IModelSchema"/> and additional metadata.

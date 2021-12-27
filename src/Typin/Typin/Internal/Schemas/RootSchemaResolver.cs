@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Typin.Commands.Schemas;
     using Typin.Exceptions.Resolvers.CommandResolver;
     using Typin.Exceptions.Resolvers.DirectiveResolver;
     using Typin.Schemas;

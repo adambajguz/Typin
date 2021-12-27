@@ -2,8 +2,8 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
 
     [Command("named sub", Description = "Named sub command description")]

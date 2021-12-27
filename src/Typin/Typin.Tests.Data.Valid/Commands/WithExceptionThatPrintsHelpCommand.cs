@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Attributes;
+    using Typin.Commands;
 
     [Command("cmd")]
     public class WithExceptionThatPrintsHelpCommand : ICommand

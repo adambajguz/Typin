@@ -9,6 +9,7 @@
     using CommandLine;
     using Microsoft.Extensions.Hosting;
     using Typin.Benchmarks.FrameworksComparison.Commands;
+    using Typin.Commands;
     using Typin.Hosting;
     using Typin.Modes;
 

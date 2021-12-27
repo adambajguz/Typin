@@ -1,9 +1,9 @@
 ﻿namespace Typin.Modes
 {
     using System;
+    using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
-    using Typin.Components;
-    using Typin.Exceptions.Mode;
+    using Typin.Hosting.Scanning;
     using Typin.Schemas;
 
     /// <summary>
@@ -11,31 +11,28 @@
     /// </summary>
     internal sealed class CliModeScanner : Scanner<ICliMode>, ICliModeScanner
     {
+        private readonly IServiceCollection _services;
+
         /// <summary>
         /// Initializes a new instance of <see cref="CliModeScanner"/>.
         /// </summary>
         /// <param name="services"></param>
-        public CliModeScanner(IServiceCollection services) : base(services)
+        /// <param name="current"></param>
+        public CliModeScanner(IServiceCollection services, IEnumerable<Type>? current) :
+            base(current)
         {
+            _services = services;
 
+            Added += (sender, e) =>
+            {
+                _services.AddTransient(e.Type);
+            };
         }
 
         /// <inheritdoc/>
         public override bool IsValidComponent(Type type)
         {
             return KnownTypesHelpers.IsCliModeType(type);
-        }
-
-        /// <inheritdoc/>
-        protected override Exception GetInvalidComponentException(Type type)
-        {
-            return new InvalidModeException(type);
-        }
-
-        /// <inheritdoc/>
-        protected override void RegisterServices(Type type)
-        {
-            Services.AddSingleton(type);
         }
     }
 }

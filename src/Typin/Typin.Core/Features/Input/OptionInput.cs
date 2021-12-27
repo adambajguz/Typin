@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Typin.Utilities;
 
     /// <summary>
     /// Stores an option input.

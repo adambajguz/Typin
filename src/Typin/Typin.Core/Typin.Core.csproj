@@ -46,9 +46,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
-		<ProjectReference Include="..\Typin.Commands.Abstractions\Typin.Commands.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Features\Typin.Features.csproj" />
+		<ProjectReference Include="..\Typin.Hosting.Abstractions\Typin.Hosting.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
-		<ProjectReference Include="..\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
 	</ItemGroup>
 
 </Project>

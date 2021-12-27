@@ -1,10 +1,10 @@
 ﻿namespace Typin.Tests.Data.Common.Help
 {
     using System.Collections.Generic;
+    using Typin.Commands.Schemas;
     using Typin.Console;
     using Typin.Help;
     using Typin.Models.Schemas;
-    using Typin.Schemas;
 
     public class TestHelpWriter : IHelpWriter
     {

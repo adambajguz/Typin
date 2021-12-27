@@ -32,17 +32,8 @@
             throw new InvalidOperationException("Output has not been configured for this application or call.");
 
         /// <inheritdoc/>
-        public override ICommandFeature Command => Features.Get<ICommandFeature>() ??
-            throw new InvalidOperationException("Command has not been configured for this application or call.");
-
-        /// <inheritdoc/>
         public override IBinderFeature Binder => Features.Get<IBinderFeature>() ??
             throw new InvalidOperationException("Binder has not been configured for this application or call.");
-
-        /// <inheritdoc/>
-        public override IDirectivesFeature Directives => Features.Get<IDirectivesFeature>() ??
-            throw new InvalidOperationException("Directives has not been configured for this application or call.");
-
 
         /// <summary>
         /// Initializes an instance of <see cref="CliContext"/>.

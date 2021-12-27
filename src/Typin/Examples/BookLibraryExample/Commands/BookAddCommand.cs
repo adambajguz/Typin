@@ -6,8 +6,8 @@
     using BookLibraryExample.Internal;
     using BookLibraryExample.Models;
     using BookLibraryExample.Services;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
 
     [Command("book add", Description = "Add a book to the library.",

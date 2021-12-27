@@ -16,7 +16,7 @@
         /// <summary>
         /// List of defined directives in the application.
         /// </summary>
-        public IReadOnlyDictionary<string, DirectiveSchema> Directives { get; }
+        public IReadOnlyDictionary<string, IDirectiveSchema> Directives { get; }
 
         /// <summary>
         /// List of defined commands in the application.

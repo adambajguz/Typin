@@ -5,8 +5,8 @@
     using System.Threading.Tasks;
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
 
     [Command("book list", Description = "List all books in the library.")]

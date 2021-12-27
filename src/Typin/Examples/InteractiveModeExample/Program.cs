@@ -6,6 +6,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Typin.Commands;
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
@@ -30,10 +31,6 @@
                         {
                             scanner.Single<InteractiveCommand>();
 
-                            scanner.FromThisAssembly();
-                        })
-                        .AddDynamicCommands(scanner =>
-                        {
                             scanner.FromThisAssembly();
                         })
                         .AddDirectives(scanner =>

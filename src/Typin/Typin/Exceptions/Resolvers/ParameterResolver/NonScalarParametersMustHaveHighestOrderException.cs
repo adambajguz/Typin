@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.Resolvers.ParameterResolver
 {
     using System;
-    using Typin.Models.Binding;
     using Typin.Models.Schemas;
 
     /// <summary>

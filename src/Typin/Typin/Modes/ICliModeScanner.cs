@@ -1,6 +1,6 @@
 ﻿namespace Typin.Modes
 {
-    using Typin.Components;
+    using Typin.Hosting.Scanning;
 
     /// <summary>
     /// <see cref="ICliMode"/> component scanner.

@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Typin.Attributes;
+    using Typin.Commands;
 
     [Command("exit", Description = "Exits.")]
     public class ExitCommand : ICommand

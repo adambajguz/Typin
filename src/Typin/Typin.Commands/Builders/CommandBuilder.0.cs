@@ -2,10 +2,11 @@
 {
     using System;
     using System.Linq;
-    using Typin.Models.Binding;
+    using Typin.Commands;
+    using Typin.Commands.Schemas;
     using Typin.Models.Builders;
     using Typin.Models.Collections;
-    using Typin.Schemas;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Command builder.

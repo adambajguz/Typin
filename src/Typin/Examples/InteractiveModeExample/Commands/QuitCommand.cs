@@ -3,8 +3,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Modes.Interactive;
 
     [Command("quit", Description = "Quits the interactive mode",

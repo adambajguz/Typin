@@ -6,7 +6,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Typin.Commands;
     using Typin.Console;
+    using Typin.Directives;
     using Typin.Help;
     using Typin.Hosting;
     using Typin.Modes;
@@ -35,10 +37,10 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                cliBuilder.AddDirectives(directives =>
-                {
-                    directives.Single(directiveType);
-                });
+                //cliBuilder.AddDirectives(directives =>
+                //{
+                //    directives.Single(directiveType);
+                //});
             });
 
             return this;
@@ -60,10 +62,10 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                cliBuilder.AddDirectives(directives =>
-                {
-                    directives.Multiple(directiveTypes);
-                });
+                //cliBuilder.AddDirectives(directives =>
+                //{
+                //    directives.Multiple(directiveTypes);
+                //});
             });
 
             return this;
@@ -77,10 +79,10 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                cliBuilder.AddDirectives(directives =>
-                {
-                    directives.From(directiveAssembly);
-                });
+                //cliBuilder.AddDirectives(directives =>
+                //{
+                //    directives.From(directiveAssembly);
+                //});
             });
 
             return this;
@@ -94,10 +96,10 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                cliBuilder.AddDirectives(directives =>
-                {
-                    directives.From(directiveAssemblies);
-                });
+                //cliBuilder.AddDirectives(directives =>
+                //{
+                //    directives.From(directiveAssemblies);
+                //});
             });
 
             return this;
@@ -111,10 +113,10 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                cliBuilder.AddDirectives(directives =>
-                {
-                    directives.FromThisAssembly();
-                });
+                //cliBuilder.AddDirectives(directives =>
+                //{
+                //    directives.FromThisAssembly();
+                //});
             });
 
             return this;

@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Commands
 {
     using System;
     using System.Linq;
@@ -16,6 +16,19 @@
         /// </summary>
         /// <remarks>If the execution of the command is not asynchronous, simply end the method with <code>return default;</code></remarks>
         public ValueTask ExecuteAsync(object command, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Checks whether type is a valid command handler.
+        /// </summary>
+        public static bool IsValidType(Type type)
+        {
+            Type[] interfaces = type.GetInterfaces();
+
+            return interfaces.Contains(typeof(ICommandHandler)) &&
+                interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICommandHandler<>)) &&
+                !type.IsAbstract &&
+                !type.IsInterface;
+        }
 
         /// <summary>
         /// Checks whether type is a valid command handler.
@@ -49,7 +62,7 @@
         /// <summary>
         /// Checks whether type is a valid command handler.
         /// </summary>
-        public static bool IsValidType(Type type)
+        public static new bool IsValidType(Type type)
         {
             return type.GetInterfaces().Contains(typeof(ICommandHandler<TCommand>)) &&
                 !type.IsAbstract &&

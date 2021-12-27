@@ -6,9 +6,9 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
+    using Typin.Commands.Schemas;
     using Typin.Console;
     using Typin.Features;
-    using Typin.Schemas;
 
     /// <summary>
     /// A middleware that handles help.

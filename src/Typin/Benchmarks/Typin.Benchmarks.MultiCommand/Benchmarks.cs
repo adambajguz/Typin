@@ -9,6 +9,7 @@ namespace Typin.Benchmarks.MultiCommand
     using Microsoft.Extensions.Hosting;
     using Typin.Benchmarks.MultiCommand.CliFxCommands;
     using Typin.Benchmarks.MultiCommand.TypinCommands;
+    using Typin.Commands;
     using Typin.Hosting;
     using Typin.Modes;
 

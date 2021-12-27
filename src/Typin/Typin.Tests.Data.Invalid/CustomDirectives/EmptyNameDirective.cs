@@ -2,7 +2,6 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Attributes;
 
     [Directive("  ", Description = "Empty name directive.")]

@@ -1,11 +1,10 @@
-﻿namespace Typin.Models.Binding
+﻿namespace Typin.Models.Schemas
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Models;
     using Typin.Models.Collections;
-    using Typin.Models.Schemas;
 
     /// <summary>
     /// Stores a bindable model schema.

@@ -1,9 +1,10 @@
 ﻿namespace Typin.Commands.Builders
 {
     using System;
-    using Typin.Models.Binding;
+    using Typin.Commands;
     using Typin.Models.Builders;
     using Typin.Models.Collections;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Model builder.

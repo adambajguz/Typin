@@ -52,8 +52,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
+		<ProjectReference Include="..\Typin.Directives.Abstractions\Typin.Directives.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Help\Typin.Help.csproj" />
 		<ProjectReference Include="..\Typin.Commands\Typin.Commands.csproj" />
+		<ProjectReference Include="..\Typin.Hosting\Typin.Hosting.csproj" />
+		<ProjectReference Include="..\Typin.OldCore\Typin.OldCore.csproj" />
 		<ProjectReference Include="..\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />
 	</ItemGroup>
 

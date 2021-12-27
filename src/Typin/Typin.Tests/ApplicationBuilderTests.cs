@@ -66,7 +66,7 @@
                 .AddCommandsFrom(typeof(BenchmarkDefaultCommand).Assembly)
                 .AddCommands(new[] { typeof(BenchmarkDefaultCommand) })
                 .AddCommandsFrom(new[] { typeof(BenchmarkDefaultCommand).Assembly })
-                .AddCommandsFrom(typeof(AddValidDynamicAndExecuteCommand).Assembly)
+                //.AddCommandsFrom(typeof(AddValidDynamicAndExecuteCommand).Assembly)
                 //.AddDynamicCommandsFromThisAssembly()
                 .AddDirective<DebugDirective>()
                 .AddDirective<PreviewDirective>()

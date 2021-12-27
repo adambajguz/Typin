@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Typin.Models.Binding;
     using Typin.Models.Collections;
     using Typin.Models.Schemas;
 

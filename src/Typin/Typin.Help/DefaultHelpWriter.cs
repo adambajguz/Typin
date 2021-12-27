@@ -6,8 +6,10 @@
     using System.Globalization;
     using System.Linq;
     using Microsoft.Extensions.Options;
-    using Typin.Components;
+    using Typin.Commands.Features;
+    using Typin.Commands.Schemas;
     using Typin.Console;
+    using Typin.Hosting.Components;
     using Typin.Models.Schemas;
     using Typin.Schemas;
     using Typin.Utilities.Extensions;
@@ -62,7 +64,10 @@
         {
             if (_context is not null)
             {
-                Write(_context.Command.Schema, _context.Command.DefaultValues);
+                var commandFeature = _context.Features.Get<ICommandFeature>() ??
+                    throw new InvalidOperationException($"{nameof(ICommandFeature)} has not been configured for this application or call.");
+
+                Write(commandFeature.Schema, commandFeature.DefaultValues);
             }
         }
 
@@ -211,7 +216,7 @@
         #endregion
 
         #region Directives
-        private void WriteDirectivesManual(IReadOnlyDictionary<string, DirectiveSchema> directives)
+        private void WriteDirectivesManual(IReadOnlyDictionary<string, IDirectiveSchema> directives)
         {
             if (directives.Count == 0)
             {
@@ -225,9 +230,9 @@
 
             WriteHeader("Directives");
 
-            foreach (KeyValuePair<string, DirectiveSchema> directive in directives.OrderBy(x => x.Value.Name))
+            foreach (KeyValuePair<string, IDirectiveSchema> directive in directives.OrderBy(x => x.Value.Name))
             {
-                DirectiveSchema schema = directive.Value;
+                IDirectiveSchema schema = directive.Value;
 
                 // Name
                 if (schema.HasModeRestrictions())
@@ -248,7 +253,7 @@
             }
         }
 
-        private void WriteDirectiveDescription(DirectiveSchema directive)
+        private void WriteDirectiveDescription(IDirectiveSchema directive)
         {
             if (string.IsNullOrWhiteSpace(directive.Description))
             {
@@ -303,7 +308,7 @@
             //WriteLine();
         }
 
-        private void WriteCommandUsage(IReadOnlyDictionary<string, DirectiveSchema> directives,
+        private void WriteCommandUsage(IReadOnlyDictionary<string, IDirectiveSchema> directives,
                                        ICommandSchema command,
                                        IEnumerable<ICommandSchema> childCommands)
         {

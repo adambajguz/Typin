@@ -3,8 +3,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
     using Typin.Models.Collections;
 

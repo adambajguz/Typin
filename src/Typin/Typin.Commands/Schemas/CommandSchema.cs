@@ -1,8 +1,8 @@
-﻿namespace Typin.Schemas
+﻿namespace Typin.Commands.Schemas
 {
     using System;
-    using Typin.Models.Binding;
     using Typin.Models.Collections;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// Command schema.

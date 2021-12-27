@@ -1,9 +1,8 @@
-﻿namespace Typin.Models.Binding
+﻿namespace Typin.Models.Schemas
 {
     using System;
     using System.Collections.Generic;
     using Typin.Models;
-    using Typin.Models.Schemas;
 
     /// <summary>
     /// Model schema.

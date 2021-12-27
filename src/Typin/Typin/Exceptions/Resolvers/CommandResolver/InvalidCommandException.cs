@@ -1,8 +1,8 @@
 ﻿namespace Typin.Exceptions.Resolvers.CommandResolver
 {
     using System;
-    using Typin;
     using Typin.Attributes;
+    using Typin.Commands;
 
     /// <summary>
     /// Invalid command exception.

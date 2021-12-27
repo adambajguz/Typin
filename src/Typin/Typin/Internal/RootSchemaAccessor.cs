@@ -5,7 +5,8 @@
     using System.Diagnostics;
     using Microsoft.Extensions.Logging;
     using Typin;
-    using Typin.Components;
+    using Typin.Commands;
+    using Typin.Hosting.Components;
     using Typin.Internal.Schemas;
     using Typin.Schemas;
 
@@ -34,9 +35,9 @@
 
             Stopwatch timer = Stopwatch.StartNew();
 
-            IReadOnlyCollection<Type> commands = _componentProvider.Get<ICommand>();
-            IReadOnlyCollection<Type> dynamicCommands = _componentProvider.Get<ICommandTemplate>();
-            IReadOnlyCollection<Type> directives = _componentProvider.Get<IDirective>();
+            IReadOnlyCollection<Type> commands = _componentProvider.Get<ICommand>() ?? Array.Empty<Type>();
+            IReadOnlyCollection<Type> dynamicCommands = _componentProvider.Get<ICommandTemplate>() ?? Array.Empty<Type>();
+            IReadOnlyCollection<Type> directives = _componentProvider.Get<IDirective>() ?? Array.Empty<Type>();
 
             RootSchemaResolver rootSchemaResolver = new(commands, dynamicCommands, directives);
 

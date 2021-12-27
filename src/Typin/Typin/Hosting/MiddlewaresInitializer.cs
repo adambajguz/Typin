@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
+    using Typin.Commands.Pipeline;
     using Typin.Help;
     using Typin.Pipeline;
 
@@ -20,8 +21,8 @@
                  .AddStep<ResolveInput>()
                  .AddStep<InitializeBinder>()
                  .AddStep<ResolveCommand>()
-                 .AddStep<InitializeDirectives>()
-                 .AddStep<PipelinedDirectivesHandler>()
+                 //.AddStep<InitializeDirectives>()
+                 //.AddStep<PipelinedDirectivesHandler>()
                  .AddStep<HelpHandler>()
                  .AddStep<BindInput>()
                  // user
