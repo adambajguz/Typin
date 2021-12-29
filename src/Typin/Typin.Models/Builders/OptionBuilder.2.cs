@@ -2,9 +2,9 @@
 {
     using System;
     using System.Linq.Expressions;
-    using Typin.Models.Collections;
     using Typin.Models.Converters;
     using Typin.Models.Extensions;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Option builder.

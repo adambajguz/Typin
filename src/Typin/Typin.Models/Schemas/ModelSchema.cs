@@ -4,21 +4,17 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Models;
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Stores a bindable model schema.
     /// </summary>
     public class ModelSchema : IModelSchema
     {
-        /// <summary>
-        /// Command or dynamic command type.
-        /// </summary>
+        /// <inheritdoc/>
         public Type Type { get; }
 
-        /// <summary>
-        /// List of ordered parameters.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<IArgumentSchema> Arguments
         {
             get
@@ -32,22 +28,20 @@
                 {
                     yield return option;
                 }
+                foreach (IOptionSchema option in Options)
+                {
+                    yield return option;
+                }
             }
         }
 
-        /// <summary>
-        /// List of ordered parameters.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<IParameterSchema> Parameters { get; }
 
-        /// <summary>
-        /// List of required and not required options.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<IOptionSchema> Options { get; }
 
-        /// <summary>
-        /// A list of required options.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<IOptionSchema> RequiredOptions { get; }
 
         /// <inheritdoc/>
@@ -59,12 +53,13 @@
         public ModelSchema(Type type,
                            IReadOnlyList<IParameterSchema> parameters,
                            IReadOnlyList<IOptionSchema> options,
+                           IReadOnlyList<IOptionSchema> requiredOptions,
                            IExtensionsCollection extensions)
         {
             Type = type;
             Parameters = parameters;
             Options = options;
-            RequiredOptions = options.Where(x => x.IsRequired).ToList();
+            RequiredOptions = requiredOptions;
             Extensions = extensions;
         }
 

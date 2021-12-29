@@ -14,10 +14,11 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Hosting\Typin.Hosting.csproj" />
 		<ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Schemas\Typin.Schemas.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 	</ItemGroup>
 

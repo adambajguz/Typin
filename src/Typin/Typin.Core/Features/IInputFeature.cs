@@ -16,7 +16,7 @@
         /// <summary>
         /// Command execution options.
         /// </summary>
-        CommandExecutionOptions ExecutionOptions { get; }
+        InputOptions Options { get; }
 
         /// <summary>
         /// Parsed CLI input.

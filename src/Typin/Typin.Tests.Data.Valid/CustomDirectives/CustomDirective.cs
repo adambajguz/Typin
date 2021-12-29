@@ -6,9 +6,10 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Directives;
 
     [Directive("custom", Description = "Custom directive.")]
-    public sealed class CustomDirective : IPipelinedDirective
+    public sealed class CustomDirective : IDirective //TODO: add directive hadnler
     {
         public const string ExpectedOutput = nameof(CustomDirective);
 
@@ -17,11 +18,6 @@
         public CustomDirective(IConsole console)
         {
             _console = console;
-        }
-
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)

@@ -7,14 +7,16 @@
     using Typin.Hosting;
     using Typin.Hosting.Scanning;
     using Typin.Models;
+    using Typin.Models.Scanning;
 
     /// <summary>
     /// <see cref="ICommand"/> component scanner.
     /// </summary>
     internal sealed class AggregatedCommandScanner : IScanner<ICommand>, ICommandScanner
     {
-        private readonly ICliBuilder _cli;
         private readonly ICommandScanner _commandScanner;
+        private readonly IModelScanner _modelScanner;
+        private readonly IConfigureCommandScanner _configureCommandScanner;
 
         /// <inheritdoc/>
         public Type ComponentType { get; }
@@ -36,10 +38,12 @@
         /// <param name="current"></param>
         public AggregatedCommandScanner(ICliBuilder cli, IEnumerable<Type>? current)
         {
-            _cli = cli;
             _commandScanner = new CommandScanner(cli.Services, current);
 
             ComponentType = typeof(ICommand);
+
+            _modelScanner = cli.AddModels(); // AddModels must be before ConfigureCommands to ensure proper hosted services order
+            _configureCommandScanner = cli.ConfigureCommands();
         }
 
         /// <inheritdoc/>
@@ -52,9 +56,8 @@
         public IScanner<ICommand> From(Assembly assembly)
         {
             _commandScanner.From(assembly);
-
-            _cli.ConfigureCommands().From(assembly);
-            _cli.ConfigureModels().From(assembly);
+            _modelScanner.From(assembly);
+            _configureCommandScanner.From(assembly);
 
             return this;
         }
@@ -63,9 +66,8 @@
         public IScanner<ICommand> From(IEnumerable<Assembly> assemblies)
         {
             _commandScanner.From(assemblies);
-
-            _cli.ConfigureCommands().From(assemblies);
-            _cli.ConfigureModels().From(assemblies);
+            _modelScanner.From(assemblies);
+            _configureCommandScanner.From(assemblies);
 
             return this;
         }
@@ -73,10 +75,7 @@
         /// <inheritdoc/>
         public IScanner<ICommand> FromThisAssembly()
         {
-            _commandScanner.FromThisAssembly();
-
-            _cli.ConfigureCommands().FromThisAssembly();
-            _cli.ConfigureModels().FromThisAssembly();
+            From(Assembly.GetCallingAssembly());
 
             return this;
         }
@@ -85,9 +84,12 @@
         public IScanner<ICommand> Multiple(IEnumerable<Type> types)
         {
             _commandScanner.Multiple(types);
+            _modelScanner.Multiple(types);
 
-            _cli.ConfigureCommands().Multiple(types);
-            _cli.ConfigureModels().Multiple(types);
+            foreach (Type type in types)
+            {
+                _configureCommandScanner.FromNested(type);
+            }
 
             return this;
         }
@@ -96,9 +98,8 @@
         public IScanner<ICommand> Single(Type type)
         {
             _commandScanner.Single(type);
-
-            _cli.ConfigureCommands().Single(type);
-            _cli.ConfigureModels().Single(type);
+            _modelScanner.Single(type);
+            _configureCommandScanner.FromNested(type);
 
             return this;
         }

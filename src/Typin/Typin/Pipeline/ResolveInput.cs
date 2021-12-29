@@ -25,7 +25,7 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            bool trimExecutable = args.Input.ExecutionOptions.HasFlag(CommandExecutionOptions.TrimExecutable);
+            bool trimExecutable = args.Input.Options.HasFlag(InputOptions.TrimExecutable);
 
             ParsedInput input = InputResolver.Parse(
                 args.Input.Arguments.Skip(trimExecutable ? 1 : 0),

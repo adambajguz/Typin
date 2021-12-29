@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Typin.Models;
+    using Typin.Schemas;
 
     /// <summary>
     /// Model schema.
@@ -25,7 +26,7 @@
         IReadOnlyList<IParameterSchema> Parameters { get; }
 
         /// <summary>
-        /// List of required and not required options.
+        /// List of not required options.
         /// </summary>
         IReadOnlyList<IOptionSchema> Options { get; }
 

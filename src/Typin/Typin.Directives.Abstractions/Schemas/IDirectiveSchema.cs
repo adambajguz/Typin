@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Models.Schemas;
+    using Typin.Schemas;
 
     /// <summary>
     /// Directive schema.

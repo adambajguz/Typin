@@ -2,9 +2,9 @@
 {
     using System;
     using System.Reflection;
-    using Typin.Models.Collections;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
     using Typin.Utilities;
 
     /// <summary>
@@ -101,8 +101,6 @@
         /// <inheritdoc/>
         public IOptionSchema Build()
         {
-            EnsureBuiltOnce();
-
             // The user may mistakenly specify dashes, thinking it's required, so trim them
             string? optionName = _name?.TrimStart('-');
 

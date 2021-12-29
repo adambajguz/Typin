@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin.Commands.Builders;
     using Typin.Hosting.Scanning;
 
     /// <summary>
@@ -27,6 +30,17 @@
             Added += (sender, e) =>
             {
                 _services.AddTransient(e.Type);
+
+                Type[] interfaces = e.Type.GetInterfaces();
+
+                foreach (Type @interface in interfaces)
+                {
+                    if (@interface.IsGenericType &&
+                        @interface.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))
+                    {
+                        _services.AddTransient(@interface, e.Type);
+                    }
+                }
             };
         }
 
@@ -46,6 +60,17 @@
                 .Concat(assembly.ExportedTypes.Where(IsValidComponent));
         }
 
+        /// <inheritdoc/>
+        public IConfigureCommandScanner Single<TCommand>(Func<IServiceProvider, ICommandBuilder<TCommand>, CancellationToken, ValueTask> configure)
+            where TCommand : class, ICommand
+        {
+            _services.AddTransient<IConfigureCommand<TCommand>>(provider =>
+            {
+                return new InlineConfigureCommand<TCommand>(provider, configure);
+            });
+
+            return this;
+        }
 
         /// <inheritdoc/>
         public IConfigureCommandScanner FromNested(Type type)

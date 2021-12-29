@@ -4,7 +4,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Argument collection.
+    /// Represents a collection of arguments.
     /// </summary>
     public interface IArgumentCollection : IReadOnlyArgumentCollection
     {

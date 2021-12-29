@@ -4,6 +4,9 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
+    using Typin.Commands;
+    using Typin.Directives;
+    using Typin.Modes;
 
     /// <summary>
     /// If application runs in interactive mode (using the interactive command or [interactive] directive), it is possible to execute multiple commands in one processes.
@@ -13,7 +16,7 @@
     /// </summary>
     [Directive(InteractiveOnlyDirectives.Interactive, Description = "Executes a command, then starts an interactive mode.",
                ExcludedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class InteractiveDirective : IPipelinedDirective
+    public sealed class InteractiveDirective : IDirective //TODO: add directive hadnler
     {
         private readonly ICliModeSwitcher _cliModeSwitcher;
         private readonly ICommandExecutor _commandExecutor;
@@ -26,12 +29,6 @@
         {
             _cliModeSwitcher = cliModeSwitcher;
             _commandExecutor = commandExecutor;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>

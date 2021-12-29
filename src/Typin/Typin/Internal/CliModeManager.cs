@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Exceptions.Mode;
-    using Typin.Schemas;
+    using Typin.Modes;
 
     internal sealed class CliModeManager : ICliModeSwitcher, ICliModeAccessor
     {
@@ -68,7 +68,7 @@
         {
             _ = modeType ?? throw new ArgumentNullException(nameof(modeType));
 
-            if (!KnownTypesHelpers.IsCliModeType(modeType))
+            if (!ICliMode.IsValidType(modeType))
             {
                 throw new InvalidModeException(modeType);
             }

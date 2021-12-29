@@ -5,7 +5,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
+    using Typin.Commands;
     using Typin.Console;
+    using Typin.Modes;
 
     /// <summary>
     /// Programmatic CLI mode to run commands programmatically with advanced options.
@@ -16,6 +18,11 @@
 
         private readonly IConsole _console;
         private readonly ICommandExecutor _commandExecutor;
+
+        /// <summary>
+        /// Shared input options.
+        /// </summary>
+        public InputOptions InputOptions { get; set; }
 
         /// <summary>
         /// Shared command execution options.
@@ -81,7 +88,7 @@
                 {
                     //TODO: before execution action
 
-                    await _commandExecutor.ExecuteAsync(arguments, ExecutionOptions, cancellationToken);
+                    await _commandExecutor.ExecuteAsync(arguments, InputOptions, ExecutionOptions, cancellationToken);
                     _console.ResetColor();
 
                     //TODO: after execution action

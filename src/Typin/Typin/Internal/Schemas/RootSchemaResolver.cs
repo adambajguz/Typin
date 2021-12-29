@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Typin.Commands.Schemas;
+    using Typin.Directives.Schemas;
     using Typin.Exceptions.Resolvers.CommandResolver;
-    using Typin.Exceptions.Resolvers.DirectiveResolver;
     using Typin.Schemas;
 
     /// <summary>
@@ -19,7 +19,7 @@
 
         public ICommandSchema? DefaultCommand { get; private set; }
         public Dictionary<string, ICommandSchema>? Commands { get; private set; }
-        public Dictionary<string, DirectiveSchema>? Directives { get; private set; }
+        public Dictionary<string, IDirectiveSchema>? Directives { get; private set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="RootSchemaResolver"/>.
@@ -96,27 +96,27 @@
 
         private void ResolveDirectives(IReadOnlyCollection<Type> directiveTypes)
         {
-            Dictionary<string, DirectiveSchema> directives = new();
-            List<DirectiveSchema> invalidDirectives = new();
+            Dictionary<string, IDirectiveSchema> directives = new();
+            //List<IDirectiveSchema> invalidDirectives = new();
 
-            foreach (Type? directiveType in directiveTypes)
-            {
-                DirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType);
+            //foreach (Type? directiveType in directiveTypes)
+            //{
+            //    IDirectiveSchema directive = DirectiveSchemaResolver.Resolve(directiveType);
 
-                if (!directives.TryAdd(directive.Name, directive))
-                {
-                    invalidDirectives.Add(directive);
-                }
-            }
+            //    if (!directives.TryAdd(directive.Name, directive))
+            //    {
+            //        invalidDirectives.Add(directive);
+            //    }
+            //}
 
-            if (invalidDirectives.Count > 0)
-            {
-                IGrouping<string, DirectiveSchema> duplicateNameGroup = invalidDirectives.Union(directives.Values)
-                                                                                         .GroupBy(c => c.Name, StringComparer.Ordinal)
-                                                                                         .First();
+            //if (invalidDirectives.Count > 0)
+            //{
+            //    IGrouping<string, IDirectiveSchema> duplicateNameGroup = invalidDirectives.Union(directives.Values)
+            //                                                                              .GroupBy(c => c.Name, StringComparer.Ordinal)
+            //                                                                              .First();
 
-                throw new DirectiveDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
-            }
+            //    throw new DirectiveDuplicateByNameException(duplicateNameGroup.Key, duplicateNameGroup.ToArray());
+            //}
 
             Directives = directives;
         }

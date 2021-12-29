@@ -5,6 +5,7 @@
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
+    using Typin.Directives;
     using Typin.Modes.Interactive;
 
     /// <summary>
@@ -17,7 +18,7 @@
     /// </example>
     /// </summary>
     [Directive(InteractiveOnlyDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeResetDirective : IPipelinedDirective
+    public sealed class ScopeResetDirective : IDirective //TODO: add directive hadnler
     {
         private readonly InteractiveModeOptions _options;
 
@@ -27,12 +28,6 @@
         public ScopeResetDirective(IOptions<InteractiveModeOptions> options)
         {
             _options = options.Value;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>

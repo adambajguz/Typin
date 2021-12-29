@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Typin.Commands.Schemas;
+    using Typin.Directives.Schemas;
 
     /// <summary>
     /// Stores all schemas of commands and directives in the application.
@@ -31,7 +33,7 @@
         /// <summary>
         /// Initializes an instance of <see cref="RootSchema"/>.
         /// </summary>
-        public RootSchema(IReadOnlyDictionary<string, DirectiveSchema> directives,
+        public RootSchema(IReadOnlyDictionary<string, IDirectiveSchema> directives,
                           Dictionary<string, ICommandSchema> commands,
                           ICommandSchema? defaultCommand)
         {
@@ -181,7 +183,7 @@
         /// <summary>
         /// Finds command schema by name.
         /// </summary>
-        public DirectiveSchema? TryFindDirective(string directiveName)
+        public IDirectiveSchema? TryFindDirective(string directiveName)
         {
             if (string.IsNullOrWhiteSpace(directiveName))
             {

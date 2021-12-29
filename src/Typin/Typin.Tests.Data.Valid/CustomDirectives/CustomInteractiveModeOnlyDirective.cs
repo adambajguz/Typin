@@ -6,10 +6,11 @@
     using Typin;
     using Typin.Attributes;
     using Typin.Console;
+    using Typin.Directives;
     using Typin.Modes.Interactive;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class CustomInteractiveModeOnlyDirective : IPipelinedDirective
+    public sealed class CustomInteractiveModeOnlyDirective : IDirective //TODO: add directive hadnler
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);
 
@@ -18,11 +19,6 @@
         public CustomInteractiveModeOnlyDirective(IConsole console)
         {
             _console = console;
-        }
-
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)

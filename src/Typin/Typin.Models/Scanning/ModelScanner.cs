@@ -1,29 +1,31 @@
-﻿namespace Typin.Commands.Scanning
+﻿namespace Typin.Models.Scanning
 {
     using System;
     using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting.Scanning;
+    using Typin.Models;
 
     /// <summary>
-    /// <see cref="ICommandHandler"/> component scanner.
+    /// <see cref="IModel"/> component scanner.
     /// </summary>
-    internal sealed class CommandHandlerScanner : Scanner<ICommandHandler>, ICommandHandlerScanner
+    internal sealed class ModelScanner : Scanner<IModel>, IModelScanner
     {
         private readonly IServiceCollection _services;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="CommandHandlerScanner"/>.
+        /// Initializes a new instance of <see cref="ModelScanner"/>.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="current"></param>
-        public CommandHandlerScanner(IServiceCollection services, IEnumerable<Type>? current) :
+        public ModelScanner(IServiceCollection services, IEnumerable<Type>? current) :
             base(current)
         {
             _services = services;
 
             Added += (sender, e) =>
             {
+                _services.AddTransient(typeof(IModel), e.Type);
                 _services.AddTransient(e.Type);
             };
         }
@@ -31,7 +33,7 @@
         /// <inheritdoc/>
         public override bool IsValidComponent(Type type)
         {
-            return ICommandHandler.IsValidType(type);
+            return IModel.IsValidType(type);
         }
     }
 }

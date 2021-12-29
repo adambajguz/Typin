@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Attributes;
+    using Typin.Directives;
 
     /// <summary>
     /// Invalid directive exception.

@@ -1,6 +1,10 @@
 ﻿namespace Typin.Commands
 {
     using System;
+    using System.Linq;
+    using Microsoft.Extensions.DependencyInjection;
+    using Typin.Commands.Collections;
+    using Typin.Commands.Resolvers;
     using Typin.Commands.Scanning;
     using Typin.Hosting;
 
@@ -49,7 +53,16 @@
             return cliBuilder.GetScanner<IConfigureCommand, IConfigureCommandScanner>(
                 (cli, current) =>
                 {
-                    return new ConfigureCommandScanner(cli.Services, current);
+                    IServiceCollection services = cli.Services;
+                    if (!services.Any(x => x.ImplementationType == typeof(CommandSchemaProvider)))
+                    {
+                        services.AddSingleton<ICommandSchemaCollection, CommandSchemaCollection>();
+                        services.AddScoped<ICommandSchemaProvider, CommandSchemaProvider>();
+                        services.AddHostedService<CommandSchemaProviderHostedService>();
+                        services.AddTransient(typeof(ICommandSchemaResolver<>), typeof(CommandSchemaResolver<>));
+                    }
+
+                    return new ConfigureCommandScanner(services, current);
                 });
         }
 
@@ -78,6 +91,13 @@
             return cliBuilder.GetScanner<IDynamicCommand, IDynamicCommandScanner>(
                 (cli, current) =>
                 {
+                    //IServiceCollection services = cli.Services;
+                    //if (!services.Any(x => x.ImplementationType == typeof(DynamicCommandSchemaProvider)))
+                    //{
+                    //    services.AddSingleton<IDynamicCommandSchemaCollection, DynamicCommandSchemaCollection>();
+                    //    services.AddTransient<IDynamicCommandSchemaProvider, DynamicCommandSchemaProvider>();
+                    //}
+
                     return new DynamicCommandScanner(cli.Services, current);
                 });
         }

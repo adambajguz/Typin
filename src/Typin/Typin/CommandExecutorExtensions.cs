@@ -1,4 +1,4 @@
-﻿namespace Typin.Extensions
+﻿namespace Typin.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -18,23 +18,26 @@
         /// <returns></returns>
         public static async Task<int> ExecuteAsync(this ICommandExecutor commandExecutor, CliOptions cliOptions, CancellationToken cancellationToken = default)
         {
-            CommandExecutionOptions startupExecutionOptions = cliOptions.StartupExecutionOptions;
+            InputOptions startupInputOptions = cliOptions.StartupInputOptions;
 
             if (cliOptions.CommandLine is not null)
             {
                 return await commandExecutor.ExecuteAsync(cliOptions.CommandLine,
-                                                          startupExecutionOptions,
+                                                          startupInputOptions,
+                                                          CommandExecutionOptions.Default,
                                                           cancellationToken);
             }
             else if (cliOptions.CommandLineArguments is not null)
             {
                 return await commandExecutor.ExecuteAsync(cliOptions.CommandLineArguments,
-                                                          startupExecutionOptions,
+                                                          startupInputOptions,
+                                                          CommandExecutionOptions.Default,
                                                           cancellationToken);
             }
 
             return await commandExecutor.ExecuteAsync(string.Empty,
-                                                      startupExecutionOptions,
+                                                      startupInputOptions,
+                                                      CommandExecutionOptions.Default,
                                                       cancellationToken);
         }
     }

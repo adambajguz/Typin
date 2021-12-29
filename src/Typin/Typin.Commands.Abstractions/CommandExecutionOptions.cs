@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Commands
 {
     using System;
 
@@ -14,13 +14,8 @@
         Default = 0,
 
         /// <summary>
-        /// Whether to trim executable name (first token) from arguments.
-        /// </summary>
-        TrimExecutable = 1 << 0,
-
-        /// <summary>
         /// Whether to ommit scope creartion.
         /// </summary>
-        UseCurrentScope = 1 << 1
+        UseCurrentScope = 1 << 0
     }
 }

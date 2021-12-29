@@ -4,9 +4,11 @@
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using PackSite.Library.Pipelining;
+    using Typin.Commands;
     using Typin.Console;
     using Typin.Help;
     using Typin.Internal;
+    using Typin.Modes;
 
     internal class DefaultCliBuilder : CliBuilder
     {
@@ -34,7 +36,7 @@
                     if (options.CommandLine is null && options.CommandLineArguments is null)
                     {
                         options.CommandLine = System.Environment.CommandLine;
-                        options.StartupExecutionOptions = CommandExecutionOptions.TrimExecutable;
+                        options.StartupInputOptions = InputOptions.TrimExecutable;
                     }
                 });
 
@@ -45,7 +47,7 @@
                 services.AddSingleton<ICliModeSwitcher>((provider) => provider.GetRequiredService<CliModeManager>());
                 services.AddSingleton<ICliModeAccessor>((provider) => provider.GetRequiredService<CliModeManager>());
 
-                services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
+                //services.AddSingleton<IDynamicCommandBuilderFactory, DynamicCommandBuilderFactory>();
             }
         }
 

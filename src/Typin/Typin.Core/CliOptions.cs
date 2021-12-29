@@ -19,9 +19,9 @@
         public string[]? CommandLineArguments { get; set; }
 
         /// <summary>
-        /// Startup <see cref="CommandLine"/> execution options.
+        /// Startup <see cref="CommandLine"/> input options.
         /// </summary>
-        public CommandExecutionOptions StartupExecutionOptions { get; set; }
+        public InputOptions StartupInputOptions { get; set; }
 
         /// <summary>
         /// Startup mode.

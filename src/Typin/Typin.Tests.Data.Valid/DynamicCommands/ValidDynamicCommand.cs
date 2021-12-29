@@ -5,11 +5,12 @@
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Typin.Attributes;
+    using Typin.Commands;
     using Typin.Console;
     using Typin.Models;
     using Typin.Models.Collections;
 
-    public class ValidDynamicCommand : ICommandTemplate
+    public class ValidDynamicCommand : IDynamicCommand
     {
         private readonly IConsole _console;
 

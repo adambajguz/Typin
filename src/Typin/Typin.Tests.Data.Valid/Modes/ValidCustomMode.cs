@@ -2,8 +2,9 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
+    using Typin.Commands;
     using Typin.Console;
+    using Typin.Modes;
 
     public class ValidCustomMode : ICliMode
     {

@@ -2,9 +2,9 @@
 {
     using System;
     using System.Reflection;
-    using Typin.Models.Collections;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
     using Typin.Utilities;
 
     /// <summary>

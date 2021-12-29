@@ -1,13 +1,9 @@
 ﻿namespace Typin.Tests.Data.Invalid.CustomDirectives
 {
-    using System.Threading;
-    using System.Threading.Tasks;
+    using Typin.Directives;
 
     public class NoAttributeDirective : IDirective
     {
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
-        }
+
     }
 }

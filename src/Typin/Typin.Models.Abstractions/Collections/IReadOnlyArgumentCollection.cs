@@ -4,7 +4,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Read-only argument collection.
+    /// Represents a read-only collection of arguments.
     /// </summary>
     public interface IReadOnlyArgumentCollection : IReadOnlyCollection<KeyValuePair<string, ArgumentValue>>
     {

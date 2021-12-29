@@ -7,6 +7,7 @@
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
+    using Typin.Directives;
     using Typin.Features.Input;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Internal.Extensions;
@@ -30,7 +31,7 @@
     /// </example>
     /// </summary>
     [Directive(InteractiveOnlyDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeDirective : IPipelinedDirective
+    public sealed class ScopeDirective : IDirective //TODO: add directive hadnler
     {
         private readonly InteractiveModeOptions _options;
         private readonly IRootSchemaAccessor _rootSchemaAccessor;
@@ -42,12 +43,6 @@
         {
             _options = options.Value;
             _rootSchemaAccessor = rootSchemaAccessor;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>

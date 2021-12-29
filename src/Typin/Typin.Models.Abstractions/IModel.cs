@@ -9,7 +9,7 @@
     public interface IModel
     {
         /// <summary>
-        /// Checks whether type is a valid command.
+        /// Checks whether type is a valid model.
         /// </summary>
         public static bool IsValidType(Type type)
         {

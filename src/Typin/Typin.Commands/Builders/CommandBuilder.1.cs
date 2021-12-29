@@ -3,8 +3,8 @@
     using System;
     using Typin.Commands;
     using Typin.Models.Builders;
-    using Typin.Models.Collections;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Model builder.

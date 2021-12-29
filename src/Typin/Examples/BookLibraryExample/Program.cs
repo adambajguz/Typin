@@ -7,7 +7,6 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Typin.Commands;
-    using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
     using Typin.Modes.Interactive;
@@ -28,13 +27,13 @@
                         {
                             scanner.FromThisAssembly();
                         })
-                        .AddDirectives(scanner =>
-                        {
-                            scanner.Single<DebugDirective>()
-                                   .Single<PreviewDirective>();
+                        //.AddDirectives(scanner =>
+                        //{
+                        //    scanner.Single<DebugDirective>()
+                        //           .Single<PreviewDirective>();
 
-                            scanner.FromThisAssembly();
-                        })
+                        //    scanner.FromThisAssembly();
+                        //})
                         .AddModes(scanner =>
                         {
                             scanner.Single<DirectMode>();

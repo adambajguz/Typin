@@ -1,8 +1,9 @@
 ﻿namespace Typin.Commands.Schemas
 {
     using System;
-    using Typin.Models.Collections;
+    using System.Collections.Generic;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Command schema.
@@ -11,6 +12,9 @@
     {
         /// <inheritdoc/>
         public string Name { get; }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<string> NameSegments { get; }
 
         /// <inheritdoc/>
         public bool IsDefault { get; }
@@ -41,7 +45,8 @@
                              IExtensionsCollection extensions)
         {
             Name = name.Trim() ?? throw new ArgumentNullException(nameof(name));
-            IsDefault = string.IsNullOrEmpty(Name);
+            NameSegments = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            IsDefault = NameSegments.Count == 0;
             IsDynamic = isDynamic;
             Description = description;
             Model = model;

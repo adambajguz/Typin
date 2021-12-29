@@ -9,7 +9,10 @@
     using Microsoft.Extensions.Logging;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Commands;
     using Typin.Features;
+    using Typin.Modes;
+    using Typin.Modes.Features;
     using Typin.Utilities;
 
     /// <summary>
@@ -44,34 +47,42 @@
         /// Executes a command.
         /// </summary>
         /// <param name="commandLine"></param>
+        /// <param name="inputOptions"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<int> ExecuteAsync(string commandLine, CommandExecutionOptions options = default, CancellationToken cancellationToken = default)
+        public async Task<int> ExecuteAsync(string commandLine,
+                                            InputOptions inputOptions = default,
+                                            CommandExecutionOptions options = default,
+                                            CancellationToken cancellationToken = default)
         {
             IEnumerable<string> commandLineArguments = CommandLine.Split(commandLine);
 
-            return await ExecuteAsync(commandLineArguments, options, cancellationToken);
+            return await ExecuteAsync(commandLineArguments, inputOptions, options, cancellationToken);
         }
 
         /// <summary>
         /// Executes a command.
         /// </summary>
         /// <param name="arguments"></param>
+        /// <param name="inputOptions"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<int> ExecuteAsync(IEnumerable<string> arguments, CommandExecutionOptions options = default, CancellationToken cancellationToken = default)
+        public async Task<int> ExecuteAsync(IEnumerable<string> arguments,
+                                            InputOptions inputOptions = default,
+                                            CommandExecutionOptions options = default,
+                                            CancellationToken cancellationToken = default)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            using IServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope) // TODO: use IAsyncServiceProvider
+            await using AsyncServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope)
                 ? null
-                : _serviceProvider.CreateScope();
+                : _serviceProvider.CreateAsyncScope();
 
             IServiceProvider localProvider = serviceScope?.ServiceProvider ?? _serviceProvider;
 
-            CliContext cliContext = InitializeCliContext(arguments, options, cancellationTokenSource);
+            CliContext cliContext = InitializeCliContext(arguments, inputOptions, cancellationTokenSource);
 
             _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContext.Call.Identifier);
 
@@ -101,7 +112,7 @@
         }
 
         private CliContext InitializeCliContext(IEnumerable<string> arguments,
-                                                CommandExecutionOptions options,
+                                                InputOptions inputOptions,
                                                 CancellationTokenSource cancellationTokenSource)
         {
             CliContext cliContext = new DefaultCliContext();
@@ -112,7 +123,7 @@
             cliContext.Features.Set<ICliModeFeature>(new CliModeFeature(instance));
             cliContext.Features.Set<ICallLifetimeFeature>(new CallLifetimeFeature(cancellationTokenSource));
 
-            cliContext.Features.Set<IInputFeature>(new InputFeature(arguments, options));
+            cliContext.Features.Set<IInputFeature>(new InputFeature(arguments, inputOptions));
             cliContext.Features.Set<IOutputFeature>(new OutputFeature());
 
             _cliContextAccessor.CliContext = cliContext;

@@ -11,13 +11,6 @@
     public interface IDirectiveHandler
     {
         /// <summary>
-        /// Initialize the directive.
-        /// This is the method that's called when the directive is invoked by a user through directive line.
-        /// </summary>
-        /// <remarks>If the execution of the directive is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        public ValueTask InitializeAsync(object directive, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Checks whether type is a valid directive handler.
         /// </summary>
         public static bool IsValidType(Type type)
@@ -47,11 +40,6 @@
     public interface IDirectiveHandler<TDirective> : IDirectiveHandler
         where TDirective : class, IDirective
     {
-        ValueTask IDirectiveHandler.InitializeAsync(object directive, CancellationToken cancellationToken)
-        {
-            return InitializeAsync((TDirective)directive, cancellationToken);
-        }
-
         /// <summary>
         /// Executes the directive.
         /// This is the method that's called when the directive is invoked by a user through directive line.

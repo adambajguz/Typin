@@ -1,7 +1,9 @@
 ﻿namespace Typin.Commands.Schemas
 {
     using System;
+    using System.Collections.Generic;
     using Typin.Models.Schemas;
+    using Typin.Schemas;
 
     /// <summary>
     /// Command schema.
@@ -15,6 +17,11 @@
         /// All commands in an application must have different names. Likewise, only one command without a name is allowed.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Command name segments.
+        /// </summary>
+        IReadOnlyList<string> NameSegments { get; }
 
         /// <summary>
         /// Whether command is a default command.

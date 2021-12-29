@@ -1,6 +1,7 @@
-﻿namespace Typin.Features
+﻿namespace Typin.Modes.Features
 {
     using System;
+    using Typin.Modes;
 
     /// <summary>
     /// Command line mode feature.

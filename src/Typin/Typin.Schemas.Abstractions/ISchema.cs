@@ -1,6 +1,6 @@
-﻿namespace Typin.Models.Schemas
+﻿namespace Typin.Schemas
 {
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Represents a schema.

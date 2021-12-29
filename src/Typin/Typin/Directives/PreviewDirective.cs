@@ -14,7 +14,7 @@
     /// This is useful when troubleshooting issues related to command routing and argument binding.
     /// </summary>
     [Directive(BuiltInDirectives.Preview, Description = "The app will short-circuit by printing consumed command line arguments as they were parsed.")]
-    public sealed class PreviewDirective : IPipelinedDirective
+    public sealed class PreviewDirective : IDirective //TODO: add directive hadnler
     {
         private readonly IConsole _console;
 
@@ -24,12 +24,6 @@
         public PreviewDirective(IConsole console)
         {
             _console = console;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>

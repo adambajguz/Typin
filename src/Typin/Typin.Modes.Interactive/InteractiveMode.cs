@@ -9,8 +9,10 @@ namespace Typin.Modes.Interactive
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Commands;
     using Typin.Console;
     using Typin.Extensions;
+    using Typin.Modes;
     using Typin.Modes.Interactive.AutoCompletion;
     using Typin.Modes.Interactive.Internal.Extensions;
     using Typin.Utilities;
@@ -92,11 +94,11 @@ namespace Typin.Modes.Interactive
                 {
                     try
                     {
-                        await _commandExecutor.ExecuteAsync(interactiveArguments, CommandExecutionOptions.Default, cancellationToken);
+                        await _commandExecutor.ExecuteAsync(interactiveArguments, InputOptions.Default, CommandExecutionOptions.Default, cancellationToken);
                     }
                     catch (PipelineInvocationException ex)
                     {
-                        throw new Exception("Failed to execute pipelined directives.", ex.InnerException); //TODO: replace with custom exception
+                        throw new Exception("Failed to execute.", ex.InnerException); //TODO: replace with custom exception
                     }
 
                     _console.ResetColor();

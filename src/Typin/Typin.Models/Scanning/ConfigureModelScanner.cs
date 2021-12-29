@@ -4,8 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting.Scanning;
+    using Typin.Models.Builders;
 
     /// <summary>
     /// <see cref="IConfigureModel"/> component scanner.
@@ -27,6 +30,17 @@
             Added += (sender, e) =>
             {
                 _services.AddTransient(e.Type);
+
+                Type[] interfaces = e.Type.GetInterfaces();
+
+                foreach (Type @interface in interfaces)
+                {
+                    if (@interface.IsGenericType &&
+                        @interface.GetGenericTypeDefinition() == typeof(IConfigureModel<>))
+                    {
+                        _services.AddTransient(@interface, e.Type);
+                    }
+                }
             };
         }
 
@@ -46,6 +60,17 @@
                 .Concat(assembly.ExportedTypes.Where(IsValidComponent));
         }
 
+        /// <inheritdoc/>
+        public IConfigureModelScanner Single<TModel>(Func<IServiceProvider, IModelBuilder<TModel>, CancellationToken, ValueTask> configure)
+            where TModel : class, IModel
+        {
+            _services.AddTransient<IConfigureModel<TModel>>(provider =>
+            {
+                return new InlineConfigureModel<TModel>(provider, configure);
+            });
+
+            return this;
+        }
 
         /// <inheritdoc/>
         public IConfigureModelScanner FromNested(Type type)

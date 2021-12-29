@@ -9,6 +9,7 @@
     using Typin.Commands.Features;
     using Typin.Commands.Schemas;
     using Typin.Console;
+    using Typin.Directives.Schemas;
     using Typin.Hosting.Components;
     using Typin.Models.Schemas;
     using Typin.Schemas;
@@ -235,12 +236,12 @@
                 IDirectiveSchema schema = directive.Value;
 
                 // Name
-                if (schema.HasModeRestrictions())
-                {
-                    Write(ModeRestrictedColor, "@");
-                    WriteHorizontalMargin(1);
-                }
-                else
+                //if (schema.HasModeRestrictions())
+                //{
+                //    Write(ModeRestrictedColor, "@");
+                //    WriteHorizontalMargin(1);
+                //}
+                //else
                 {
                     WriteHorizontalMargin();
                 }

@@ -2,6 +2,7 @@
 {
     using System;
     using Typin.Models.Binding;
+    using Typin.Schemas;
 
     /// <summary>
     /// Argument schema.

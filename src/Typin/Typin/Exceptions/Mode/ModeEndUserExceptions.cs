@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.Mode
 {
     using System;
-    using System.Text;
     using Typin.Internal.Exceptions;
 
     /// <summary>
@@ -46,34 +45,34 @@
         //    return new TemporaryException(builder.ToString());
         //}
 
-        public static TypinException DirectiveExecutedInInvalidMode(DirectiveSchema directive, Type currentMode)
-        {
-            StringBuilder builder = new();
-            builder.AppendLine($"This application is running in '{currentMode}' mode.");
+        //public static TypinException DirectiveExecutedInInvalidMode(IDirectiveSchema directive, Type currentMode)
+        //{
+        //    StringBuilder builder = new();
+        //    builder.AppendLine($"This application is running in '{currentMode}' mode.");
 
-            if (directive.SupportedModes is not null)
-            {
-                builder.AppendLine();
-                builder.AppendLine($"Directive '{directive.Type.FullName}' supports modes:");
+        //    if (directive.SupportedModes is not null)
+        //    {
+        //        builder.AppendLine();
+        //        builder.AppendLine($"Directive '{directive.Type.FullName}' supports modes:");
 
-                foreach (Type mode in directive.SupportedModes)
-                {
-                    builder.AppendLine($"  - '{mode.FullName}'");
-                }
-            }
+        //        foreach (Type mode in directive.SupportedModes)
+        //        {
+        //            builder.AppendLine($"  - '{mode.FullName}'");
+        //        }
+        //    }
 
-            if (directive.ExcludedModes is not null)
-            {
-                builder.AppendLine();
-                builder.AppendLine($"Directive '{directive.Type.FullName}' cannot run in modes:");
+        //    if (directive.ExcludedModes is not null)
+        //    {
+        //        builder.AppendLine();
+        //        builder.AppendLine($"Directive '{directive.Type.FullName}' cannot run in modes:");
 
-                foreach (Type mode in directive.ExcludedModes)
-                {
-                    builder.AppendLine($"  - '{mode.FullName}'");
-                }
-            }
+        //        foreach (Type mode in directive.ExcludedModes)
+        //        {
+        //            builder.AppendLine($"  - '{mode.FullName}'");
+        //        }
+        //    }
 
-            return new TemporaryException(builder.ToString());
-        }
+        //    return new TemporaryException(builder.ToString());
+        //}
     }
 }

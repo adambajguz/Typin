@@ -15,7 +15,7 @@
     /// </summary>
     [ExcludeFromCodeCoverage]
     [Directive(BuiltInDirectives.Debug, Description = "Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
-    public sealed class DebugDirective : IPipelinedDirective
+    public sealed class DebugDirective : IDirective //TODO: add directive hadnler
     {
         private readonly IConsole _console;
 
@@ -25,12 +25,6 @@
         public DebugDirective(IConsole console)
         {
             _console = console;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>

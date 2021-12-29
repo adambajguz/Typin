@@ -17,7 +17,9 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Commands.Abstractions\Typin.Commands.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Directives.Abstractions\Typin.Directives.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.OldCore\Typin.OldCore.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 	</ItemGroup>
 

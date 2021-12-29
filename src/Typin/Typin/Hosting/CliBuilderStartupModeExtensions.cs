@@ -2,6 +2,7 @@
 {
     using System;
     using Microsoft.Extensions.DependencyInjection;
+    using Typin.Modes;
 
     /// <summary>
     /// <see cref="ICliBuilder"/> startup mode extensions.

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Reflection;
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Argument builder.

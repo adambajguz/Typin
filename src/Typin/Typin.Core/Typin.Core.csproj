@@ -25,17 +25,14 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[6.0,]" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[5.0,]" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0,]" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[3.0,]" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[3.0,]" />
 	</ItemGroup>
 
@@ -49,6 +46,8 @@
 		<ProjectReference Include="..\Typin.Features\Typin.Features.csproj" />
 		<ProjectReference Include="..\Typin.Hosting.Abstractions\Typin.Hosting.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Modes.Abstractions\Typin.Modes.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 	</ItemGroup>
 

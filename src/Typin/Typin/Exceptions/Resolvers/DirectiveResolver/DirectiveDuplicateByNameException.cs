@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Typin.Directives.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>
@@ -17,21 +18,21 @@
         /// <summary>
         /// Duplicated directive name.
         /// </summary>
-        public IReadOnlyList<DirectiveSchema> InvalidDirectives { get; set; }
+        public IReadOnlyList<IDirectiveSchema> InvalidDirectives { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveDuplicateByNameException"/>.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="invalidDirectives"></param>
-        public DirectiveDuplicateByNameException(string name, IReadOnlyList<DirectiveSchema> invalidDirectives) :
+        public DirectiveDuplicateByNameException(string name, IReadOnlyList<IDirectiveSchema> invalidDirectives) :
             base(BuildMessage(name, invalidDirectives))
         {
             Name = name;
             InvalidDirectives = invalidDirectives;
         }
 
-        private static string BuildMessage(string name, IReadOnlyList<DirectiveSchema> invalidDirectives)
+        private static string BuildMessage(string name, IReadOnlyList<IDirectiveSchema> invalidDirectives)
         {
             return $"Application configuration is invalid because it contains {invalidDirectives.Count} directives with the same name ('{name}'):{Environment.NewLine}" +
                    $"{invalidDirectives.JoinToString(Environment.NewLine)}{Environment.NewLine}" +

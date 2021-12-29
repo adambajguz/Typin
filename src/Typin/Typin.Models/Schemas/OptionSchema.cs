@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Text;
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Stores command option schema.

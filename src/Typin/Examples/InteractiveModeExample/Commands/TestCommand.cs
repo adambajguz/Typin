@@ -11,6 +11,7 @@
     using Typin.Console;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Modes;
     using Typin.Modes.Programmatic;
 
     [Command("TEST", Description = "Test command.")]
@@ -52,7 +53,7 @@
 
                 _console.Output.WriteLine($"ContextId: {_cliContextAccessor.CliContext!.Call.ContextDepth} | '{command.Author}' '{command.AuthorX}' '{command.Ch}'");
 
-                await _commandExecutor.ExecuteAsync("plot xy", CommandExecutionOptions.UseCurrentScope, cancellationToken);
+                await _commandExecutor.ExecuteAsync("plot xy", InputOptions.Default, CommandExecutionOptions.UseCurrentScope, cancellationToken);
 
                 _console.Output.WithForegroundColor(ConsoleColor.Cyan, output => output.WriteLine("- - - - - - -"));
 

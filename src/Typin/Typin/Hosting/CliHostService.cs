@@ -10,6 +10,7 @@
     using Microsoft.Extensions.Options;
     using Typin.Console;
     using Typin.Exceptions.Mode;
+    using Typin.Modes;
     using Typin.Schemas;
     using Typin.Utilities;
 

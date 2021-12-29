@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
-    using Typin.Commands.Schemas;
+    using Typin.Commands.Features;
     using Typin.Console;
     using Typin.Features;
 
@@ -53,14 +53,15 @@
         {
             // Get input and command schema from context
             IBinderFeature binder = args.Binder;
-            ICommandSchema commandSchema = args.Command.Schema;
+            ICommandFeature commandFeature = args.Features.Get<ICommandFeature>() ??
+                throw new InvalidOperationException($"{nameof(ICommandFeature)} has not been configured for this application or call.");
 
             // Help option
             if (_helpHandlerOptions.HelpEnabled &&
                 binder.UnboundedInput.Options.Any(x => x.Alias is "h" or "help"))
             {
-                var commandDefaultValues = args.Command.DefaultValues ?? throw new NullReferenceException($"{nameof(CliContext.Command.DefaultValues)} must be set in {nameof(CliContext)}.");
-                _helpTextWriter.Write(commandSchema, commandDefaultValues);
+                var commandDefaultValues = commandFeature.DefaultValues ?? throw new NullReferenceException($"{nameof(ICommandFeature.DefaultValues)} must be set in {nameof(ICommandFeature)}.");
+                _helpTextWriter.Write(commandFeature.Schema, commandDefaultValues);
 
                 args.Output.ExitCode ??= ExitCode.Success;
                 return;
@@ -68,7 +69,7 @@
 
             // Version option
             if (_helpHandlerOptions.VersionEnabled &&
-                commandSchema.IsDefault && binder.UnboundedInput.Options.Any(x => x.Alias is "version")) //TODO: add global options mechanism that binds data to class other than ICommand
+                commandFeature.Schema.IsDefault && binder.UnboundedInput.Options.Any(x => x.Alias is "version")) //TODO: add global options mechanism that binds data to class other than ICommand
             {
                 _console.Output.WriteLine(_metadata.VersionText);
 

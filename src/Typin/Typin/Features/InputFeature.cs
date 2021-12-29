@@ -1,7 +1,6 @@
 ﻿namespace Typin.Features
 {
     using System.Collections.Generic;
-    using Typin;
     using Typin.Features.Input;
 
     /// <summary>
@@ -13,7 +12,7 @@
         public IEnumerable<string> Arguments { get; }
 
         /// <inheritdoc/>
-        public CommandExecutionOptions ExecutionOptions { get; }
+        public InputOptions Options { get; }
 
         /// <inheritdoc/>
         public ParsedInput? Parsed { get; set; }
@@ -22,10 +21,10 @@
         /// Initializes a new instance of <see cref="InputFeature"/>.
         /// </summary>
         public InputFeature(IEnumerable<string> arguments,
-                            CommandExecutionOptions executionOptions)
+                            InputOptions options)
         {
             Arguments = arguments;
-            ExecutionOptions = executionOptions;
+            Options = options;
         }
 
         /// <inheritdoc/>
@@ -34,7 +33,7 @@
             return base.ToString() +
                 " | " +
                 $"{nameof(Arguments)} = [\"{string.Join("\", ", Arguments)}\"], " +
-                $"{nameof(ExecutionOptions)} = {ExecutionOptions}";
+                $"{nameof(Options)} = {Options}";
         }
     }
 }

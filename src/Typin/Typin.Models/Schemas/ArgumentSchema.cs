@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using Typin.Models.Binding;
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Abstract command argument schema used in <see cref="ParameterSchema"/> and <see cref="OptionSchema"/>

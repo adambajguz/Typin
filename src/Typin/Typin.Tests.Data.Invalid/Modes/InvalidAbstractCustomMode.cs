@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console;
+    using Typin.Modes;
 
     public abstract class InvalidAbstractCustomMode : ICliMode
     {

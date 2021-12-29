@@ -1,7 +1,5 @@
 ﻿namespace Typin.Directives
 {
-    using System.Threading;
-    using System.Threading.Tasks;
     using Typin.Attributes;
 
     /// <summary>
@@ -17,12 +15,6 @@
         public DefaultDirective()
         {
 
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
     }
 }

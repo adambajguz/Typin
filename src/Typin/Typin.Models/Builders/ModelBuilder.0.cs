@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Typin.Models.Collections;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Model builder.
@@ -22,6 +22,11 @@
         /// A collection of options.
         /// </summary>
         protected List<IOptionSchema> Options { get; } = new();
+
+        /// <summary>
+        /// A collection of required options.
+        /// </summary>
+        protected List<IOptionSchema> RequiredOptions { get; } = new();
 
         /// <summary>
         /// A collection of extensions.
@@ -64,7 +69,7 @@
         /// Build last parameter (if exists), than add a new parameter builder.
         /// </summary>
         /// <param name="builder"></param>
-        protected void AddParameterBuilder(IBuilder<IParameterSchema> builder)
+        protected void AddParameterBuilder(IBuilder<IParameterSchema>? builder)
         {
             if (_currentParameterBuilder is not null)
             {
@@ -87,11 +92,20 @@
         /// Build last option (if exists), than add a new option builder.
         /// </summary>
         /// <param name="builder"></param>
-        protected void AddOptionBuilder(IBuilder<IOptionSchema> builder)
+        protected void AddOptionBuilder(IBuilder<IOptionSchema>? builder)
         {
             if (_currentOptionBuilder is not null)
             {
-                Options.Add(_currentOptionBuilder.Build());
+                IOptionSchema optionSchema = _currentOptionBuilder.Build();
+
+                if (optionSchema.IsRequired)
+                {
+                    RequiredOptions.Add(optionSchema);
+                }
+                else
+                {
+                    Options.Add(optionSchema);
+                }
             }
 
             _currentOptionBuilder = builder;
@@ -100,19 +114,15 @@
         /// <inheritdoc/>
         public IModelSchema Build()
         {
-            if (_currentParameterBuilder is not null)
-            {
-                Parameters.Add(_currentParameterBuilder.Build());
-            }
+            //TODO: better validation for duplicated param and option builders etc
 
-            if (_currentOptionBuilder is not null)
-            {
-                Options.Add(_currentOptionBuilder.Build());
-            }
+            AddParameterBuilder(null);
+            AddOptionBuilder(null);
 
             ModelSchema schema = new(Model,
                                      Parameters,
                                      Options,
+                                     RequiredOptions,
                                      Extensions);
 
             EnsureBuiltOnce(); // Call before return to allow rebuild on exception.

@@ -1,6 +1,7 @@
 ﻿namespace Typin.Features.Input
 {
     using System.Diagnostics.CodeAnalysis;
+    using Typin.Utilities;
 
     /// <summary>
     /// Stores a parameter input.

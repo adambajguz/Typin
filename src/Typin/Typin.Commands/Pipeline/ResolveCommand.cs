@@ -9,6 +9,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using PackSite.Library.Pipelining;
     using Typin.Commands;
+    using Typin.Commands.Collections;
     using Typin.Commands.Features;
     using Typin.Commands.Schemas;
     using Typin.Features.Binding;
@@ -23,7 +24,7 @@
     {
         private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
 
-        private readonly IRootSchemaAccessor _rootSchemaAccessor;
+        private readonly ICommandSchemaCollection _commandSchemas;
         private readonly IServiceProvider _serviceProvider;
 
         private readonly ConcurrentDictionary<Type, ObjectFactory> _commandFactoryCache = new();
@@ -31,9 +32,9 @@
         /// <summary>
         /// Initializes a new instance of <see cref="ResolveCommand"/>.
         /// </summary>
-        public ResolveCommand(IRootSchemaAccessor rootSchemaAccessor, IServiceProvider serviceProvider)
+        public ResolveCommand(ICommandSchemaCollection commandSchemas, IServiceProvider serviceProvider)
         {
-            _rootSchemaAccessor = rootSchemaAccessor;
+            _commandSchemas = commandSchemas;
             _serviceProvider = serviceProvider;
         }
 
@@ -50,8 +51,9 @@
             ParsedInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
 
             // Try to get the command matching the input or fallback to default
-            ICommandSchema schema = _rootSchemaAccessor.RootSchema.TryFindCommand(input.CommandName)
-                ?? throw new UnknownCommandException(input.CommandName);
+            ICommandSchema schema = _commandSchemas[input.CommandName]
+                ?? throw new InvalidOperationException($"Unknown command '{input.CommandName}'.");
+            //?? throw new UnknownCommandException(input.CommandName);
 
             // TODO: is the problem below still valid?
             // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system

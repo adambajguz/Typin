@@ -20,10 +20,6 @@
             throw new InvalidOperationException("Lifetime has not been configured for this application or call.");
 
         /// <inheritdoc/>
-        public override ICliModeFeature CliMode => Features.Get<ICliModeFeature>() ??
-            throw new InvalidOperationException("CliMode has not been configured for this application or call.");
-
-        /// <inheritdoc/>
         public override IInputFeature Input => Features.Get<IInputFeature>() ??
             throw new InvalidOperationException("Input has not been configured for this application or call.");
 

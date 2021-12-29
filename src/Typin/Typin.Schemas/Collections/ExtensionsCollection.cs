@@ -1,4 +1,4 @@
-﻿namespace Typin.Models.Collections
+﻿namespace Typin.Schemas.Collections
 {
     using System;
     using System.Collections;

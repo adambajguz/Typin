@@ -14,15 +14,15 @@
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="commandLine">Command line override.</param>
-        /// <param name="startupExecutionOptions">Startup command line execution options.</param>
+        /// <param name="startupInputOptions">Startup command line execution options.</param>
         /// <returns></returns>
-        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, string commandLine, CommandExecutionOptions startupExecutionOptions = default)
+        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, string commandLine, InputOptions startupInputOptions = default)
         {
             builder.Services.Configure<CliOptions>(options =>
             {
                 options.CommandLine = commandLine;
                 options.CommandLineArguments = null;
-                options.StartupExecutionOptions = startupExecutionOptions;
+                options.StartupInputOptions = startupInputOptions;
             });
 
             return builder;
@@ -36,7 +36,7 @@
         /// <returns></returns>
         public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, params string[] args)
         {
-            return builder.OverrideCommandLine(CommandExecutionOptions.Default, args);
+            return builder.OverrideCommandLine(InputOptions.Default, args);
         }
 
         /// <summary>
@@ -44,15 +44,15 @@
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="args">Command arguments override.</param>
-        /// <param name="startupExecutionOptions">Startup command line execution options.</param>
+        /// <param name="startupInputOptions">Startup command line execution options.</param>
         /// <returns></returns>
-        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, CommandExecutionOptions startupExecutionOptions, params string[] args)
+        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, InputOptions startupInputOptions, params string[] args)
         {
             builder.Services.Configure<CliOptions>(options =>
             {
                 options.CommandLine = null;
                 options.CommandLineArguments = args;
-                options.StartupExecutionOptions = startupExecutionOptions;
+                options.StartupInputOptions = startupInputOptions;
             });
 
             return builder;
@@ -63,15 +63,15 @@
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="args">Command arguments override.</param>
-        /// <param name="startupExecutionOptions">Startup command line execution options.</param>
+        /// <param name="startupInputOptions">Startup command line execution options.</param>
         /// <returns></returns>
-        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, IEnumerable<string> args, CommandExecutionOptions startupExecutionOptions = default)
+        public static ICliBuilder OverrideCommandLine(this ICliBuilder builder, IEnumerable<string> args, InputOptions startupInputOptions = default)
         {
             builder.Services.Configure<CliOptions>(options =>
             {
                 options.CommandLine = null;
                 options.CommandLineArguments = args.ToArray();
-                options.StartupExecutionOptions = startupExecutionOptions;
+                options.StartupInputOptions = startupInputOptions;
             });
 
             return builder;

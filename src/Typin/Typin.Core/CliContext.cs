@@ -23,11 +23,6 @@
         public abstract ICallLifetimeFeature Lifetime { get; }
 
         /// <summary>
-        /// Command line mode feature.
-        /// </summary>
-        public abstract ICliModeFeature CliMode { get; }
-
-        /// <summary>
         /// Input feature.
         /// </summary>
         public abstract IInputFeature Input { get; }

@@ -51,7 +51,7 @@ namespace Typin
             _hostBuilder.ConfigureCliHost(cliBuilder =>
             {
                 cliBuilder.OverrideCommandLine(commandLine,
-                                               containsExecutable ? CommandExecutionOptions.TrimExecutable : CommandExecutionOptions.Default);
+                                               containsExecutable ? InputOptions.TrimExecutable : InputOptions.Default);
             });
 
             AddLegacyEnvVars(environmentVariables);

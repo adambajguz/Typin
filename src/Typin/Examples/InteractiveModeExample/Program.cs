@@ -7,12 +7,10 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Typin.Commands;
-    using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Commands;
-    using Typin.Modes.Interactive.Directives;
     using Typin.Modes.Programmatic;
 
     public static class Program
@@ -33,19 +31,15 @@
 
                             scanner.FromThisAssembly();
                         })
-                        .AddDirectives(scanner =>
-                        {
-                            scanner.Single<DebugDirective>()
-                                   .Single<PreviewDirective>();
+                        //.AddDirectives(scanner =>
+                        //{
+                        //    scanner.Single<DebugDirective>()
+                        //           .Single<PreviewDirective>();
 
-                            scanner.Single<InteractiveDirective>();
+                        //    scanner.Single<InteractiveDirective>();
 
-                            scanner.FromThisAssembly();
-                        })
-                        .AddPipelinedDirectives(scanner =>
-                        {
-                            scanner.FromThisAssembly();
-                        })
+                        //    scanner.FromThisAssembly();
+                        //})
                         .AddModes(scanner =>
                         {
                             scanner.Single<DirectMode>();

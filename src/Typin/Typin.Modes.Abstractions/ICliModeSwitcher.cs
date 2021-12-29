@@ -1,4 +1,4 @@
-﻿namespace Typin
+﻿namespace Typin.Modes
 {
     using System;
     using System.Threading;

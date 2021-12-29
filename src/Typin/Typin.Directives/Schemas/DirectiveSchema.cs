@@ -1,8 +1,8 @@
 ﻿namespace Typin.Directives.Schemas
 {
     using System;
-    using Typin.Models.Collections;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Stores directive schema.

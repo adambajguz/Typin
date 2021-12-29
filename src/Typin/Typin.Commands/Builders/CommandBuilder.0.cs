@@ -2,16 +2,17 @@
 {
     using System;
     using System.Linq;
+    using System.Reflection;
     using Typin.Commands;
     using Typin.Commands.Schemas;
     using Typin.Models.Builders;
-    using Typin.Models.Collections;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Command builder.
     /// </summary>
-    public class CommandBuilder : ICommandBuilder
+    public class CommandBuilder : ICommandBuilder // TODO: DynamicCommandBuilder/CommandTemplateBuilder
     {
         private bool _built;
 
@@ -90,11 +91,24 @@
         /// <inheritdoc/>
         public ICommandSchema Build()
         {
+            if (HandlerType is null)
+            {
+                Type[] handlers = Model.Type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(ICommandHandler.IsValidType)
+                    .Take(2)
+                    .ToArray();
+
+                if (handlers.Length == 1)
+                {
+                    HandlerType = handlers[0];
+                }
+            }
+
             CommandSchema schema = new(false,
                                        _name ?? string.Empty,
                                        _description,
                                        Model,
-                                       HandlerType ?? throw new InvalidOperationException($"Command handler must be set for command '{_name}' ({Model})."),
+                                       HandlerType ?? throw new InvalidOperationException($"Command handler must be set for command '{_name}' ({Model}) when there are multiple or no model-nested handlers."),
                                        Extensions);
 
             EnsureBuiltOnce(); // Call before return to allow rebuild on exception.

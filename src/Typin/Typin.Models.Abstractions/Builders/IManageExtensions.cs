@@ -1,7 +1,7 @@
 ﻿namespace Typin.Models.Builders
 {
     using System;
-    using Typin.Models.Collections;
+    using Typin.Schemas.Collections;
 
     /// <summary>
     /// Extensions management.

@@ -16,4 +16,8 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Typin.Schemas.Abstractions\Typin.Schemas.Abstractions.csproj" />
+	</ItemGroup>
+
 </Project>

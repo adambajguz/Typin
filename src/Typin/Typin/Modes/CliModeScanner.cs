@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting.Scanning;
-    using Typin.Schemas;
 
     /// <summary>
     /// <see cref="ICliMode"/> component scanner.
@@ -32,7 +31,7 @@
         /// <inheritdoc/>
         public override bool IsValidComponent(Type type)
         {
-            return KnownTypesHelpers.IsCliModeType(type);
+            return ICliMode.IsValidType(type);
         }
     }
 }

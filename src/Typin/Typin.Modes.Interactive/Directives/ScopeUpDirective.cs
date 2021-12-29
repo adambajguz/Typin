@@ -6,6 +6,7 @@
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin.Attributes;
+    using Typin.Directives;
     using Typin.Modes.Interactive;
 
     /// <summary>
@@ -18,7 +19,7 @@
     /// </example>
     /// </summary>
     [Directive(InteractiveOnlyDirectives.ScopeUp, Description = "Removes one command from the scope.", SupportedModes = new[] { typeof(InteractiveMode) })]
-    public sealed class ScopeUpDirective : IPipelinedDirective
+    public sealed class ScopeUpDirective : IDirective //TODO: add directive hadnler
     {
         private readonly InteractiveModeOptions _options;
 
@@ -28,12 +29,6 @@
         public ScopeUpDirective(IOptions<InteractiveModeOptions> options)
         {
             _options = options.Value;
-        }
-
-        /// <inheritdoc/>
-        public ValueTask InitializeAsync(CancellationToken cancellationToken)
-        {
-            return default;
         }
 
         /// <inheritdoc/>
