@@ -13,7 +13,7 @@
     {
         private static readonly string[] Arguments = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b" };
         private static readonly string[] ArgumentsWithHelp = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b", "--help" };
-        private static readonly string[] ArgumentsWithPreview = { "[preview]", "--req-str", "welcome",  "-125", "--str", "hello world", "-i", "-13", "-b" };
+        private static readonly string[] ArgumentsWithPreview = { "[preview]", "--req-str", "welcome", "-125", "--str", "hello world", "-i", "-13", "-b" };
 
         public static async Task<int> Main()
         {
@@ -26,6 +26,10 @@
                 {
                     cliBuilder
                         .AddCommands(scanner =>
+                        {
+                            scanner.FromThisAssembly();
+                        })
+                        .ConfigureCommands(scanner =>
                         {
                             scanner.FromThisAssembly();
                         })

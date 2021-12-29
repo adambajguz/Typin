@@ -1,4 +1,6 @@
-﻿namespace Typin.Commands
+﻿using Typin.Commands;
+
+namespace Typin
 {
     using System.Collections.Generic;
     using System.Threading;

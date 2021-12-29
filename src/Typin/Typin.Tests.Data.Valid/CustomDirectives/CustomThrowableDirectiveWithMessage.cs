@@ -5,9 +5,9 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Attributes;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Directives.Attributes;
 
     [Directive("custom-throwable-with-message", Description = "Custom throwable directive with message.")]
     public sealed class CustomThrowableDirectiveWithMessage : IDirective

@@ -1,6 +1,6 @@
 ﻿namespace Typin.Benchmarks.MultiCommand.TypinCommands
 {
-    using Typin.Attributes;
+    using Typin.Commands.Attributes;
 
     [Command]
     public class TypinCommand : TypinBaseCommand { }

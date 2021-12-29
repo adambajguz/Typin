@@ -2,13 +2,11 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Console;
-    using Typin.Modes;
 
-    [Command("named-direct-excluded-only", Description = "Named command description",
-             ExcludedModes = new[] { typeof(DirectMode) })]
+    [Command("named-direct-excluded-only", Description = "Named command description")]
     public class NamedDirectExcludedCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(NamedDirectExcludedCommand);

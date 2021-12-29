@@ -2,7 +2,7 @@
 {
     using System;
     using Typin.Commands.Schemas;
-    using Typin.Models.Builders;
+    using Typin.Models.Resolvers;
 
     /// <summary>
     /// Command schema resolver.

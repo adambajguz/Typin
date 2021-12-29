@@ -7,10 +7,18 @@
     using Typin.Commands.Builders;
 
     /// <summary>
-    /// Represents an object that configures a command.
+    /// Represents an object that configures all commands.
     /// </summary>
     public interface IConfigureCommand
     {
+        /// <summary>
+        /// Configure model using a <paramref name="builder"/>.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        ValueTask ConfigureAsync(ICommandBuilder builder, CancellationToken cancellationToken);
+
         /// <summary>
         /// Checks whether type is a valid command configurator.
         /// </summary>
@@ -18,8 +26,8 @@
         {
             Type[] interfaces = type.GetInterfaces();
 
-            return interfaces.Contains(typeof(IConfigureCommand)) &&
-                interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureCommand<>)) &&
+            return (interfaces.Contains(typeof(IConfigureCommand)) ||
+                    interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -29,7 +37,8 @@
         /// </summary>
         public static bool IsValidType(Type type, Type commandType)
         {
-            return type.GetInterfaces().Contains(typeof(IConfigureCommand<>).MakeGenericType(commandType)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IConfigureCommand<>).MakeGenericType(commandType)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -39,7 +48,7 @@
     /// Represents an object that configures a command <typeparamref name="TCommand"/>.
     /// </summary>
     /// <typeparam name="TCommand"></typeparam>
-    public interface IConfigureCommand<TCommand> : IConfigureCommand
+    public interface IConfigureCommand<TCommand>
         where TCommand : class, ICommand
     {
         /// <summary>
@@ -55,7 +64,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IConfigureCommand<TCommand>)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IConfigureCommand<TCommand>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

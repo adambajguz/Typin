@@ -35,7 +35,8 @@
         /// </summary>
         public static bool IsValidType(Type type, Type commandType)
         {
-            return type.GetInterfaces().Contains(typeof(ICommandHandler<>).MakeGenericType(commandType)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(ICommandHandler<>).MakeGenericType(commandType)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -64,7 +65,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(ICommandHandler<TCommand>)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(ICommandHandler<TCommand>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

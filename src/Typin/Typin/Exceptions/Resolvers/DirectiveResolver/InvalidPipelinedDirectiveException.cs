@@ -1,7 +1,7 @@
 ﻿//namespace Typin.Exceptions.Resolvers.DirectiveResolver
 //{
 //    using System;
-//    using Typin.Attributes;
+//    using Typin.Models.Attributes; using Typin.Commands.Attributes;
 
 //    /// <summary>
 //    /// Invalid pipelined directive exception.

@@ -3,9 +3,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using Typin.Attributes;
     using Typin.Commands;
     using Typin.Console;
+    using Typin.Models.Attributes;
     using Typin.Models.Collections;
 
     public class InvalidDynamicCommand : ICommand

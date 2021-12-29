@@ -13,7 +13,8 @@
         /// </summary>
         public static bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IModel)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IModel)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

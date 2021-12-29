@@ -36,10 +36,8 @@
         private IBuilder<IParameterSchema>? _currentParameterBuilder;
         private IBuilder<IOptionSchema>? _currentOptionBuilder;
 
-        /// <summary>
-        /// Model type.
-        /// </summary>
-        protected Type Model { get; }
+        /// <inheritdoc/>
+        public Type Model { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="ModelBuilder{TModel}"/>.

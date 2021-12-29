@@ -1,7 +1,5 @@
 ﻿namespace Typin
 {
-    using Typin.Schemas;
-
     /// <summary>
     /// Service that can be used to access root schema.
     /// </summary>

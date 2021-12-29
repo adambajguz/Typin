@@ -2,8 +2,8 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Modes;
     using Typin.Modes.Interactive.Directives;
 
@@ -13,8 +13,7 @@
     /// This is useful for situations when it is necessary to execute multiple commands (since you don't have to constantly type dotnet ...).
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
-    [Command(InteractiveOnlyDirectives.Interactive, Description = "Starts an interactive mode.",
-             ExcludedModes = new[] { typeof(InteractiveMode) })]
+    [Command(InteractiveOnlyDirectives.Interactive, Description = "Starts an interactive mode.")]
     public sealed class InteractiveCommand : ICommand
     {
         private readonly ICliModeSwitcher _cliModeSwitcher;

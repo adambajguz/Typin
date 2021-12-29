@@ -1,4 +1,4 @@
-﻿namespace Typin.Schemas
+﻿namespace Typin
 {
     using System;
     using System.Collections.Generic;
@@ -136,7 +136,7 @@
         /// </summary>
         public ISet<string> GetCommandNames()
         {
-            return (_commandNamesHashSet ??= _commands.Keys.ToHashSet(StringComparer.Ordinal));
+            return _commandNamesHashSet ??= _commands.Keys.ToHashSet(StringComparer.Ordinal);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@
         /// </summary>
         public ISet<string> GetDirectivesNames()
         {
-            return (_directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.Ordinal));
+            return _directiveNamesHashSet ??= Directives.Keys.ToHashSet(StringComparer.Ordinal);
         }
 
         /// <summary>

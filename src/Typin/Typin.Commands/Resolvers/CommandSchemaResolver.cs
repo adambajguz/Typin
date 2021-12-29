@@ -16,14 +16,17 @@
         where TCommand : class, ICommand
     {
         private readonly IModelSchemaCollection _modelSchemas;
+        private readonly IEnumerable<IConfigureCommand> _globalConfigurators;
         private readonly IEnumerable<IConfigureCommand<TCommand>> _configurators;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CommandSchemaProvider"/>.
         /// </summary>
-        public CommandSchemaResolver(IEnumerable<IConfigureCommand<TCommand>> configurators,
+        public CommandSchemaResolver(IEnumerable<IConfigureCommand> globalConfigurators,
+                                     IEnumerable<IConfigureCommand<TCommand>> configurators,
                                      IModelSchemaCollection modelSchemas)
         {
+            _globalConfigurators = globalConfigurators;
             _configurators = configurators;
             _modelSchemas = modelSchemas;
         }
@@ -34,7 +37,12 @@
             IModelSchema commandModelSchema = _modelSchemas[typeof(TCommand)] ??
                 throw new InvalidOperationException($"Cannot resolve '{typeof(ICommandSchema)}' for '{typeof(TCommand)}' because its '{nameof(IModelSchema)}' was not found.");
 
-            ICommandBuilder<TCommand> builder = new CommandBuilder<TCommand>(commandModelSchema);
+            CommandBuilder<TCommand> builder = new(commandModelSchema);
+
+            foreach (IConfigureCommand globalConfigurator in _globalConfigurators)
+            {
+                await globalConfigurator.ConfigureAsync(builder, cancellationToken);
+            }
 
             foreach (IConfigureCommand<TCommand> configurator in _configurators)
             {

@@ -6,8 +6,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
-    using Typin.Attributes;
     using Typin.Console;
+    using Typin.Directives.Attributes;
 
     /// <summary>
     /// When application runs in debug mode (using the [debug] directive), it will wait for debugger to be attached before proceeding.

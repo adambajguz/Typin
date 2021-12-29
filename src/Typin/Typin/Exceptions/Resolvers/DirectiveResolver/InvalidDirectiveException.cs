@@ -1,8 +1,8 @@
 ﻿namespace Typin.Exceptions.Resolvers.DirectiveResolver
 {
     using System;
-    using Typin.Attributes;
     using Typin.Directives;
+    using Typin.Directives.Attributes;
 
     /// <summary>
     /// Invalid directive exception.

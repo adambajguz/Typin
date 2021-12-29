@@ -12,6 +12,13 @@
     public interface IConfigureModelScanner : IScanner<IConfigureModel>
     {
         /// <summary>
+        /// Adds an inline global configuration.
+        /// </summary>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        IConfigureModelScanner Single(Func<IServiceProvider, IModelBuilder, CancellationToken, ValueTask> configure);
+
+        /// <summary>
         /// Adds an inline configuration for <typeparamref name="TModel"/>.
         /// </summary>
         /// <typeparam name="TModel"></typeparam>

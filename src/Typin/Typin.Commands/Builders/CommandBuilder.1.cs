@@ -7,7 +7,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Model builder.
+    /// Command builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     public class CommandBuilder<TModel> : CommandBuilder, ICommandBuilder<TModel>

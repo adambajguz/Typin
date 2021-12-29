@@ -2,13 +2,11 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Console;
-    using Typin.Modes.Interactive;
 
-    [Command("named-interactive-only", Description = "Named command description",
-             SupportedModes = new[] { typeof(InteractiveMode) })]
+    [Command("named-interactive-only", Description = "Named command description")]
     public class NamedInteractiveOnlyCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(NamedInteractiveOnlyCommand);

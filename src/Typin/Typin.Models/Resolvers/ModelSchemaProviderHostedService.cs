@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Typin.Models.Schemas;
 
     /// <summary>
     /// A hosted service used to resolve all model schema during startup.

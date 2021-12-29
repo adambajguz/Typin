@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Commands.Builders;
+    using Typin.Commands.Internal;
     using Typin.Hosting.Scanning;
 
     /// <summary>
@@ -29,16 +30,32 @@
 
             Added += (sender, e) =>
             {
-                _services.AddTransient(e.Type);
-
                 Type[] interfaces = e.Type.GetInterfaces();
 
-                foreach (Type @interface in interfaces)
+                if (e.Type.IsGenericType)
                 {
-                    if (@interface.IsGenericType &&
-                        @interface.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))
+                    foreach (Type @interface in interfaces)
                     {
-                        _services.AddTransient(@interface, e.Type);
+                        if (@interface.IsGenericType &&
+                            @interface.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))
+                        {
+                            _services.AddTransient(typeof(IConfigureCommand<>), e.Type);
+                        }
+                    }
+                }
+                else if (!e.Type.IsGenericType)
+                {
+                    foreach (Type @interface in interfaces)
+                    {
+                        if (@interface == typeof(IConfigureCommand))
+                        {
+                            _services.AddTransient(@interface, e.Type);
+                        }
+                        else if (@interface.IsGenericType &&
+                                 @interface.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))
+                        {
+                            _services.AddTransient(@interface, e.Type);
+                        }
                     }
                 }
             };
@@ -58,6 +75,17 @@
                     .Where(IsValidComponent)
                 )
                 .Concat(assembly.ExportedTypes.Where(IsValidComponent));
+        }
+
+        /// <inheritdoc/>
+        public IConfigureCommandScanner Single(Func<IServiceProvider, ICommandBuilder, CancellationToken, ValueTask> configure)
+        {
+            _services.AddTransient<IConfigureCommand>(provider =>
+            {
+                return new InlineConfigureCommand(provider, configure);
+            });
+
+            return this;
         }
 
         /// <inheritdoc/>

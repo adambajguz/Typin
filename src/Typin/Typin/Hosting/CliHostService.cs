@@ -8,10 +8,10 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Typin;
     using Typin.Console;
     using Typin.Exceptions.Mode;
     using Typin.Modes;
-    using Typin.Schemas;
     using Typin.Utilities;
 
     internal sealed class CliHostService : BackgroundService

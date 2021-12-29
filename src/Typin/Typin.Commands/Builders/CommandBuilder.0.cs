@@ -55,7 +55,7 @@
         /// <inheritdoc/>
         public ICommandBuilder Name(string name)
         {
-            _name = name ?? throw new ArgumentNullException(nameof(name));
+            _name = name.Trim();
 
             return this;
         }

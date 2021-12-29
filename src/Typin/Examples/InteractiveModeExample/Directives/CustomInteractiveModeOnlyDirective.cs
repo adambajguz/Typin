@@ -4,13 +4,11 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Attributes;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Modes.Interactive;
+    using Typin.Directives.Attributes;
 
-    [Directive("custom-interactive", Description = "Custom interactive only directive.",
-               SupportedModes = new[] { typeof(InteractiveMode) })]
+    [Directive("custom-interactive", Description = "Custom interactive only directive.")]
     public sealed class CustomInteractiveModeOnlyDirective : IDirective
     {
         public const string ExpectedOutput = nameof(CustomInteractiveModeOnlyDirective);

@@ -1,13 +1,12 @@
-﻿using Typin.Directives;
-
-namespace Typin.Tests.Data.Valid.CustomDirectives
+﻿namespace Typin.Tests.Data.Valid.CustomDirectives
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
-    using Typin.Attributes;
     using Typin.Console;
+    using Typin.Directives;
+    using Typin.Directives.Attributes;
 
     [Directive(BuiltInDirectives.Debug, Description = "FAKE: Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
     public sealed class FakeDebugDirective : IDirective

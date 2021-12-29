@@ -3,8 +3,8 @@
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Commands.Builders;
     using Typin.Console;
     using Typin.Models;
@@ -13,19 +13,10 @@
     [Command]
     public sealed record FluentSampleCommand : ICommand
     {
-        [Parameter(0)]
         public int? Parameter { get; init; }
-
-        [Option("req-str", 's', IsRequired = true)]
         public string? ReqStrOption { get; init; }
-
-        [Option("str", 's')]
         public string? StrOption { get; init; }
-
-        [Option("int", 'i')]
         public int IntOption { get; init; }
-
-        [Option("bool", 'b')]
         public bool BoolOption { get; init; }
 
         private sealed class Handler : ICommandHandler<FluentSampleCommand>
@@ -48,7 +39,6 @@
             public ValueTask ConfigureAsync(IModelBuilder<FluentSampleCommand> builder, CancellationToken cancellationToken)
             {
                 builder.Parameter(x => x.Parameter)
-                    .Order(0)
                     .Description("INT parameter.");
 
                 builder.Option(x => x.ReqStrOption)

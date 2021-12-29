@@ -50,7 +50,7 @@
                 ICommandSchemaResolver commandSchemaResolver = (ICommandSchemaResolver)_serviceProvider.GetRequiredService(commandSchemaResolverType);
                 ICommandSchema schema = await commandSchemaResolver.ResolveAsync(cancellationToken);
 
-                Schemas.Set(schema);
+                Schemas.Set(schema); //TODO: better valdiation, e.g. name duplicates
             }
         }
     }

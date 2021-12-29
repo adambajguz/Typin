@@ -6,13 +6,13 @@
     using System.Globalization;
     using System.Linq;
     using Microsoft.Extensions.Options;
+    using Typin;
     using Typin.Commands.Features;
     using Typin.Commands.Schemas;
     using Typin.Console;
     using Typin.Directives.Schemas;
     using Typin.Hosting.Components;
     using Typin.Models.Schemas;
-    using Typin.Schemas;
     using Typin.Utilities.Extensions;
 
     /// <summary>

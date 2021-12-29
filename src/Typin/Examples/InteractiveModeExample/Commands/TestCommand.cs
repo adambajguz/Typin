@@ -5,11 +5,12 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Commands.Builders;
     using Typin.Console;
     using Typin.Models;
+    using Typin.Models.Attributes;
     using Typin.Models.Builders;
     using Typin.Modes;
     using Typin.Modes.Programmatic;

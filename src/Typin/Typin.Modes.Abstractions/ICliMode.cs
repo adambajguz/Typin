@@ -21,7 +21,8 @@
         /// </summary>
         public static bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(ICliMode)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(ICliMode)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

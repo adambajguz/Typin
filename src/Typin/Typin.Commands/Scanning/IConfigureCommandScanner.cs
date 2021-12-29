@@ -13,6 +13,13 @@
     public interface IConfigureCommandScanner : IScanner<IConfigureCommand>
     {
         /// <summary>
+        /// Adds an inline global configuration.
+        /// </summary>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        IConfigureCommandScanner Single(Func<IServiceProvider, ICommandBuilder, CancellationToken, ValueTask> configure);
+
+        /// <summary>
         /// Adds an inline configuration for <typeparamref name="TCommand"/>.
         /// </summary>
         /// <typeparam name="TCommand"></typeparam>

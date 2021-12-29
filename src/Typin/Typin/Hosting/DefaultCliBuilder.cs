@@ -4,7 +4,7 @@
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using PackSite.Library.Pipelining;
-    using Typin.Commands;
+    using Typin;
     using Typin.Console;
     using Typin.Help;
     using Typin.Internal;

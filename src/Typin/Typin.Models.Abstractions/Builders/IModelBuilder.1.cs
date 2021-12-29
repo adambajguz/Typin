@@ -13,6 +13,11 @@
         where TModel : class, IModel
     {
         /// <summary>
+        /// Model type.
+        /// </summary>
+        Type Model { get; }
+
+        /// <summary>
         /// Configures an parameter property.
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>

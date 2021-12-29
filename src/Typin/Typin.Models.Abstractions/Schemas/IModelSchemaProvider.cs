@@ -1,4 +1,4 @@
-﻿namespace Typin.Models
+﻿namespace Typin.Models.Schemas
 {
     using System.Threading;
     using System.Threading.Tasks;

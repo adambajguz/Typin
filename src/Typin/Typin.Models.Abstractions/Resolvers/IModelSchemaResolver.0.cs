@@ -1,7 +1,6 @@
 ﻿namespace Typin.Models.Resolvers
 {
     using System;
-    using Typin.Models.Builders;
     using Typin.Models.Schemas;
 
     /// <summary>

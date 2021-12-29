@@ -5,8 +5,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
-    using Typin.Attributes;
     using Typin.Console;
+    using Typin.Directives.Attributes;
     using Typin.Features.Input;
 
     /// <summary>

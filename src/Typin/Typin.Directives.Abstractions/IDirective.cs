@@ -14,7 +14,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IDirective)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IDirective)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

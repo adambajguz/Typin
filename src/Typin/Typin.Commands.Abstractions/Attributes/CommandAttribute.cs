@@ -1,19 +1,12 @@
-﻿namespace Typin.Descriptors
+﻿namespace Typin.Commands.Attributes
 {
     using System;
 
     /// <summary>
-    /// Dynamic command descriptor.
+    /// Annotates a type that defines a command.
     /// </summary>
-    public interface IDynamicCommandDescriptor
-    {
-
-    }
-
-    /// <summary>
-    /// Command descriptor.
-    /// </summary>
-    public interface ICommandDescriptor : IDescriptor
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public sealed class CommandAttribute : Attribute
     {
         /// <summary>
         /// Command name.
@@ -21,7 +14,7 @@
         /// does not specify a command name in the arguments.
         /// All commands in an application must have different names. Likewise, only one command without a name is allowed.
         /// </summary>
-        public string? Name { get; }
+        public string Name { get; init; }
 
         /// <summary>
         /// Command description, which is used in help text.
@@ -34,15 +27,19 @@
         public string? Manual { get; init; }
 
         /// <summary>
-        /// List of CLI mode types, in which the command can be executed.
-        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// Initializes an instance of <see cref="CommandAttribute"/>.
         /// </summary>
-        public Type[]? SupportedModes { get; init; }
+        public CommandAttribute(string name)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
 
         /// <summary>
-        /// List of CLI mode types, in which the command cannot be executed.
-        /// If null (default) or empty, command can be executed in every registered mode in the app.
+        /// Initializes an instance of <see cref="CommandAttribute"/>.
         /// </summary>
-        public Type[]? ExcludedModes { get; init; }
+        public CommandAttribute()
+        {
+            Name = string.Empty;
+        }
     }
 }

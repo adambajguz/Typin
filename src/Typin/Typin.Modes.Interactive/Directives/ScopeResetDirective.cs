@@ -4,8 +4,8 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
-    using Typin.Attributes;
     using Typin.Directives;
+    using Typin.Directives.Attributes;
     using Typin.Modes.Interactive;
 
     /// <summary>
@@ -17,7 +17,7 @@
     ///             >
     /// </example>
     /// </summary>
-    [Directive(InteractiveOnlyDirectives.ScopeReset, Description = "Resets the scope to default value.", SupportedModes = new[] { typeof(InteractiveMode) })]
+    [Directive(InteractiveOnlyDirectives.ScopeReset, Description = "Resets the scope to default value.")]
     public sealed class ScopeResetDirective : IDirective //TODO: add directive hadnler
     {
         private readonly InteractiveModeOptions _options;

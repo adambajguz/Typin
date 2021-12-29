@@ -9,7 +9,6 @@
     using Typin.Directives;
     using Typin.Hosting.Components;
     using Typin.Internal.Schemas;
-    using Typin.Schemas;
 
     /// <inheritdoc/>
     internal sealed class RootSchemaAccessor : IRootSchemaAccessor

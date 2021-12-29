@@ -1,4 +1,4 @@
-﻿namespace Typin.Models.Builders
+﻿namespace Typin.Models.Resolvers
 {
     /// <summary>
     /// Represents a resolver.

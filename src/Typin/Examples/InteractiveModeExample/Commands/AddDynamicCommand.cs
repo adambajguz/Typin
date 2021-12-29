@@ -5,7 +5,7 @@
 //    using System.Threading.Tasks;
 //    using InteractiveModeExample.DynamicCommands;
 //    using Typin;
-//    using Typin.Attributes;
+//    using Typin.Models.Attributes; using Typin.Commands.Attributes;
 //    using Typin.Commands;
 //    using Typin.Commands.Schemas;
 //    using Typin.Console;

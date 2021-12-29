@@ -1,4 +1,4 @@
-﻿namespace Typin.Commands
+﻿namespace Typin.Commands.Schemas
 {
     using System.Threading;
     using System.Threading.Tasks;

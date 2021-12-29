@@ -19,7 +19,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IDynamicModel)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IDynamicModel)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

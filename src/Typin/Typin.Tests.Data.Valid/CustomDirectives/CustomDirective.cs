@@ -4,9 +4,9 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
-    using Typin.Attributes;
     using Typin.Console;
     using Typin.Directives;
+    using Typin.Directives.Attributes;
 
     [Directive("custom", Description = "Custom directive.")]
     public sealed class CustomDirective : IDirective //TODO: add directive hadnler

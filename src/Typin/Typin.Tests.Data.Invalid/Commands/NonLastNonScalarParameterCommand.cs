@@ -1,8 +1,9 @@
 ﻿namespace Typin.Tests.Data.Invalid.Commands
 {
     using System.Collections.Generic;
-    using Typin.Attributes;
+    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
     [Command("cmd")]

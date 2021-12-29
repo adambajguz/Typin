@@ -14,7 +14,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IDynamicCommand)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IDynamicCommand)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

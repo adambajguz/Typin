@@ -2,8 +2,8 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
 
     [Command("long", Description = "A long command.")]
     public class LongCommand : ICommand

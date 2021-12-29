@@ -2,9 +2,10 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Models.Attributes;
 
     [Command]
     public class HelloWorldCommand : ICommand

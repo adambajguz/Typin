@@ -1,5 +1,6 @@
 ﻿namespace Typin.Models.Builders
 {
+    using System;
     using System.Reflection;
     using Typin.Models.Schemas;
 
@@ -8,6 +9,11 @@
     /// </summary>
     public interface IModelBuilder : IBuilder<IModelSchema>, IManageExtensions<IModelBuilder>
     {
+        /// <summary>
+        /// Model type.
+        /// </summary>
+        Type Model { get; }
+
         /// <summary>
         /// Configures an parameter property.
         /// </summary>

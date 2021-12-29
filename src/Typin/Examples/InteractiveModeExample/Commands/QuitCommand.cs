@@ -3,12 +3,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
-    using Typin.Attributes;
     using Typin.Commands;
-    using Typin.Modes.Interactive;
+    using Typin.Commands.Attributes;
 
-    [Command("quit", Description = "Quits the interactive mode",
-             SupportedModes = new[] { typeof(InteractiveMode) })]
+    [Command("quit", Description = "Quits the interactive mode")]
     public class QuitCommand : ICommand
     {
         private readonly IHostApplicationLifetime _lifetime;

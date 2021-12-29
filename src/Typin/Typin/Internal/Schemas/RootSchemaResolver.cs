@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Typin;
     using Typin.Commands.Schemas;
     using Typin.Directives.Schemas;
     using Typin.Exceptions.Resolvers.CommandResolver;
-    using Typin.Schemas;
 
     /// <summary>
     /// Resolves an instance of <see cref="RootSchema"/>.

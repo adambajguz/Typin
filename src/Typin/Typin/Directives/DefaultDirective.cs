@@ -1,6 +1,6 @@
 ﻿namespace Typin.Directives
 {
-    using Typin.Attributes;
+    using Typin.Directives.Attributes;
 
     /// <summary>
     /// Normally when application runs in interactive mode, an empty line does nothing; but [!] will override this behaviour, executing a root or scoped command.

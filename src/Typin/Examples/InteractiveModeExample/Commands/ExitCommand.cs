@@ -3,8 +3,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
 
     [Command("exit", Description = "Exits.")]
     public class ExitCommand : ICommand

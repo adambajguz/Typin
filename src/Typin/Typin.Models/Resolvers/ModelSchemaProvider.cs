@@ -1,4 +1,4 @@
-﻿namespace Typin.Models.Internal
+﻿namespace Typin.Models.Resolvers
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting.Components;
+    using Typin.Models;
     using Typin.Models.Collections;
-    using Typin.Models.Resolvers;
     using Typin.Models.Schemas;
 
     /// <summary>

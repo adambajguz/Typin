@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Typin.Commands.Schemas;
 
     /// <summary>
     /// A hosted service used to resolve all command schema during startup.

@@ -3,8 +3,9 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Typin.Attributes;
+    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
     using Typin.Tests.Data.Common.CustomTypes.Initializable;
 

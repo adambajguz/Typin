@@ -28,7 +28,8 @@
         /// </summary>
         public static bool IsValidType(Type type, Type directiveType)
         {
-            return type.GetInterfaces().Contains(typeof(IDirectiveHandler<>).MakeGenericType(directiveType)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IDirectiveHandler<>).MakeGenericType(directiveType)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -52,7 +53,8 @@
         /// </summary>
         public static new bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IDirectiveHandler<TDirective>)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IDirectiveHandler<TDirective>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

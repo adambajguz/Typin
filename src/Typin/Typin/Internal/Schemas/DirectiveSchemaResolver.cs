@@ -3,7 +3,8 @@
 //    using System;
 //    using System.Linq;
 //    using System.Reflection;
-//    using Typin.Attributes;
+//    using Typin.Models.Attributes;
+//    using Typin.Commands.Attributes;
 //    using Typin.Directives.Schemas;
 //    using Typin.Exceptions.Mode;
 //    using Typin.Exceptions.Resolvers.DirectiveResolver;

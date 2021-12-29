@@ -5,14 +5,14 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting;
     using Typin.Models.Collections;
-    using Typin.Models.Internal;
     using Typin.Models.Resolvers;
     using Typin.Models.Scanning;
+    using Typin.Models.Schemas;
 
     /// <summary>
-    /// <see cref="ICliBuilder"/> components extensions.
+    /// <see cref="ICliBuilder"/> models-related extensions.
     /// </summary>
-    public static class CliBuilderComponentsExtensions
+    public static class CliBuilderModelsExtensions
     {
         #region AddModels
         /// <summary>

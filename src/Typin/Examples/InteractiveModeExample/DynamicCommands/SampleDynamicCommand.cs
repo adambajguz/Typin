@@ -6,7 +6,8 @@
 //    using System.Threading.Tasks;
 //    using InteractiveModeExample.Models;
 //    using Newtonsoft.Json;
-//    using Typin.Attributes;
+//    using Typin.Models.Attributes;
+//    using Typin.Commands.Attributes;
 //    using Typin.Console;
 //    using Typin.Models;
 //    using Typin.Models.Collections;

@@ -1,4 +1,4 @@
-﻿namespace Typin.Models.Builders
+﻿namespace Typin.Models.Resolvers
 {
     using System.Threading;
     using System.Threading.Tasks;

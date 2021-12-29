@@ -6,12 +6,13 @@
     using Typin.Commands.Collections;
     using Typin.Commands.Resolvers;
     using Typin.Commands.Scanning;
+    using Typin.Commands.Schemas;
     using Typin.Hosting;
 
     /// <summary>
-    /// <see cref="ICliBuilder"/> components extensions.
+    /// <see cref="ICliBuilder"/> commands-related extensions.
     /// </summary>
-    public static class CliBuilderComponentsExtensions
+    public static class CliBuilderCommandsExtensions
     {
         #region AddCommands
         /// <summary>
@@ -75,42 +76,6 @@
         public static ICliBuilder ConfigureCommands(this ICliBuilder cliBuilder, Action<IConfigureCommandScanner> scanner)
         {
             scanner(cliBuilder.ConfigureCommands());
-
-            return cliBuilder;
-        }
-        #endregion
-
-        #region AddDynamicCommands
-        /// <summary>
-        /// Adds dynamic commands to CLI application.
-        /// </summary>
-        /// <param name="cliBuilder"></param>
-        /// <returns></returns>
-        public static IDynamicCommandScanner AddDynamicCommands(this ICliBuilder cliBuilder)
-        {
-            return cliBuilder.GetScanner<IDynamicCommand, IDynamicCommandScanner>(
-                (cli, current) =>
-                {
-                    //IServiceCollection services = cli.Services;
-                    //if (!services.Any(x => x.ImplementationType == typeof(DynamicCommandSchemaProvider)))
-                    //{
-                    //    services.AddSingleton<IDynamicCommandSchemaCollection, DynamicCommandSchemaCollection>();
-                    //    services.AddTransient<IDynamicCommandSchemaProvider, DynamicCommandSchemaProvider>();
-                    //}
-
-                    return new DynamicCommandScanner(cli.Services, current);
-                });
-        }
-
-        /// <summary>
-        /// Adds dynamic commands to CLI application.
-        /// </summary>
-        /// <param name="cliBuilder"></param>
-        /// <param name="scanner"></param>
-        /// <returns></returns>
-        public static ICliBuilder AddDynamicCommands(this ICliBuilder cliBuilder, Action<IDynamicCommandScanner> scanner)
-        {
-            scanner(cliBuilder.AddDynamicCommands());
 
             return cliBuilder;
         }

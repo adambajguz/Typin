@@ -85,7 +85,8 @@
         /// </summary>
         public static bool IsValidType(Type type)
         {
-            return type.GetInterfaces().Contains(typeof(IArgumentConverter<T>)) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IArgumentConverter<T>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

@@ -6,8 +6,8 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
-    using Typin.Attributes;
     using Typin.Directives;
+    using Typin.Directives.Attributes;
     using Typin.Features.Input;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Internal.Extensions;
@@ -30,7 +30,7 @@
     ///              > cmd1 -h
     /// </example>
     /// </summary>
-    [Directive(InteractiveOnlyDirectives.Scope, Description = "Sets a scope to command(s).", SupportedModes = new[] { typeof(InteractiveMode) })]
+    [Directive(InteractiveOnlyDirectives.Scope, Description = "Sets a scope to command(s).")]
     public sealed class ScopeDirective : IDirective //TODO: add directive hadnler
     {
         private readonly InteractiveModeOptions _options;

@@ -3,8 +3,8 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
 
     [Command("exi", Description = "Throws exception with inner exception that cannot be handled.")]
     public class ExWithInnerCommand : ICommand

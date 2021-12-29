@@ -6,8 +6,8 @@
     using BookLibraryExample.Internal;
     using BookLibraryExample.Models;
     using BookLibraryExample.Services;
-    using Typin.Attributes;
     using Typin.Commands;
+    using Typin.Commands.Attributes;
     using Typin.Console;
 
     [Command("book list", Description = "List all books in the library.")]

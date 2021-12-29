@@ -9,6 +9,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Hosting.Scanning;
     using Typin.Models.Builders;
+    using Typin.Models.Internal;
 
     /// <summary>
     /// <see cref="IConfigureModel"/> component scanner.
@@ -29,16 +30,32 @@
 
             Added += (sender, e) =>
             {
-                _services.AddTransient(e.Type);
-
                 Type[] interfaces = e.Type.GetInterfaces();
 
-                foreach (Type @interface in interfaces)
+                if (e.Type.IsGenericType)
                 {
-                    if (@interface.IsGenericType &&
-                        @interface.GetGenericTypeDefinition() == typeof(IConfigureModel<>))
+                    foreach (Type @interface in interfaces)
                     {
-                        _services.AddTransient(@interface, e.Type);
+                        if (@interface.IsGenericType &&
+                            @interface.GetGenericTypeDefinition() == typeof(IConfigureModel<>))
+                        {
+                            _services.AddTransient(typeof(IConfigureModel<>), e.Type);
+                        }
+                    }
+                }
+                else if (!e.Type.IsGenericType)
+                {
+                    foreach (Type @interface in interfaces)
+                    {
+                        if (@interface == typeof(IConfigureModel))
+                        {
+                            _services.AddTransient(@interface, e.Type);
+                        }
+                        else if (@interface.IsGenericType &&
+                                 @interface.GetGenericTypeDefinition() == typeof(IConfigureModel<>))
+                        {
+                            _services.AddTransient(@interface, e.Type);
+                        }
                     }
                 }
             };
@@ -58,6 +75,17 @@
                     .Where(IsValidComponent)
                 )
                 .Concat(assembly.ExportedTypes.Where(IsValidComponent));
+        }
+
+        /// <inheritdoc/>
+        public IConfigureModelScanner Single(Func<IServiceProvider, IModelBuilder, CancellationToken, ValueTask> configure)
+        {
+            _services.AddTransient<IConfigureModel>(provider =>
+            {
+                return new InlineConfigureModel(provider, configure);
+            });
+
+            return this;
         }
 
         /// <inheritdoc/>
