@@ -62,9 +62,9 @@
         }
 
         /// <inheritdoc/>
-        public override bool IsValidComponent(Type type)
+        public override bool IsValid(Type type)
         {
-            return IConfigureCommand.IsValidType(type);
+            return IConfigureCommand.IsValidType(type) || IConfigureCommand.IsValidGenericType(type);
         }
 
         protected override IEnumerable<Type> GetTypes(Assembly assembly)
@@ -72,9 +72,9 @@
             return assembly.ExportedTypes
                 .SelectMany(x => x
                     .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(IsValidComponent)
+                    .Where(IConfigureCommand.IsValidGenericType)
                 )
-                .Concat(assembly.ExportedTypes.Where(IsValidComponent));
+                .Concat(assembly.ExportedTypes.Where(IConfigureCommand.IsValidGenericType));
         }
 
         /// <inheritdoc/>
@@ -82,7 +82,7 @@
         {
             _services.AddTransient<IConfigureCommand>(provider =>
             {
-                return new InlineConfigureCommand(provider, configure);
+                return new InlineConfigureCommands(provider, configure);
             });
 
             return this;
@@ -105,7 +105,7 @@
         {
             IEnumerable<Type>? types = type
                 .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(IsValidComponent);
+                .Where(IConfigureCommand.IsValidGenericType);
 
             if (types is not null)
             {

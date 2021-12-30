@@ -4,14 +4,15 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using PackSite.Library.Pipelining;
 
     /// <summary>
     /// Entry point for a <see cref="IDirective"/>.
     /// </summary>
-    public interface IDirectiveHandler
+    public interface IDirectiveHandler : IStep<IDirectiveArgs>
     {
         /// <summary>
-        /// Checks whether type is a valid directive handler.
+        /// Checks whether type is a valid direcrive handler.
         /// </summary>
         public static bool IsValidType(Type type)
         {
@@ -24,12 +25,12 @@
         }
 
         /// <summary>
-        /// Checks whether type is a valid directive handler.
+        /// Checks whether type is a valid direcrive handler.
         /// </summary>
-        public static bool IsValidType(Type type, Type directiveType)
+        public static bool IsValidType(Type type, Type commandType)
         {
             return type.GetInterfaces()
-                .Contains(typeof(IDirectiveHandler<>).MakeGenericType(directiveType)) &&
+                .Contains(typeof(IDirectiveHandler<>).MakeGenericType(commandType)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -41,12 +42,26 @@
     public interface IDirectiveHandler<TDirective> : IDirectiveHandler
         where TDirective : class, IDirective
     {
+        ValueTask IStep<IDirectiveArgs>.ExecuteAsync(IDirectiveArgs args,
+                                                     StepDelegate next,
+                                                     IInvokablePipeline<IDirectiveArgs> invokablePipeline,
+                                                     CancellationToken cancellationToken)
+        {
+            return ExecuteAsync((IDirectiveArgs<TDirective>)args,
+                                next,
+                                invokablePipeline,
+                                cancellationToken);
+        }
+
         /// <summary>
         /// Executes the directive.
         /// This is the method that's called when the directive is invoked by a user through directive line.
         /// </summary>
         /// <remarks>If the execution of the directive is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        ValueTask ExecuteAsync(TDirective directive, CancellationToken cancellationToken);
+        ValueTask ExecuteAsync(IDirectiveArgs<TDirective> args,
+                               StepDelegate next,
+                               IInvokablePipeline<IDirectiveArgs> invokablePipeline,
+                               CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks whether type is a valid directive handler.

@@ -3,7 +3,7 @@
     using Typin.Features;
 
     /// <summary>
-    /// Encapsulates all CLI-specific information about a command.
+    /// Encapsulates all command call information.
     /// </summary>
     public abstract class CliContext
     {

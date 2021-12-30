@@ -2,12 +2,11 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Typin.Exceptions;
 
     /// <summary>
     /// Typin attribute exception.
     /// </summary>
-    public abstract class ResolverException : TypinException
+    public abstract class ResolverException : CliException
     {
         /// <summary>
         /// Initializes an instance of <see cref="ResolverException"/>.

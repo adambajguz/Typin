@@ -20,23 +20,26 @@
     [Directive(InteractiveOnlyDirectives.ScopeReset, Description = "Resets the scope to default value.")]
     public sealed class ScopeResetDirective : IDirective //TODO: add directive hadnler
     {
-        private readonly InteractiveModeOptions _options;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="ScopeResetDirective"/>.
-        /// </summary>
-        public ScopeResetDirective(IOptions<InteractiveModeOptions> options)
+        private sealed class Handler : IDirectiveHandler<ScopeResetDirective>
         {
-            _options = options.Value;
-        }
+            private readonly InteractiveModeOptions _options;
 
-        /// <inheritdoc/>
-        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
-        {
-            _options.Scope = string.Empty;
-            args.Output.ExitCode ??= ExitCode.Success;
+            /// <summary>
+            /// Initializes an instance of <see cref="ScopeResetDirective"/>.
+            /// </summary>
+            public Handler(IOptions<InteractiveModeOptions> options)
+            {
+                _options = options.Value;
+            }
 
-            return default;
+            /// <inheritdoc/>
+            public ValueTask ExecuteAsync(IDirectiveArgs<ScopeResetDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            {
+                _options.Scope = string.Empty;
+                args.Context.Output.ExitCode ??= ExitCode.Success;
+
+                return default;
+            }
         }
     }
 }

@@ -11,10 +11,7 @@ namespace Typin.Modes.Interactive
     using Typin;
     using Typin.Commands;
     using Typin.Console;
-    using Typin.Extensions;
     using Typin.Modes;
-    using Typin.Modes.Interactive.AutoCompletion;
-    using Typin.Modes.Interactive.Internal.Extensions;
     using Typin.Utilities;
 
     /// <summary>
@@ -31,8 +28,6 @@ namespace Typin.Modes.Interactive
         private readonly ICliContextAccessor _cliContextAccessor;
         private readonly IServiceProvider _serviceProvider;
 
-        private readonly AutoCompleteInput? _autoCompleteInput;
-
         /// <summary>
         /// Initializes an instance of <see cref="InteractiveMode"/>.
         /// </summary>
@@ -40,7 +35,6 @@ namespace Typin.Modes.Interactive
                                IOptionsMonitor<InteractiveModeOptions> modeOptions,
                                IConsole console,
                                ILogger<InteractiveMode> logger,
-                               IRootSchemaAccessor rootSchemaAccessor,
                                IOptionsMonitor<ApplicationMetadata> metadataOptions,
                                ICommandExecutor commandExecutor,
                                ICliContextAccessor cliContextAccessor,
@@ -54,17 +48,6 @@ namespace Typin.Modes.Interactive
             _commandExecutor = commandExecutor;
             _cliContextAccessor = cliContextAccessor;
             _serviceProvider = serviceProvider;
-
-            InteractiveModeOptions modeOptionsValue = _modeOptions.CurrentValue;
-            if (modeOptionsValue.IsAdvancedInputAvailable && !console.Input.IsRedirected)
-            {
-                _autoCompleteInput = new AutoCompleteInput(_console, modeOptionsValue.UserDefinedShortcuts)
-                {
-                    AutoCompletionHandler = new AutoCompletionHandler(rootSchemaAccessor),
-                };
-
-                _autoCompleteInput.History.IsEnabled = true;
-            }
         }
 
         /// <inheritdoc/>
@@ -125,15 +108,8 @@ namespace Typin.Modes.Interactive
             // Read user input
             console.ForegroundColor = modeOptionsValue.CommandForeground;
 
-            string? line = string.Empty; // Can be null when Ctrl+C is pressed to close the app.
-            if (_autoCompleteInput is null)
-            {
-                line = await _console.Input.ReadLineAsync().WithCancellation(cancellationToken);
-            }
-            else
-            {
-                line = await _autoCompleteInput.ReadLineAsync(cancellationToken);
-            }
+            // Line can be null when Ctrl+C is pressed to close the app.
+            string? line = await _console.Input.ReadLineAsync().WaitAsync(cancellationToken);
 
             console.ForegroundColor = ConsoleColor.Gray;
 

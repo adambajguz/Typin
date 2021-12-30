@@ -29,7 +29,7 @@
         }
 
         /// <inheritdoc/>
-        public override bool IsValidComponent(Type type)
+        public override bool IsValid(Type type)
         {
             return ICliMode.IsValidType(type);
         }

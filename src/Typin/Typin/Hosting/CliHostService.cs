@@ -20,7 +20,6 @@
 
         private readonly IConsole _console;
         private readonly ICliModeSwitcher _cliModeSwitcher;
-        private readonly IRootSchemaAccessor _rootSchemaAccessor;
         private readonly ApplicationMetadata _metadata;
         private readonly IOptions<CliOptions> _cliOptions;
 
@@ -32,14 +31,12 @@
                               ICliModeSwitcher cliModeSwitcher,
                               IOptions<ApplicationMetadata> appMetadataOptions,
                               IOptions<CliOptions> cliOptions,
-                              IRootSchemaAccessor rootSchemaAccessor,
                               IHostApplicationLifetime hostApplicationLifetime,
                               IServiceProvider serviceProvider,
                               ILoggerFactory loggerFactory)
         {
             _console = console;
             _cliModeSwitcher = cliModeSwitcher;
-            _rootSchemaAccessor = rootSchemaAccessor;
             _metadata = appMetadataOptions.Value;
             _cliOptions = cliOptions;
             _lifetime = hostApplicationLifetime;
@@ -84,8 +81,6 @@
         {
             _logger.LogInformation("Starting CLI application...");
             _console.ResetColor();
-
-            _ = _rootSchemaAccessor.RootSchema;
         }
 
         /// <summary>
@@ -101,7 +96,6 @@
 
             try
             {
-                RootSchema rootSchema = _rootSchemaAccessor.RootSchema;
                 CliOptions cliOptions = _cliOptions.Value;
 
                 cliOptions.StartupMessage?.Invoke(_serviceProvider, _metadata, _console);

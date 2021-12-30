@@ -6,10 +6,9 @@
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Console;
-    using Typin.Exceptions;
 
     /// <summary>
-    /// A middleware that handles all <see cref="TypinException"/> exceptions.
+    /// A middleware that handles all <see cref="CliException"/> exceptions.
     /// </summary>
     public sealed class TypinExceptionsHandler : IMiddleware
     {
@@ -30,11 +29,11 @@
             {
                 await next();
             }
-            catch (TypinException tex)
+            catch (CliException ex)
             {
                 _console.Error.WithForegroundColor(ConsoleColor.Red, (o) =>
                 {
-                    o.WriteLine(tex.Message);
+                    o.WriteLine(ex.Message);
                     o.WriteLine();
                 });
             }

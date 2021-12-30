@@ -1,10 +1,8 @@
 ﻿namespace Typin.Modes.Interactive
 {
     using System;
-    using System.Collections.Generic;
     using Typin;
     using Typin.Console;
-    using Typin.Modes.Interactive.AutoCompletion;
 
     /// <summary>
     /// Interactive mode options.
@@ -32,22 +30,7 @@
         /// <summary>
         /// Command scope.
         /// </summary>
-        public string Scope { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Command input history.
-        /// </summary>
-        public IInputHistoryProvider InputHistory { get; } = new InputHistoryProvider();
-
-        /// <summary>
-        /// User defined shortcuts.
-        /// </summary>
-        public HashSet<ShortcutDefinition> UserDefinedShortcuts { get; set; } = new();
-
-        /// <summary>
-        /// Whether advanced input is available.
-        /// </summary>
-        public bool IsAdvancedInputAvailable { get; set; } = true;
+        public string Scope { get; set; } = string.Empty; //scopes should be a global concept (as extension) not an interactive mode concept
 
         /// <summary>
         /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initalize with a call to <see cref="SetDefaultPrompt"/>).

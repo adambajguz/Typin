@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
+    using Typin.Commands.Collections;
     using Typin.Directives;
     using Typin.Directives.Attributes;
     using Typin.Features.Input;
@@ -33,45 +34,49 @@
     [Directive(InteractiveOnlyDirectives.Scope, Description = "Sets a scope to command(s).")]
     public sealed class ScopeDirective : IDirective //TODO: add directive hadnler
     {
-        private readonly InteractiveModeOptions _options;
-        private readonly IRootSchemaAccessor _rootSchemaAccessor;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="ScopeDirective"/>.
-        /// </summary>
-        public ScopeDirective(IOptions<InteractiveModeOptions> options, IRootSchemaAccessor rootSchemaAccessor)
+        private sealed class Handler : IDirectiveHandler<ScopeDirective>
         {
-            _options = options.Value;
-            _rootSchemaAccessor = rootSchemaAccessor;
-        }
+            private readonly InteractiveModeOptions _options;
+            private readonly ICommandSchemaCollection _commandSchemas;
 
-        /// <inheritdoc/>
-        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
-        {
-            string? name = args.Input.Parsed?.CommandName ?? GetFallbackCommandName(args);
-
-            if (name is not null)
+            /// <summary>
+            /// Initializes an instance of <see cref="ScopeDirective"/>.
+            /// </summary>
+            public Handler(IOptions<InteractiveModeOptions> options, ICommandSchemaCollection commandSchemas)
             {
-                _options.Scope = name;
-                args.Output.ExitCode ??= ExitCode.Success;
+                _options = options.Value;
+                _commandSchemas = commandSchemas;
             }
 
-            return default;
-        }
-
-        private string? GetFallbackCommandName(CliContext context)
-        {
-            ParsedInput? input = context.Input.Parsed ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
-
-            string potentialName = context.Input.Arguments.Skip(input.Directives.Count)
-                                                          .JoinToString(' ');
-
-            if (_rootSchemaAccessor.RootSchema.IsCommandOrSubcommandPart(potentialName))
+            /// <inheritdoc/>
+            public ValueTask ExecuteAsync(IDirectiveArgs<ScopeDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
             {
-                return potentialName;
+                CliContext context = args.Context;
+                string? name = context.Input.Parsed?.CommandName ?? GetFallbackCommandName(context);
+
+                if (name is not null)
+                {
+                    _options.Scope = name;
+                    context.Output.ExitCode ??= ExitCode.Success;
+                }
+
+                return default;
             }
 
-            return null;
+            private string? GetFallbackCommandName(CliContext context)
+            {
+                ParsedInput? input = context.Input.Parsed ?? throw new NullReferenceException("Input not set."); // maybe add some required check pattern/convention?
+
+                string potentialName = context.Input.Arguments.Skip(input.Directives.Count)
+                                                              .JoinToString(' ');
+
+                if (_commandSchemas.IsCommandOrSubcommandPart(potentialName))
+                {
+                    return potentialName;
+                }
+
+                return null;
+            }
         }
     }
 }

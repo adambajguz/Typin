@@ -7,6 +7,7 @@
     using System.Linq;
     using Microsoft.Extensions.Options;
     using Typin;
+    using Typin.Commands.Collections;
     using Typin.Commands.Features;
     using Typin.Commands.Schemas;
     using Typin.Console;
@@ -33,8 +34,8 @@
         private const ConsoleColor OptionNameColor = ConsoleColor.White;
         private const ConsoleColor CommentColor = ConsoleColor.DarkGray;
 
-        private readonly RootSchema _rootSchema;
-        private readonly CliContext? _context;
+        private readonly ICliContextAccessor _cliContextAccessor;
+        private readonly ICommandSchemaCollection _commandSchemas;
         private readonly IOptionsMonitor<ApplicationMetadata> _metadata;
         private readonly IComponentProvider _componentProvider;
         private readonly IConsole _console;
@@ -47,14 +48,14 @@
         /// <summary>
         /// Initializes an instance of <see cref="DefaultHelpWriter"/>.
         /// </summary>
-        public DefaultHelpWriter(IRootSchemaAccessor rootSchemaAccessor,
-                                 ICliContextAccessor cliContextAccessor,
+        public DefaultHelpWriter(ICliContextAccessor cliContextAccessor,
+                                 ICommandSchemaCollection commandSchemas,
                                  IOptionsMonitor<ApplicationMetadata> metadata,
                                  IComponentProvider componentProvider,
                                  IConsole console)
         {
-            _rootSchema = rootSchemaAccessor.RootSchema;
-            _context = cliContextAccessor.CliContext;
+            _cliContextAccessor = cliContextAccessor;
+            _commandSchemas = commandSchemas;
             _console = console;
             _componentProvider = componentProvider;
             _metadata = metadata;
@@ -63,9 +64,9 @@
         /// <inheritdoc/>
         public void Write()
         {
-            if (_context is not null)
+            if (_cliContextAccessor.CliContext is CliContext context)
             {
-                var commandFeature = _context.Features.Get<ICommandFeature>() ??
+                var commandFeature = context.Features.Get<ICommandFeature>() ??
                     throw new InvalidOperationException($"{nameof(ICommandFeature)} has not been configured for this application or call.");
 
                 Write(commandFeature.Schema, commandFeature.DefaultValues);
@@ -76,7 +77,7 @@
         public void Write(ICommandSchema command,
                           IReadOnlyDictionary<IArgumentSchema, object?> defaultValues)
         {
-            IEnumerable<ICommandSchema> childCommands = _rootSchema.GetChildCommands(command.Name)
+            IEnumerable<ICommandSchema> childCommands = _commandSchemas.GetChildCommands(command.Name)
                                                                   .OrderBy(x => x.Name);
 
             _console.ResetColor();
@@ -88,12 +89,12 @@
             }
 
             WriteCommandDescription(command);
-            WriteCommandUsage(_rootSchema.Directives, command, childCommands);
+            WriteCommandUsage(new Dictionary<string, IDirectiveSchema>(), command, childCommands);
             WriteCommandParameters(command);
             WriteCommandOptions(command, defaultValues);
             WriteModeRestrictionsManual(command);
             WriteCommandChildren(command, childCommands);
-            WriteDirectivesManual(_rootSchema.Directives);
+            WriteDirectivesManual(new Dictionary<string, IDirectiveSchema>());
             WriteCommandManual(command);
 
             WriteLine();

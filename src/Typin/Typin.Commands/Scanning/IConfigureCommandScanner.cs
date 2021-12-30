@@ -1,6 +1,7 @@
 ﻿namespace Typin.Commands.Scanning
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
@@ -9,6 +10,9 @@
 
     /// <summary>
     /// <see cref="IConfigureCommand"/> component scanner.
+    ///
+    /// By default only types implementing <see cref="IConfigureCommand{TModel}"/> are added when using From*.
+    /// To add <see cref="IConfigureCommand"/> use <see cref="IScanner{IConfigureCommand}.Single(Type)"/> or <see cref="IScanner{IConfigureCommand}.Multiple(IEnumerable{Type})"/>.
     /// </summary>
     public interface IConfigureCommandScanner : IScanner<IConfigureCommand>
     {

@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Typin.Utilities.Diagnostics\Typin.Utilities.Diagnostics.csproj" />
 		<ProjectReference Include="..\..\Typin\Typin.csproj" />
 	</ItemGroup>
 

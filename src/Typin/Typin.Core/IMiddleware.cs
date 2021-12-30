@@ -1,5 +1,7 @@
 ﻿namespace Typin
 {
+    using System;
+    using System.Linq;
     using PackSite.Library.Pipelining;
 
     /// <summary>
@@ -8,6 +10,15 @@
     /// </summary>
     public interface IMiddleware : IStep<CliContext>
     {
-
+        /// <summary>
+        /// Checks whether type is a valid middleware.
+        /// </summary>
+        public static bool IsValidType(Type type)
+        {
+            return type.GetInterfaces()
+                .Contains(typeof(IMiddleware)) &&
+                !type.IsAbstract &&
+                !type.IsInterface;
+        }
     }
 }

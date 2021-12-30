@@ -7,11 +7,14 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Typin.Commands;
+    using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Commands;
+    using Typin.Modes.Interactive.Directives;
     using Typin.Modes.Programmatic;
+    using Typin.Utilities.Diagnostics.Directives;
 
     public static class Program
     {
@@ -31,15 +34,13 @@
 
                             scanner.FromThisAssembly();
                         })
-                        //.AddDirectives(scanner =>
-                        //{
-                        //    scanner.Single<DebugDirective>()
-                        //           .Single<PreviewDirective>();
+                        .AddDirectives(scanner =>
+                        {
+                            scanner.Single<DebugDirective>()
+                                   .Single<PreviewDirective>();
 
-                        //    scanner.Single<InteractiveDirective>();
-
-                        //    scanner.FromThisAssembly();
-                        //})
+                            scanner.Single<InteractiveDirective>();
+                        })
                         .AddModes(scanner =>
                         {
                             scanner.Single<DirectMode>();
@@ -58,7 +59,6 @@
                     services.Configure<InteractiveModeOptions>(options =>
                     {
                         options.PromptForeground = ConsoleColor.Magenta;
-                        options.IsAdvancedInputAvailable = false;
                         options.SetPrompt("~$ ");
                     });
                 })

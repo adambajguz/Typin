@@ -7,33 +7,6 @@
     using Typin.Commands.Builders;
 
     /// <summary>
-    /// Inline global command configuration proxy.
-    /// </summary>
-    internal sealed class InlineConfigureCommand : IConfigureCommand
-    {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly Func<IServiceProvider, ICommandBuilder, CancellationToken, ValueTask> _configure;
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="InlineConfigureCommand"/>.
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="configure"></param>
-        public InlineConfigureCommand(IServiceProvider serviceProvider,
-                                      Func<IServiceProvider, ICommandBuilder, CancellationToken, ValueTask> configure)
-        {
-            _serviceProvider = serviceProvider;
-            _configure = configure;
-        }
-
-        /// <inheritdoc/>
-        public async ValueTask ConfigureAsync(ICommandBuilder builder, CancellationToken cancellationToken)
-        {
-            await _configure(_serviceProvider, builder, cancellationToken);
-        }
-    }
-
-    /// <summary>
     /// Inline command configuration proxy.
     /// </summary>
     /// <typeparam name="TCommand"></typeparam>

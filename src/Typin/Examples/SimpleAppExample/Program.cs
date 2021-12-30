@@ -4,9 +4,13 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using SimpleAppExample.Commands;
     using Typin.Commands;
+    using Typin.Directives;
     using Typin.Hosting;
+    using Typin.Models;
     using Typin.Modes;
+    using Typin.Utilities.Diagnostics.Directives;
 
     [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members")]
     public static class Program
@@ -25,20 +29,25 @@
                 .ConfigureCliHost((cliBuilder) =>
                 {
                     cliBuilder
+                        .ConfigureModels(scanner =>
+                        {
+                            scanner.Single(typeof(ConfigureModelsFromAttributes));
+                            scanner.Single(typeof(ConfigureModelFromAttributes<>));
+                        })
+                        .ConfigureCommands(scanner =>
+                        {
+                            scanner.Single(typeof(ConfigureCommandsFromAttributes));
+                            scanner.Single(typeof(ConfigureCommandFromAttributes<>));
+                        })
                         .AddCommands(scanner =>
                         {
                             scanner.FromThisAssembly();
                         })
-                        .ConfigureCommands(scanner =>
+                        .AddDirectives(scanner =>
                         {
-                            scanner.FromThisAssembly();
+                            scanner.Single<DebugDirective>()
+                                   .Single<PreviewDirective>();
                         })
-                        //TODO:
-                        //.AddDirectives(scanner =>
-                        //{
-                        //    scanner.Single<DebugDirective>()
-                        //           .Single<PreviewDirective>();
-                        //})
                         .AddModes(scanner =>
                         {
                             scanner.Single<DirectMode>();

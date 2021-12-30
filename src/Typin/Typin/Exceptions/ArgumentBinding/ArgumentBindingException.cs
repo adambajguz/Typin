@@ -2,13 +2,12 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Typin.Exceptions;
     using Typin.Models.Schemas;
 
     /// <summary>
     /// Typin argument binding exception.
     /// </summary>
-    public abstract class ArgumentBindingException : TypinException
+    public abstract class ArgumentBindingException : CliException
     {
         /// <summary>
         /// Argument schema or null.

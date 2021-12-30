@@ -21,34 +21,37 @@
     [Directive(InteractiveOnlyDirectives.ScopeUp, Description = "Removes one command from the scope.")]
     public sealed class ScopeUpDirective : IDirective //TODO: add directive hadnler
     {
-        private readonly InteractiveModeOptions _options;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="ScopeUpDirective"/>.
-        /// </summary>
-        public ScopeUpDirective(IOptions<InteractiveModeOptions> options)
+        private sealed class Handler : IDirectiveHandler<ScopeResetDirective>
         {
-            _options = options.Value;
-        }
+            private readonly InteractiveModeOptions _options;
 
-        /// <inheritdoc/>
-        public ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
-        {
-            // Scope up
-            string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (splittedScope.Length > 1)
+            /// <summary>
+            /// Initializes an instance of <see cref="ScopeUpDirective"/>.
+            /// </summary>
+            public Handler(IOptions<InteractiveModeOptions> options)
             {
-                _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
-            }
-            else if (splittedScope.Length == 1)
-            {
-                _options.Scope = string.Empty;
+                _options = options.Value;
             }
 
-            args.Output.ExitCode ??= ExitCode.Success;
+            /// <inheritdoc/>
+            public ValueTask ExecuteAsync(IDirectiveArgs<ScopeResetDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            {
+                // Scope up
+                string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            return default;
+                if (splittedScope.Length > 1)
+                {
+                    _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
+                }
+                else if (splittedScope.Length == 1)
+                {
+                    _options.Scope = string.Empty;
+                }
+
+                args.Context.Output.ExitCode ??= ExitCode.Success;
+
+                return default;
+            }
         }
     }
 }

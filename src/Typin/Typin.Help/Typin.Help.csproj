@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
@@ -14,12 +14,24 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
 	</ItemGroup>
-	
+
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[6.0,]" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[5.0,]" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[3.0,]" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Commands.Abstractions\Typin.Commands.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Directives.Abstractions\Typin.Directives.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
-		<ProjectReference Include="..\Typin.OldCore\Typin.OldCore.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 	</ItemGroup>
 

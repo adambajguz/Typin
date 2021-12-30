@@ -12,7 +12,7 @@
     public interface IConfigureCommand
     {
         /// <summary>
-        /// Configure model using a <paramref name="builder"/>.
+        /// Configure command using a <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="cancellationToken"></param>
@@ -24,10 +24,8 @@
         /// </summary>
         public static bool IsValidType(Type type)
         {
-            Type[] interfaces = type.GetInterfaces();
-
-            return (interfaces.Contains(typeof(IConfigureCommand)) ||
-                    interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureCommand<>))) &&
+            return type.GetInterfaces()
+                .Contains(typeof(IConfigureCommand)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -35,10 +33,11 @@
         /// <summary>
         /// Checks whether type is a valid command configurator.
         /// </summary>
-        public static bool IsValidType(Type type, Type commandType)
+        public static bool IsValidGenericType(Type type)
         {
-            return type.GetInterfaces()
-                .Contains(typeof(IConfigureCommand<>).MakeGenericType(commandType)) &&
+            Type[] interfaces = type.GetInterfaces();
+
+            return interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureCommand<>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
@@ -52,7 +51,7 @@
         where TCommand : class, ICommand
     {
         /// <summary>
-        /// Configure model using a <paramref name="builder"/>.
+        /// Configure command using a <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="cancellationToken"></param>
@@ -62,7 +61,7 @@
         /// <summary>
         /// Checks whether type is a valid command configurator.
         /// </summary>
-        public static new bool IsValidType(Type type)
+        public static bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IConfigureCommand<TCommand>)) &&

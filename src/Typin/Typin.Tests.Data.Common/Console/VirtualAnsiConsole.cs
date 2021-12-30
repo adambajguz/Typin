@@ -26,6 +26,9 @@
         /// <inheritdoc />
         public StandardStreamWriter Error { get; }
 
+        /// <inheritdoc/>
+        public ConsoleFeatures Features { get; } = ConsoleFeatures.All;
+
         /// <inheritdoc />
         public ConsoleColor ForegroundColor
         {
@@ -143,6 +146,25 @@
             _backgroundColor = ConsoleColor.Black;
 
             Output.Write(string.Concat(Ansi.Color.Foreground.Default, Ansi.Color.Background.Default));
+        }
+
+        /// <inheritdoc />
+        public void SetBackground(byte r, byte g, byte b)
+        {
+            Output.Write(Ansi.Color.Background.Rgb(r, g, b));
+        }
+
+        /// <inheritdoc />
+        public void SetForeground(byte r, byte g, byte b)
+        {
+            Output.Write(Ansi.Color.Foreground.Rgb(r, g, b));
+        }
+
+        /// <inheritdoc />
+        public void SetColors(byte br, byte bg, byte bb,
+                              byte fr, byte fg, byte fb)
+        {
+            Output.Write(string.Concat(Ansi.Color.Background.Rgb(br, bg, bb), Ansi.Color.Foreground.Rgb(fr, fg, fb)));
         }
 
         public void SetCursorPosition(int left, int top)

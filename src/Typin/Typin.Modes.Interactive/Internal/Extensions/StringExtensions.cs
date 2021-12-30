@@ -1,4 +1,5 @@
 ﻿namespace Typin.Modes.Interactive.Internal.Extensions
+
 {
     using System.Collections.Generic;
 

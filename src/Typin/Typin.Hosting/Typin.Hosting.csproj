@@ -36,7 +36,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
 		<ProjectReference Include="..\Typin.Hosting.Abstractions\Typin.Hosting.Abstractions.csproj" />
 	</ItemGroup>
 

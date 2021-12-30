@@ -16,33 +16,36 @@
     [Directive(InteractiveOnlyDirectives.Interactive, Description = "Executes a command, then starts an interactive mode.")]
     public sealed class InteractiveDirective : IDirective //TODO: add directive hadnler
     {
-        private readonly ICliModeSwitcher _cliModeSwitcher;
-        private readonly ICommandExecutor _commandExecutor;
-
-        /// <summary>
-        /// Initializes an instance of <see cref="InteractiveDirective"/>.
-        /// </summary>
-        public InteractiveDirective(ICliModeSwitcher cliModeSwitcher,
-                                    ICommandExecutor commandExecutor)
+        private sealed class Handler : IDirectiveHandler<InteractiveDirective>
         {
-            _cliModeSwitcher = cliModeSwitcher;
-            _commandExecutor = commandExecutor;
-        }
+            private readonly ICliModeSwitcher _cliModeSwitcher;
+            private readonly ICommandExecutor _commandExecutor;
 
-        /// <inheritdoc/>
-        public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
-        {
-            await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
+            /// <summary>
+            /// Initializes an instance of <see cref="InteractiveDirective"/>.
+            /// </summary>
+            public Handler(ICliModeSwitcher cliModeSwitcher,
+                           ICommandExecutor commandExecutor)
             {
-                string? commandLine = args.Input.Parsed?.WithoutDirective(InteractiveOnlyDirectives.Interactive).ToString();
-                if (!string.IsNullOrWhiteSpace(commandLine))
+                _cliModeSwitcher = cliModeSwitcher;
+                _commandExecutor = commandExecutor;
+            }
+
+            /// <inheritdoc/>
+            public async ValueTask ExecuteAsync(IDirectiveArgs<InteractiveDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            {
+                await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
                 {
-                    await _commandExecutor.ExecuteAsync(commandLine, cancellationToken: ct);
-                }
+                    string? commandLine = args.Context.Input.Parsed?.WithoutDirective(InteractiveOnlyDirectives.Interactive).ToString();
+                    if (!string.IsNullOrWhiteSpace(commandLine))
+                    {
+                        await _commandExecutor.ExecuteAsync(commandLine, cancellationToken: ct);
+                    }
 
-                await mode.ExecuteAsync(ct);
+                    await mode.ExecuteAsync(ct);
 
-            }, cancellationToken);
+                }, cancellationToken);
+            }
         }
     }
 }

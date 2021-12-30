@@ -27,8 +27,4 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Typin.Console\Typin.Console.csproj" />
-	</ItemGroup>
-
 </Project>

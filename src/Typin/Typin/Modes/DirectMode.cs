@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using Typin;
-    using Typin.Extensions;
 
     /// <summary>
     /// Direct CLI mode.

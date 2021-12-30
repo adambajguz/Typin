@@ -37,10 +37,7 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                //cliBuilder.AddDirectives(directives =>
-                //{
-                //    directives.Single(directiveType);
-                //});
+                cliBuilder.AddDirectives().Single(directiveType);
             });
 
             return this;
@@ -62,10 +59,7 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                //cliBuilder.AddDirectives(directives =>
-                //{
-                //    directives.Multiple(directiveTypes);
-                //});
+                cliBuilder.AddDirectives().Multiple(directiveTypes);
             });
 
             return this;
@@ -79,10 +73,7 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                //cliBuilder.AddDirectives(directives =>
-                //{
-                //    directives.From(directiveAssembly);
-                //});
+                cliBuilder.AddDirectives().From(directiveAssembly);
             });
 
             return this;
@@ -96,10 +87,7 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                //cliBuilder.AddDirectives(directives =>
-                //{
-                //    directives.From(directiveAssemblies);
-                //});
+                cliBuilder.AddDirectives().From(directiveAssemblies);
             });
 
             return this;
@@ -113,10 +101,7 @@
         {
             _cliBuilderActions.Add((cliBuilder) =>
             {
-                //cliBuilder.AddDirectives(directives =>
-                //{
-                //    directives.FromThisAssembly();
-                //});
+                cliBuilder.AddDirectives().FromThisAssembly();
             });
 
             return this;

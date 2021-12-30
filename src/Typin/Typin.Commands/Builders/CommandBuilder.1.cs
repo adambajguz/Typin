@@ -21,6 +21,7 @@
         {
 
         }
+
         ICommandBuilder<TModel> IManageExtensions<ICommandBuilder<TModel>>.ManageExtensions(Action<IExtensionsCollection> action)
         {
             action(Extensions);

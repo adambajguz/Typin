@@ -1,8 +1,7 @@
-﻿namespace Typin.Commands.Attributes
+﻿namespace Typin.Models.Attributes
 {
     using System.Reflection;
     using Typin.Models;
-    using Typin.Models.Attributes;
     using Typin.Models.Builders;
 
     /// <summary>

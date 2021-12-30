@@ -6,7 +6,6 @@
     using Typin.Commands;
     using Typin.Commands.Attributes;
     using Typin.Console;
-    using Typin.Tests.Data.Common.Console;
 
     [Command("colors", Description = "With colors command description")]
     public class WithColorsCommand : ICommand

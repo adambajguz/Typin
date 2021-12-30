@@ -26,19 +26,19 @@
         {
             Type[] interfaces = type.GetInterfaces();
 
-            return (interfaces.Contains(typeof(IConfigureModel)) ||
-                    interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureModel<>))) &&
+            return interfaces.Contains(typeof(IConfigureModel)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }
 
         /// <summary>
-        /// Checks whether type is a valid model configurator.
+        /// Checks whether type is a valid command configurator.
         /// </summary>
-        public static bool IsValidType(Type type, Type commandType)
+        public static bool IsValidGenericType(Type type)
         {
-            return type.GetInterfaces()
-                .Contains(typeof(IConfigureModel<>).MakeGenericType(commandType)) &&
+            Type[] interfaces = type.GetInterfaces();
+
+            return interfaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureModel<>)) &&
                 !type.IsAbstract &&
                 !type.IsInterface;
         }

@@ -7,8 +7,9 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Directives.Attributes;
+    using Typin.Utilities.Diagnostics.Directives;
 
-    [Directive(BuiltInDirectives.Debug, Description = "FAKE: Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
+    [Directive(DiagnosticsDirectives.Debug, Description = "FAKE: Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]
     public sealed class FakeDebugDirective : IDirective
     {
         private readonly IConsole _console;

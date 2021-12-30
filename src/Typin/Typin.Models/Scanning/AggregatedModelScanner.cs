@@ -43,9 +43,9 @@
         }
 
         /// <inheritdoc/>
-        public bool IsValidComponent(Type type)
+        public bool IsValid(Type type)
         {
-            return _modelScanner.IsValidComponent(type);
+            return _modelScanner.IsValid(type);
         }
 
         /// <inheritdoc/>

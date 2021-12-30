@@ -22,7 +22,6 @@
 
         /// <summary>
         /// Current command handler instance.
-        /// Current command handler instance.
         /// </summary>
         ICommandHandler HandlerInstance { get; }
 

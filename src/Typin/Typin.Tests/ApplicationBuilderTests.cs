@@ -4,13 +4,13 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Directives;
     using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Valid.Commands;
     using Typin.Tests.Data.Valid.CustomDirectives;
     using Typin.Tests.Data.Valid.Modes;
+    using Typin.Utilities.Diagnostics.Directives;
     using Xunit;
     using Xunit.Abstractions;
 

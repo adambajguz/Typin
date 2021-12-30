@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
 		<ProjectReference Include="..\..\Typin.Modes.Programmatic\Typin.Modes.Programmatic.csproj" />
+		<ProjectReference Include="..\..\Typin.Utilities.Diagnostics\Typin.Utilities.Diagnostics.csproj" />
 		<ProjectReference Include="..\..\Typin\Typin.csproj" />
 	</ItemGroup>
 

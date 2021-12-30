@@ -1,6 +1,7 @@
 ﻿namespace Typin.Models.Scanning
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Hosting.Scanning;
@@ -8,6 +9,9 @@
 
     /// <summary>
     /// <see cref="IConfigureModel"/> component scanner.
+    ///
+    /// By default only types implementing <see cref="IConfigureModel{TModel}"/> are added when using From*.
+    /// To add <see cref="IConfigureModel"/> use <see cref="IScanner{IConfigureModel}.Single(Type)"/> or <see cref="IScanner{IConfigureModel}.Multiple(IEnumerable{Type})"/>.
     /// </summary>
     public interface IConfigureModelScanner : IScanner<IConfigureModel>
     {

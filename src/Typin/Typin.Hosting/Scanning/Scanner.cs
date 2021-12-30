@@ -37,7 +37,7 @@
         }
 
         /// <inheritdoc/>
-        public virtual bool IsValidComponent(Type type)
+        public virtual bool IsValid(Type type)
         {
             return type.GetInterfaces().Contains(ComponentType) &&
                    !type.IsAbstract &&
@@ -51,7 +51,7 @@
         /// <returns></returns>
         protected virtual IEnumerable<Type> GetTypes(Assembly assembly)
         {
-            return assembly.ExportedTypes.Where(IsValidComponent);
+            return assembly.ExportedTypes.Where(IsValid);
         }
 
         /// <inheritdoc/>
@@ -68,7 +68,7 @@
         {
             _ = type ?? throw new ArgumentNullException(nameof(type));
 
-            if (!IsValidComponent(type))
+            if (!IsValid(type))
             {
                 throw new InvalidOperationException($"'{type}' is not a valid '{typeof(TComponent)}'.");
             }

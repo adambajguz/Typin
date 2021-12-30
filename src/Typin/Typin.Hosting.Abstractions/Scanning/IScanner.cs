@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        bool IsValidComponent(Type type);
+        bool IsValid(Type type);
 
         /// <summary>
         /// Adds a component of specified type to the application.
@@ -69,7 +69,7 @@
         /// <summary>
         /// Adds a component of specified type to the application.
         /// </summary>
-        IScanner<TComponent> Single<T>()
+        IScanner<TComponent> Single<T>() //TODO: maybe rename to Add
             where T : class, TComponent;
 
         /// <summary>
