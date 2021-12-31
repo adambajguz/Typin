@@ -73,9 +73,6 @@
                 .AddCommand<NamedInteractiveOnlyCommand>()
                 .AddDirective<DebugDirective>()
                 .AddDirective<InteractiveDirective>()
-                .AddDirective<ScopeDirective>()
-                .AddDirective<ScopeResetDirective>()
-                .AddDirective<ScopeUpDirective>()
                 .RegisterMode<DirectMode>(true)
                 .RegisterMode<InteractiveMode>();
 

@@ -15,7 +15,6 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
 	</ItemGroup>
 
-
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.Extensions.Options" Version="[6.0,]" />
 	</ItemGroup>
@@ -31,7 +30,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Commands.Abstractions\Typin.Commands.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Directives.Abstractions\Typin.Directives.Abstractions.csproj" />
-		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Plugins.Help.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Utilities\Typin.Utilities.csproj" />
 	</ItemGroup>
 

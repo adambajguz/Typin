@@ -53,7 +53,7 @@
 		<ProjectReference Include="..\Typin.Console.System\Typin.Console.System.csproj" />
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
 		<ProjectReference Include="..\Typin.Directives\Typin.Directives.csproj" />
-		<ProjectReference Include="..\Typin.Help\Typin.Help.csproj" />
+		<ProjectReference Include="..\Typin.Help\Typin.Plugins.Help.csproj" />
 		<ProjectReference Include="..\Typin.Commands\Typin.Commands.csproj" />
 		<ProjectReference Include="..\Typin.Hosting\Typin.Hosting.csproj" />
 		<ProjectReference Include="..\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />

@@ -15,7 +15,7 @@
 		<ProjectReference Include="..\Typin.Console.Abstractions\Typin.Console.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Console.Ansi\Typin.Console.Ansi.csproj" />
 		<ProjectReference Include="..\Typin.Console.Virtual\Typin.Console.Virtual.csproj" />
-		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Help.Abstractions.csproj" />
+		<ProjectReference Include="..\Typin.Help.Abstractions\Typin.Plugins.Help.Abstractions.csproj" />
 		<ProjectReference Include="..\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
 		<ProjectReference Include="..\Typin.Utilities.Diagnostics\Typin.Utilities.Diagnostics.csproj" />
 		<ProjectReference Include="..\Typin\Typin.csproj" />

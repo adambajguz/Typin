@@ -99,9 +99,6 @@ namespace Typin.Modes.Interactive
             IConsole console = _console;
             InteractiveModeOptions modeOptionsValue = _modeOptions.CurrentValue;
 
-            string scope = modeOptionsValue.Scope;
-            bool hasScope = !string.IsNullOrWhiteSpace(scope);
-
             // Print prompt
             modeOptionsValue.Prompt(_serviceProvider, _metadataOptions.CurrentValue, _console);
 
@@ -113,26 +110,9 @@ namespace Typin.Modes.Interactive
 
             console.ForegroundColor = ConsoleColor.Gray;
 
-            IEnumerable<string> arguments = Enumerable.Empty<string>();
-
-            if (!string.IsNullOrWhiteSpace(line))
-            {
-                if (hasScope) // handle scoped command input
-                {
-                    List<string> tmp = CommandLine.Split(line).ToList();
-
-                    int lastDirective = tmp.FindLastIndex(x => x.StartsWith('[') && x.EndsWith(']'));
-                    tmp.Insert(lastDirective + 1, scope);
-
-                    arguments = tmp.ToArray();
-                }
-                else // handle unscoped command input
-                {
-                    arguments = CommandLine.Split(line);
-                }
-            }
-
-            return arguments;
+            return !string.IsNullOrWhiteSpace(line)
+                ? CommandLine.Split(line)
+                : Enumerable.Empty<string>();
         }
     }
 }

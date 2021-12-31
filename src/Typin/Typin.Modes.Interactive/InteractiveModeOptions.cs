@@ -16,21 +16,10 @@
         public ConsoleColor PromptForeground { get; set; } = ConsoleColor.Blue;
 
         /// <summary>
-        /// Scope foreground color.
-        /// Default color is <see cref="ConsoleColor.Cyan"/>.
-        /// </summary>
-        public ConsoleColor ScopeForeground { get; set; } = ConsoleColor.Cyan;
-
-        /// <summary>
         /// Command input foreground color.
         /// Default color is <see cref="ConsoleColor.Yellow"/>.
         /// </summary>
         public ConsoleColor CommandForeground { get; set; } = ConsoleColor.Yellow;
-
-        /// <summary>
-        /// Command scope.
-        /// </summary>
-        public string Scope { get; set; } = string.Empty; //scopes should be a global concept (as extension) not an interactive mode concept
 
         /// <summary>
         /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initalize with a call to <see cref="SetDefaultPrompt"/>).
@@ -47,7 +36,7 @@
 
         #region Prompt setters
         /// <summary>
-        /// Sets interactive mode prompt to default ("{metadata.ExecutableName} {scope}}> ").
+        /// Sets interactive mode prompt to default ("{metadata.ExecutableName}> ").
         /// </summary>
         public InteractiveModeOptions SetDefaultPrompt()
         {
@@ -56,17 +45,17 @@
                 ConsoleColor promptForeground = PromptForeground;
                 console.Output.WithForegroundColor(promptForeground, (output) => output.Write(metadata.ExecutableName));
 
-                string scope = Scope;
-                bool hasScope = !string.IsNullOrWhiteSpace(scope);
+                //string scope = Scope;
+                //bool hasScope = !string.IsNullOrWhiteSpace(scope);
 
-                if (hasScope)
-                {
-                    console.Output.WithForegroundColor(ScopeForeground, (output) =>
-                    {
-                        output.Write(' ');
-                        output.Write(scope);
-                    });
-                }
+                //if (hasScope)
+                //{
+                //    console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) =>
+                //    {
+                //        output.Write(' ');
+                //        output.Write(scope);
+                //    });
+                //}
 
                 console.Output.WithForegroundColor(promptForeground, (output) => output.Write("> "));
             };
@@ -76,24 +65,11 @@
 
         /// <summary>
         /// Sets interactive mode prompt to simple string with foreground set to <see cref="PromptForeground"/>.
-        /// Scope may be appended to the beginning of the prompt when available with foreground set to <see cref="ScopeForeground"/>
         /// </summary>
         public InteractiveModeOptions SetPrompt(string prompt)
         {
             Prompt = (provider, metadata, console) =>
             {
-                string scope = Scope;
-                bool hasScope = !string.IsNullOrWhiteSpace(scope);
-
-                if (hasScope)
-                {
-                    console.Output.WithForegroundColor(ScopeForeground, (output) =>
-                    {
-                        output.Write(scope);
-                        output.Write(' ');
-                    });
-                }
-
                 console.Output.WithForegroundColor(PromptForeground, (output) => output.Write(prompt));
             };
 
@@ -117,7 +93,7 @@
 
         /// <summary>
         /// Sets interactive mode prompt to action that directly interacts with console.
-        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// It is recommended to use <see cref="PromptForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<ApplicationMetadata, IConsole> prompt)
         {
@@ -128,7 +104,7 @@
 
         /// <summary>
         /// Sets interactive mode prompt to action that directly interacts with console.
-        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// It is recommended to use <see cref="PromptForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<InteractiveModeOptions, ApplicationMetadata, IConsole> prompt)
         {
@@ -139,7 +115,7 @@
 
         /// <summary>
         /// Sets interactive mode prompt to action that directly interacts with console.
-        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// It is recommended to use <see cref="PromptForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<IServiceProvider, ApplicationMetadata, IConsole> prompt)
         {
@@ -150,7 +126,7 @@
 
         /// <summary>
         /// Sets interactive mode prompt to action that directly interacts with console.
-        /// It is recommended to use <see cref="PromptForeground"/> and <see cref="ScopeForeground"/>.
+        /// It is recommended to use <see cref="PromptForeground"/>.
         /// </summary>
         public InteractiveModeOptions SetPrompt(Action<IServiceProvider, InteractiveModeOptions, ApplicationMetadata, IConsole> prompt)
         {

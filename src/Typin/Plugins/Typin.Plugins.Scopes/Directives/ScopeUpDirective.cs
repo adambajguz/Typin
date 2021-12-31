@@ -1,13 +1,11 @@
-﻿namespace Typin.Modes.Interactive.Directives
+﻿namespace Typin.Plugins.Scopes.Directives
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
     using Typin.Directives;
     using Typin.Directives.Attributes;
-    using Typin.Modes.Interactive;
+    using Typin.Plugins.Scopes;
 
     /// <summary>
     /// If application runs in interactive mode, this [.] directive can be used to remove one command from the scope.
@@ -18,35 +16,25 @@
     ///         cmd1>
     /// </example>
     /// </summary>
-    [Directive(InteractiveOnlyDirectives.ScopeUp, Description = "Removes one command from the scope.")]
+    [Directive(ScopesDirectives.ScopeUp, Description = "Removes one command from the scope.")]
     public sealed class ScopeUpDirective : IDirective //TODO: add directive hadnler
     {
         private sealed class Handler : IDirectiveHandler<ScopeResetDirective>
         {
-            private readonly InteractiveModeOptions _options;
+            private readonly IScopeManager _scopeManager;
 
             /// <summary>
             /// Initializes an instance of <see cref="ScopeUpDirective"/>.
             /// </summary>
-            public Handler(IOptions<InteractiveModeOptions> options)
+            public Handler(IScopeManager scopeManager)
             {
-                _options = options.Value;
+                _scopeManager = scopeManager;
             }
 
             /// <inheritdoc/>
             public ValueTask ExecuteAsync(IDirectiveArgs<ScopeResetDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
             {
-                // Scope up
-                string[] splittedScope = _options.Scope.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                if (splittedScope.Length > 1)
-                {
-                    _options.Scope = string.Join(" ", splittedScope, 0, splittedScope.Length - 1);
-                }
-                else if (splittedScope.Length == 1)
-                {
-                    _options.Scope = string.Empty;
-                }
+                _scopeManager.Up();
 
                 args.Context.Output.ExitCode ??= ExitCode.Success;
 
