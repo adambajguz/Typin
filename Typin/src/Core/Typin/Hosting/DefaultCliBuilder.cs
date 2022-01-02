@@ -8,7 +8,6 @@
     using Typin.Console;
     using Typin.Internal;
     using Typin.Modes;
-    using Typin.Plugins.Help;
 
     internal class DefaultCliBuilder : CliBuilder
     {
@@ -60,7 +59,6 @@
             }
 
             Services.TryAddSingleton<IConsole, SystemConsole>();
-            Services.TryAddScoped<IHelpWriter, DefaultHelpWriter>();
 
             Services.AddPipelining(builder =>
             {

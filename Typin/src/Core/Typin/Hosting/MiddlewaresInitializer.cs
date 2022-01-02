@@ -5,7 +5,6 @@
     using PackSite.Library.Pipelining;
     using Typin.Commands.Pipeline;
     using Typin.Pipeline;
-    using Typin.Plugins.Help;
 
     /// <summary>
     /// Initializes middlewares.
@@ -16,14 +15,14 @@
         public ValueTask RegisterAsync(IPipelineCollection pipelines, CancellationToken cancellationToken)
         {
             _ = PipelineBuilder.Create<CliContext>()
-                 .Lifetime(InvokablePipelineLifetime.Scoped)
+                 .Lifetime(InvokablePipelineLifetime.Singleton)
                  .AddStep<TypinExceptionsHandler>()
                  .AddStep<ParseInput>()
                  .AddStep<InitializeBinder>()
                  .AddStep<ResolveCommand>()
                  //.AddStep<InitializeDirectives>()
                  //.AddStep<PipelinedDirectivesHandler>()
-                 .AddStep<HelpHandler>()
+                 //.AddStep<HelpHandler>()
                  .AddStep<BindInput>()
                  // user
                  .AddStep<ExecuteCommand>()

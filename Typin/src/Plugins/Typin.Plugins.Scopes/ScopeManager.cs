@@ -6,17 +6,20 @@
     /// <summary>
     /// Default implementation of <see cref="IScopeManager"/>.
     /// </summary>
-    public class ScopesManager : IScopeManager
+    public class ScopeManager : IScopeManager
     {
         private readonly ICommandSchemaCollection _commandSchemas;
+
+        /// <inheritdoc/>
+        public event EventHandler<ScopeChangedEventArgs>? Changed;
 
         /// <inheritdoc/>
         public string Current { get; private set; } = string.Empty;
 
         /// <summary>
-        /// Initializes an instance of <see cref="ScopesManager"/>.
+        /// Initializes an instance of <see cref="ScopeManager"/>.
         /// </summary>
-        public ScopesManager(ICommandSchemaCollection commandSchemas)
+        public ScopeManager(ICommandSchemaCollection commandSchemas)
         {
             _commandSchemas = commandSchemas;
         }
@@ -31,7 +34,10 @@
                 return false;
             }
 
+            string previous = Current;
             Current = scope;
+
+            Changed?.Invoke(this, new ScopeChangedEventArgs(previous, scope));
 
             return true;
         }
@@ -76,9 +82,7 @@
 
             if (splittedScope.Length > 1)
             {
-                Current = string.Join(" ", splittedScope, 0, splittedScope.Length - by);
-
-                return true;
+                return Set(string.Join(" ", splittedScope, 0, splittedScope.Length - by));
             }
 
             return Reset();
@@ -89,7 +93,10 @@
         {
             if (!string.IsNullOrEmpty(Current))
             {
+                string previous = Current;
                 Current = string.Empty;
+
+                Changed?.Invoke(this, new ScopeChangedEventArgs(previous, string.Empty));
 
                 return true;
             }

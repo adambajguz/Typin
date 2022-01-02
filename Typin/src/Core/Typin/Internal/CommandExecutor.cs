@@ -82,7 +82,7 @@
 
             IServiceProvider localProvider = serviceScope?.ServiceProvider ?? _serviceProvider;
 
-            CliContext cliContext = InitializeCliContext(arguments, inputOptions, cancellationTokenSource);
+            CliContext cliContext = InitializeCliContext(localProvider, arguments, inputOptions, cancellationTokenSource);
 
             _logger.LogDebug("New scope created with CliContext {CliContextId}.", cliContext.Call.Identifier);
 
@@ -111,12 +111,14 @@
             return cliContext.Output.ExitCode ?? ExitCode.Error;
         }
 
-        private CliContext InitializeCliContext(IEnumerable<string> arguments,
+        private CliContext InitializeCliContext(IServiceProvider localProvider,
+                                                IEnumerable<string> arguments,
                                                 InputOptions inputOptions,
                                                 CancellationTokenSource cancellationTokenSource)
         {
             CliContext cliContext = new DefaultCliContext();
 
+            cliContext.Features.Set<ICallServicesFeature>(new CallServicesFeature(localProvider));
             cliContext.Features.Set<ICallInfoFeature>(new CallInfoFeature(Guid.NewGuid(), cliContext, _cliContextAccessor.CliContext));
 
             ICliMode instance = _cliModeAccessor.Instance ?? throw new InvalidOperationException("CliMode has not been configured for this application.");

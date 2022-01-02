@@ -1,5 +1,6 @@
 ﻿namespace Typin
 {
+    using System;
     using Typin.Features;
 
     /// <summary>
@@ -16,6 +17,11 @@
         /// Command line call informations feature.
         /// </summary>
         public abstract ICallInfoFeature Call { get; }
+
+        /// <summary>
+        /// Command line call services.
+        /// </summary>
+        public abstract IServiceProvider Services { get; }
 
         /// <summary>
         /// Command line call lifetime feature.

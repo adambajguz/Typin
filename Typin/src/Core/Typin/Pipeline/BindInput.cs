@@ -2,7 +2,6 @@ namespace Typin.Pipeline
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Configuration;
     using PackSite.Library.Pipelining;
     using Typin;
 
@@ -11,14 +10,12 @@ namespace Typin.Pipeline
     /// </summary>
     public sealed class BindInput : IMiddleware
     {
-        private readonly IConfiguration _configuration; //TODO: wrap IConfiguration with Typin interface to allow decoupling from IConfiguration
-
         /// <summary>
         /// Initializes a new instance of <see cref="BindInput"/>.
         /// </summary>
-        public BindInput(IConfiguration configuration)
+        public BindInput()
         {
-            _configuration = configuration;
+
         }
 
         /// <inheritdoc/>
@@ -32,7 +29,7 @@ namespace Typin.Pipeline
             //    throw ModeEndUserExceptions.CommandExecutedInInvalidMode(commandSchema, currentModeType);
             //}
 
-            args.Binder.Bind(_configuration);
+            args.Binder.Bind(args.Services);
 
             await next();
         }

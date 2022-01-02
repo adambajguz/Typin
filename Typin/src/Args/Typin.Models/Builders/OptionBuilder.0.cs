@@ -16,7 +16,6 @@
         private char? _shortName;
         private bool _isRequired;
         private string? _description;
-        private string? _fallbackVariableName;
 
         protected Type? ConverterType { get; set; }
 
@@ -66,14 +65,6 @@
         public IOptionBuilder Description(string? description)
         {
             _description = description;
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IOptionBuilder Fallback(string? variableName)
-        {
-            _fallbackVariableName = variableName;
 
             return this;
         }
@@ -132,7 +123,6 @@ If you intended to set the short name instead, use the attribute overload that a
             OptionSchema schema = new(Property,
                                       optionName,
                                       _shortName,
-                                      _fallbackVariableName,
                                       _isRequired,
                                       _description,
                                       ConverterType,

@@ -1,12 +1,12 @@
-namespace Typin.Features.Input
+namespace Typin.Features.Binder
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using Microsoft.Extensions.DependencyInjection;
     using Typin.Exceptions.ArgumentBinding;
-    using Typin.Features.Binder;
     using Typin.Models;
     using Typin.Models.Binding;
     using Typin.Models.Converters;
@@ -227,7 +227,7 @@ namespace Typin.Features.Input
             return arrayConstructor.Invoke(new object[] { array });
         }
 
-        private static object? Convert(this IArgumentSchema argumentSchema, IReadOnlyCollection<string> values)
+        private static object? Convert(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, IReadOnlyCollection<string> values)
         {
             IBindableArgument bindable = argumentSchema.Bindable;
 
@@ -237,7 +237,7 @@ namespace Typin.Features.Input
             // User-defined conversion
             if (argumentSchema.ConverterType is Type converterType)
             {
-                IArgumentConverter converterInstance = ArgumentConverterActivator.GetConverter(converterType);
+                IArgumentConverter converterInstance = (IArgumentConverter)ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, converterType);
 
                 // Scalar
                 if (enumerableUnderlyingType is null)
@@ -284,18 +284,18 @@ namespace Typin.Features.Input
         /// <summary>
         /// Binds input values to a bindbale object instance.
         /// </summary>
-        public static void BindOn(this IArgumentSchema argumentSchema, IModel instance, IReadOnlyCollection<string> values)
+        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, IModel instance, IReadOnlyCollection<string> values)
         {
-            object? value = argumentSchema.Convert(values);
+            object? value = argumentSchema.Convert(serviceProvider, values);
             argumentSchema.Bindable.SetValue(instance, value);
         }
 
         /// <summary>
         /// Binds input values to a bindbale object instance.
         /// </summary>
-        public static void BindOn(this IArgumentSchema argumentSchema, IModel instance, string value)
+        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, IModel instance, string value)
         {
-            argumentSchema.BindOn(instance, new[] { value });
+            argumentSchema.BindOn(serviceProvider, instance, new[] { value });
         }
     }
 }

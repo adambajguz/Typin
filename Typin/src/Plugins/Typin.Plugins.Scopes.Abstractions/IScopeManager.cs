@@ -1,10 +1,17 @@
 ﻿namespace Typin.Plugins.Scopes
 {
+    using System;
+
     /// <summary>
     /// Scope manager.
     /// </summary>
     public interface IScopeManager
     {
+        /// <summary>
+        /// Event invoked when a scope changed.
+        /// </summary>
+        event EventHandler<ScopeChangedEventArgs>? Changed;
+
         /// <summary>
         /// Current scope value.
         /// </summary>

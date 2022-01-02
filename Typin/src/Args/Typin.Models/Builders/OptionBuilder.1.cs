@@ -56,13 +56,6 @@
             return this;
         }
 
-        IOptionBuilder<TModel> IOptionBuilder<TModel>.Fallback(string? variableName)
-        {
-            Fallback(variableName);
-
-            return this;
-        }
-
         IOptionBuilder<TModel> IOptionBuilder<TModel>.Converter<TConverter>()
         {
             Converter(typeof(TConverter));

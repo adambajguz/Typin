@@ -17,16 +17,12 @@
         /// <inheritdoc/>
         public bool IsRequired { get; }
 
-        /// <inheritdoc/>
-        public string? FallbackVariableName { get; }
-
         /// <summary>
         /// Initializes an instance of <see cref="OptionSchema"/> that represents a property-based option.
         /// </summary>
         public OptionSchema(PropertyInfo property,
                             string? name,
                             char? shortName,
-                            string? fallbackVariableName,
                             bool isRequired,
                             string? description,
                             Type? converter,
@@ -34,7 +30,6 @@
             : base(property, name, description, converter, extensions)
         {
             ShortName = shortName;
-            FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
 
             if (shortName is null && name is null)
@@ -50,7 +45,6 @@
                             string propertyName,
                             string? name,
                             char? shortName,
-                            string? fallbackVariableName,
                             bool isRequired,
                             string? description,
                             Type? converter,
@@ -58,7 +52,6 @@
             : base(propertyType, propertyName, name, description, converter, extensions)
         {
             ShortName = shortName;
-            FallbackVariableName = fallbackVariableName;
             IsRequired = isRequired;
 
             if (shortName is null && name is null)

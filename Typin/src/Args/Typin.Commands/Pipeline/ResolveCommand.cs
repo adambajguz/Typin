@@ -25,17 +25,15 @@
         private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
 
         private readonly ICommandSchemaCollection _commandSchemas;
-        private readonly IServiceProvider _serviceProvider;
 
         private readonly ConcurrentDictionary<Type, ObjectFactory> _commandFactoryCache = new();
 
         /// <summary>
         /// Initializes a new instance of <see cref="ResolveCommand"/>.
         /// </summary>
-        public ResolveCommand(ICommandSchemaCollection commandSchemas, IServiceProvider serviceProvider)
+        public ResolveCommand(ICommandSchemaCollection commandSchemas)
         {
             _commandSchemas = commandSchemas;
-            _serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc/>
@@ -49,6 +47,7 @@
         private int? Execute(CliContext context)
         {
             ParsedInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
+            IServiceProvider serviceProvider = context.Services;
 
             // Try to get the command matching the input or fallback to default
             ICommandSchema schema = _commandSchemas[input.CommandName]
@@ -67,8 +66,8 @@
 
             // Get command instance (default values are used in help so we need command instance)
 
-            ICommand instance = GetCommandInstance(schema);
-            ICommandHandler handlerInstance = GetCommandHandlerInstance(instance, schema);
+            ICommand instance = GetCommandInstance(serviceProvider, schema);
+            ICommandHandler handlerInstance = GetCommandHandlerInstance(serviceProvider, instance, schema);
 
             if (schema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
             {
@@ -86,17 +85,17 @@
             return null;
         }
 
-        private ICommand GetCommandInstance(ICommandSchema schema)
+        private ICommand GetCommandInstance(IServiceProvider serviceProvider, ICommandSchema schema)
         {
             ObjectFactory factory = _commandFactoryCache.GetOrAdd(schema.Model.Type, (key) =>
             {
                 return ActivatorUtilities.CreateFactory(key, Array.Empty<Type>());
             });
 
-            return (ICommand)factory(_serviceProvider, null);
+            return (ICommand)factory(serviceProvider, null);
         }
 
-        private ICommandHandler GetCommandHandlerInstance(ICommand instance, ICommandSchema schema)
+        private ICommandHandler GetCommandHandlerInstance(IServiceProvider serviceProvider, ICommand instance, ICommandSchema schema)
         {
             if (schema.Handler == schema.Model.Type)
             {
@@ -108,7 +107,7 @@
                 return ActivatorUtilities.CreateFactory(key, Array.Empty<Type>());
             });
 
-            return (ICommandHandler)factory(_serviceProvider, null);
+            return (ICommandHandler)factory(serviceProvider, null);
         }
 
         private static Action<IDynamicCommand, IArgumentCollection> GetDynamicArgumentsSetter()

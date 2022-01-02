@@ -9,10 +9,10 @@
     [Command(nameof(WithEnvironmentVariablesCommand))]
     public class WithEnvironmentVariablesCommand : SelfSerializeCommandBase
     {
-        [Option("opt-a", 'a', FallbackVariableName = "ENV_OPT_A")]
+        [Option("opt-a", 'a')]
         public string? OptA { get; init; }
 
-        [Option("opt-b", 'b', FallbackVariableName = "ENV_OPT_B")]
+        [Option("opt-b", 'b')]
         public IReadOnlyList<string>? OptB { get; init; }
 
         public WithEnvironmentVariablesCommand(IConsole console) : base(console)

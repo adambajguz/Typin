@@ -41,7 +41,9 @@
         /// <summary>
         /// Initializes a new instance of <see cref="CallInfoFeature"/>.
         /// </summary>
-        public CallInfoFeature(Guid identifier, CliContext current, CliContext? parent)
+        public CallInfoFeature(Guid identifier,
+                               CliContext current,
+                               CliContext? parent)
         {
             Identifier = identifier;
             CurrentContext = current;

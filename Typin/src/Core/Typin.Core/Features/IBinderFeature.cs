@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Extensions.Configuration;
     using Typin.Features.Binding;
     using Typin.Models;
 
@@ -53,7 +52,8 @@
         /// Binds <see cref="UnboundedInput"/> to models in <see cref="Bindable"/>.
         /// This method be called multiple times.
         /// </summary>
-        void Bind(IConfiguration configuration);
+        /// <param name="serviceProvider"></param>
+        void Bind(IServiceProvider serviceProvider);
 
         /// <summary>
         /// Validates whether all input, as well as all parameters and required options were bounded.

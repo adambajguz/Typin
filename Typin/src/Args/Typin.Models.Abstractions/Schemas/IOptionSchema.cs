@@ -18,11 +18,6 @@
         bool IsRequired { get; }
 
         /// <summary>
-        /// Name of variable used as a fallback value.
-        /// </summary>
-        string? FallbackVariableName { get; }
-
-        /// <summary>
         /// Gets a call name.
         /// </summary>
         /// <returns></returns>

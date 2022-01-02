@@ -16,6 +16,10 @@
             throw new InvalidOperationException("Call has not been configured for this application or call.");
 
         /// <inheritdoc/>
+        public override IServiceProvider Services => Features.Get<ICallServicesFeature>()?.CallServices ??
+            throw new InvalidOperationException("Call has not been configured for this application or call.");
+
+        /// <inheritdoc/>
         public override ICallLifetimeFeature Lifetime => Features.Get<ICallLifetimeFeature>() ??
             throw new InvalidOperationException("Lifetime has not been configured for this application or call.");
 

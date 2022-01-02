@@ -473,12 +473,12 @@
                     WriteValidValues(option.Bindable.IsScalar, validValues);
                 }
 
-                // Environment variable
-                if (!string.IsNullOrWhiteSpace(option.FallbackVariableName))
-                {
-                    Write($"Fallback variable: \"{option.FallbackVariableName}\".");
-                    Write(' ');
-                }
+                //// Environment variable
+                //if (!string.IsNullOrWhiteSpace(option.FallbackVariableName))
+                //{
+                //    Write($"Fallback variable: \"{option.FallbackVariableName}\".");
+                //    Write(' ');
+                //}
 
                 // Default value
                 if (!option.IsRequired)

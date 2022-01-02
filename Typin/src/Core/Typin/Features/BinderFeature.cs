@@ -2,10 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using Microsoft.Extensions.Configuration;
     using Typin.Exceptions.ArgumentBinding;
+    using Typin.Features.Binder;
     using Typin.Features.Binding;
     using Typin.Features.Input;
     using Typin.Models;
@@ -75,12 +74,12 @@
         }
 
         /// <inheritdoc/>
-        public void Bind(IConfiguration configuration) //TODO: wrap IConfiguration to allow for asp.net core configuration independent fallbacks or some filtering
+        public void Bind(IServiceProvider serviceProvider)
         {
             foreach (BindableModel bindableModel in Bindable)
             {
-                BindParameters(bindableModel);
-                BindOptions(bindableModel, configuration);
+                BindParameters(serviceProvider, bindableModel);
+                BindOptions(serviceProvider, bindableModel);
             }
         }
 
@@ -108,7 +107,7 @@
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        private void BindParameters(BindableModel bindableModel)
+        private void BindParameters(IServiceProvider serviceProvider, BindableModel bindableModel)
         {
             IReadOnlyList<ParameterInput> parameterInputs = UnboundedInput.Parameters;
             IReadOnlyList<IParameterSchema> parameters = bindableModel.Schema.Parameters;
@@ -129,7 +128,7 @@
                 IParameterSchema parameter = parameters[i];
                 ParameterInput scalarInput = parameterInputs[i];
 
-                parameter.BindOn(bindableModel.Instance, scalarInput.Value);
+                parameter.BindOn(serviceProvider, bindableModel.Instance, scalarInput.Value);
 
                 --remainingParameters;
                 --remainingInputs;
@@ -150,7 +149,7 @@
                     throw new MissingParametersException(nonScalarParameter);
                 }
 
-                nonScalarParameter.BindOn(bindableModel.Instance, nonScalarValues);
+                nonScalarParameter.BindOn(serviceProvider, bindableModel.Instance, nonScalarValues);
                 --remainingParameters;
                 remainingInputs = 0;
             }
@@ -159,8 +158,7 @@
         /// <summary>
         /// Binds option inputs in command instance.
         /// </summary>
-        public void BindOptions(BindableModel bindableModel,
-                                IConfiguration configuration)
+        public void BindOptions(IServiceProvider serviceProvider, BindableModel bindableModel)
         {
             IReadOnlyList<OptionInput> optionInputs = UnboundedInput.Options;
             IReadOnlyList<IOptionSchema> options = bindableModel.Schema.Options;
@@ -179,19 +177,7 @@
 
                 bool inputsProvided = inputs.Any();
 
-                // Check fallback value
-                if (!inputsProvided &&
-                    option.FallbackVariableName is string v &&
-                    configuration[v] is string value)
-                {
-                    string[] values = option.Bindable.IsScalar ? new[] { value! } : value!.Split(Path.PathSeparator);
-
-                    option.BindOn(bindableModel.Instance, values);
-                    unsetRequiredOptions.Remove(option);
-
-                    continue;
-                }
-                else if (!inputsProvided) // Skip if the inputs weren't provided for this option
+                if (!inputsProvided) // Skip if the inputs weren't provided for this option
                 {
                     if (option.Bindable.Kind == BindableArgumentKind.Dynamic)
                     {
@@ -204,7 +190,7 @@
                 string[] inputValues = inputs.SelectMany(i => i.Values)
                                              .ToArray();
 
-                option.BindOn(bindableModel.Instance, inputValues);
+                option.BindOn(serviceProvider, bindableModel.Instance, inputValues);
 
                 remainingOptionInputs.RemoveRange(inputs);
 

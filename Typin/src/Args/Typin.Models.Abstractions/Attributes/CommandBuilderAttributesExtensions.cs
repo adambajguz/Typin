@@ -39,7 +39,6 @@
                         .ShortName(optionAttribute.ShortName)
                         .IsRequired(optionAttribute.IsRequired)
                         .Description(optionAttribute.Description)
-                        .Fallback(optionAttribute.FallbackVariableName)
                         .Converter(optionAttribute.Converter);
                 }
             }
@@ -75,7 +74,6 @@
                         .ShortName(optionAttribute.ShortName)
                         .IsRequired(optionAttribute.IsRequired)
                         .Description(optionAttribute.Description)
-                        .Fallback(optionAttribute.FallbackVariableName)
                         .Converter(optionAttribute.Converter);
                 }
             }

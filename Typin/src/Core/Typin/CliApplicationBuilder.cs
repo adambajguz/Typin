@@ -11,7 +11,6 @@
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Modes;
-    using Typin.Plugins.Help;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.
@@ -414,11 +413,6 @@
         /// </summary>
         public CliApplicationBuilder UseHelpWriter(Type helpWriterType, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         {
-            _cliBuilderActions.Add((cliBuilder) =>
-            {
-                cliBuilder.UseHelpWriter(helpWriterType);
-            });
-
             return this;
         }
 
@@ -426,13 +420,8 @@
         /// Configures to use a specific help writer with transient lifetime.
         /// </summary>
         public CliApplicationBuilder UseHelpWriter<T>(ServiceLifetime lifetime = ServiceLifetime.Scoped)
-            where T : class, IHelpWriter
+            where T : class
         {
-            _cliBuilderActions.Add((cliBuilder) =>
-            {
-                cliBuilder.UseHelpWriter<T>();
-            });
-
             return this;
         }
         #endregion

@@ -31,11 +31,6 @@
         public string? Description { get; init; }
 
         /// <summary>
-        /// Fallback variable that will be used as fallback if no option value is specified.
-        /// </summary>
-        public string? FallbackVariableName { get; init; }
-
-        /// <summary>
         /// Binding converter.
         /// </summary>
         public Type? Converter { get; init; }

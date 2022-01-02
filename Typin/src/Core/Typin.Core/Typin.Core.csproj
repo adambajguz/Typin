@@ -30,12 +30,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Console\Typin.Console.Abstractions\Typin.Console.Abstractions.csproj" />
-		<ProjectReference Include="..\..\Utilities\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
 		<ProjectReference Include="..\Typin.Features\Typin.Features.csproj" />
 		<ProjectReference Include="..\Typin.Hosting.Abstractions\Typin.Hosting.Abstractions.csproj" />
 		<ProjectReference Include="..\..\Args\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\..\Console\Typin.Console.Abstractions\Typin.Console.Abstractions.csproj" />
 		<ProjectReference Include="..\..\Modes\Typin.Modes.Abstractions\Typin.Modes.Abstractions.csproj" />
+		<ProjectReference Include="..\..\Utilities\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />
 	</ItemGroup>
 
 </Project>

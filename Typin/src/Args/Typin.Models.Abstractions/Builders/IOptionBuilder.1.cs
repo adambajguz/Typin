@@ -40,15 +40,6 @@
         }
 
         /// <summary>
-        /// Sets a fallback variable name to default (no fallback).
-        /// </summary>
-        /// <returns></returns>
-        public IOptionBuilder<TModel> NoFallback()
-        {
-            return Fallback(null);
-        }
-
-        /// <summary>
         /// Sets option name.
         /// When null is passed a value will be set to default (kebab-cased property name).
         /// </summary>
@@ -78,14 +69,6 @@
         /// <param name="description"></param>
         /// <returns></returns>
         IOptionBuilder<TModel> Description(string? description);
-
-        /// <summary>
-        /// Sets a fallback variable name.
-        /// When null is passed a value will be set to default (no fallback).
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        IOptionBuilder<TModel> Fallback(string? variableName);
 
         /// <summary>
         /// Sets an option converter.
