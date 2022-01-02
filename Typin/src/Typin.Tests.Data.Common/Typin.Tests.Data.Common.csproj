@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core\Typin\Typin.csproj" />
+		<ProjectReference Include="..\Console\Typin.Console.Ansi\Typin.Console.Ansi.csproj" />
+		<ProjectReference Include="..\Console\Typin.Console.Virtual\Typin.Console.Virtual.csproj" />
+		<ProjectReference Include="..\Modes\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
+		<ProjectReference Include="..\Utilities\Typin.Utilities.Diagnostics\Typin.Utilities.Diagnostics.csproj" />
+	</ItemGroup>
+
+</Project>

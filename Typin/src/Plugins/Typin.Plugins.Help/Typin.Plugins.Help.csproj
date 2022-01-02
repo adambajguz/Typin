@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Declarative framework for interactive CLI applications</Description>
+		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[6.0,]" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[5.0,]" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.Extensions.Options" Version="[3.0,]" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Args\Typin.Commands\Typin.Commands.csproj" />
+		<ProjectReference Include="..\..\Args\Typin.Directives\Typin.Directives.csproj" />
+		<ProjectReference Include="..\Typin.Plugins.Help.Abstractions\Typin.Plugins.Help.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

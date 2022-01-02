@@ -38,7 +38,7 @@ jobs:
         dotnet-version: 5.0.x
 
     - name: Build & test
-      run: dotnet test src/TypinExamples/TypinExamples.sln --configuration Release
+      run: dotnet test TypinExamples/src/TypinExamples.sln --configuration Release
 
 #     - name: Upload coverage
 #       uses: codecov/codecov-action@v1.0.14

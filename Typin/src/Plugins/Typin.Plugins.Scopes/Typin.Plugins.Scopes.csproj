@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Declarative framework for interactive CLI applications</Description>
+		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Typin.Core\Typin.Core.csproj" />
+		<ProjectReference Include="..\..\Args\Typin.Commands\Typin.Commands.csproj" />
+		<ProjectReference Include="..\..\Args\Typin.Directives\Typin.Directives.csproj" />
+		<ProjectReference Include="..\Typin.Plugins.Scopes.Abstractions\Typin.Plugins.Scopes.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

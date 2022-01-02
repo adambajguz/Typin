@@ -41,10 +41,10 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Build & test
-      run: dotnet test src/Typin/Typin.sln --configuration Release-CI
+      run: dotnet test Typin/src/Typin.sln --configuration Release-CI
 
     - name: Upload coverage
       uses: codecov/codecov-action@v2.1.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./src/Typin/Typin.Tests/bin/Release/Coverage.xml
+        files: ./Typin/src/Typin.Tests/bin/Release/Coverage.xml
