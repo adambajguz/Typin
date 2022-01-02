@@ -1,7 +1,5 @@
-﻿namespace Typin.Benchmarks.MultiCommand.TypinCommands
+﻿namespace CommandExecutionBenchmark.TypinCommands
 {
-    using System.Threading;
-    using System.Threading.Tasks;
     using Typin.Commands;
     using Typin.Models.Attributes;
 
@@ -15,10 +13,5 @@
 
         [Option("bool", 'b')]
         public bool BoolOption { get; set; }
-
-        public ValueTask ExecuteAsync(CancellationToken cancellationToken)
-        {
-            return default;
-        }
     }
 }

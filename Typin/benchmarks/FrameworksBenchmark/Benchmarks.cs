@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.FrameworksComparison
+﻿namespace FrameworksBenchmark
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -7,8 +7,8 @@
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
     using CommandLine;
+    using FrameworksBenchmark.Commands;
     using Microsoft.Extensions.Hosting;
-    using Typin.Benchmarks.FrameworksComparison.Commands;
     using Typin.Commands;
     using Typin.Hosting;
     using Typin.Modes;

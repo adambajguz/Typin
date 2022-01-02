@@ -5,7 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Declarative framework for interactive CLI applications</Description>
 		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
-		<RootNamespace>Typin.Help</RootNamespace>
+		<RootNamespace>Typin.Plugins.Help</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

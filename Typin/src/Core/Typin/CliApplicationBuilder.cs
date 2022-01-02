@@ -9,9 +9,9 @@
     using Typin.Commands;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Help;
     using Typin.Hosting;
     using Typin.Modes;
+    using Typin.Plugins.Help;
 
     /// <summary>
     /// Builds an instance of <see cref="CliApplication"/>.

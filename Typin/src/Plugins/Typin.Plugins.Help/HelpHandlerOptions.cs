@@ -1,4 +1,4 @@
-﻿namespace Typin.Help
+﻿namespace Typin.Plugins.Help
 {
     /// <summary>
     /// <see cref="HelpHandler"/> options.

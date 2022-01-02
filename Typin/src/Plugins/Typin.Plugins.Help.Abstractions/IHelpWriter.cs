@@ -1,4 +1,4 @@
-﻿namespace Typin.Help
+﻿namespace Typin.Plugins.Help
 {
     using System.Collections.Generic;
     using Typin.Commands.Schemas;

@@ -1,4 +1,4 @@
-﻿namespace Typin.GlobalArguments
+﻿namespace Typin.Plugins.GlobalArguments
 {
     using System.Threading;
     using System.Threading.Tasks;

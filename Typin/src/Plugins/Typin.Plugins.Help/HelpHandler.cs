@@ -1,4 +1,4 @@
-﻿namespace Typin.Help
+﻿namespace Typin.Plugins.Help
 {
     using System;
     using System.Linq;
@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using PackSite.Library.Pipelining;
+    using Typin;
     using Typin.Commands.Features;
     using Typin.Console;
     using Typin.Features;

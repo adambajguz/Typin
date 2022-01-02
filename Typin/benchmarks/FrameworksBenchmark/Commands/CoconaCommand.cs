@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.FrameworksComparison.Commands
+﻿namespace FrameworksBenchmark.Commands
 {
     using Cocona;
 
@@ -6,7 +6,7 @@
     {
         public void Execute(
             [Option("str", new []{'s'})]
-            string? strOption,
+            string strOption,
             [Option("int", new []{'i'})]
             int intOption,
             [Option("bool", new []{'b'})]

@@ -4,8 +4,8 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin.Commands.Pipeline;
-    using Typin.Help;
     using Typin.Pipeline;
+    using Typin.Plugins.Help;
 
     /// <summary>
     /// Initializes middlewares.

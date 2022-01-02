@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.MultiCommand.CliFxCommands
+﻿namespace CommandExecutionBenchmark.CliFxCommands
 {
     using CliFx.Attributes;
 

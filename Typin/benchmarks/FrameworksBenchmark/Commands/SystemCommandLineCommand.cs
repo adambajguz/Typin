@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.FrameworksComparison.Commands
+﻿namespace FrameworksBenchmark.Commands
 {
     using System.CommandLine;
     using System.CommandLine.Invocation;
@@ -20,7 +20,7 @@
             {
                 new Option(new[] { "--str", "-s" })
                 {
-                    Argument = new Argument<string?>()
+                    Argument = new Argument<string>()
                 },
                 new Option(new[] { "--int", "-i" })
                 {

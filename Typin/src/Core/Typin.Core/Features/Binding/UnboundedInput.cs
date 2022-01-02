@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Text;
     using Typin.Features.Input;
-    using Typin.Utilities.Extensions;
+    using Typin.Internal.Extensions;
 
     /// <summary>
     /// Contains input that is pending to be bounded.

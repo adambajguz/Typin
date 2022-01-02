@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
-    using Typin.Utilities.Extensions;
+    using Typin.Internal.Extensions;
 
     /// <summary>
     /// Provides a command parser and command class represention.

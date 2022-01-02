@@ -1,4 +1,4 @@
-namespace Typin.Benchmarks.MultiCommand
+namespace CommandExecutionBenchmark
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -6,9 +6,9 @@ namespace Typin.Benchmarks.MultiCommand
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Order;
     using BenchmarkDotNet.Running;
+    using CommandExecutionBenchmark.CliFxCommands;
+    using CommandExecutionBenchmark.TypinCommands;
     using Microsoft.Extensions.Hosting;
-    using Typin.Benchmarks.MultiCommand.CliFxCommands;
-    using Typin.Benchmarks.MultiCommand.TypinCommands;
     using Typin.Commands;
     using Typin.Hosting;
     using Typin.Modes;

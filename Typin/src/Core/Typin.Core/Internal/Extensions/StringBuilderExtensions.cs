@@ -1,4 +1,4 @@
-﻿namespace Typin.Utilities.Extensions
+﻿namespace Typin.Internal.Extensions
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Text;

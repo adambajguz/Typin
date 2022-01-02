@@ -6,9 +6,9 @@
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Console;
-    using Typin.Help;
     using Typin.Internal;
     using Typin.Modes;
+    using Typin.Plugins.Help;
 
     internal class DefaultCliBuilder : CliBuilder
     {

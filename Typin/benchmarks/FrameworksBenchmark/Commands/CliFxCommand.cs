@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.FrameworksComparison.Commands
+﻿namespace FrameworksBenchmark.Commands
 {
     using System.Threading.Tasks;
     using CliFx;

@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using Typin.Commands.Schemas;
     using Typin.Console;
-    using Typin.Help;
     using Typin.Models.Schemas;
+    using Typin.Plugins.Help;
 
     public class TestHelpWriter : IHelpWriter
     {

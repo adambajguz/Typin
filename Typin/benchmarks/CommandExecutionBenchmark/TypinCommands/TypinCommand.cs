@@ -1,4 +1,4 @@
-﻿namespace Typin.Benchmarks.MultiCommand.TypinCommands
+﻿namespace CommandExecutionBenchmark.TypinCommands
 {
     using Typin.Commands.Attributes;
 
