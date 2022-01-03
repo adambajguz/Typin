@@ -17,6 +17,7 @@
         private bool _built;
 
         private string? _name;
+        private string? _alias;
         private string? _description;
 
         /// <summary>
@@ -56,6 +57,14 @@
         public IDirectiveBuilder Name(string name)
         {
             _name = name.Trim();
+
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IDirectiveBuilder Alias(string? alias)
+        {
+            _alias = alias?.Trim();
 
             return this;
         }
@@ -105,6 +114,7 @@
             }
 
             DirectiveSchema schema = new(_name ?? string.Empty,
+                                         _alias,
                                          _description,
                                          Model,
                                          HandlerType ?? throw new InvalidOperationException($"Directive handler must be set for directive '{_name}' ({Model}) when there are multiple or no model-nested handlers."),

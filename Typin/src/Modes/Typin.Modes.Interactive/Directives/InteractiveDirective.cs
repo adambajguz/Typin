@@ -14,7 +14,7 @@
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
     [Directive(InteractiveOnlyDirectives.Interactive, Description = "Executes a command, then starts an interactive mode.")]
-    public sealed class InteractiveDirective : IDirective //TODO: add directive hadnler
+    public sealed class InteractiveDirective : Typin.Directives.IDirective //TODO: add directive hadnler
     {
         private sealed class Handler : IDirectiveHandler<InteractiveDirective>
         {
@@ -34,17 +34,23 @@
             /// <inheritdoc/>
             public async ValueTask ExecuteAsync(IDirectiveArgs<InteractiveDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
             {
-                await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
-                {
-                    string? commandLine = args.Context.Input.Parsed?.WithoutDirective(InteractiveOnlyDirectives.Interactive).ToString();
-                    if (!string.IsNullOrWhiteSpace(commandLine))
-                    {
-                        await _commandExecutor.ExecuteAsync(commandLine, cancellationToken: ct);
-                    }
+                //await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
+                //{
+                //    TokensGroup<IDirectiveToken>? parsedInput = args.Context.Input.Tokens;
 
-                    await mode.ExecuteAsync(ct);
+                //    if (parsedInput is not null)
+                //    {
+                //        parsedInput.Directives.RemoveAll(x => x.Matches(InteractiveOnlyDirectives.Interactive));
 
-                }, cancellationToken);
+                //        if (parsedInput.GetRaw() is { Count: > 0 } arguments)
+                //        {
+                //            await _commandExecutor.ExecuteAsync(arguments, cancellationToken: ct);
+                //        }
+                //    }
+
+                //    await mode.ExecuteAsync(ct);
+
+                //}, cancellationToken);
             }
         }
     }

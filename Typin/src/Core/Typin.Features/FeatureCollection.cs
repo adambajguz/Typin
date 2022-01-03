@@ -11,7 +11,7 @@ namespace Typin.Features
     using System.Linq;
 
     /// <summary>
-    /// Default implementation for <see cref="IFeatureCollection"/>.
+    /// Default implementation of <see cref="IFeatureCollection"/>.
     /// </summary>
     public class FeatureCollection : IFeatureCollection
     {

@@ -1,7 +1,5 @@
 ﻿namespace Typin.Utilities.Diagnostics.Directives
 {
-    using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
@@ -9,7 +7,6 @@
     using Typin.Console;
     using Typin.Directives;
     using Typin.Directives.Builders;
-    using Typin.Features.Input;
     using Typin.Models;
     using Typin.Models.Builders;
 
@@ -53,65 +50,58 @@
             /// <inheritdoc/>
             public ValueTask ExecuteAsync(IDirectiveArgs<PreviewDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
             {
-                WriteCommandLineInput(_console, args.Context.Input.Parsed ?? throw new NullReferenceException("Input not set."));
+                //WriteCommandLineInput(_console, args.Context.Input.Tokens ?? throw new NullReferenceException("Input not set."));
                 args.Context.Output.ExitCode ??= ExitCode.Success;
 
                 return default;
             }
 
-            private static void WriteCommandLineInput(IConsole console, ParsedInput input)
-            {
-                // Directives
-                foreach (DirectiveInput directive in input.Directives)
-                {
-                    console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.Write(directive.ToString()));
+            //private static void WriteCommandLineInput(IConsole console, ITokensCollection input)
+            //{
+            //    // Directives
+            //    foreach (DirectiveInput directive in input.Directives)
+            //    {
+            //        console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.Write(directive.ToString()));
 
-                    console.Output.Write(' ');
-                }
+            //        console.Output.Write(' ');
+            //    }
 
-                // Command name
-                if (!string.IsNullOrWhiteSpace(input.CommandName))
-                {
-                    console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(input.CommandName));
+            //    // Command name
+            //    if (!string.IsNullOrWhiteSpace(input.CommandName))
+            //    {
+            //        console.Output.WithForegroundColor(ConsoleColor.Cyan, (output) => output.Write(input.CommandName));
 
-                    console.Output.Write(' ');
-                }
+            //        console.Output.Write(' ');
+            //    }
 
-                // Parameters
-                foreach (ParameterInput parameter in input.Parameters)
-                {
-                    console.Output.Write('<');
+            //    // Parameters
+            //    foreach (ParameterInput parameter in input.Parameters)
+            //    {
+            //        console.Output.Write('<');
 
-                    console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.Write(parameter));
+            //        console.Output.WithForegroundColor(ConsoleColor.White, (output) => output.Write(parameter));
 
-                    console.Output.Write('>');
-                    console.Output.Write(' ');
-                }
+            //        console.Output.Write('>');
+            //        console.Output.Write(' ');
+            //    }
 
-                // Options
-                foreach (OptionInput option in input.Options)
-                {
-                    console.Output.Write('(');
+            //    // Options
+            //    foreach (OptionInput option in input.Options)
+            //    {
+            //        console.Output.Write('(');
 
-                    console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
-                    {
-                        // Alias
-                        output.Write(option.GetRawAlias());
+            //        console.Output.WithForegroundColor(ConsoleColor.White, (output) =>
+            //        {
+            //            // Alias
+            //            output.Write(option.ToString());
+            //        });
 
-                        // Values
-                        if (option.Values.Any())
-                        {
-                            output.Write(' ');
-                            output.Write(option.GetRawValues());
-                        }
-                    });
+            //        console.Output.Write(')');
+            //        console.Output.Write(' ');
+            //    }
 
-                    console.Output.Write(')');
-                    console.Output.Write(' ');
-                }
-
-                console.Output.WriteLine();
-            }
+            //    console.Output.WriteLine();
+            //}
         }
     }
 }

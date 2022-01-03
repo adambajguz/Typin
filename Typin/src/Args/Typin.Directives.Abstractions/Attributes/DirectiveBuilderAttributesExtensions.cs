@@ -24,6 +24,7 @@
             if (attribute is not null)
             {
                 builder.Name(attribute.Name)
+                       .Alias(attribute.Alias)
                        .Description(attribute.Description);
             }
 
@@ -43,6 +44,7 @@
             if (attribute is not null)
             {
                 builder.Name(attribute.Name)
+                       .Alias(attribute.Alias)
                        .Description(attribute.Description);
             }
 

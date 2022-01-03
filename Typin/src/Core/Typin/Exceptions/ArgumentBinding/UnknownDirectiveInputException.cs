@@ -1,6 +1,6 @@
 ﻿namespace Typin.Exceptions.ArgumentBinding
 {
-    using Typin.Features.Input;
+    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Unknown directive input exception.
@@ -10,13 +10,13 @@
         /// <summary>
         /// Directive input.
         /// </summary>
-        public DirectiveInput DirectiveInput { get; }
+        public DirectiveToken DirectiveInput { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="UnknownDirectiveInputException"/>.
         /// </summary>
         /// <param name="directive"></param>
-        public UnknownDirectiveInputException(DirectiveInput directive) :
+        public UnknownDirectiveInputException(DirectiveToken directive) :
             base(null,
                  $"Unknown directive '{directive}'.")
         {

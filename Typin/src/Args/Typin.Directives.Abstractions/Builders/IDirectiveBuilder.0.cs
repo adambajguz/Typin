@@ -26,6 +26,15 @@
         }
 
         /// <summary>
+        /// Sets parameter alias to default (no alias).
+        /// </summary>
+        /// <returns></returns>
+        public IDirectiveBuilder DefaultAlias()
+        {
+            return Alias(null);
+        }
+
+        /// <summary>
         /// Sets parameter description to default (no description).
         /// </summary>
         /// <returns></returns>
@@ -40,6 +49,13 @@
         /// <param name="name"></param>
         /// <returns></returns>
         IDirectiveBuilder Name(string name);
+
+        /// <summary>
+        /// Configures a directive alias.
+        /// </summary>
+        /// <param name="alias"></param>
+        /// <returns></returns>
+        IDirectiveBuilder Alias(string? alias);
 
         /// <summary>
         /// Sets directive description.

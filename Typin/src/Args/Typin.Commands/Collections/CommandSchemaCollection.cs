@@ -7,7 +7,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Default implementation for <see cref="ICommandSchemaCollection"/>.
+    /// Default implementation of <see cref="ICommandSchemaCollection"/>.
     /// </summary>
     public class CommandSchemaCollection : SchemaCollection<string, ICommandSchema>, ICommandSchemaCollection
     {

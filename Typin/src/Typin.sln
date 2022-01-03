@@ -152,9 +152,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Schemas.Abstractions"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ValueFallback", "ValueFallback", "{F5F70FE7-873A-48D7-B595-769656FB2AD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Plugins.ValueFallback", "Plugins\Typin.Plugins.ValueFallback\Typin.Plugins.ValueFallback.csproj", "{6DA9AC12-9A55-441C-8094-3627860B7677}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Plugins.ValueFallback", "Plugins\Typin.Plugins.ValueFallback\Typin.Plugins.ValueFallback.csproj", "{6DA9AC12-9A55-441C-8094-3627860B7677}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Typin.Plugins.ValueFallback.Abstractions", "Plugins\Typin.Plugins.ValueFallback.Abstractions\Typin.Plugins.ValueFallback.Abstractions.csproj", "{74E060F3-E935-4BF8-8A49-CEFBE1D26D0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typin.Plugins.ValueFallback.Abstractions", "Plugins\Typin.Plugins.ValueFallback.Abstractions\Typin.Plugins.ValueFallback.Abstractions.csproj", "{74E060F3-E935-4BF8-8A49-CEFBE1D26D0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Typin.Features.Binding;
+    using Typin.Features.Input;
     using Typin.Models;
 
     /// <summary>
@@ -11,12 +12,12 @@
     public interface IBinderFeature
     {
         /// <summary>
-        /// Stores unbounded input data.
+        /// Stores unbounded tokens.
         /// </summary>
-        UnboundedInput UnboundedInput { get; }
+        IUnboundedDirectiveCollection UnboundedTokens { get; }
 
         /// <summary>
-        /// A list of bindable models to bind using data from <see cref="UnboundedInput"/>.
+        /// A list of bindable models to bind using data from <see cref="UnboundedTokens"/>.
         /// </summary>
         IReadOnlyList<BindableModel> Bindable { get; }
 
@@ -49,7 +50,7 @@
         T? Get<T>() where T : class, IModel;
 
         /// <summary>
-        /// Binds <see cref="UnboundedInput"/> to models in <see cref="Bindable"/>.
+        /// Binds <see cref="UnboundedTokens"/> to models in <see cref="Bindable"/>.
         /// This method be called multiple times.
         /// </summary>
         /// <param name="serviceProvider"></param>

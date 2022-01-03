@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Typin.Features.Input;
+    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Command line input feature.
@@ -9,9 +10,9 @@
     public interface IInputFeature
     {
         /// <summary>
-        /// Raw command line input arguments.
+        /// Original raw command line input arguments.
         /// </summary>
-        IEnumerable<string> Arguments { get; }
+        IEnumerable<string> Original { get; }
 
         /// <summary>
         /// Command execution options.
@@ -19,8 +20,8 @@
         InputOptions Options { get; }
 
         /// <summary>
-        /// Parsed CLI input.
+        /// Tokenized CLI input as a set of directives.
         /// </summary>
-        ParsedInput? Parsed { get; set; }
+        IDirectiveCollection? Tokens { get; set; }
     }
 }

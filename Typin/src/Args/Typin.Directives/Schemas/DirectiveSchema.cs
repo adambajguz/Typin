@@ -13,6 +13,9 @@
         public string Name { get; }
 
         /// <inheritdoc/>
+        public string? Alias { get; }
+
+        /// <inheritdoc/>
         public string? Description { get; }
 
         /// <inheritdoc/>
@@ -28,12 +31,14 @@
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
         /// </summary>
         public DirectiveSchema(string name,
+                               string? alias,
                                string? description,
                                IModelSchema model,
                                Type handler,
                                IExtensionsCollection extensions)
         {
             Name = name;
+            Alias = alias;
             Description = description;
             Model = model;
             Handler = handler;
@@ -47,7 +52,8 @@
                 " | " +
                 $"{nameof(Model)}.{nameof(IModelSchema.Type)} = {Model.Type}, " +
                 $"{nameof(Handler)} = {Handler}, " +
-                $"{nameof(Name)} = {Name}";
+                $"{nameof(Name)} = {Name}, " +
+                $"{nameof(Alias)} = {Alias}";
         }
     }
 }

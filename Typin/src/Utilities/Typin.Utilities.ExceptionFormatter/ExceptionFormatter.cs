@@ -71,7 +71,7 @@
 
                     output.Write('(');
 
-                    for (int i = 0; i < stackFrame.Parameters.Count; ++i)
+                    for (int i = 0; i < stackFrame.Parameters.Count; i++)
                     {
                         StackFrameParameter parameter = stackFrame.Parameters[i];
 

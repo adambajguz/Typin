@@ -45,7 +45,7 @@
             public ValueTask ExecuteAsync(IDirectiveArgs<ScopeDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
             {
                 CliContext context = args.Context;
-                string? name = context.Input.Parsed?.CommandName ?? throw new NullReferenceException("Input not parsed."); ;
+                string? name = context.Input.Tokens?.CommandName ?? throw new NullReferenceException("Input not parsed."); ;
 
                 if (name is not null)
                 {

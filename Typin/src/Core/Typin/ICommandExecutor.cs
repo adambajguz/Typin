@@ -1,10 +1,9 @@
-﻿using Typin.Commands;
-
-namespace Typin
+﻿namespace Typin
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Typin.Commands;
 
     /// <summary>
     /// CLI command executor.

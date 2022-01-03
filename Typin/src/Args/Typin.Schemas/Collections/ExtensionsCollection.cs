@@ -5,7 +5,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Default implementation for <see cref="IExtensionsCollection"/>.
+    /// Default implementation of <see cref="IExtensionsCollection"/>.
     /// </summary>
     public class ExtensionsCollection : IExtensionsCollection
     {

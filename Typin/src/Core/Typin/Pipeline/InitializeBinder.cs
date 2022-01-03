@@ -6,8 +6,8 @@ namespace Typin.Pipeline
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Features;
-    using Typin.Features.Binding;
     using Typin.Features.Input;
+    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Initializes binder.
@@ -25,11 +25,10 @@ namespace Typin.Pipeline
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            ParsedInput input = args.Input.Parsed ??
-                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Parsed)} has not been configured for this application or call.");
+            IDirectiveCollection tokens = args.Input.Tokens ??
+                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Tokens)} has not been configured for this application or call.");
 
-            UnboundedInput unboundedInput = new(input);
-            args.Features.Set<IBinderFeature>(new BinderFeature(unboundedInput));
+            args.Features.Set<IBinderFeature>(new BinderFeature(tokens));
 
             await next();
         }

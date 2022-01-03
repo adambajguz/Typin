@@ -1,6 +1,7 @@
 ﻿namespace Typin.Tests.Data.Common.Middlewares
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
@@ -12,7 +13,7 @@
 
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            if (args.Input.Parsed?.HasDirective("custom") ?? false)
+            if (args.Input.Tokens?.Any(x => x.MatchesName("custom")) ?? false)
             {
                 throw new ApplicationException("custom directive detected");
             }

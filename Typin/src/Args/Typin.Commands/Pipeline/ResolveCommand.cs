@@ -14,6 +14,7 @@
     using Typin.Commands.Schemas;
     using Typin.Features.Binding;
     using Typin.Features.Input;
+    using Typin.Features.Input.Tokens;
     using Typin.Models.Collections;
     using Typin.Models.Schemas;
 
@@ -46,23 +47,11 @@
 
         private int? Execute(CliContext context)
         {
-            ParsedInput input = context.Input.Parsed ?? throw new NullReferenceException($"{nameof(CliContext.Input.Parsed)} must be set in {nameof(CliContext)}.");
+            IUnboundedDirectiveCollection input = context.Binder.UnboundedTokens;
             IServiceProvider serviceProvider = context.Services;
 
             // Try to get the command matching the input or fallback to default
-            ICommandSchema schema = _commandSchemas[input.CommandName]
-                ?? throw new InvalidOperationException($"Unknown command '{input.CommandName}'.");
-            //?? throw new UnknownCommandException(input.CommandName);
-
-            // TODO: is the problem below still valid?
-            // TODO: is it poossible to overcome this (related to [!]) limitation of new mode system
-            // Forbid to execute real default command in interactive mode without [!] directive.
-            //if (!(commandSchema.IsHelpOptionAvailable && input.IsHelpOptionSpecified) &&
-            //    _applicationLifetime.CurrentModeType == typeof(InteractiveMode) &&
-            //    commandSchema.IsDefault && !hasDefaultDirective)
-            //{
-            //    commandSchema = StubDefaultCommand.Schema;
-            //}
+            ICommandSchema schema = BindInputToCommandSchema(input[0].Children ?? throw new NullReferenceException());
 
             // Get command instance (default values are used in help so we need command instance)
 
@@ -83,6 +72,49 @@
             context.Binder.TryAdd(new BindableModel(schema.Model, instance));
 
             return null;
+        }
+
+        private ICommandSchema BindInputToCommandSchema(IUnboundedTokenCollection input)
+        {
+            TokenGroup<IValueToken>? tokenGroup = input.Get<IValueToken>();
+
+            if (tokenGroup is null)
+            {
+                return _commandSchemas.Get(string.Empty) ??
+                    throw new InvalidOperationException($"Unknown command ''.");
+            }
+
+            ICommandSchema? schema = null;
+
+            List<string> buffer = new();
+            int lastIndex = -1;
+
+            // We need to look ahead to see if we can match as many consecutive arguments to a command name as possible
+            for (int i = 0; i < tokenGroup.Tokens.Count; i++)
+            {
+                string argument = tokenGroup.Tokens[i].Value;
+                buffer.Add(argument);
+
+                string potentialCommandName = string.Join(' ', buffer);
+
+                if (_commandSchemas.Get(potentialCommandName) is ICommandSchema potentialCommandSchema)
+                {
+                    lastIndex = i;
+                    schema = potentialCommandSchema;
+                }
+            }
+
+            if (schema is null)
+            {
+                throw new InvalidOperationException($"Unknown command '{buffer}'.");
+            }
+
+            for (int r = 0; r < lastIndex; r++)
+            {
+                tokenGroup.Tokens.RemoveAt(0);
+            }
+
+            return schema;
         }
 
         private ICommand GetCommandInstance(IServiceProvider serviceProvider, ICommandSchema schema)

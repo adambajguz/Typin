@@ -5,7 +5,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Default implementation for <see cref="IModelSchemaCollection"/>.
+    /// Default implementation of <see cref="IModelSchemaCollection"/>.
     /// </summary>
     public class ModelSchemaCollection : SchemaCollection<Type, IModelSchema>, IModelSchemaCollection
     {

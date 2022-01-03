@@ -17,7 +17,9 @@
         [ExcludeFromCodeCoverage]
         public static StringBuilder AppendIfNotEmpty(this StringBuilder builder, char value)
         {
-            return builder.Length > 0 ? builder.Append(value) : builder;
+            return builder.Length > 0
+                ? builder.Append(value)
+                : builder;
         }
     }
 }

@@ -9,13 +9,13 @@
     internal sealed class InputFeature : IInputFeature
     {
         /// <inheritdoc/>
-        public IEnumerable<string> Arguments { get; }
+        public IEnumerable<string> Original { get; }
 
         /// <inheritdoc/>
         public InputOptions Options { get; }
 
         /// <inheritdoc/>
-        public ParsedInput? Parsed { get; set; }
+        public IDirectiveCollection? Tokens { get; set; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="InputFeature"/>.
@@ -23,7 +23,7 @@
         public InputFeature(IEnumerable<string> arguments,
                             InputOptions options)
         {
-            Arguments = arguments;
+            Original = arguments;
             Options = options;
         }
 
@@ -32,8 +32,9 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Arguments)} = [\"{string.Join("\", ", Arguments)}\"], " +
-                $"{nameof(Options)} = {Options}";
+                $"{nameof(Original)} = [\"{string.Join("\", ", Original)}\"], " +
+                $"{nameof(Options)} = {Options}, " +
+                $"{nameof(Tokens)} = {Tokens}";
         }
     }
 }

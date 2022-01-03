@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
+    using Typin.Commands.Features;
     using Typin.Console;
 
     public sealed class ExecutionTimingMiddleware : IMiddleware
@@ -22,8 +23,8 @@
             _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
             {
                 output.WriteLine("--- Handling command '{0}' with args '{1}'",
-                                 args.Input.Parsed?.CommandName ?? "<default>",
-                                 string.Join(' ', args.Input.Arguments ?? Array.Empty<string>()));
+                                 args.Features.Get<ICommandFeature>()?.Schema.Name ?? "<?>",
+                                 string.Join(' ', args.Input.Original ?? Array.Empty<string>()));
             });
 
             Stopwatch stopwatch = Stopwatch.StartNew();

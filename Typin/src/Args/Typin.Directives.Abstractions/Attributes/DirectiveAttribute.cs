@@ -10,9 +10,15 @@
     {
         /// <summary>
         /// Directive name.
-        /// All directives in an application must have different names.
+        /// All directives in an application must have different names and aliases.
         /// </summary>
         public string Name { get; init; }
+
+        /// <summary>
+        /// Directive alias.
+        /// All directives in an application must have different names and aliases.
+        /// </summary>
+        public string? Alias { get; init; }
 
         /// <summary>
         /// Directive description, which is used in help text.

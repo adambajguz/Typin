@@ -5,7 +5,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Default implementation for <see cref="ISchemaCollection{TKey, TSchema}"/>.
+    /// Default implementation of <see cref="ISchemaCollection{TKey, TSchema}"/>.
     /// </summary>
     public class SchemaCollection<TKey, TSchema> : ISchemaCollection<TKey, TSchema>
         where TKey : notnull
@@ -19,10 +19,10 @@
         /// <summary>
         /// Data.
         /// </summary>
-        protected Dictionary<TKey, TSchema> Data { get; } = new();
+        protected Dictionary<TKey, TSchema> Data { get; set; } = new();
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ExtensionsCollection"/>.
+        /// Initializes a new instance of <see cref="SchemaCollection{TKey, TSchema}"/>.
         /// </summary>
         public SchemaCollection(Func<TSchema, TKey> keyAccessor)
         {

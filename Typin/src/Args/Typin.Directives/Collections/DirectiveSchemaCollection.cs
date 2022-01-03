@@ -4,7 +4,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Default implementation for <see cref="IDirectiveSchemaCollection"/>.
+    /// Default implementation of <see cref="IDirectiveSchemaCollection"/>.
     /// </summary>
     public class DirectiveSchemaCollection : SchemaCollection<string, IDirectiveSchema>, IDirectiveSchemaCollection
     {

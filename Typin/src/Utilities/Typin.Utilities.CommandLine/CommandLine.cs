@@ -112,7 +112,7 @@
             bool escaped = false;
             bool started = false;
             bool allowcaret = false;
-            for (int i = 0; i < commandLine.Length; ++i)
+            for (int i = 0; i < commandLine.Length; i++)
             {
                 char chr = commandLine[i];
                 int iNext = i + 1;

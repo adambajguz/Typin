@@ -36,6 +36,13 @@
             return this;
         }
 
+        IDirectiveBuilder<TModel> IDirectiveBuilder<TModel>.Alias(string? alias)
+        {
+            Alias(alias);
+
+            return this;
+        }
+
         IDirectiveBuilder<TModel> IDirectiveBuilder<TModel>.Description(string? description)
         {
             Description(description);

@@ -17,7 +17,7 @@
             _ = PipelineBuilder.Create<CliContext>()
                  .Lifetime(InvokablePipelineLifetime.Singleton)
                  .AddStep<TypinExceptionsHandler>()
-                 .AddStep<ParseInput>()
+                 .AddStep<TokenizeInput>()
                  .AddStep<InitializeBinder>()
                  .AddStep<ResolveCommand>()
                  //.AddStep<InitializeDirectives>()
