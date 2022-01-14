@@ -1,7 +1,5 @@
 ﻿namespace Typin.Features.Binding
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Represents a directive input token.
     /// </summary>
@@ -18,9 +16,14 @@
         bool IsBounded { get; }
 
         /// <summary>
-        /// Directive name (may be <see cref="string.Empty"/>).
+        /// Directive identifier.
         /// </summary>
-        string Name { get; }
+        int Id { get; }
+
+        /// <summary>
+        /// Directive alias (may be <see cref="string.Empty"/>).
+        /// </summary>
+        string Alias { get; }
 
         /// <summary>
         /// Child tokens collection.
@@ -28,10 +31,10 @@
         IUnboundedTokenCollection? Children { get; }
 
         /// <summary>
-        /// Whether <paramref name="name"/> matches directive name.
+        /// Whether <paramref name="name"/> matches directive alias.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        bool MatchesName(string name);
+        bool MatchesAlias(string name);
     }
 }

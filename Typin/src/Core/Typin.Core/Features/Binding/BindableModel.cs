@@ -9,6 +9,11 @@
     public sealed class BindableModel
     {
         /// <summary>
+        /// Bindable model identifier.
+        /// </summary>
+        public int Id { get; }
+
+        /// <summary>
         /// Bindable model schema.
         /// </summary>
         public IModelSchema Schema { get; }
@@ -21,8 +26,12 @@
         /// <summary>
         /// Initializes a new instance of <see cref="BindableModel"/>.
         /// </summary>
-        public BindableModel(IModelSchema schema, IModel instance)
+        /// <param name="id"></param>
+        /// <param name="schema"></param>
+        /// <param name="instance"></param>
+        public BindableModel(int id, IModelSchema schema, IModel instance)
         {
+            Id = id;
             Schema = schema;
             Instance = instance;
         }

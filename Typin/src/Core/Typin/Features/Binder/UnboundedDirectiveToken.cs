@@ -1,7 +1,6 @@
 ﻿namespace Typin.Features.Binder
 {
     using System;
-    using System.Collections.Generic;
     using Typin.Features.Binding;
     using Typin.Features.Input.Tokens;
 
@@ -17,7 +16,10 @@
         public bool IsBounded => !HasUnbounded;
 
         /// <inheritdoc/>
-        public string Name { get; }
+        public int Id { get; }
+
+        /// <inheritdoc/>
+        public string Alias { get; }
 
         /// <inheritdoc/>
         public IUnboundedTokenCollection? Children { get; }
@@ -27,25 +29,29 @@
         /// </summary>
         public UnboundedDirectiveToken(IDirectiveToken directiveToken)
         {
-            Name = directiveToken.Name;
+            Id = directiveToken.Id;
+            Alias = directiveToken.Alias;
             Children = directiveToken.Children is null
                 ? null
                 : new UnboundedTokenCollection(directiveToken.Children);
         }
 
         /// <inheritdoc/>
-        public bool MatchesName(string name)
+        public bool MatchesAlias(string alias)
         {
-            return name.Trim('[', ']')
+            return alias.Trim('[', ']')
                 .Trim()
                 .TrimEnd(':')
-                .Equals(Name, StringComparison.Ordinal);
+                .Equals(Alias, StringComparison.Ordinal);
         }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Concat("[", Name, "]");
+            return base.ToString() +
+                " | " +
+                $"{nameof(Id)} = {Id}, " +
+                $"{nameof(Alias)} = {Alias}";
         }
     }
 }

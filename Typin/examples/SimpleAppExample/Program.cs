@@ -5,19 +5,19 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using SimpleAppExample.Commands;
+    using SimpleAppExample.Directives;
     using Typin.Commands;
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Models;
     using Typin.Modes;
-    using Typin.Utilities.Diagnostics.Directives;
 
     [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members")]
     public static class Program
     {
         private static readonly string[] Arguments = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b" };
         private static readonly string[] ArgumentsWithHelp = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b", "--help" };
-        private static readonly string[] ArgumentsWithPreview = { "[preview]", "--req-str", "welcome", "-125", "--str", "hello world", "-i", "-13", "-b" };
+        private static readonly string[] ArgumentsWithDirectives = { "[chelp]", "[cpreview:", "name", "--delay", "2000]", "--req-str", "welcome", "-125", "--str", "hello world", "-i", "-13", "-b" };
 
         public static async Task<int> Main()
         {
@@ -45,15 +45,15 @@
                         })
                         .AddDirectives(scanner =>
                         {
-                            scanner.Single<DebugDirective>()
-                                   .Single<PreviewDirective>();
+                            scanner.Single<CustomHelpDirective>()
+                                   .Single<CustomPreviewDirective>();
                         })
                         .AddModes(scanner =>
                         {
                             scanner.Single<DirectMode>();
                         });
 
-                    cliBuilder.OverrideCommandLine(Arguments)
+                    cliBuilder.OverrideCommandLine(ArgumentsWithDirectives)
                               .UseStartupMessage("Welcome!")
                               .SetStartupMode<DirectMode>();
                 })

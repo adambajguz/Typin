@@ -16,6 +16,8 @@
     /// </summary>
     public sealed class TokenizeInput : IMiddleware
     {
+        private int _idSource;
+
         private readonly ICommandSchemaCollection _commandSchemas;
 
         /// <summary>
@@ -39,7 +41,7 @@
         /// <summary>
         /// Resolves <see cref="ITokenCollection"/>.
         /// </summary>
-        public static IDirectiveCollection Tokenize(IEnumerable<string> commandLineArguments)
+        public IDirectiveCollection Tokenize(IEnumerable<string> commandLineArguments)
         {
             int index = 0;
 
@@ -51,48 +53,39 @@
             return directivesGroup;
         }
 
-        private static void ParseDirectives(IDirectiveCollection directivesGroup,
-                                            IReadOnlyList<string> args,
-                                            ref int index)
+        private void ParseDirectives(IDirectiveCollection directivesGroup,
+                                     IReadOnlyList<string> args,
+                                     ref int index)
         {
             for (; index < args.Count; index++)
             {
                 string argument = args[index].Trim();
 
+                bool isExplicitlyOpened = argument.StartsWith('[');
                 bool isTerminated = argument.EndsWith(']');
-                bool isName = (argument.StartsWith('[') && isTerminated) ||
-                    argument.EndsWith(':');
 
-                string directiveName = string.Empty;
+                bool isName = (isExplicitlyOpened && isTerminated) || argument.EndsWith(':');
+                string directiveName = isName ? argument : string.Empty;
 
-                if (isName)
-                {
-                    directiveName = argument;
-                    index++;
-
-                    argument = args[index].Trim();
-                }
-
-                DirectiveToken directiveToken = new(directiveName);
+                int id = Interlocked.Increment(ref _idSource);
+                DirectiveToken directiveToken = new(id, directiveName);
                 directivesGroup.Add(directiveToken);
 
                 if (!isTerminated)
                 {
-                    ITokenCollection childTokens = new TokenCollection();
+                    index++;
 
-                    ParseValues(childTokens, args, ref index);
-                    ParseNamedValues(childTokens, args, ref index);
+                    ITokenCollection childTokens = directiveToken.Children;
 
-                    if (childTokens.Count > 0)
-                    {
-                        directiveToken.Children = childTokens;
-                    }
+                    ParseValues(childTokens, args, isExplicitlyOpened, ref index);
+                    ParseNamedValues(childTokens, args, isExplicitlyOpened, ref index);
                 }
             }
         }
 
         private static void ParseValues(ITokenCollection input,
                                         IReadOnlyList<string> commandLineArguments,
+                                        bool explicitlyOpenedDirective,
                                         ref int index)
         {
             TokenGroup<ValueToken> tokenGroup = input.Get<ValueToken>() ?? new();
@@ -107,6 +100,13 @@
                     break;
                 }
 
+                if (explicitlyOpenedDirective && argument.EndsWith(']'))
+                {
+                    tokenGroup.Tokens.Add(new ValueToken(argument[..^1]));
+
+                    break;
+                }
+
                 tokenGroup.Tokens.Add(new ValueToken(argument));
             }
 
@@ -118,16 +118,24 @@
 
         private static void ParseNamedValues(ITokenCollection input,
                                              IReadOnlyList<string> commandLineArguments,
+                                             bool explicitlyOpenedDirective,
                                              ref int index)
         {
             TokenGroup<NamedToken> tokenGroup = input.Get<NamedToken>() ?? new();
 
             string? currentOptionAlias = null;
             List<string> currentOptionValues = new();
+            bool finish = false;
 
             for (; index < commandLineArguments.Count; index++)
             {
                 string argument = commandLineArguments[index];
+
+                if (explicitlyOpenedDirective && argument.EndsWith(']'))
+                {
+                    argument = argument[..^1];
+                    finish = true;
+                }
 
                 // Name
                 if (IOptionSchema.IsName(argument))
@@ -160,6 +168,11 @@
                 else if (!string.IsNullOrWhiteSpace(currentOptionAlias))
                 {
                     currentOptionValues.Add(argument);
+                }
+
+                if (finish)
+                {
+                    break;
                 }
             }
 

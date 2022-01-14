@@ -7,7 +7,7 @@ namespace Typin.Features.Binder
     using System.Reflection;
     using Microsoft.Extensions.DependencyInjection;
     using Typin.Exceptions.ArgumentBinding;
-    using Typin.Models;
+    using Typin.Features.Binding;
     using Typin.Models.Binding;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
@@ -284,18 +284,18 @@ namespace Typin.Features.Binder
         /// <summary>
         /// Binds input values to a bindbale object instance.
         /// </summary>
-        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, IModel instance, IReadOnlyCollection<string> values)
+        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, BindableModel bindableModel, IReadOnlyCollection<string> values)
         {
             object? value = argumentSchema.Convert(serviceProvider, values);
-            argumentSchema.Bindable.SetValue(instance, value);
+            argumentSchema.Bindable.SetValue(bindableModel.Instance, value);
         }
 
         /// <summary>
         /// Binds input values to a bindbale object instance.
         /// </summary>
-        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, IModel instance, string value)
+        public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, BindableModel bindableModel, string value)
         {
-            argumentSchema.BindOn(serviceProvider, instance, new[] { value });
+            argumentSchema.BindOn(serviceProvider, bindableModel, new[] { value });
         }
     }
 }

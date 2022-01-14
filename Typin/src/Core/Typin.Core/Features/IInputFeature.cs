@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using Typin.Features.Input;
-    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Command line input feature.

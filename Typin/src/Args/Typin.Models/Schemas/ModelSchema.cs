@@ -14,6 +14,9 @@
         public Type Type { get; }
 
         /// <inheritdoc/>
+        public bool IsDynamic { get; }
+
+        /// <inheritdoc/>
         public IEnumerable<IArgumentSchema> Arguments
         {
             get
@@ -56,6 +59,7 @@
                            IExtensionsCollection extensions)
         {
             Type = type;
+            IsDynamic = type.IsAssignableFrom(typeof(IDynamicModel));
             Parameters = parameters;
             Options = options;
             RequiredOptions = requiredOptions;

@@ -16,6 +16,11 @@
         Type Type { get; }
 
         /// <summary>
+        /// Whether model is dynamic.
+        /// </summary>
+        bool IsDynamic { get; }
+
+        /// <summary>
         /// Gets an enumerator through parameters and options.
         /// </summary>
         IEnumerable<IArgumentSchema> Arguments { get; }

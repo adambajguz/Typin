@@ -8,14 +8,19 @@
     public interface IDirectiveToken
     {
         /// <summary>
-        /// Directive name (may be <see cref="string.Empty"/>).
+        /// Directive identifier.
         /// </summary>
-        string Name { get; }
+        int Id { get; }
+
+        /// <summary>
+        /// Directive alias (may be <see cref="string.Empty"/>).
+        /// </summary>
+        string Alias { get; }
 
         /// <summary>
         /// Child tokens collection.
         /// </summary>
-        ITokenCollection? Children { get; set; }
+        ITokenCollection Children { get; }
 
         /// <summary>
         /// Raw values.
@@ -23,10 +28,10 @@
         IEnumerable<string> Raw { get; }
 
         /// <summary>
-        /// Whether <paramref name="name"/> matches directive name.
+        /// Whether <paramref name="alias"/> matches directive alias.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="alias"></param>
         /// <returns></returns>
-        bool MatchesName(string name);
+        bool MatchesAlias(string alias);
     }
 }

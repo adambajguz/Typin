@@ -97,7 +97,7 @@
 
             if (optionName is null && _shortName is null)
             {
-                _name = TextUtils.ToKebabCase(Property.Name);
+                optionName = TextUtils.ToKebabCase(Property.Name);
             }
             else
             {

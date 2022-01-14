@@ -4,7 +4,6 @@
     using System.Linq;
     using Typin.Features.Binding;
     using Typin.Features.Input;
-    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Default implementation of <see cref="IUnboundedDirectiveCollection"/>.
@@ -12,7 +11,7 @@
     public class UnboundedDirectiveCollection : List<IUnboundedDirectiveToken>, IUnboundedDirectiveCollection
     {
         /// <inheritdoc/>
-        public bool HasUnbounded => this.Count > 0 &&
+        public bool HasUnbounded => Count > 0 &&
                     this.Any(x => x.HasUnbounded);
 
         /// <inheritdoc/>

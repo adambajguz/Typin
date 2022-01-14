@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Typin.Models;
+    using Typin.Models.Collections;
     using Typin.Models.Schemas;
     using Typin.Utilities.Extensions;
 
@@ -13,6 +14,16 @@
     /// </summary>
     public sealed class BindableArgument : IBindableArgument
     {
+        private readonly static Action<IDynamicModel, IArgumentCollection> _dynamicArgumentCollectionSetter;
+
+        static BindableArgument()
+        {
+            MethodInfo methodInfo = typeof(IDynamicModel).GetProperty(nameof(IDynamicModel.Arguments))!.GetSetMethod(true)!;
+            var @delegate = (Action<IDynamicModel, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicModel, IArgumentCollection>), methodInfo);
+
+            _dynamicArgumentCollectionSetter = @delegate;
+        }
+
         /// <summary>
         /// Property info (null for dynamic arguments).
         /// </summary>
@@ -109,7 +120,12 @@
         {
             if (Kind is BindableArgumentKind.Dynamic && instance is IDynamicModel dynamic)
             {
-                return dynamic.Arguments.GetOrDefault(Name);
+                if (dynamic.Arguments is null)
+                {
+                    _dynamicArgumentCollectionSetter.Invoke(dynamic, new ArgumentCollection());
+                }
+
+                return dynamic.Arguments?.GetOrDefault(Name);
             }
 
             return Property?.GetValue(instance);
@@ -124,7 +140,12 @@
         {
             if (Kind is BindableArgumentKind.Dynamic && instance is IDynamicModel dynamic)
             {
-                dynamic.Arguments.Set(Name, new ArgumentValue(Schema, value));
+                if (dynamic.Arguments is null)
+                {
+                    _dynamicArgumentCollectionSetter.Invoke(dynamic, new ArgumentCollection());
+                }
+
+                dynamic.Arguments!.Set(Name, new ArgumentValue(Schema, value));
             }
             else
             {

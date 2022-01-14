@@ -7,7 +7,6 @@ namespace Typin.Pipeline
     using Typin;
     using Typin.Features;
     using Typin.Features.Input;
-    using Typin.Features.Input.Tokens;
 
     /// <summary>
     /// Initializes binder.

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Reflection;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
@@ -15,16 +15,13 @@
     using Typin.Features.Binding;
     using Typin.Features.Input;
     using Typin.Features.Input.Tokens;
-    using Typin.Models.Collections;
     using Typin.Models.Schemas;
 
     /// <summary>
     /// Resolves command schema and instance.
     /// </summary>
-    public sealed class ResolveCommand : IMiddleware
+    public sealed class ResolveCommand : IMiddleware //TODO: as directive
     {
-        private static Action<IDynamicCommand, IArgumentCollection>? _dynamicCommandArgumentCollectionSetter;
-
         private readonly ICommandSchemaCollection _commandSchemas;
 
         private readonly ConcurrentDictionary<Type, ObjectFactory> _commandFactoryCache = new();
@@ -40,43 +37,45 @@
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            args.Output.ExitCode ??= Execute(args);
+            Execute(args);
 
             await next();
         }
 
-        private int? Execute(CliContext context)
+        private void Execute(CliContext context)
         {
-            IUnboundedDirectiveCollection input = context.Binder.UnboundedTokens;
             IServiceProvider serviceProvider = context.Services;
 
+            IUnboundedDirectiveToken? possibleCommandDirective = context.Binder.UnboundedTokens.LastOrDefault();
+
+            if (possibleCommandDirective is null ||
+                !(possibleCommandDirective.MatchesAlias(string.Empty) ||
+                  possibleCommandDirective.MatchesAlias("exec"))) //TODO: make dynamic
+            {
+                return;
+            }
+
             // Try to get the command matching the input or fallback to default
-            ICommandSchema schema = BindInputToCommandSchema(input[0].Children ?? throw new NullReferenceException());
+            ICommandSchema schema = BindInputToCommandSchema(possibleCommandDirective.Children);
 
             // Get command instance (default values are used in help so we need command instance)
 
             ICommand instance = GetCommandInstance(serviceProvider, schema);
             ICommandHandler handlerInstance = GetCommandHandlerInstance(serviceProvider, instance, schema);
 
-            if (schema.IsDynamic && instance is IDynamicCommand dynamicCommandInstance)
-            {
-                _dynamicCommandArgumentCollectionSetter ??= GetDynamicArgumentsSetter();
-                _dynamicCommandArgumentCollectionSetter.Invoke(dynamicCommandInstance, new ArgumentCollection());
-            }
-
             // To avoid instantiating the command twice, we need to get default values
             // before the arguments are bound to the properties
             IReadOnlyDictionary<IArgumentSchema, object?> defaultValues = schema.Model.GetArgumentValues(instance);
 
             context.Features.Set<ICommandFeature>(new CommandFeature(schema, instance, handlerInstance, defaultValues));
-            context.Binder.TryAdd(new BindableModel(schema.Model, instance));
+            context.Binder.TryAdd(new BindableModel(possibleCommandDirective.Id, schema.Model, instance));
 
-            return null;
+            return;
         }
 
-        private ICommandSchema BindInputToCommandSchema(IUnboundedTokenCollection input)
+        private ICommandSchema BindInputToCommandSchema(IUnboundedTokenCollection? input)
         {
-            TokenGroup<IValueToken>? tokenGroup = input.Get<IValueToken>();
+            TokenGroup<IValueToken>? tokenGroup = input?.Get<IValueToken>();
 
             if (tokenGroup is null)
             {
@@ -140,14 +139,6 @@
             });
 
             return (ICommandHandler)factory(serviceProvider, null);
-        }
-
-        private static Action<IDynamicCommand, IArgumentCollection> GetDynamicArgumentsSetter()
-        {
-            MethodInfo methodInfo = typeof(IDynamicCommand).GetProperty(nameof(IDynamicCommand.Arguments))!.GetSetMethod(true)!;
-            var @delegate = (Action<IDynamicCommand, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicCommand, IArgumentCollection>), methodInfo);
-
-            return @delegate;
         }
     }
 }

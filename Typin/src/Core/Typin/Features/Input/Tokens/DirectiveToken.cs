@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Typin.Features.Input;
 
     /// <summary>
@@ -10,62 +9,73 @@
     /// </summary>
     public sealed record DirectiveToken : IDirectiveToken
     {
-        private IEnumerable<string>? _raw;
+        /// <inheritdoc/>
+        public int Id { get; }
 
         /// <inheritdoc/>
-        public string Name { get; }
+        public string Alias { get; }
 
         /// <inheritdoc/>
-        public ITokenCollection? Children { get; set; }
+        public ITokenCollection Children { get; }
 
         /// <inheritdoc/>
         public IEnumerable<string> Raw
         {
             get
             {
-                if (_raw is null)
+                List<string> values = new();
+
+                if (Children is { Count: > 0 })
                 {
-                    List<string> values = new();
-
-                    values.Add(string.Concat("[", Name, ": "));
-
-                    if (Children is not null)
-                    {
-                        values.AddRange(Children.GetRaw());
-                    }
+                    values.Add(string.Concat("[", Alias, ": "));
+                    values.AddRange(Children.GetRaw());
 
                     values[^1] += "]";
-
-                    _raw = values;
+                }
+                else
+                {
+                    values.Add(string.Concat("[", Alias, "]"));
                 }
 
-                return _raw;
+                return values;
             }
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveToken"/>.
         /// </summary>
-        public DirectiveToken(string name)
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        public DirectiveToken(int id, string name)
         {
-            Name = name.Trim('[', ']')
+            Id = id;
+            Alias = name.Trim('[', ']')
                 .Trim()
                 .TrimEnd(':');
+
+            Children = new TokenCollection();
         }
 
         /// <inheritdoc/>
-        public bool MatchesName(string name)
+        public bool MatchesAlias(string name)
         {
             return name.Trim('[', ']')
                 .Trim()
                 .TrimEnd(':')
-                .Equals(Name, StringComparison.Ordinal);
+                .Equals(Alias, StringComparison.Ordinal);
         }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Concat("[", Name, "]");
+            if (Children is null)
+            {
+                return $"[{Alias}]";
+            }
+
+            string v = string.Join(", ", Children.GetRaw());
+
+            return $"[{Alias}: {{{v}}}]";
         }
     }
 }

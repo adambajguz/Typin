@@ -12,7 +12,7 @@
         /// Initializes a new instance of <see cref="DirectiveSchemaCollection"/>.
         /// </summary>
         public DirectiveSchemaCollection() :
-            base(schema => schema.Name)
+            base(schema => schema.Name) //TODO: add support for alias
         {
 
         }

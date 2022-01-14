@@ -11,9 +11,15 @@
     {
         /// <summary>
         /// Directive name.
-        /// All directives in an application must have different names.
+        /// All directives in an application must have different names and aliases.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Optional directive alias.
+        /// All directives in an application must have different names and aliases.
+        /// </summary>
+        string? Alias { get; }
 
         /// <summary>
         /// Directive description, which is used in help text.

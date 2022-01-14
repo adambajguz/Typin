@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Typin.Features.Binding;
-    using Typin.Features.Input;
     using Typin.Models;
 
     /// <summary>
@@ -29,21 +28,35 @@
         bool TryAdd(BindableModel model);
 
         /// <summary>
-        /// Removes a bindable model.
+        /// Removes a bindable model by identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Whether binable model with identifier <paramref name="id"/> was removed.</returns>
+        bool TryRemove(int id);
+
+        /// <summary>
+        /// Removes a bindable model by schema type.
         /// </summary>
         /// <param name="type"></param>
-        /// <returns>Whether <paramref name="type"/> was removed.</returns>
+        /// <returns>Whether binable model with type <paramref name="type"/> was removed.</returns>
         bool TryRemove(Type type);
 
         /// <summary>
-        /// Get bindable model.
+        /// Get bindable model by type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         BindableModel? Get(Type type);
 
         /// <summary>
-        /// Get bindable model instance.
+        /// Get bindable model by identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        BindableModel? Get(int id);
+
+        /// <summary>
+        /// Get bindable model instance  by type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>

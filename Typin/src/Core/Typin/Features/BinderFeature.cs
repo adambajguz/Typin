@@ -18,7 +18,8 @@ namespace Typin.Features
     /// </summary>
     internal sealed class BinderFeature : IBinderFeature
     {
-        private readonly Dictionary<Type, BindableModel> _bindableMap = new();
+        private readonly Dictionary<Type, BindableModel> _bindableMapByType = new();
+        private readonly Dictionary<int, BindableModel> _bindableMapById = new();
         private readonly List<BindableModel> _bindable = new();
 
         /// <inheritdoc/>
@@ -38,9 +39,24 @@ namespace Typin.Features
         /// <inheritdoc/>
         public bool TryAdd(BindableModel model)
         {
-            if (_bindableMap.TryAdd(model.Schema.Type, model))
+            if (_bindableMapByType.TryAdd(model.Schema.Type, model))
             {
                 _bindable.Add(model);
+                _bindableMapById.Add(model.Id, model);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool TryRemove(int id)
+        {
+            if (_bindableMapById.Remove(id, out BindableModel? model))
+            {
+                _bindable.Remove(model);
+                _bindableMapByType.Remove(model.Schema.Type);
 
                 return true;
             }
@@ -51,9 +67,10 @@ namespace Typin.Features
         /// <inheritdoc/>
         public bool TryRemove(Type type)
         {
-            if (_bindableMap.Remove(type, out BindableModel? model))
+            if (_bindableMapByType.Remove(type, out BindableModel? model))
             {
                 _bindable.Remove(model);
+                _bindableMapById.Remove(model.Id);
 
                 return true;
             }
@@ -64,14 +81,20 @@ namespace Typin.Features
         /// <inheritdoc/>
         public BindableModel? Get(Type type)
         {
-            return _bindableMap.GetValueOrDefault(type);
+            return _bindableMapByType.GetValueOrDefault(type);
+        }
+
+        /// <inheritdoc/>
+        public BindableModel? Get(int id)
+        {
+            return _bindableMapById.GetValueOrDefault(id);
         }
 
         /// <inheritdoc/>
         public T? Get<T>()
             where T : class, IModel
         {
-            return _bindableMap.GetValueOrDefault(typeof(T))?.Instance as T;
+            return _bindableMapByType.GetValueOrDefault(typeof(T))?.Instance as T;
         }
 
         /// <inheritdoc/>
@@ -128,7 +151,7 @@ namespace Typin.Features
                 IParameterSchema parameter = parameters[i];
                 ValueToken scalarInput = parameterInputs[i];
 
-                parameter.BindOn(serviceProvider, bindableModel.Instance, scalarInput.Value);
+                parameter.BindOn(serviceProvider, bindableModel, scalarInput.Value);
 
                 --remainingParameters;
                 --remainingInputs;
@@ -149,7 +172,7 @@ namespace Typin.Features
                     throw new MissingParametersException(nonScalarParameter);
                 }
 
-                nonScalarParameter.BindOn(serviceProvider, bindableModel.Instance, nonScalarValues);
+                nonScalarParameter.BindOn(serviceProvider, bindableModel, nonScalarValues);
                 --remainingParameters;
                 remainingInputs = 0;
             }
@@ -197,7 +220,7 @@ namespace Typin.Features
                 string[] inputValues = inputs.SelectMany(i => i.Values)
                                              .ToArray();
 
-                option.BindOn(serviceProvider, bindableModel.Instance, inputValues);
+                option.BindOn(serviceProvider, bindableModel, inputValues);
 
                 remainingOptionInputs.RemoveRange(inputs);
 

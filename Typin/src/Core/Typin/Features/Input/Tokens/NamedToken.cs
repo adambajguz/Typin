@@ -72,9 +72,9 @@
 
             return string.Concat(
                 GetFormattedAlias(),
-                " [",
-                string.Concat(", ", Values),
-                "]");
+                " {",
+                string.Join(", ", Values),
+                "}");
         }
     }
 }
