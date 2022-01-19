@@ -24,8 +24,8 @@
         /// Initializes a new instance of <see cref="DirectiveSchemaProvider"/>.
         /// </summary>
         public DirectiveSchemaProvider(IServiceProvider serviceProvider,
-                                     IDirectiveSchemaCollection schemas,
-                                     IComponents<IDirective> directives)
+                                      IDirectiveSchemaCollection schemas,
+                                      IComponents<IDirective> directives)
         {
             _serviceProvider = serviceProvider;
             _directives = directives;

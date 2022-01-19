@@ -8,6 +8,7 @@
     using Typin.Directives.Builders;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Schemas.Builders;
 
     public sealed class CustomPreviewDirective : IDirective
     {
@@ -30,8 +31,8 @@
             /// <inheritdoc/>
             public ValueTask ConfigureAsync(IDirectiveBuilder<CustomPreviewDirective> builder, CancellationToken cancellationToken)
             {
-                builder.Name("cpreview")
-                    .Handler<Handler>();
+                builder.AddAlias("cpreview")
+                    .UseHandler<Handler>();
 
                 return default;
             }

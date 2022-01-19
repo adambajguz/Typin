@@ -4,6 +4,7 @@
     using System.Linq.Expressions;
     using Typin.Models.Converters;
     using Typin.Models.Extensions;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -14,6 +15,8 @@
     internal class OptionBuilder<TModel, TProperty> : OptionBuilder<TModel>, IOptionBuilder<TModel, TProperty>
         where TModel : class, IModel
     {
+        IOptionBuilder<TModel, TProperty> ISelf<IOptionBuilder<TModel, TProperty>>.Self => this;
+
         /// <summary>
         /// Initializes a new instance of <see cref="OptionBuilder{TModel, TProperty}"/>.
         /// </summary>

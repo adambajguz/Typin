@@ -1,5 +1,6 @@
 ﻿namespace SimpleAppExample.Commands
 {
+    using System.ComponentModel;
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
@@ -10,8 +11,10 @@
     using Typin.Models;
     using Typin.Models.Attributes;
     using Typin.Models.Builders;
+    using Typin.Schemas.Attributes;
 
-    [Command("attr-global", Description = "A command configured using attributes.")]
+    [Alias("attr-global")]
+    [Description("A command configured using attributes.")]
     public sealed record AttributeGlobalSampleCommand : ICommand
     {
         [Parameter(0)]
@@ -53,7 +56,7 @@
 
             public ValueTask ConfigureAsync(ICommandBuilder<AttributeSampleCommand> builder, CancellationToken cancellationToken)
             {
-                builder.FromAttribute();
+                builder.FromAttributes();
 
                 return default;
             }

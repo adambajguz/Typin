@@ -1,18 +1,19 @@
 ﻿namespace BookLibraryExample.Commands
 {
     using System;
+    using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
     using BookLibraryExample.Internal;
     using BookLibraryExample.Models;
     using BookLibraryExample.Services;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("book add", Description = "Add a book to the library.",
-             Manual = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer euismod nunc lorem, vitae cursus sem facilisis ut. Cras et nibh justo. Mauris eu elit lectus. Suspendisse potenti. Mauris luctus sapien quis arcu semper, vel venenatis elit ultrices. Quisque suscipit arcu vel massa vestibulum dapibus. Maecenas felis lacus, pharetra sed fermentum in, molestie vel ipsum. Nullam elementum arcu eget est tempor, blandit lacinia odio facilisis. Proin nulla odio, sodales et tellus nec, pulvinar ultrices nunc. Integer ornare, odio vel tincidunt congue, diam lorem facilisis lectus, id tempor sapien nibh vitae justo. Mauris ut odio justo. Etiam sed felis tellus. Nam sollicitudin neque in tempor scelerisque. Praesent sit amet nisi quis justo scelerisque placerat.")]
+    [Alias("book add")]
+    [Description("Add a book to the library.")]
     public class BookAddCommand : ICommand
     {
         private readonly LibraryService _libraryService;

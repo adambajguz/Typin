@@ -3,7 +3,6 @@
     using System;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using PackSite.Library.Pipelining;
     using Typin.Hosting;
 
     /// <summary>
@@ -11,16 +10,16 @@
     /// </summary>
     public static class PluginRegistrationExtensions
     {
-        /// <summary>
-        /// Configures the application to use a default implementation of <see cref="IHelpWriter"/>.
-        /// </summary>
-        /// <param name="cliBuilder"></param>
-        public static ICliBuilder AddHelp(this ICliBuilder cliBuilder)
-        {
-            cliBuilder.Services.Replace(ServiceDescriptor.Describe(typeof(IHelpWriter), typeof(DefaultHelpWriter), ServiceLifetime.Scoped));
+        ///// <summary>
+        ///// Configures the application to use a default implementation of <see cref="IHelpWriter"/>.
+        ///// </summary>
+        ///// <param name="cliBuilder"></param>
+        //public static ICliBuilder AddHelp(this ICliBuilder cliBuilder)
+        //{
+        //    cliBuilder.Services.Replace(ServiceDescriptor.Describe(typeof(IHelpWriter), typeof(DefaultHelpWriter), ServiceLifetime.Scoped));
 
-            return cliBuilder;
-        }
+        //    return cliBuilder;
+        //}
 
         /// <summary>
         /// Configures the application to use the specified implementation of <see cref="IHelpWriter"/>.
@@ -49,14 +48,14 @@
             return cliBuilder;
         }
 
-        /// <summary>
-        /// Adds support for help plugin.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IPipelineBuilder<CliContext> AddHelp(this IPipelineBuilder<CliContext> builder)
-        {
-            return builder.AddStep<HelpHandler>();
-        }
+        ///// <summary>
+        ///// Adds support for help plugin.
+        ///// </summary>
+        ///// <param name="builder"></param>
+        ///// <returns></returns>
+        //public static IPipelineBuilder<CliContext> AddHelp(this IPipelineBuilder<CliContext> builder)
+        //{
+        //    return builder.AddStep<HelpHandler>();
+        //}
     }
 }

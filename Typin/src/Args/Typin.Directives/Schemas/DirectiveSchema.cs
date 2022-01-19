@@ -10,10 +10,10 @@
     public class DirectiveSchema : IDirectiveSchema
     {
         /// <inheritdoc/>
-        public string Name { get; }
+        public IReadOnlyAliasCollection Aliases { get; }
 
         /// <inheritdoc/>
-        public string? Alias { get; }
+        public bool IsDefault { get; }
 
         /// <inheritdoc/>
         public string? Description { get; }
@@ -30,19 +30,18 @@
         /// <summary>
         /// Initializes an instance of <see cref="DirectiveSchema"/>.
         /// </summary>
-        public DirectiveSchema(string name,
-                               string? alias,
+        public DirectiveSchema(IReadOnlyAliasCollection aliases,
                                string? description,
                                IModelSchema model,
                                Type handler,
                                IExtensionsCollection extensions)
         {
-            Name = name;
-            Alias = alias;
+            Aliases = new AliasCollection(aliases ?? throw new ArgumentNullException(nameof(aliases)));
+            IsDefault = Aliases.Contains(string.Empty);
             Description = description;
-            Model = model;
-            Handler = handler;
-            Extensions = extensions;
+            Model = model ?? throw new ArgumentNullException(nameof(model));
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            Extensions = extensions ?? throw new ArgumentNullException(nameof(extensions));
         }
 
         /// <inheritdoc/>
@@ -52,8 +51,8 @@
                 " | " +
                 $"{nameof(Model)}.{nameof(IModelSchema.Type)} = {Model.Type}, " +
                 $"{nameof(Handler)} = {Handler}, " +
-                $"{nameof(Name)} = {Name}, " +
-                $"{nameof(Alias)} = {Alias}";
+                $"{nameof(Aliases)} = {Aliases}, " +
+                $"{nameof(IsDefault)} = {IsDefault}";
         }
     }
 }

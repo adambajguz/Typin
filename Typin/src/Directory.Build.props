@@ -36,9 +36,4 @@
 		<WarningsAsErrors>nullable;CS1591,CS1591,NU1605</WarningsAsErrors>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
-		<PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
-
 </Project>

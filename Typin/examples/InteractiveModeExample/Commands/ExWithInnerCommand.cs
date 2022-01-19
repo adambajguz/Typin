@@ -4,9 +4,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("exi", Description = "Throws exception with inner exception that cannot be handled.")]
+    [Alias("exi")]
     public class ExWithInnerCommand : ICommand
     {
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)

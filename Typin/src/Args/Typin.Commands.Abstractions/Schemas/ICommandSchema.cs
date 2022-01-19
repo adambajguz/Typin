@@ -1,28 +1,14 @@
 ﻿namespace Typin.Commands.Schemas
 {
     using System;
-    using System.Collections.Generic;
     using Typin.Models.Schemas;
     using Typin.Schemas;
 
     /// <summary>
     /// Command schema.
     /// </summary>
-    public interface ICommandSchema : ISchema
+    public interface ICommandSchema : IAliasableSchema
     {
-        /// <summary>
-        /// Command name.
-        /// If the name is not set, the command is treated as a default command, i.e. the one that gets executed when the user
-        /// does not specify a command name in the arguments.
-        /// All commands in an application must have different names. Likewise, only one command without a name is allowed.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Command name segments.
-        /// </summary>
-        IReadOnlyList<string> NameSegments { get; }
-
         /// <summary>
         /// Whether command is a default command.
         /// </summary>

@@ -5,11 +5,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command(Description = "Default Command Description")]
+    [Alias]
     public class DefaultCommand : ICommand
     {
         private readonly IConsole _console;

@@ -3,9 +3,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("long", Description = "A long command.")]
+    [Alias("long")]
     public class LongCommand : ICommand
     {
         public async ValueTask ExecuteAsync(CancellationToken cancellationToken)

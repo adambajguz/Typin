@@ -4,6 +4,7 @@
     using System.Reflection;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
     using Typin.Utilities;
 
@@ -19,6 +20,8 @@
         private string? _description;
 
         protected Type? ConverterType { get; set; }
+
+        IParameterBuilder ISelf<IParameterBuilder>.Self => this;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ParameterBuilder{TModel}"/>.
@@ -76,7 +79,7 @@
         {
             if (type is not null && !IArgumentConverter.IsValidType(type, Property.PropertyType))
             {
-                throw new ArgumentException($"'{type}' is not a valid converter for parameter property of type 'Property.PropertyType' inside model '{Model}'.");
+                throw new ArgumentException($"'{type}' is not a valid converter for parameter property of type 'Property.PropertyType' inside model '{ModelType}'.");
             }
 
             ConverterType = type;

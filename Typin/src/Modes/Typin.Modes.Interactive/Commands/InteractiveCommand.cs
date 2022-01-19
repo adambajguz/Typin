@@ -1,11 +1,12 @@
 ﻿namespace Typin.Modes.Interactive.Commands
 {
+    using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Modes;
     using Typin.Modes.Interactive.Directives;
+    using Typin.Schemas.Attributes;
 
     /// <summary>
     /// If application runs in interactive mode (using the interactive command or [interactive] directive), it is possible to execute multiple commands in one processes.
@@ -13,7 +14,8 @@
     /// This is useful for situations when it is necessary to execute multiple commands (since you don't have to constantly type dotnet ...).
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
-    [Command(InteractiveOnlyDirectives.Interactive, Description = "Starts an interactive mode.")]
+    [Alias(InteractiveOnlyDirectives.Interactive)]
+    [Description("Starts an interactive mode.")]
     public sealed class InteractiveCommand : ICommand
     {
         private readonly ICliModeSwitcher _cliModeSwitcher;

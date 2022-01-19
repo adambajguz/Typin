@@ -1,7 +1,6 @@
 ﻿namespace Typin.Commands.Schemas
 {
     using System;
-    using System.Collections.Generic;
     using Typin.Models.Schemas;
     using Typin.Schemas.Collections;
 
@@ -11,10 +10,7 @@
     public class CommandSchema : ICommandSchema
     {
         /// <inheritdoc/>
-        public string Name { get; }
-
-        /// <inheritdoc/>
-        public IReadOnlyList<string> NameSegments { get; }
+        public IReadOnlyAliasCollection Aliases { get; }
 
         /// <inheritdoc/>
         public bool IsDefault { get; }
@@ -38,20 +34,19 @@
         /// Initializes an instance of <see cref="CommandSchema"/>.
         /// </summary>
         public CommandSchema(bool isDynamic,
-                             string name,
+                             IReadOnlyAliasCollection aliases,
                              string? description,
                              IModelSchema model,
                              Type handler,
                              IExtensionsCollection extensions)
         {
-            Name = name.Trim() ?? throw new ArgumentNullException(nameof(name));
-            NameSegments = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            IsDefault = NameSegments.Count == 0;
+            Aliases = new AliasCollection(aliases ?? throw new ArgumentNullException(nameof(aliases)));
+            IsDefault = Aliases.Contains(string.Empty);
             IsDynamic = isDynamic;
             Description = description;
-            Model = model;
-            Handler = handler;
-            Extensions = extensions;
+            Model = model ?? throw new ArgumentNullException(nameof(model));
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            Extensions = extensions ?? throw new ArgumentNullException(nameof(extensions));
         }
 
         ///// <inheritdoc/>
@@ -100,7 +95,7 @@
                 " | " +
                 $"{nameof(Model)}.{nameof(IModelSchema.Type)} = {Model.Type}, " +
                 $"{nameof(Handler)} = {Handler}, " +
-                $"{nameof(Name)} = {Name}, " +
+                $"{nameof(Aliases)} = {Aliases}, " +
                 $"{nameof(IsDefault)} = {IsDefault}";
         }
     }

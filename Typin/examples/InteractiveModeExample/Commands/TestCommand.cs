@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using Typin;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Commands.Builders;
     using Typin.Console;
     using Typin.Models;
@@ -14,8 +13,10 @@
     using Typin.Models.Builders;
     using Typin.Modes;
     using Typin.Modes.Programmatic;
+    using Typin.Schemas.Attributes;
+    using Typin.Schemas.Builders;
 
-    [Command("TEST", Description = "Test command.")]
+    [Alias("TEST")]
     public class TestCommand : ICommand
     {
         [Parameter(0)]
@@ -60,7 +61,7 @@
 
                 await _cliModeSwitcher.WithModeAsync<ProgrammaticMode>(async (mode, ct) =>
                 {
-                    mode.Queue(new[] { "plot", "xy" }, 19);
+                    mode.Queue(new[] { "enum" }, 19);
                     mode.ExecutionOptions = CommandExecutionOptions.UseCurrentScope;
 
                     await mode.ExecuteAsync(ct);
@@ -95,9 +96,9 @@
             public ValueTask ConfigureAsync(ICommandBuilder<TestCommand> builder, CancellationToken cancellationToken)
             {
                 builder
-                    .Name("test")
-                    .Description("NEW!")
-                    .Handler<Handler>(); //TODO: do we really need Hander<T> call?
+                    .AddAlias("test")
+                    .UseDescription("NEW!")
+                    .UseHandler<Handler>(); //TODO: do we really need Hander<T> call?
 
                 return default;
             }

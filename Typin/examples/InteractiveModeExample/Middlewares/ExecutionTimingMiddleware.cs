@@ -22,9 +22,7 @@
         {
             _console.Output.WithForegroundColor(ConsoleColor.DarkGray, (output) =>
             {
-                output.WriteLine("--- Handling command '{0}' with args '{1}'",
-                                 args.Features.Get<ICommandFeature>()?.Schema.Name ?? "<?>",
-                                 string.Join(' ', args.Input.Original ?? Array.Empty<string>()));
+                output.WriteLine($"--- Handling command '{args.Features.Get<ICommandFeature>()?.Schema.Aliases}' with args '{string.Join(' ', args.Input.Original ?? Array.Empty<string>())}'");
             });
 
             Stopwatch stopwatch = Stopwatch.StartNew();

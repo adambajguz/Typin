@@ -4,6 +4,7 @@
     using System.Linq.Expressions;
     using System.Reflection;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Builders;
 
     /// <summary>
     /// Model builder.
@@ -12,11 +13,6 @@
     public interface IModelBuilder<TModel> : IBuilder<IModelSchema>, IManageExtensions<IModelBuilder<TModel>>
         where TModel : class, IModel
     {
-        /// <summary>
-        /// Model type.
-        /// </summary>
-        Type Model { get; }
-
         /// <summary>
         /// Configures an parameter property.
         /// </summary>

@@ -10,7 +10,7 @@
     {
         public ValueTask ConfigureAsync(ICommandBuilder builder, CancellationToken cancellationToken)
         {
-            builder.FromAttribute();
+            builder.FromAttributes();
 
             return default;
         }

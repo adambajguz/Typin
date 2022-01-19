@@ -3,6 +3,7 @@
     using System;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Builders;
 
     /// <summary>
     /// Model parameter builder.

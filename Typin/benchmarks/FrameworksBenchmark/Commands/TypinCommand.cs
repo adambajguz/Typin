@@ -1,10 +1,10 @@
 ﻿namespace FrameworksBenchmark.Commands
 {
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command]
+    [Alias]
     public class TypinCommand : ICommand
     {
         [Option("str", 's')]

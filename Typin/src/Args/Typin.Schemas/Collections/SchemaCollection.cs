@@ -19,7 +19,7 @@
         /// <summary>
         /// Data.
         /// </summary>
-        protected Dictionary<TKey, TSchema> Data { get; set; } = new();
+        protected Dictionary<TKey, TSchema> Data { get; set; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="SchemaCollection{TKey, TSchema}"/>.
@@ -27,6 +27,16 @@
         public SchemaCollection(Func<TSchema, TKey> keyAccessor)
         {
             KeyAccessor = keyAccessor;
+            Data = new Dictionary<TKey, TSchema>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="SchemaCollection{TKey, TSchema}"/>.
+        /// </summary>
+        public SchemaCollection(Func<TSchema, TKey> keyAccessor, IEqualityComparer<TKey>? comparer)
+        {
+            KeyAccessor = keyAccessor;
+            Data = new Dictionary<TKey, TSchema>(comparer);
         }
 
         /// <inheritdoc />

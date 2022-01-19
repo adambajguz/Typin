@@ -1,16 +1,18 @@
 ﻿namespace BookLibraryExample.Commands
 {
     using System;
+    using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
     using BookLibraryExample.Internal;
     using BookLibraryExample.Models;
     using BookLibraryExample.Services;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Schemas.Attributes;
 
-    [Command("book list", Description = "List all books in the library.")]
+    [Alias("book list")]
+    [Description("List all books in the library.")]
     public class BookListCommand : ICommand
     {
         private readonly LibraryService _libraryService;

@@ -2,12 +2,13 @@
 {
     using System.Collections.Generic;
     using Typin.Commands.Schemas;
+    using Typin.Schemas;
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Represents a collection of command schemas, where the key is <see cref="ICommandSchema.Name"/>.
+    /// Represents a collection of command schemas, where the key is <see cref="IAliasableSchema.Aliases"/>.
     /// </summary>
-    public interface ICommandSchemaCollection : ISchemaCollection<string, ICommandSchema>
+    public interface ICommandSchemaCollection : ISchemaCollection<IReadOnlyAliasCollection, string, ICommandSchema>
     {
         /// <summary>
         /// Finds all descendant commands of the parrent command by name.

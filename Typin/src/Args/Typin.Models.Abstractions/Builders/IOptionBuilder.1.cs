@@ -4,6 +4,7 @@
     using Typin.Models;
     using Typin.Models.Converters;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Builders;
 
     /// <summary>
     /// Model option builder.

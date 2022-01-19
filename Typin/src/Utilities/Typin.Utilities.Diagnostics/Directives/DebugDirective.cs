@@ -11,6 +11,7 @@
     using Typin.Directives.Builders;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Schemas.Builders;
 
     /// <summary>
     /// When application runs in debug mode (using the [debug] directive), it will wait for debugger to be attached before proceeding.
@@ -30,9 +31,9 @@
             /// <inheritdoc/>
             public ValueTask ConfigureAsync(IDirectiveBuilder<DebugDirective> builder, CancellationToken cancellationToken)
             {
-                builder.Name(DiagnosticsDirectives.Debug)
-                    .Description("Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")
-                    .Handler<Handler>();
+                builder.AddAlias(DiagnosticsDirectives.Debug)
+                    .UseDescription("Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")
+                    .UseHandler<Handler>();
 
                 return default;
             }

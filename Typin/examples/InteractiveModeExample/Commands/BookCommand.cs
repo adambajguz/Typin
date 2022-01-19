@@ -6,10 +6,10 @@
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Schemas.Attributes;
 
-    [Command("book", Description = "List all books in the library.")]
+    [Alias("book")]
     public class BookCommand : ICommand
     {
         private readonly LibraryService _libraryService;
@@ -49,7 +49,7 @@
         }
     }
 
-    [Command("BOOK", Description = "List all books in the library.")]
+    [Alias("BOOK")]
     public class Book2Command : ICommand
     {
         private readonly LibraryService _libraryService;

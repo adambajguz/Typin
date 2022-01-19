@@ -4,9 +4,11 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("exit", Description = "Exits.")]
+    [Alias("exit")]
+    [Alias("quit")]
+    [Alias("kill")]
     public class ExitCommand : ICommand
     {
         private readonly IHostApplicationLifetime _lifetime;

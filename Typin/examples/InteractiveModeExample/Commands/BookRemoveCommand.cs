@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using InteractiveModeExample.Services;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("book remove", Description = "Remove a book from the library.")]
+    [Alias("book remove")]
     public class BookRemoveCommand : ICommand
     {
         private readonly LibraryService _libraryService;

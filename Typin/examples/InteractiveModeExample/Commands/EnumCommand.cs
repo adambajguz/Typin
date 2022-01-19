@@ -5,10 +5,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("enum", Description = "Enum test command.")]
+    [Alias("enum")]
     public class EnumCommand : ICommand
     {
         [Option("d1")]

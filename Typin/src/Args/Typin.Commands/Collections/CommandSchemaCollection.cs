@@ -5,27 +5,66 @@
     using System.Linq;
     using Typin.Commands.Schemas;
     using Typin.Schemas.Collections;
+    using Typin.Schemas.Comparers;
 
     /// <summary>
     /// Default implementation of <see cref="ICommandSchemaCollection"/>.
     /// </summary>
-    public class CommandSchemaCollection : SchemaCollection<string, ICommandSchema>, ICommandSchemaCollection
+    public class CommandSchemaCollection : SchemaCollection<IReadOnlyAliasCollection, ICommandSchema>, ICommandSchemaCollection
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CommandSchemaCollection"/>.
         /// </summary>
         public CommandSchemaCollection() :
-            base(schema => schema.Name)
+            base(schema => schema.Aliases, DefaultAliasCollectionComparer.Instance)
         {
 
+        }
+
+        /// <inheritdoc />
+        public ICommandSchema? this[string key]
+        {
+            get
+            {
+                return this[new AliasCollection
+                {
+                    key
+                }];
+            }
+            set
+            {
+                this[new AliasCollection
+                {
+                    key
+                }] = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public ICommandSchema? Get(string key)
+        {
+            return Get(new AliasCollection
+            {
+                key
+            });
+        }
+
+        /// <inheritdoc />
+        public bool Remove(string key)
+        {
+            return Remove(new AliasCollection
+            {
+                key
+            });
         }
 
         private static IEnumerable<ICommandSchema> GetDescendantCommands(IEnumerable<ICommandSchema> potentialParentCommands, string? parentCommandName)
         {
             parentCommandName = parentCommandName?.Trim() ?? string.Empty;
+            string v = parentCommandName + ' ';
 
             return potentialParentCommands.Where(c => string.IsNullOrWhiteSpace(parentCommandName) ||
-                                                 c.Name!.StartsWith(parentCommandName + ' ', StringComparison.Ordinal));
+                                                 c.Aliases!.Any(y => y.StartsWith(v, StringComparison.Ordinal)));
         }
 
         /// <inheritdoc/>
@@ -44,10 +83,13 @@
             // Filter out descendants of descendants, leave only children
             List<ICommandSchema> result = new(descendants);
 
-            foreach (var descendant in descendants)
+            foreach (ICommandSchema descendant in descendants)
             {
-                var descendantDescendants = GetDescendantCommands(descendants, descendant.Name).ToHashSet();
-                result.RemoveAll(t => descendantDescendants.Contains(t));
+                foreach (string alias in descendant.Aliases)
+                {
+                    var descendantDescendants = GetDescendantCommands(descendants, alias).ToHashSet();
+                    result.RemoveAll(t => descendantDescendants.Contains(t));
+                }
             }
 
             return result;
@@ -61,14 +103,14 @@
                 return false;
             }
 
-            if (Data.ContainsKey(commandName))
+            if (Data.ContainsKey(new AliasCollection { commandName }))
             {
                 return true;
             }
 
             commandName = string.Concat(commandName.Trim(), " ");
 
-            return Data.Keys.Where(x => x.StartsWith(commandName)).Any();
+            return Data.Keys.Where(x => x.Any(y => y.StartsWith(commandName))).Any();
         }
     }
 }

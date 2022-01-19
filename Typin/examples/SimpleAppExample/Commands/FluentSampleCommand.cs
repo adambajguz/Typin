@@ -4,13 +4,14 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Commands.Builders;
     using Typin.Console;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Schemas.Attributes;
+    using Typin.Schemas.Builders;
 
-    [Command]
+    [Alias]
     public sealed record FluentSampleCommand : ICommand
     {
         public int? Parameter { get; init; }
@@ -59,8 +60,8 @@
 
             public ValueTask ConfigureAsync(ICommandBuilder<FluentSampleCommand> builder, CancellationToken cancellationToken)
             {
-                builder.DefaultName()
-                    .Description("A command configured using fluent API.");
+                builder.AddDefaultAlias()
+                    .UseDescription("A command configured using fluent API.");
 
                 return default;
             }

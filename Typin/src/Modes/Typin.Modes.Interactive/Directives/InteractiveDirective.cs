@@ -1,11 +1,12 @@
 ﻿namespace Typin.Modes.Interactive.Directives
 {
+    using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
     using Typin;
     using Typin.Directives;
-    using Typin.Directives.Attributes;
+    using Typin.Schemas.Attributes;
 
     /// <summary>
     /// If application runs in interactive mode (using the interactive command or [interactive] directive), it is possible to execute multiple commands in one processes.
@@ -13,8 +14,9 @@
     /// This is useful for situations when it is necessary to execute multiple commands (since you don't have to constantly type dotnet ...).
     /// Furthermore, application context can be shared, which is useful when you have a db connection or startup takes very long.
     /// </summary>
-    [Directive(InteractiveOnlyDirectives.Interactive, Description = "Executes a command, then starts an interactive mode.")]
-    public sealed class InteractiveDirective : Typin.Directives.IDirective //TODO: add directive hadnler
+    [Alias(InteractiveOnlyDirectives.Interactive)]
+    [Description("Executes a command, then starts an interactive mode.")]
+    public sealed class InteractiveDirective : IDirective //TODO: add directive hadnler
     {
         private sealed class Handler : IDirectiveHandler<InteractiveDirective>
         {

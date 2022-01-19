@@ -5,8 +5,9 @@
     /// <summary>
     /// Represents a collection of schemas.
     /// </summary>
-    public interface ISchemaCollection<TKey, TSchema> : IEnumerable<KeyValuePair<TKey, TSchema>>
-        where TKey : notnull
+    public interface ISchemaCollection<TKey0, TKey1, TSchema> : ISchemaCollection<TKey0, TSchema>
+        where TKey0 : notnull, IEnumerable<TKey1>
+        where TKey1 : notnull
         where TSchema : class, ISchema
     {
         /// <summary>
@@ -14,14 +15,42 @@
         /// </summary>
         /// <param name="key"></param>
         /// <returns>The requested schema, or null if it is not present.</returns>
-        TSchema? this[TKey key] { get; set; }
+        TSchema? this[TKey1 key] { get; set; }
 
         /// <summary>
         /// Retrieves the requested schema from the collection.
         /// </summary>
         /// <param name="key"></param>
         /// <returns>The requested schema, or null if it is not present.</returns>
-        TSchema? Get(TKey key);
+        TSchema? Get(TKey1 key);
+
+        /// <summary>
+        /// Removes a schema in the collection by key.
+        /// </summary>
+        /// <param name="key">The schema key.</param>
+        bool Remove(TKey1 key);
+    }
+
+    /// <summary>
+    /// Represents a collection of schemas.
+    /// </summary>
+    public interface ISchemaCollection<TKey0, TSchema> : IEnumerable<KeyValuePair<TKey0, TSchema>>
+        where TKey0 : notnull
+        where TSchema : class, ISchema
+    {
+        /// <summary>
+        /// Gets or sets a given schema. Setting a null value removes the feature.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>The requested schema, or null if it is not present.</returns>
+        TSchema? this[TKey0 key] { get; set; }
+
+        /// <summary>
+        /// Retrieves the requested schema from the collection.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>The requested schema, or null if it is not present.</returns>
+        TSchema? Get(TKey0 key);
 
         /// <summary>
         /// Sets the given schema in the collection.
@@ -33,7 +62,7 @@
         /// Removes a schema in the collection by key.
         /// </summary>
         /// <param name="key">The schema key.</param>
-        bool Remove(TKey key);
+        bool Remove(TKey0 key);
 
         /// <summary>
         /// Removes the given schema from the collection.

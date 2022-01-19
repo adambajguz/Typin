@@ -14,7 +14,7 @@
         /// <summary>
         /// Model type.
         /// </summary>
-        protected Type Model { get; }
+        public Type ModelType { get; }
 
         /// <summary>
         /// Property info.
@@ -33,7 +33,7 @@
         /// <param name="propertyInfo"></param>
         public ArgumentBuilder(Type model, PropertyInfo propertyInfo)
         {
-            Model = model;
+            ModelType = model;
             Property = propertyInfo;
         }
 
@@ -46,7 +46,7 @@
         {
             if (_built)
             {
-                throw new InvalidOperationException($"Argument '{Model}.{Property}' was already built.");
+                throw new InvalidOperationException($"Argument '{ModelType}.{Property}' was already built.");
             }
 
             _built = true;

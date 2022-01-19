@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -11,6 +12,8 @@
     internal class OptionBuilder<TModel> : OptionBuilder, IOptionBuilder<TModel>
         where TModel : class, IModel
     {
+        IOptionBuilder<TModel> ISelf<IOptionBuilder<TModel>>.Self => this;
+
         /// <summary>
         /// Initializes a new instance of <see cref="OptionBuilder{TModel}"/>.
         /// </summary>

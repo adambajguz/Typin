@@ -9,6 +9,7 @@
     using Typin.Directives.Builders;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Schemas.Builders;
 
     /// <summary>
     /// When preview mode is specified (using the [preview] directive), the app will short-circuit by printing consumed command line arguments as they were parsed.
@@ -27,9 +28,9 @@
             /// <inheritdoc/>
             public ValueTask ConfigureAsync(IDirectiveBuilder<PreviewDirective> builder, CancellationToken cancellationToken)
             {
-                builder.Name(DiagnosticsDirectives.Preview)
-                    .Description("The app will short-circuit by printing consumed command line arguments as they were parsed.")
-                    .Handler<Handler>();
+                builder.AddAlias(DiagnosticsDirectives.Preview)
+                    .UseDescription("The app will short-circuit by printing consumed command line arguments as they were parsed.")
+                    .UseHandler<Handler>();
 
                 return default;
             }

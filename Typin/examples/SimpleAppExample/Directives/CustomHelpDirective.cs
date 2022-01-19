@@ -8,6 +8,7 @@
     using Typin.Directives.Builders;
     using Typin.Models;
     using Typin.Models.Builders;
+    using Typin.Schemas.Builders;
 
     public sealed class CustomHelpDirective : IDirective
     {
@@ -22,8 +23,8 @@
             /// <inheritdoc/>
             public ValueTask ConfigureAsync(IDirectiveBuilder<CustomHelpDirective> builder, CancellationToken cancellationToken)
             {
-                builder.Name("chelp")
-                    .Handler<Handler>();
+                builder.AddAlias("chelp")
+                    .UseHandler<Handler>();
 
                 return default;
             }

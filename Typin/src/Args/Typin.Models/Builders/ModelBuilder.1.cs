@@ -3,6 +3,7 @@
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -12,6 +13,8 @@
     public class ModelBuilder<TModel> : ModelBuilder, IModelBuilder<TModel>
         where TModel : class, IModel
     {
+        IModelBuilder<TModel> ISelf<IModelBuilder<TModel>>.Self => this;
+
         /// <summary>
         /// Initializes a new instance of <see cref="ModelBuilder{TModel}"/>.
         /// </summary>

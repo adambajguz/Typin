@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Reflection;
     using Typin.Models.Schemas;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -37,14 +38,18 @@
         private IBuilder<IOptionSchema>? _currentOptionBuilder;
 
         /// <inheritdoc/>
-        public Type Model { get; }
+        public IModelBuilder Self { get; }
+
+        /// <inheritdoc/>
+        public Type ModelType { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="ModelBuilder{TModel}"/>.
         /// </summary>
         public ModelBuilder(Type model)
         {
-            Model = model;
+            Self = this;
+            ModelType = model;
         }
 
         IModelBuilder IManageExtensions<IModelBuilder>.ManageExtensions(Action<IExtensionsCollection> action)
@@ -57,7 +62,7 @@
         /// <inheritdoc/>
         public IParameterBuilder Parameter(PropertyInfo propertyInfo)
         {
-            ParameterBuilder builder = new(Model, Parameters.Count, propertyInfo);
+            ParameterBuilder builder = new(ModelType, Parameters.Count, propertyInfo);
             AddParameterBuilder(builder);
 
             return builder;
@@ -80,7 +85,7 @@
         /// <inheritdoc/>
         public IOptionBuilder Option(PropertyInfo propertyInfo)
         {
-            OptionBuilder builder = new(Model, propertyInfo);
+            OptionBuilder builder = new(ModelType, propertyInfo);
             AddOptionBuilder(builder);
 
             return builder;
@@ -117,7 +122,7 @@
             AddParameterBuilder(null);
             AddOptionBuilder(null);
 
-            ModelSchema schema = new(Model,
+            ModelSchema schema = new(ModelType,
                                      Parameters,
                                      Options,
                                      RequiredOptions,
@@ -136,7 +141,7 @@
         {
             if (_built)
             {
-                throw new InvalidOperationException($"Model was '{Model}' already built.");
+                throw new InvalidOperationException($"Model was '{ModelType}' already built.");
             }
 
             _built = true;

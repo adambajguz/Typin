@@ -6,10 +6,10 @@
     using InteractiveModeExample.Internal;
     using InteractiveModeExample.Services;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
+    using Typin.Schemas.Attributes;
 
-    [Command("book list", Description = "List all books in the library.")]
+    [Alias("book list")]
     public class BookListCommand : ICommand
     {
         private readonly LibraryService _libraryService;

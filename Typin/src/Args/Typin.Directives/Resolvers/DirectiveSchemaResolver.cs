@@ -23,8 +23,8 @@
         /// Initializes a new instance of <see cref="DirectiveSchemaProvider"/>.
         /// </summary>
         public DirectiveSchemaResolver(IEnumerable<IConfigureDirective> globalConfigurators,
-                                     IEnumerable<IConfigureDirective<TDirective>> configurators,
-                                     IModelSchemaCollection modelSchemas)
+                                       IEnumerable<IConfigureDirective<TDirective>> configurators,
+                                       IModelSchemaCollection modelSchemas)
         {
             _globalConfigurators = globalConfigurators;
             _configurators = configurators;

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -11,6 +12,8 @@
     internal class ParameterBuilder<TModel> : ParameterBuilder, IParameterBuilder<TModel>
         where TModel : class, IModel
     {
+        IParameterBuilder<TModel> ISelf<IParameterBuilder<TModel>>.Self => this;
+
         /// <summary>
         /// Initializes a new instance of <see cref="ParameterBuilder{TModel}"/>.
         /// </summary>

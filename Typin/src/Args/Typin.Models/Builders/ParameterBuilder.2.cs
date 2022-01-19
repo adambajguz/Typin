@@ -4,6 +4,7 @@
     using System.Linq.Expressions;
     using Typin.Models.Converters;
     using Typin.Models.Extensions;
+    using Typin.Schemas.Builders;
     using Typin.Schemas.Collections;
 
     /// <summary>
@@ -14,6 +15,8 @@
     internal class ParameterBuilder<TModel, TProperty> : ParameterBuilder<TModel>, IParameterBuilder<TModel, TProperty>
         where TModel : class, IModel
     {
+        IParameterBuilder<TModel, TProperty> ISelf<IParameterBuilder<TModel, TProperty>>.Self => this;
+
         /// <summary>
         /// Initializes a new instance of <see cref="ParameterBuilder{TModel, TProperty}"/>.
         /// </summary>

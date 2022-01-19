@@ -4,9 +4,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
+    using Typin.Schemas.Attributes;
 
-    [Command("ex", Description = "Throws exception that cannot be handled.")]
+    [Alias("ex")]
     public class ExCommand : ICommand
     {
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
