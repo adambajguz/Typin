@@ -100,5 +100,13 @@
 
             return tmp;
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"{nameof(Count)} = {Count}";
+        }
     }
 }

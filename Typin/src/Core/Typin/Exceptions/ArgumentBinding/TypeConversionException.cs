@@ -54,8 +54,8 @@
         {
             string argumentKind = argument switch
             {
-                ParameterSchema => "Parameter",
-                OptionSchema => "Option",
+                IParameterSchema => "Parameter",
+                IOptionSchema => "Option",
                 _ => "Argument"
             };
 

@@ -35,13 +35,18 @@
                 return false;
             }
 
-            return x.IsSubsetOf(y);
+            if (x.Count == 0 || y.Count == 0)
+            {
+                return false;
+            }
+
+            return x.Overlaps(y);
         }
 
         /// <inheritdoc/>
         public int GetHashCode([DisallowNull] IReadOnlyAliasCollection obj)
         {
-            return obj.GetHashCode();
+            return 0;
         }
     }
 }

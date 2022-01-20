@@ -24,20 +24,8 @@
         /// <inheritdoc />
         public ICommandSchema? this[string key]
         {
-            get
-            {
-                return this[new AliasCollection
-                {
-                    key
-                }];
-            }
-            set
-            {
-                this[new AliasCollection
-                {
-                    key
-                }] = value;
-            }
+            get => this[new AliasCollection { key }];
+            set => this[new AliasCollection { key }] = value;
         }
 
         /// <inheritdoc />

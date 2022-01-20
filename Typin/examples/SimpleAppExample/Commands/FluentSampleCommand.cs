@@ -51,6 +51,10 @@
                     .Name("str")
                     .ShortName('s');
 
+                builder.Option(x => x.IntOption)
+                    .Name("int")
+                    .ShortName('i');
+
                 builder.Option(x => x.BoolOption)
                     .Name("bool")
                     .ShortName('b');

@@ -43,7 +43,7 @@
             }
 
             /// <inheritdoc/>
-            public async ValueTask ExecuteAsync(IDirectiveArgs<CustomHelpDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            public async ValueTask ExecuteAsync(DirectiveArgs<CustomHelpDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
                 _console.Output.WriteLine("[chelp] handled!");
 

@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Typin.Features.Binding;
-    using Typin.Models;
 
     /// <summary>
     /// Binder feature.
@@ -25,7 +24,7 @@
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Whether <paramref name="model"/> was added.</returns>
-        bool TryAdd(BindableModel model);
+        void Add(BindableModel model);
 
         /// <summary>
         /// Removes a bindable model by identifier.
@@ -46,21 +45,14 @@
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        BindableModel? Get(Type type);
+        IReadOnlyList<BindableModel> Get(Type type);
 
         /// <summary>
         /// Get bindable model by identifier.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        BindableModel? Get(int id);
-
-        /// <summary>
-        /// Get bindable model instance  by type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T? Get<T>() where T : class, IModel;
+        IReadOnlyList<BindableModel> Get(int id);
 
         /// <summary>
         /// Binds <see cref="UnboundedTokens"/> to models in <see cref="Bindable"/>.
@@ -70,9 +62,17 @@
         void Bind(IServiceProvider serviceProvider);
 
         /// <summary>
+        /// Binds <see cref="UnboundedTokens"/> to model <paramref name="bindableModel"/>.
+        /// This method be called multiple times.
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="bindableModel"></param>
+        void Bind(IServiceProvider serviceProvider, BindableModel bindableModel); //TODO: is this neccessary.
+
+        /// <summary>
         /// Validates whether all input, as well as all parameters and required options were bounded.
         /// </summary>
         /// <returns></returns>
-        bool Validate();
+        void Validate();
     }
 }

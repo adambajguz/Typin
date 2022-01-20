@@ -41,7 +41,7 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Schema)} = {Schema}";
+                $"{nameof(Schema)} = {{{Schema}}}";
         }
     }
 }

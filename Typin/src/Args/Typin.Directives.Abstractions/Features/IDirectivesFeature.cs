@@ -1,7 +1,6 @@
 ﻿namespace Typin.Directives.Features
 {
     using System.Collections.Generic;
-    using Typin.Directives;
 
     /// <summary>
     /// Directives feature.
@@ -11,6 +10,6 @@
         /// <summary>
         /// Current directives instances.
         /// </summary>
-        IReadOnlyList<IDirective> Instances { get; }
+        IReadOnlyList<DirectiveInstance> Instances { get; }
     }
 }

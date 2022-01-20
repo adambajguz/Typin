@@ -38,22 +38,6 @@
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int v = int.MinValue;
-
-                foreach (string s in this)
-                {
-                    v += s.GetHashCode();
-                }
-
-                return v;
-            }
-        }
-
-        /// <inheritdoc/>
         public override string? ToString()
         {
             return string.Join('|', this);

@@ -45,15 +45,15 @@
         {
             int index = 0;
 
-            DirectiveCollection directivesGroup = new();
+            DirectiveCollection directives = new();
             List<string> tmp = commandLineArguments.ToList();
 
-            ParseDirectives(directivesGroup, tmp, ref index);
+            ParseDirectives(directives, tmp, ref index);
 
-            return directivesGroup;
+            return directives;
         }
 
-        private void ParseDirectives(IDirectiveCollection directivesGroup,
+        private void ParseDirectives(IDirectiveCollection directives,
                                      IReadOnlyList<string> args,
                                      ref int index)
         {
@@ -69,12 +69,10 @@
 
                 int id = Interlocked.Increment(ref _idSource);
                 DirectiveToken directiveToken = new(id, directiveName);
-                directivesGroup.Add(directiveToken);
+                directives.Add(directiveToken);
 
                 if (!isTerminated)
                 {
-                    index++;
-
                     ITokenCollection childTokens = directiveToken.Children;
 
                     ParseValues(childTokens, args, isExplicitlyOpened, ref index);

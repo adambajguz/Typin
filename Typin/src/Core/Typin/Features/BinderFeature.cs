@@ -8,18 +8,16 @@ namespace Typin.Features
     using Typin.Features.Binding;
     using Typin.Features.Input;
     using Typin.Features.Input.Tokens;
-    using Typin.Models;
     using Typin.Models.Binding;
     using Typin.Models.Schemas;
-    using Typin.Utilities.Extensions;
 
     /// <summary>
     /// <see cref="IBinderFeature"/> implementation.
     /// </summary>
     internal sealed class BinderFeature : IBinderFeature
     {
-        private readonly Dictionary<Type, BindableModel> _bindableMapByType = new();
-        private readonly Dictionary<int, BindableModel> _bindableMapById = new();
+        private readonly Dictionary<Type, List<BindableModel>> _bindableMapByType = new();
+        private readonly Dictionary<int, List<BindableModel>> _bindableMapById = new();
         private readonly List<BindableModel> _bindable = new();
 
         /// <inheritdoc/>
@@ -37,26 +35,40 @@ namespace Typin.Features
         }
 
         /// <inheritdoc/>
-        public bool TryAdd(BindableModel model)
+        public void Add(BindableModel model)
         {
-            if (_bindableMapByType.TryAdd(model.Schema.Type, model))
+            if (_bindableMapById.TryGetValue(model.DirectiveId, out var byId))
             {
-                _bindable.Add(model);
-                _bindableMapById.Add(model.Id, model);
-
-                return true;
+                byId.Add(model);
+            }
+            else
+            {
+                _bindableMapById.Add(model.DirectiveId, new List<BindableModel> { model });
             }
 
-            return false;
+            Type schemaType = model.Schema.Type;
+            if (_bindableMapByType.TryGetValue(schemaType, out var byType))
+            {
+                byType.Add(model);
+            }
+            else
+            {
+                _bindableMapByType.Add(schemaType, new List<BindableModel> { model });
+            }
+
+            _bindable.Add(model);
         }
 
         /// <inheritdoc/>
         public bool TryRemove(int id)
         {
-            if (_bindableMapById.Remove(id, out BindableModel? model))
+            if (_bindableMapById.Remove(id, out var models))
             {
-                _bindable.Remove(model);
-                _bindableMapByType.Remove(model.Schema.Type);
+                foreach (var model in models)
+                {
+                    _bindable.Remove(model);
+                    _bindableMapByType.Remove(model.Schema.Type);
+                }
 
                 return true;
             }
@@ -67,10 +79,13 @@ namespace Typin.Features
         /// <inheritdoc/>
         public bool TryRemove(Type type)
         {
-            if (_bindableMapByType.Remove(type, out BindableModel? model))
+            if (_bindableMapByType.Remove(type, out var models))
             {
-                _bindable.Remove(model);
-                _bindableMapById.Remove(model.Id);
+                foreach (var model in models)
+                {
+                    _bindable.Remove(model);
+                    _bindableMapById.Remove(model.DirectiveId);
+                }
 
                 return true;
             }
@@ -79,60 +94,72 @@ namespace Typin.Features
         }
 
         /// <inheritdoc/>
-        public BindableModel? Get(Type type)
+        public IReadOnlyList<BindableModel> Get(Type type)
         {
-            return _bindableMapByType.GetValueOrDefault(type);
+            return _bindableMapByType.GetValueOrDefault(type) ?? new List<BindableModel>();
         }
 
         /// <inheritdoc/>
-        public BindableModel? Get(int id)
+        public IReadOnlyList<BindableModel> Get(int id)
         {
-            return _bindableMapById.GetValueOrDefault(id);
-        }
-
-        /// <inheritdoc/>
-        public T? Get<T>()
-            where T : class, IModel
-        {
-            return _bindableMapByType.GetValueOrDefault(typeof(T))?.Instance as T;
+            return _bindableMapById.GetValueOrDefault(id) ?? new List<BindableModel>();
         }
 
         /// <inheritdoc/>
         public void Bind(IServiceProvider serviceProvider)
         {
+            if (UnboundedTokens.IsBounded)
+            {
+                return;
+            }
+
             foreach (BindableModel bindableModel in Bindable)
             {
-                BindParameters(serviceProvider, bindableModel);
-                BindOptions(serviceProvider, bindableModel);
+                Bind(serviceProvider, bindableModel);
             }
         }
 
         /// <inheritdoc/>
-        public bool Validate()
+        public void Bind(IServiceProvider serviceProvider, BindableModel bindableModel)
         {
-            // Ensure all tokens were bounded
-            if (UnboundedTokens.Count > 0)
+            if (UnboundedTokens.IsBounded)
             {
-                throw new UnboundedTokensException();
+                return;
             }
 
-            return true;
+            IUnboundedDirectiveToken? unboudnedDirectiveTokens = UnboundedTokens[bindableModel.DirectiveId];
+
+            if (unboudnedDirectiveTokens is { HasUnbounded: true })
+            {
+                BindParameters(serviceProvider, bindableModel, unboudnedDirectiveTokens);
+                BindOptions(serviceProvider, bindableModel, unboudnedDirectiveTokens);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Validate()
+        {
+            // Ensure all tokens were bounded
+            if (UnboundedTokens.HasUnbounded)
+            {
+                throw new UnboundedTokensException(UnboundedTokens);
+            }
         }
 
         #region Helpers
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        private void BindParameters(IServiceProvider serviceProvider, BindableModel bindableModel)
+        private static void BindParameters(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboudnedDirectiveTokens)
         {
-            TokenGroup<ValueToken>? parameterGroup = UnboundedTokens[0].Children?.Get<ValueToken>();
+            TokenGroup<ValueToken>? parameterGroup = unboudnedDirectiveTokens.Children.Get<ValueToken>();
 
             if (parameterGroup is null)
             {
                 return;
             }
 
-            IList<ValueToken>? parameterInputs = parameterGroup.Tokens;
+            IList<ValueToken>? parameterInputs = parameterGroup.Tokens; //TODO: remove tokens after binding
             IReadOnlyList<IParameterSchema> parameters = bindableModel.Schema.Parameters;
 
             // All inputs must be bound
@@ -181,29 +208,25 @@ namespace Typin.Features
         /// <summary>
         /// Binds option inputs in command instance.
         /// </summary>
-        public void BindOptions(IServiceProvider serviceProvider, BindableModel bindableModel)
+        public static void BindOptions(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboudnedDirectiveTokens)
         {
-            TokenGroup<NamedToken>? optionGroup = UnboundedTokens[0].Children?.Get<NamedToken>();
+            TokenGroup<NamedToken>? optionGroup = unboudnedDirectiveTokens.Children.Get<NamedToken>();
 
             if (optionGroup is null)
             {
                 return;
             }
 
-            IList<NamedToken>? optionInputs = optionGroup.Tokens;
+            IList<NamedToken> optionInputs = optionGroup.Tokens;
+            IReadOnlyList<IOptionSchema> requiredOptions = bindableModel.Schema.RequiredOptions;
             IReadOnlyList<IOptionSchema> options = bindableModel.Schema.Options;
 
-            // All inputs must be bound
-            HashSet<NamedToken> remainingOptionInputs = optionInputs.ToHashSet();
-
-            // All required options must be set
-            HashSet<IOptionSchema> unsetRequiredOptions = options.Where(o => o.IsRequired)
-                                                                 .ToHashSet();
+            HashSet<IOptionSchema> unsetRequiredOptions = requiredOptions.ToHashSet();
 
             // Direct or fallback input
-            foreach (OptionSchema option in options)
+            foreach (OptionSchema option in requiredOptions.Concat(options))
             {
-                IEnumerable<NamedToken> inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias));
+                IEnumerable<NamedToken> inputs = optionInputs.Where(i => option.MatchesNameOrShortName(i.Alias)); //TODO: remove tokens after binding
 
                 bool inputsProvided = inputs.Any();
 
@@ -222,13 +245,7 @@ namespace Typin.Features
 
                 option.BindOn(serviceProvider, bindableModel, inputValues);
 
-                remainingOptionInputs.RemoveRange(inputs);
-
-                // Required option implies that the value has to be set and also be non-empty
-                if (inputValues.Any())
-                {
-                    unsetRequiredOptions.Remove(option);
-                }
+                unsetRequiredOptions.Remove(option);
             }
 
             // Ensure all required options were set
@@ -244,7 +261,7 @@ namespace Typin.Features
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(UnboundedTokens)} = {UnboundedTokens}";
+                $"{nameof(UnboundedTokens)} = {{{UnboundedTokens}}}";
         }
     }
 }

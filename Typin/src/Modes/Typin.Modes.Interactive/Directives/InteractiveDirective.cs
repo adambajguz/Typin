@@ -34,7 +34,7 @@
             }
 
             /// <inheritdoc/>
-            public async ValueTask ExecuteAsync(IDirectiveArgs<InteractiveDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            public async ValueTask ExecuteAsync(DirectiveArgs<InteractiveDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
                 //await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
                 //{

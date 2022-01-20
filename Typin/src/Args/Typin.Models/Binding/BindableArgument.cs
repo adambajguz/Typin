@@ -14,7 +14,7 @@
     /// </summary>
     public sealed class BindableArgument : IBindableArgument
     {
-        private readonly static Action<IDynamicModel, IArgumentCollection> _dynamicArgumentCollectionSetter;
+        private static readonly Action<IDynamicModel, IArgumentCollection> _dynamicArgumentCollectionSetter;
 
         static BindableArgument()
         {

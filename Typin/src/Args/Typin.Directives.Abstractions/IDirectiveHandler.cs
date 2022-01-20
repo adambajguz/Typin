@@ -9,8 +9,18 @@
     /// <summary>
     /// Entry point for a <see cref="IDirective"/>.
     /// </summary>
-    public interface IDirectiveHandler : IStep<IDirectiveArgs>
+    public interface IDirectiveHandler
     {
+        /// <summary>
+        /// Executes the directive.
+        /// This is the method that's called when the directive is invoked by a user through directive line.
+        /// </summary>
+        /// <remarks>If the execution of the directive is not asynchronous, simply end the method with <code>return default;</code></remarks>
+        public ValueTask ExecuteAsync(DirectiveArgs args,
+                                      StepDelegate next,
+                                      CancellationToken cancellationToken = default);
+
+
         /// <summary>
         /// Checks whether type is a valid direcrive handler.
         /// </summary>
@@ -42,14 +52,12 @@
     public interface IDirectiveHandler<TDirective> : IDirectiveHandler
         where TDirective : class, IDirective
     {
-        ValueTask IStep<IDirectiveArgs>.ExecuteAsync(IDirectiveArgs args,
-                                                     StepDelegate next,
-                                                     IInvokablePipeline<IDirectiveArgs> invokablePipeline,
-                                                     CancellationToken cancellationToken)
+        ValueTask IDirectiveHandler.ExecuteAsync(DirectiveArgs args,
+                                                 StepDelegate next,
+                                                 CancellationToken cancellationToken)
         {
-            return ExecuteAsync((IDirectiveArgs<TDirective>)args,
+            return ExecuteAsync(args.As<TDirective>(),
                                 next,
-                                invokablePipeline,
                                 cancellationToken);
         }
 
@@ -58,9 +66,8 @@
         /// This is the method that's called when the directive is invoked by a user through directive line.
         /// </summary>
         /// <remarks>If the execution of the directive is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        ValueTask ExecuteAsync(IDirectiveArgs<TDirective> args,
+        ValueTask ExecuteAsync(DirectiveArgs<TDirective> args,
                                StepDelegate next,
-                               IInvokablePipeline<IDirectiveArgs> invokablePipeline,
                                CancellationToken cancellationToken = default);
 
         /// <summary>

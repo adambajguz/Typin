@@ -30,10 +30,6 @@
                 {
                     yield return option;
                 }
-                foreach (IOptionSchema option in Options)
-                {
-                    yield return option;
-                }
             }
         }
 
@@ -87,7 +83,10 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Type)} = {Type}";
+                $"{nameof(Type)} = {Type}, " +
+                $"{nameof(IsDynamic)} = {IsDynamic}, " +
+                $"{nameof(Arguments)} = {Arguments}, " +
+                $"{nameof(Extensions)} = {Extensions}";
         }
     }
 }

@@ -51,7 +51,7 @@
                 " | " +
                 $"{nameof(Model)}.{nameof(IModelSchema.Type)} = {Model.Type}, " +
                 $"{nameof(Handler)} = {Handler}, " +
-                $"{nameof(Aliases)} = {Aliases}, " +
+                $"{nameof(Aliases)} = {{{Aliases}}}, " +
                 $"{nameof(IsDefault)} = {IsDefault}";
         }
     }

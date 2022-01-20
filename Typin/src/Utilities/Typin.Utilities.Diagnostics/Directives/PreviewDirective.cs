@@ -49,7 +49,7 @@
             }
 
             /// <inheritdoc/>
-            public ValueTask ExecuteAsync(IDirectiveArgs<PreviewDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            public ValueTask ExecuteAsync(DirectiveArgs<PreviewDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
                 //WriteCommandLineInput(_console, args.Context.Input.Tokens ?? throw new NullReferenceException("Input not set."));
                 args.Context.Output.ExitCode ??= ExitCode.Success;

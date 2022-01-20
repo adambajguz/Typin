@@ -28,7 +28,7 @@
         /// <summary>
         /// Child tokens collection.
         /// </summary>
-        IUnboundedTokenCollection? Children { get; }
+        IUnboundedTokenCollection Children { get; }
 
         /// <summary>
         /// Whether <paramref name="name"/> matches directive alias.

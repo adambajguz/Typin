@@ -51,9 +51,10 @@
             }
 
             /// <inheritdoc/>
-            public async ValueTask ExecuteAsync(IDirectiveArgs<CustomPreviewDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            public async ValueTask ExecuteAsync(DirectiveArgs<CustomPreviewDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
-                _console.Output.WriteLine($"[cpreview {args.Directive.Name} --delay {args.Directive.Delay}] handled!");
+                CustomPreviewDirective model = args;
+                _console.Output.WriteLine($"[cpreview {model.Name} --delay {model.Delay}] handled!");
 
                 await next();
             }

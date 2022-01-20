@@ -23,7 +23,7 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(CallServices)} = {CallServices}";
+                $"{nameof(CallServices)} = {{{CallServices}}}";
         }
     }
 }

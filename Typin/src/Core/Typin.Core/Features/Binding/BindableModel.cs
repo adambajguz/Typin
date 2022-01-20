@@ -9,9 +9,9 @@
     public sealed class BindableModel
     {
         /// <summary>
-        /// Bindable model identifier.
+        /// Bindable model directive identifier.
         /// </summary>
-        public int Id { get; }
+        public int DirectiveId { get; }
 
         /// <summary>
         /// Bindable model schema.
@@ -26,12 +26,12 @@
         /// <summary>
         /// Initializes a new instance of <see cref="BindableModel"/>.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="directiveId"></param>
         /// <param name="schema"></param>
         /// <param name="instance"></param>
-        public BindableModel(int id, IModelSchema schema, IModel instance)
+        public BindableModel(int directiveId, IModelSchema schema, IModel instance)
         {
-            Id = id;
+            DirectiveId = directiveId;
             Schema = schema;
             Instance = instance;
         }
@@ -41,7 +41,8 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Schema)} = {Schema}, " +
+                $"{nameof(DirectiveId)} = {DirectiveId}, " +
+                $"{nameof(Schema)} = {{{Schema}}}, " +
                 $"{nameof(Instance)} = {Instance}";
         }
     }

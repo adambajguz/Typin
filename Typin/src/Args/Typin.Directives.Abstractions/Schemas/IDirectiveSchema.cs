@@ -27,6 +27,6 @@
         /// <summary>
         /// Directive model schema.
         /// </summary>
-        IModelSchema Model { get; }
+        IModelSchema Model { get; } //TODO: add option to bind directive data to IDirective and another IModel/IDynamicModel (derived binding or sth) + add option to select binding order
     }
 }

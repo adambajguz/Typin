@@ -32,7 +32,7 @@
         [Option("bool", 'b')]
         public bool BoolOption { get; init; }
 
-        private sealed class Handler : ICommandHandler<AttributeSampleCommand>
+        private sealed class Handler : ICommandHandler<AttributeGlobalSampleCommand>
         {
             private readonly IConsole _console;
 
@@ -41,20 +41,20 @@
                 _console = console;
             }
 
-            public async ValueTask ExecuteAsync(AttributeSampleCommand command, CancellationToken cancellationToken)
+            public async ValueTask ExecuteAsync(AttributeGlobalSampleCommand command, CancellationToken cancellationToken)
             {
                 await _console.Output.WriteLineAsync(JsonSerializer.Serialize(command));
             }
         }
 
-        private sealed class Configure : IConfigureModel<AttributeSampleCommand>, IConfigureCommand<AttributeSampleCommand>
+        private sealed class Configure : IConfigureModel<AttributeGlobalSampleCommand>, IConfigureCommand<AttributeGlobalSampleCommand>
         {
-            public ValueTask ConfigureAsync(IModelBuilder<AttributeSampleCommand> builder, CancellationToken cancellationToken)
+            public ValueTask ConfigureAsync(IModelBuilder<AttributeGlobalSampleCommand> builder, CancellationToken cancellationToken)
             {
                 return default;
             }
 
-            public ValueTask ConfigureAsync(ICommandBuilder<AttributeSampleCommand> builder, CancellationToken cancellationToken)
+            public ValueTask ConfigureAsync(ICommandBuilder<AttributeGlobalSampleCommand> builder, CancellationToken cancellationToken)
             {
                 builder.FromAttributes();
 

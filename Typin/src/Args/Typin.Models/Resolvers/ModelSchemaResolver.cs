@@ -28,7 +28,7 @@
         /// <inheritdoc/>
         public async Task<IModelSchema> ResolveAsync(CancellationToken cancellationToken = default)
         {
-            ModelBuilder<TModel> builder = new();
+            ModelBuilder<TModel> builder = new(); //TODO: refactor ModelBuilder like command builder
 
             foreach (IConfigureModel globalConfigurator in _globalConfigurators)
             {

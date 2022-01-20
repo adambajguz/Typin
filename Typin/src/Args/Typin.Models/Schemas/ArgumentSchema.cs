@@ -63,7 +63,11 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Name)} = {Name}";
+                $"{nameof(Name)} = {Name}, " +
+                $"{nameof(Bindable)} = {Bindable}, " +
+                $"{nameof(Description)} = {Description}, " +
+                $"{nameof(ConverterType)} = {ConverterType}, " +
+                $"{nameof(Extensions)} = {Extensions}";
         }
     }
 }

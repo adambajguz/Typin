@@ -65,5 +65,13 @@
         {
             this[typeof(TFeature)] = instance;
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                " | " +
+                $"Extensions = [{string.Join("; ", _data.Keys)}]";
+        }
     }
 }

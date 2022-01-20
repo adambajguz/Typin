@@ -33,8 +33,8 @@
             return base.ToString() +
                 " | " +
                 $"{nameof(Original)} = [{string.Join(';', Original)}], " +
-                $"{nameof(Options)} = {Options}, " +
-                $"{nameof(Tokens)} = {Tokens}";
+                $"{nameof(Options)} = {{{Options}}}, " +
+                $"{nameof(Tokens)} = {{{Tokens}}}";
         }
     }
 }

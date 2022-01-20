@@ -10,7 +10,7 @@
     public sealed record UnboundedDirectiveToken : IUnboundedDirectiveToken
     {
         /// <inheritdoc/>
-        public bool HasUnbounded => Children?.HasUnbounded ?? false;
+        public bool HasUnbounded => Children.HasUnbounded;
 
         /// <inheritdoc/>
         public bool IsBounded => !HasUnbounded;
@@ -22,7 +22,7 @@
         public string Alias { get; }
 
         /// <inheritdoc/>
-        public IUnboundedTokenCollection? Children { get; }
+        public IUnboundedTokenCollection Children { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="UnboundedDirectiveToken"/>.
@@ -31,9 +31,7 @@
         {
             Id = directiveToken.Id;
             Alias = directiveToken.Alias;
-            Children = directiveToken.Children is null
-                ? null
-                : new UnboundedTokenCollection(directiveToken.Children);
+            Children = new UnboundedTokenCollection(directiveToken.Children);
         }
 
         /// <inheritdoc/>
@@ -51,7 +49,9 @@
             return base.ToString() +
                 " | " +
                 $"{nameof(Id)} = {Id}, " +
-                $"{nameof(Alias)} = {Alias}";
+                $"{nameof(HasUnbounded)} = {HasUnbounded}, " +
+                $"{nameof(Alias)} = {{{Alias}}}, " +
+                $"{nameof(Children)} = {{{Children}}}";
         }
     }
 }

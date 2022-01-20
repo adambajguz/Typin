@@ -54,7 +54,7 @@
         public static bool IsShortName(string shortName)
         {
             return shortName.StartsWith('-') &&
-                shortName.Length >= 2 &&
+                shortName.Length == 2 &&
                 char.IsLetter(shortName[1]);
         }
     }

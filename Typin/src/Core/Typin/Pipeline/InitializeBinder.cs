@@ -30,6 +30,8 @@ namespace Typin.Pipeline
             args.Features.Set<IBinderFeature>(new BinderFeature(tokens));
 
             await next();
+
+            args.Binder.Validate();
         }
     }
 }

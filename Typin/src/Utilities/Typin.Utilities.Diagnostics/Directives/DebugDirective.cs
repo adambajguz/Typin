@@ -52,7 +52,7 @@
             }
 
             /// <inheritdoc/>
-            public async ValueTask ExecuteAsync(IDirectiveArgs<DebugDirective> args, StepDelegate next, IInvokablePipeline<IDirectiveArgs> invokablePipeline, CancellationToken cancellationToken)
+            public async ValueTask ExecuteAsync(DirectiveArgs<DebugDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
 #if NET5_0_OR_GREATER
                 int processId = Environment.ProcessId;

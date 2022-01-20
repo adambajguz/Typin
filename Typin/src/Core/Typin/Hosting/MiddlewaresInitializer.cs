@@ -3,7 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
-    using Typin.Commands.Pipeline;
+    using Typin.Directives.Pipeline;
     using Typin.Pipeline;
 
     /// <summary>
@@ -19,13 +19,9 @@
                  .AddStep<TypinExceptionsHandler>()
                  .AddStep<TokenizeInput>()
                  .AddStep<InitializeBinder>()
-                 .AddStep<ResolveCommand>()
-                 //.AddStep<InitializeDirectives>()
-                 //.AddStep<PipelinedDirectivesHandler>()
-                 //.AddStep<HelpHandler>()
+                 .AddStep<InitializeDirectives>()
                  .AddStep<BindInput>()
-                 // user
-                 .AddStep<ExecuteCommand>()
+                 .AddStep<HandleDirectives>()
                  .Build().TryAddTo(pipelines);
 
             return default;

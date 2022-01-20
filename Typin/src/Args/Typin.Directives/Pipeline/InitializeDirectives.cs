@@ -1,4 +1,4 @@
-﻿namespace Typin.Pipeline
+﻿namespace Typin.Directives.Pipeline
 {
     using System;
     using System.Collections.Concurrent;
@@ -38,28 +38,27 @@
             IBinderFeature binder = args.Binder;
             IServiceProvider serviceProvider = args.Services;
 
-            //Get current CLI mode and input directives
-            //Type currentModeType = _applicationLifetime.CurrentModeType!;
-            IUnboundedDirectiveCollection directives = binder.UnboundedTokens;
+            IUnboundedDirectiveCollection unboundedDirectives = binder.UnboundedTokens;
 
             //Initialize collections
-            List<IDirective> instances = new();
+            List<DirectiveInstance> instances = new();
 
             //Process directive input
-            foreach (IUnboundedDirectiveToken directiveToken in directives)
+            foreach (IUnboundedDirectiveToken directiveToken in unboundedDirectives)
             {
                 IDirectiveSchema? directiveSchema = _directiveSchemas.Get(directiveToken.Alias);
 
                 if (directiveSchema is not null)
                 {
-                    IDirective directive = GetDirectiveInstance(serviceProvider, directiveSchema);
-                    IDirectiveHandler directiveHandler = GetDirectiveHandlerInstance(serviceProvider, directive, directiveSchema);
+                    IDirective model = GetDirectiveInstance(serviceProvider, directiveSchema);
+                    IDirectiveHandler handler = GetDirectiveHandlerInstance(serviceProvider, model, directiveSchema);
 
-                    args.Binder.TryAdd(new BindableModel(directiveToken.Id, directiveSchema.Model, directive));
+                    DirectiveInstance instance = new(directiveToken.Id, model, handler);
+                    instances.Add(instance);
+
+                    args.Binder.Add(new BindableModel(directiveToken.Id, directiveSchema.Model, model));
                 }
             }
-
-            directives.Clear();
 
             //Set directives lists in context
             args.Features.Set<IDirectivesFeature>(new DirectivesFeature(instances));

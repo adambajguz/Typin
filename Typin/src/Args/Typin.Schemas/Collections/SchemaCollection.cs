@@ -90,7 +90,7 @@
         {
             TKey key = KeyAccessor(instance);
 
-            return Data.Remove(key);
+            return Remove(key);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

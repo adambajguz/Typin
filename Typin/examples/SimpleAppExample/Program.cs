@@ -4,9 +4,10 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using SimpleAppExample.Commands;
+    using SimpleAppExample.Configurators;
     using SimpleAppExample.Directives;
     using Typin.Commands;
+    using Typin.Commands.Directives;
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Models;
@@ -17,7 +18,7 @@
     {
         private static readonly string[] Arguments = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b" };
         private static readonly string[] ArgumentsWithHelp = { "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b", "--help" };
-        private static readonly string[] ArgumentsWithDirectives = { "[chelp]", "[cpreview:", "name", "--delay", "2000]", "--req-str", "welcome", "-125", "--str", "hello world", "-i", "-13", "-b" };
+        private static readonly string[] ArgumentsWithDirectives = { "[chelp]", "[cpreview:", "name", "--delay", "2000]", "-125", "--req-str", "welcome", "--str", "hello world", "-i", "-13", "-b" };
 
         public static async Task<int> Main()
         {
@@ -46,7 +47,8 @@
                         .AddDirectives(scanner =>
                         {
                             scanner.Single<CustomHelpDirective>()
-                                   .Single<CustomPreviewDirective>();
+                                   .Single<CustomPreviewDirective>()
+                                   .Single<ExecuteCommandDirective>();
                         })
                         .AddModes(scanner =>
                         {

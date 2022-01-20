@@ -1,4 +1,4 @@
-﻿namespace SimpleAppExample.Commands
+﻿namespace SimpleAppExample.Configurators
 {
     using System.Threading;
     using System.Threading.Tasks;

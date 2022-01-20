@@ -26,5 +26,13 @@
                 x => x.Key,
                 x => x.Value.DeepClone());
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return base.ToString() +
+                ", " +
+                $"{nameof(HasUnbounded)} = {HasUnbounded}";
+        }
     }
 }
