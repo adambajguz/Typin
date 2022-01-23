@@ -77,7 +77,7 @@ namespace Typin.Modes.Interactive
                 {
                     try
                     {
-                        await _commandExecutor.ExecuteAsync(interactiveArguments, InputOptions.Default, CommandExecutionOptions.Default, cancellationToken);
+                        await _commandExecutor.ExecuteAsync(interactiveArguments, InputOptions.Default, ModeBehavior.Default, cancellationToken);
                     }
                     catch (PipelineInvocationException ex)
                     {

@@ -16,12 +16,13 @@
         {
             _ = PipelineBuilder.Create<CliContext>()
                  .Lifetime(InvokablePipelineLifetime.Singleton)
-                 .AddStep<TypinExceptionsHandler>()
-                 .AddStep<TokenizeInput>()
-                 .AddStep<InitializeBinder>()
-                 .AddStep<InitializeDirectives>()
-                 .AddStep<BindInput>()
-                 .AddStep<HandleDirectives>()
+                 .Add<TypinExceptionsHandler>()
+                 .Add<InitializeTokenizer>()
+                 .Add<TokenizeInput>()
+                 .Add<InitializeBinder>()
+                 .Add<InitializeDirectives>()
+                 .Add<BindInput>()
+                 .Add<HandleDirectives>()
                  .Build().TryAddTo(pipelines);
 
             return default;

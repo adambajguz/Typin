@@ -1,15 +1,10 @@
 ﻿namespace Typin.Features.Input.Tokens
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Represents a value token.
     /// </summary>
-    public interface IToken
+    public interface IToken : IBaseToken
     {
-        /// <summary>
-        /// Raw values.
-        /// </summary>
-        IEnumerable<string> Raw { get; }
+
     }
 }

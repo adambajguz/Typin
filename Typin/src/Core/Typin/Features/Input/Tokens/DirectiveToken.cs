@@ -16,6 +16,12 @@
         public string Alias { get; }
 
         /// <inheritdoc/>
+        public bool IsExplicit { get; }
+
+        /// <inheritdoc/>
+        public bool IsTerminated { get; }
+
+        /// <inheritdoc/>
         public ITokenCollection Children { get; }
 
         /// <inheritdoc/>
@@ -46,13 +52,32 @@
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
-        public DirectiveToken(int id, string name)
+        public DirectiveToken(int id, string name) :
+            this(id,
+                 name,
+                 name.StartsWith('['),
+                 name.EndsWith(']'))
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="DirectiveToken"/>.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="isExplicit"></param>
+        /// <param name="isTermianted"></param>
+        public DirectiveToken(int id, string name, bool isExplicit, bool isTermianted)
         {
             Id = id;
             Alias = name.Trim('[', ']')
                 .Trim()
-                .TrimEnd(':');
+                .TrimEnd(':')
+                .TrimEnd();
 
+            IsExplicit = isExplicit;
+            IsTerminated = isTermianted;
             Children = new TokenCollection();
         }
 
@@ -62,6 +87,7 @@
             return name.Trim('[', ']')
                 .Trim()
                 .TrimEnd(':')
+                .TrimEnd()
                 .Equals(Alias, StringComparison.Ordinal);
         }
 

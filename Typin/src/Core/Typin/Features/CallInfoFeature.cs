@@ -7,7 +7,7 @@
     /// <summary>
     /// <see cref="ICallInfoFeature"/> implementation.
     /// </summary>
-    internal sealed class CallInfoFeature : ICallInfoFeature
+    public sealed class CallInfoFeature : ICallInfoFeature
     {
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 

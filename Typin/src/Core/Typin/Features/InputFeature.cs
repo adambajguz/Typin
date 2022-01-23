@@ -1,21 +1,17 @@
 ﻿namespace Typin.Features
 {
     using System.Collections.Generic;
-    using Typin.Features.Input;
 
     /// <summary>
     /// <see cref="IInputFeature"/> implementation.
     /// </summary>
-    internal sealed class InputFeature : IInputFeature
+    public sealed class InputFeature : IInputFeature
     {
         /// <inheritdoc/>
-        public IEnumerable<string> Original { get; }
+        public IEnumerable<string> Arguments { get; }
 
         /// <inheritdoc/>
         public InputOptions Options { get; }
-
-        /// <inheritdoc/>
-        public IDirectiveCollection? Tokens { get; set; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="InputFeature"/>.
@@ -23,7 +19,7 @@
         public InputFeature(IEnumerable<string> arguments,
                             InputOptions options)
         {
-            Original = arguments;
+            Arguments = arguments;
             Options = options;
         }
 
@@ -32,9 +28,8 @@
         {
             return base.ToString() +
                 " | " +
-                $"{nameof(Original)} = [{string.Join(';', Original)}], " +
-                $"{nameof(Options)} = {{{Options}}}, " +
-                $"{nameof(Tokens)} = {{{Tokens}}}";
+                $"{nameof(Arguments)} = [{string.Join(';', Arguments)}], " +
+                $"{nameof(Options)} = {{{Options}}}";
         }
     }
 }

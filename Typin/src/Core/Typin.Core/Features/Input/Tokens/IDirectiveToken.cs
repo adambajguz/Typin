@@ -1,11 +1,9 @@
 ﻿namespace Typin.Features.Input.Tokens
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Represents a directive input token.
     /// </summary>
-    public interface IDirectiveToken
+    public interface IDirectiveToken : IBaseToken
     {
         /// <summary>
         /// Directive identifier.
@@ -18,14 +16,19 @@
         string Alias { get; }
 
         /// <summary>
+        /// Whether directive was explicitly opened in command line.
+        /// </summary>
+        public bool IsExplicit { get; }
+
+        /// <summary>
+        /// Whether directive was terminated just after its alias.
+        /// </summary>
+        public bool IsTerminated { get; }
+
+        /// <summary>
         /// Child tokens collection.
         /// </summary>
         ITokenCollection Children { get; }
-
-        /// <summary>
-        /// Raw values.
-        /// </summary>
-        IEnumerable<string> Raw { get; }
 
         /// <summary>
         /// Whether <paramref name="alias"/> matches directive alias.

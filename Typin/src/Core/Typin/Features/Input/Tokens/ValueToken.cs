@@ -5,11 +5,13 @@
     /// <summary>
     /// Stores a value.
     /// </summary>
-    public sealed record ValueToken : IToken, IValueToken
+    public sealed record ValueToken : IToken
     {
         private IEnumerable<string>? _raw;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Value.
+        /// </summary>
         public string Value { get; }
 
         /// <inheritdoc/>

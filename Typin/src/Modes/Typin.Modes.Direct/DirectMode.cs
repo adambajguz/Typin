@@ -1,9 +1,11 @@
-﻿namespace Typin.Modes
+﻿namespace Typin.Modes.Direct
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Options;
     using Typin;
+    using Typin.Commands;
+    using Typin.Modes;
 
     /// <summary>
     /// Direct CLI mode.

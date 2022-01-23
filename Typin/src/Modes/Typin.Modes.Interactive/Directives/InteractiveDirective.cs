@@ -4,7 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using PackSite.Library.Pipelining;
-    using Typin;
+    using Typin.Commands;
     using Typin.Directives;
     using Typin.Schemas.Attributes;
 

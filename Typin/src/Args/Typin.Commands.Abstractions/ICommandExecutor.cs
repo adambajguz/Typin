@@ -1,9 +1,9 @@
-﻿namespace Typin
+﻿namespace Typin.Commands
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Commands;
+    using Typin.Modes;
 
     /// <summary>
     /// CLI command executor.
@@ -21,7 +21,7 @@
         /// <returns></returns>
         Task<int> ExecuteAsync(IEnumerable<string> arguments,
                                InputOptions inputOptions = default,
-                               CommandExecutionOptions options = default,
+                               ModeBehavior options = default,
                                CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -34,7 +34,7 @@
         /// <returns></returns>
         Task<int> ExecuteAsync(string commandLine,
                                InputOptions inputOptions = default,
-                               CommandExecutionOptions options = default,
+                               ModeBehavior options = default,
                                CancellationToken cancellationToken = default);
     }
 }

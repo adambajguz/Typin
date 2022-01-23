@@ -5,7 +5,7 @@
     /// <summary>
     /// <see cref="ICallServicesFeature"/> implementation.
     /// </summary>
-    internal sealed class CallServicesFeature : ICallServicesFeature
+    public sealed class CallServicesFeature : ICallServicesFeature
     {
         /// <inheritdoc/>
         public IServiceProvider CallServices { get; }

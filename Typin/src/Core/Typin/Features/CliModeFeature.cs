@@ -7,7 +7,7 @@
     /// <summary>
     /// <see cref="ICliModeFeature"/> implementation.
     /// </summary>
-    internal sealed class CliModeFeature : ICliModeFeature
+    public sealed class CliModeFeature : ICliModeFeature
     {
         /// <inheritdoc/>
         public Type Type { get; }

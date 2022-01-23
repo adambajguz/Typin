@@ -15,16 +15,19 @@
 
         /// <summary>
         /// Command line call informations feature.
+        /// This feature should be initialized during <see cref="CliContext"/> instance creation.
         /// </summary>
         public abstract ICallInfoFeature Call { get; }
 
         /// <summary>
         /// Command line call services.
+        /// This feature should be initialized during <see cref="CliContext"/> instance creation.
         /// </summary>
         public abstract IServiceProvider Services { get; }
 
         /// <summary>
         /// Command line call lifetime feature.
+        /// This feature should be initialized during <see cref="CliContext"/> instance creation.
         /// </summary>
         public abstract ICallLifetimeFeature Lifetime { get; }
 
@@ -34,14 +37,22 @@
         public abstract IInputFeature Input { get; }
 
         /// <summary>
-        /// Output feature.
+        /// Tokenizer feature.
+        /// This feature should be initialized inside pipeline.
         /// </summary>
-        public abstract IOutputFeature Output { get; }
+        public abstract ITokenizerFeature Tokenizer { get; }
 
         /// <summary>
         /// Binder feature.
+        /// This feature should be initialized inside pipeline.
         /// </summary>
         public abstract IBinderFeature Binder { get; }
+
+        /// <summary>
+        /// Output feature.
+        /// This feature should be initialized during <see cref="CliContext"/> instance creation.
+        /// </summary>
+        public abstract IOutputFeature Output { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="CliContext"/>.

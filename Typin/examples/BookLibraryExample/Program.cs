@@ -9,7 +9,7 @@
     using Typin.Commands;
     using Typin.Directives;
     using Typin.Hosting;
-    using Typin.Modes;
+    using Typin.Modes.Direct;
     using Typin.Modes.Interactive;
     using Typin.Utilities.Diagnostics.Directives;
 

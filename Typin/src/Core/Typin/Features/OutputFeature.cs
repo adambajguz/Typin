@@ -5,7 +5,7 @@
     /// <summary>
     /// <see cref="IOutputFeature"/> implementation.
     /// </summary>
-    internal sealed class OutputFeature : IOutputFeature
+    public sealed class OutputFeature : IOutputFeature
     {
         /// <inheritdoc/>
         public int? ExitCode { get; set; }

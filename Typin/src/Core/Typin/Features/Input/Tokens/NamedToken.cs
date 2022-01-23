@@ -5,14 +5,18 @@
     /// <summary>
     /// Stores named values.
     /// </summary>
-    public sealed record NamedToken : IToken, INamedToken
+    public sealed record NamedToken : IToken
     {
         private IEnumerable<string>? _raw;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Option alias.
+        /// </summary>
         public string Alias { get; }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Option values.
+        /// </summary>
         public IReadOnlyList<string> Values { get; }
 
         /// <inheritdoc/>
@@ -52,7 +56,10 @@
             Values = values;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Get formatted <see cref="Alias"/>.
+        /// </summary>
+        /// <returns></returns>
         public string GetFormattedAlias()
         {
             return Alias switch

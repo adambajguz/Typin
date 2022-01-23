@@ -11,7 +11,7 @@
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Models;
-    using Typin.Modes;
+    using Typin.Modes.Direct;
 
     [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members")]
     public static class Program

@@ -1,12 +1,12 @@
-﻿namespace Typin.Commands
+﻿namespace Typin.Modes
 {
     using System;
 
     /// <summary>
-    /// Command execution options.
+    /// Mode behavior.
     /// </summary>
     [Flags]
-    public enum CommandExecutionOptions
+    public enum ModeBehavior
     {
         /// <summary>
         /// Default command execution options without any special behavior.

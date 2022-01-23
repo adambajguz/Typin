@@ -276,7 +276,7 @@ namespace Typin.Features.Binder
             // Non-scalar with conversion for collection item type
             else
             {
-                return argumentSchema.ConvertNonScalar(values, targetType, enumerableUnderlyingType, null); ;
+                return argumentSchema.ConvertNonScalar(values, targetType, enumerableUnderlyingType, null);
             }
         }
         #endregion

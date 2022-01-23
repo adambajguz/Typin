@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Core\Typin.Core\Typin.Core.csproj" />
 	  <ProjectReference Include="..\Typin.Models.Abstractions\Typin.Models.Abstractions.csproj" />
 	</ItemGroup>
 

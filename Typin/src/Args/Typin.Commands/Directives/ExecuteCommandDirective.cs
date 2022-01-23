@@ -99,7 +99,7 @@
 
             private ICommandSchema BindInputToCommandSchema(IUnboundedTokenCollection? input)
             {
-                TokenGroup<IValueToken>? tokenGroup = input?.Get<IValueToken>();
+                TokenGroup<ValueToken>? tokenGroup = input?.Get<ValueToken>();
 
                 if (tokenGroup is null)
                 {

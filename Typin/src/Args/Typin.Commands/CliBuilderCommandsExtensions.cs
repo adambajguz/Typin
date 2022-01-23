@@ -57,6 +57,7 @@
                     IServiceCollection services = cli.Services;
                     if (!services.Any(x => x.ImplementationType == typeof(CommandSchemaProvider)))
                     {
+                        services.AddSingleton<ICommandExecutor, CommandExecutor>();
                         services.AddSingleton<ICommandSchemaCollection, CommandSchemaCollection>();
                         services.AddScoped<ICommandSchemaProvider, CommandSchemaProvider>();
                         services.AddHostedService<CommandSchemaProviderHostedService>();

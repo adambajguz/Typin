@@ -6,7 +6,7 @@
     /// <summary>
     /// <see cref="ICallLifetimeFeature"/> implementation.
     /// </summary>
-    internal class CallLifetimeFeature : ICallLifetimeFeature
+    public class CallLifetimeFeature : ICallLifetimeFeature
     {
         private readonly CancellationTokenSource _cancellationTokenSource;
 

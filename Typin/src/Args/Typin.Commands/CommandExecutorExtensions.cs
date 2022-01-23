@@ -1,9 +1,9 @@
-﻿using Typin.Commands;
-
-namespace Typin
+﻿namespace Typin.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Typin;
+    using Typin.Modes;
 
     /// <summary>
     /// <see cref="ICommandExecutor"/> extensions.
@@ -26,20 +26,20 @@ namespace Typin
             {
                 return await commandExecutor.ExecuteAsync(cliOptions.CommandLine,
                                                           startupInputOptions,
-                                                          CommandExecutionOptions.Default,
+                                                          ModeBehavior.Default,
                                                           cancellationToken);
             }
             else if (cliOptions.CommandLineArguments is not null)
             {
                 return await commandExecutor.ExecuteAsync(cliOptions.CommandLineArguments,
                                                           startupInputOptions,
-                                                          CommandExecutionOptions.Default,
+                                                          ModeBehavior.Default,
                                                           cancellationToken);
             }
 
             return await commandExecutor.ExecuteAsync(string.Empty,
                                                       startupInputOptions,
-                                                      CommandExecutionOptions.Default,
+                                                      ModeBehavior.Default,
                                                       cancellationToken);
         }
     }

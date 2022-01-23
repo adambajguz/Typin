@@ -1,4 +1,4 @@
-﻿namespace Typin.Internal
+﻿namespace Typin.Commands.Resolvers
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,6 @@
     using Typin.Commands;
     using Typin.Features;
     using Typin.Modes;
-    using Typin.Modes.Features;
     using Typin.Utilities;
 
     /// <summary>
@@ -52,7 +51,7 @@
         /// <param name="cancellationToken"></param>
         public async Task<int> ExecuteAsync(string commandLine,
                                             InputOptions inputOptions = default,
-                                            CommandExecutionOptions options = default,
+                                            ModeBehavior options = default,
                                             CancellationToken cancellationToken = default)
         {
             IEnumerable<string> commandLineArguments = CommandLine.Split(commandLine);
@@ -69,14 +68,14 @@
         /// <param name="cancellationToken"></param>
         public async Task<int> ExecuteAsync(IEnumerable<string> arguments,
                                             InputOptions inputOptions = default,
-                                            CommandExecutionOptions options = default,
+                                            ModeBehavior options = default,
                                             CancellationToken cancellationToken = default)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            await using AsyncServiceScope? serviceScope = options.HasFlag(CommandExecutionOptions.UseCurrentScope)
+            await using AsyncServiceScope? serviceScope = options.HasFlag(ModeBehavior.UseCurrentScope)
                 ? null
                 : _serviceProvider.CreateAsyncScope();
 
@@ -116,17 +115,16 @@
                                                 InputOptions inputOptions,
                                                 CancellationTokenSource cancellationTokenSource)
         {
-            CliContext cliContext = new DefaultCliContext();
-
-            cliContext.Features.Set<ICallServicesFeature>(new CallServicesFeature(localProvider));
-            cliContext.Features.Set<ICallInfoFeature>(new CallInfoFeature(Guid.NewGuid(), cliContext, _cliContextAccessor.CliContext));
-
             ICliMode instance = _cliModeAccessor.Instance ?? throw new InvalidOperationException("CliMode has not been configured for this application.");
-            cliContext.Features.Set<ICliModeFeature>(new CliModeFeature(instance));
-            cliContext.Features.Set<ICallLifetimeFeature>(new CallLifetimeFeature(cancellationTokenSource));
 
-            cliContext.Features.Set<IInputFeature>(new InputFeature(arguments, inputOptions));
-            cliContext.Features.Set<IOutputFeature>(new OutputFeature());
+            CliContext cliContext = new DefaultCliContext(
+                    new CallServicesFeature(localProvider),
+                    _cliContextAccessor.CliContext,
+                    new CliModeFeature(instance),
+                    new CallLifetimeFeature(cancellationTokenSource),
+                    new InputFeature(arguments, inputOptions),
+                    new OutputFeature()
+                );
 
             _cliContextAccessor.CliContext = cliContext;
 

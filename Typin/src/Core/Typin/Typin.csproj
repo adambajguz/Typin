@@ -39,14 +39,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-		<PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc5" />
+		<PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc6" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
 		<ProjectReference Include="..\Typin.Hosting\Typin.Hosting.csproj" />
 		<ProjectReference Include="..\..\Console\Typin.Console.System\Typin.Console.System.csproj" />
-		<ProjectReference Include="..\..\Args\Typin.Commands\Typin.Commands.csproj" />
 		<ProjectReference Include="..\..\Args\Typin.Directives\Typin.Directives.csproj" />
 		<ProjectReference Include="..\..\Utilities\Typin.Utilities.ExceptionFormatter\Typin.Utilities.ExceptionFormatter.csproj" />
 		<ProjectReference Include="..\..\Utilities\Typin.Utilities.CommandLine\Typin.Utilities.CommandLine.csproj" />

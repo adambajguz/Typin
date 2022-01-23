@@ -27,7 +27,7 @@
         /// <summary>
         /// Shared command execution options.
         /// </summary>
-        public CommandExecutionOptions ExecutionOptions { get; set; }
+        public ModeBehavior Behavior { get; set; }
 
         /// <summary>
         /// Initializes an instance of <see cref="ProgrammaticMode"/>.
@@ -88,7 +88,7 @@
                 {
                     //TODO: before execution action
 
-                    await _commandExecutor.ExecuteAsync(arguments, InputOptions, ExecutionOptions, cancellationToken);
+                    await _commandExecutor.ExecuteAsync(arguments, InputOptions, Behavior, cancellationToken);
                     _console.ResetColor();
 
                     //TODO: after execution action

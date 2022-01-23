@@ -13,6 +13,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Core\Typin\Typin.csproj" />
+		<ProjectReference Include="..\..\src\Args\Typin.Commands\Typin.Commands.csproj" />
+		<ProjectReference Include="..\..\src\Modes\Typin.Modes.Direct\Typin.Modes.Direct.csproj" />
 		<ProjectReference Include="..\..\src\Modes\Typin.Modes.Interactive\Typin.Modes.Interactive.csproj" />
 		<ProjectReference Include="..\..\src\Modes\Typin.Modes.Programmatic\Typin.Modes.Programmatic.csproj" />
 		<ProjectReference Include="..\..\src\Utilities\Typin.Utilities.Diagnostics\Typin.Utilities.Diagnostics.csproj" />

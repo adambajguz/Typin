@@ -40,7 +40,6 @@
                 });
 
                 services.AddSingleton<ICliContextAccessor, CliContextAccessor>();
-                services.AddSingleton<ICommandExecutor, CommandExecutor>();
                 services.AddSingleton<CliModeManager>();
                 services.AddSingleton<ICliModeSwitcher>((provider) => provider.GetRequiredService<CliModeManager>());
                 services.AddSingleton<ICliModeAccessor>((provider) => provider.GetRequiredService<CliModeManager>());

@@ -21,14 +21,6 @@ namespace Typin.Pipeline
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            //Type currentModeType = _applicationLifetime.CurrentModeType!;
-
-            //// Handle commands not supported in current mode
-            //if (!commandSchema.CanBeExecutedInMode(currentModeType))
-            //{
-            //    throw ModeEndUserExceptions.CommandExecutedInInvalidMode(commandSchema, currentModeType);
-            //}
-
             args.Binder.Bind(args.Services);
 
             await next();

@@ -24,8 +24,8 @@ namespace Typin.Pipeline
         /// <inheritdoc/>
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
-            IDirectiveCollection tokens = args.Input.Tokens ??
-                throw new InvalidOperationException($"{nameof(IInputFeature)}.{nameof(IInputFeature.Tokens)} has not been configured for this application or call.");
+            IDirectiveCollection tokens = args.Tokenizer.Tokens ??
+                throw new InvalidOperationException($"{nameof(ITokenizerFeature)}.{nameof(ITokenizerFeature.Tokens)} has not been configured for this application or call.");
 
             args.Features.Set<IBinderFeature>(new BinderFeature(tokens));
 

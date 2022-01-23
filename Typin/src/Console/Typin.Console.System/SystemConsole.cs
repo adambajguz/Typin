@@ -6,6 +6,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Console.Extensions;
+    using Typin.Console.Internal;
     using Typin.Console.IO;
 
     /// <summary>
@@ -215,7 +216,12 @@
                 return StandardStreamReader.CreateNull(console);
             }
 
-            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
+            return new StandardStreamReader(Stream.Synchronized(stream),
+                                            Console.InputEncoding,
+                                            false,
+                                            8192,
+                                            isRedirected,
+                                            console);
         }
 
         private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
@@ -225,7 +231,11 @@
                 return StandardStreamWriter.CreateNull(console);
             }
 
-            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
+            return new StandardStreamWriter(Stream.Synchronized(stream),
+                                            Console.OutputEncoding.WithoutPreamble(),
+                                            4096,
+                                            isRedirected,
+                                            console)
             {
                 AutoFlush = true
             };

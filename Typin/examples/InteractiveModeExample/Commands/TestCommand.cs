@@ -55,14 +55,14 @@
 
                 _console.Output.WriteLine($"ContextId: {_cliContextAccessor.CliContext!.Call.ContextDepth} | '{command.Author}' '{command.AuthorX}' '{command.Ch}'");
 
-                await _commandExecutor.ExecuteAsync("plot xy", InputOptions.Default, CommandExecutionOptions.UseCurrentScope, cancellationToken);
+                await _commandExecutor.ExecuteAsync("plot xy", InputOptions.Default, ModeBehavior.UseCurrentScope, cancellationToken);
 
                 _console.Output.WithForegroundColor(ConsoleColor.Cyan, output => output.WriteLine("- - - - - - -"));
 
                 await _cliModeSwitcher.WithModeAsync<ProgrammaticMode>(async (mode, ct) =>
                 {
                     mode.Queue(new[] { "enum" }, 19);
-                    mode.ExecutionOptions = CommandExecutionOptions.UseCurrentScope;
+                    mode.Behavior = ModeBehavior.UseCurrentScope;
 
                     await mode.ExecuteAsync(ct);
                 }, cancellationToken);

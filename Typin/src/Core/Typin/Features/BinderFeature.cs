@@ -14,7 +14,7 @@ namespace Typin.Features
     /// <summary>
     /// <see cref="IBinderFeature"/> implementation.
     /// </summary>
-    internal sealed class BinderFeature : IBinderFeature
+    public sealed class BinderFeature : IBinderFeature
     {
         private readonly Dictionary<Type, List<BindableModel>> _bindableMapByType = new();
         private readonly Dictionary<int, List<BindableModel>> _bindableMapById = new();
@@ -150,9 +150,9 @@ namespace Typin.Features
         /// <summary>
         /// Binds parameter inputs in command instance.
         /// </summary>
-        private static void BindParameters(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboudnedDirectiveTokens)
+        private static void BindParameters(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboundedDirectiveTokens)
         {
-            TokenGroup<ValueToken>? parameterGroup = unboudnedDirectiveTokens.Children.Get<ValueToken>();
+            TokenGroup<ValueToken>? parameterGroup = unboundedDirectiveTokens.Children.Get<ValueToken>();
 
             if (parameterGroup is null)
             {
@@ -208,9 +208,9 @@ namespace Typin.Features
         /// <summary>
         /// Binds option inputs in command instance.
         /// </summary>
-        public static void BindOptions(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboudnedDirectiveTokens)
+        public static void BindOptions(IServiceProvider serviceProvider, BindableModel bindableModel, IUnboundedDirectiveToken unboundedDirectiveTokens)
         {
-            TokenGroup<NamedToken>? optionGroup = unboudnedDirectiveTokens.Children.Get<NamedToken>();
+            TokenGroup<NamedToken>? optionGroup = unboundedDirectiveTokens.Children.Get<NamedToken>();
 
             if (optionGroup is null)
             {

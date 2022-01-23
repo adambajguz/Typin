@@ -28,7 +28,7 @@
         /// <returns></returns>
         public static IPipelineBuilder<CliContext> AddScopes(this IPipelineBuilder<CliContext> builder)
         {
-            return builder.AddStep<ScopeHandler>();
+            return builder.Add<ScopeHandler>();
         }
     }
 }
