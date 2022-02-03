@@ -92,12 +92,9 @@
                     {
                         ITokenHandler handler = Handlers[i];
 
-                        if (handler.CanHandle(tokenHandlerContext))
+                        if (handler.CanHandle(tokenHandlerContext) && handler.Handle(tokenHandlerContext))
                         {
-                            if (handler.Handle(tokenHandlerContext))
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
 

@@ -12,7 +12,7 @@
     /// <summary>
     /// <see cref="ICliBuilder"/> commands-related extensions.
     /// </summary>
-    public static class CliBuilderCommandsExtensions
+    public static class CliBuilderExtensions
     {
         #region AddCommands
         /// <summary>

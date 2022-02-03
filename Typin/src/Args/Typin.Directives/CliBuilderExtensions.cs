@@ -12,7 +12,7 @@
     /// <summary>
     /// <see cref="ICliBuilder"/> directives-related extensions.
     /// </summary>
-    public static class CliBuilderDirectivesExtensions
+    public static class CliBuilderExtensions
     {
         #region AddDirectives
         /// <summary>

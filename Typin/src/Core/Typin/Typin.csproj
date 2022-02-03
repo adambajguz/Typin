@@ -43,6 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Console\Typin.Console\Typin.Console.csproj" />
 		<ProjectReference Include="..\Typin.Core\Typin.Core.csproj" />
 		<ProjectReference Include="..\Typin.Hosting\Typin.Hosting.csproj" />
 		<ProjectReference Include="..\..\Console\Typin.Console.System\Typin.Console.System.csproj" />

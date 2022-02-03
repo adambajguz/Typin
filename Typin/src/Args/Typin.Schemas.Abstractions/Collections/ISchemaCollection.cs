@@ -11,7 +11,7 @@
         where TSchema : class, ISchema
     {
         /// <summary>
-        /// Gets or sets a given schema. Setting a null value removes the feature.
+        /// Gets or sets a given schema. Setting a null value removes the schema.
         /// </summary>
         /// <param name="key"></param>
         /// <returns>The requested schema, or null if it is not present.</returns>
@@ -39,7 +39,7 @@
         where TSchema : class, ISchema
     {
         /// <summary>
-        /// Gets or sets a given schema. Setting a null value removes the feature.
+        /// Gets or sets a given schema. Setting a null value removes the schema.
         /// </summary>
         /// <param name="key"></param>
         /// <returns>The requested schema, or null if it is not present.</returns>

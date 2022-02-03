@@ -8,6 +8,7 @@
     using SimpleAppExample.Directives;
     using Typin.Commands;
     using Typin.Commands.Directives;
+    using Typin.Console;
     using Typin.Directives;
     using Typin.Hosting;
     using Typin.Models;
@@ -54,6 +55,8 @@
                         {
                             scanner.Single<DirectMode>();
                         });
+
+                    cliBuilder.AddConsole<SystemConsole>("remote-terminal");
 
                     cliBuilder.OverrideCommandLine(ArgumentsWithDirectives)
                               .UseStartupMessage("Welcome!")

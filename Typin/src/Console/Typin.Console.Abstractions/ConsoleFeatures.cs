@@ -11,12 +11,10 @@
         /// <summary>
         /// Indicates that all optional features are supported/enabled.
         /// </summary>
-        All = ConsoleColors | AnsiColors | Clear | CursorPosition | WindowDimensions | BufferDimensions | ReadKey,
+        All = ConsoleColors | RgbColors | Clear | CursorPosition | CursorVisibility | WindowSize | BufferSize,
 
         /// <summary>
-        /// Indicates that none of the optional features are supported/enabled
-        /// <see cref="IConsole.Clear"/>,
-        /// is enabled/alowed.
+        /// Indicates that none of the optional features are supported/enabled.
         /// </summary>
         None = 0,
 
@@ -24,7 +22,8 @@
         /// Indicates that
         /// <see cref="IConsole.BackgroundColor"/>,
         /// <see cref="IConsole.ForegroundColor"/>,
-        /// <see cref="IConsole.ResetColor"/>,
+        /// <see cref="IConsole.SetColors(ConsoleColor, ConsoleColor)"/>, and
+        /// <see cref="IConsole.ResetColor"/>
         /// is enabled/alowed.
         /// </summary>
         ConsoleColors = 1ul << 1,
@@ -32,13 +31,16 @@
         /// <summary>
         /// Indicates that
         /// <see cref="IConsole.SetBackground(byte, byte, byte)"/>,
+        /// <see cref="IConsole.SetForeground(byte, byte, byte)"/>,
+        /// <see cref="IConsole.SetColors(byte, byte, byte, byte, byte, byte)"/>, and
+        /// <see cref="IConsole.ResetColor"/>
         /// is enabled/alowed.
         /// </summary>
-        AnsiColors = 1ul << 2,
+        RgbColors = 1ul << 2,
 
         /// <summary>
         /// Indicates that
-        /// <see cref="IConsole.Clear"/>,
+        /// <see cref="IConsole.Clear"/>
         /// is enabled/alowed.
         /// </summary>
         Clear = 1ul << 3,
@@ -54,26 +56,34 @@
 
         /// <summary>
         /// Indicates that
-        /// <see cref="IConsole.WindowHeight"/> and
-        /// <see cref="IConsole.WindowWidth"/>
+        /// <see cref="IConsole.CursorVisible"/>
         /// are enabled/alowed.
         /// </summary>
-        WindowDimensions = 1ul << 20,
+        CursorVisibility = 1ul << 11,
 
         /// <summary>
         /// Indicates that
-        /// <see cref="IConsole.BufferHeight"/> and
-        /// <see cref="IConsole.BufferWidth"/>
+        /// <see cref="IConsole.WindowHeight"/>,
+        /// <see cref="IConsole.WindowWidth"/>, and
+        /// <see cref="IConsole.SetWindowSize(int, int)"/>.
         /// are enabled/alowed.
         /// </summary>
-        BufferDimensions = 1ul << 21,
+        WindowSize = 1ul << 20,
 
         /// <summary>
         /// Indicates that
-        /// <see cref="IConsole.ReadKey(bool)"/> and
-        /// <see cref="IConsole.ReadKeyAsync(bool, System.Threading.CancellationToken)"/>
+        /// <see cref="IConsole.BufferHeight"/>,
+        /// <see cref="IConsole.BufferWidth"/>, and
+        /// <see cref="IConsole.SetBufferSize(int, int)"/>.
         /// are enabled/alowed.
         /// </summary>
-        ReadKey = 1ul << 30
+        BufferSize = 1ul << 21,
+
+        /// <summary>
+        /// Indicates that
+        /// <see cref="IConsole.Title"/>
+        /// are enabled/alowed.
+        /// </summary>
+        Title = 1ul << 22
     }
 }

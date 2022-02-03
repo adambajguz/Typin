@@ -12,7 +12,7 @@
     /// <summary>
     /// <see cref="ICliBuilder"/> models-related extensions.
     /// </summary>
-    public static class CliBuilderModelsExtensions
+    public static class CliBuilderExtensions
     {
         #region AddModels
         /// <summary>

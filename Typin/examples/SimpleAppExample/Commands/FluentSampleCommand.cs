@@ -23,15 +23,22 @@
         private sealed class Handler : ICommandHandler<FluentSampleCommand>
         {
             private readonly IConsole _console;
+            private readonly IConsoleProvider _consoleProvider;
 
-            public Handler(IConsole console)
+            public Handler(IConsole console, IConsoleProvider consoleProvider)
             {
                 _console = console;
+                _consoleProvider = consoleProvider;
             }
 
             public async ValueTask ExecuteAsync(FluentSampleCommand command, CancellationToken cancellationToken)
             {
                 await _console.Output.WriteLineAsync(JsonSerializer.Serialize(command));
+
+                if (_consoleProvider["remote-console"] is IConsole remoteConsole)
+                {
+                    remoteConsole.Output.WriteLine("<this is remote console test>");
+                }
             }
         }
 

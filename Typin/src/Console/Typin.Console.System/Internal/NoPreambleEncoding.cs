@@ -7,9 +7,13 @@
     /// <summary>
     /// Adapted from:
     /// https://github.com/dotnet/runtime/blob/01b7e73cd378145264a7cb7a09365b41ed42b240/src/libraries/Common/src/System/Text/ConsoleEncoding.cs
+    ///
     /// Also see:
     /// https://source.dot.net/#System.Console/ConsoleEncoding.cs,5eedd083a4a4f4a2
+    /// Majority of overrides are just proxy calls to avoid potentially more expensive base behavior.
+    /// The important part is the GetPreamble() method that has been overriden to return an empty array.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     internal class NoPreambleEncoding : Encoding
     {
         private readonly Encoding _underlyingEncoding;
@@ -88,27 +92,27 @@
         }
 
         [ExcludeFromCodeCoverage]
-        public override byte[] GetBytes(char[] chars)
-        {
-            return _underlyingEncoding.GetBytes(chars);
-        }
-
-        [ExcludeFromCodeCoverage]
         public override byte[] GetBytes(char[] chars, int index, int count)
         {
             return _underlyingEncoding.GetBytes(chars, index, count);
         }
 
         [ExcludeFromCodeCoverage]
-        public override byte[] GetBytes(string s)
+        public override byte[] GetBytes(char[] chars)
         {
-            return _underlyingEncoding.GetBytes(s);
+            return _underlyingEncoding.GetBytes(chars);
         }
 
         [ExcludeFromCodeCoverage]
         public override int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
             return _underlyingEncoding.GetBytes(s, charIndex, charCount, bytes, byteIndex);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public override byte[] GetBytes(string s)
+        {
+            return _underlyingEncoding.GetBytes(s);
         }
 
         [ExcludeFromCodeCoverage]

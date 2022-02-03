@@ -1,7 +1,7 @@
 ﻿namespace Typin.Hosting
 {
+    using System.Linq;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using PackSite.Library.Pipelining;
     using Typin;
@@ -57,7 +57,10 @@
                 return;
             }
 
-            Services.TryAddSingleton<IConsole, SystemConsole>();
+            if (!Services.Any(x => x.ServiceType == typeof(IConsole)))
+            {
+                this.AddConsole<SystemConsole>();
+            }
 
             Services.AddPipelining(builder =>
             {

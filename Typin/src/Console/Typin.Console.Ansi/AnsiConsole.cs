@@ -9,182 +9,47 @@
     /// <summary>
     /// ANSI/VT100 compatible console.
     /// </summary>
-    public sealed class AnsiConsole : IConsole
+    public partial class AnsiConsole : BaseConsole
     {
-        private ConsoleColor _foregroundColor = ConsoleColor.White;
-        private ConsoleColor _backgroundColor = ConsoleColor.Black;
-
-        private int _cursorLeft;
-        private int _cursorTop;
+        /// <inheritdoc/>
+        public override StandardStreamReader Input { get; }
 
         /// <inheritdoc/>
-        public StandardStreamReader Input { get; }
+        public override StandardStreamWriter Output { get; }
 
         /// <inheritdoc/>
-        public StandardStreamWriter Output { get; }
+        public override StandardStreamWriter Error { get; }
 
         /// <inheritdoc/>
-        public StandardStreamWriter Error { get; }
-
-        /// <inheritdoc/>
-        public ConsoleFeatures Features { get; } = ConsoleFeatures.All;
-
-        /// <inheritdoc/>
-        public ConsoleColor ForegroundColor
-        {
-            get => _foregroundColor;
-            set
-            {
-                _foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.White : value;
-
-                Output.Write(Ansi.Color.Foreground.FromConsoleColor(value));
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConsoleColor BackgroundColor
-        {
-            get => _backgroundColor;
-            set
-            {
-                _backgroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
-
-                Output.Write(Ansi.Color.Background.FromConsoleColor(value));
-            }
-        }
-
-        /// <inheritdoc/>
-        public int CursorLeft
-        {
-            get => _cursorLeft;
-            set => throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public int CursorTop
-        {
-            get => _cursorTop;
-            set => throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public int WindowWidth
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public int WindowHeight
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public int BufferWidth
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public int BufferHeight
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        public override ConsoleFeatures SupportedFeatures { get; } =
+            ConsoleFeatures.ConsoleColors |
+            ConsoleFeatures.RgbColors |
+            ConsoleFeatures.Clear |
+            ConsoleFeatures.CursorPosition |
+            ConsoleFeatures.CursorVisibility;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnsiConsole"/>.
+        /// The streams are not being disposed by default.
         /// </summary>
-        public AnsiConsole(Stream? input = null, bool isInputRedirected = true,
+        public AnsiConsole(Stream? input = null, bool isInputRedirected = true, IKeyReader? keyReader = null,
                            Stream? output = null, bool isOutputRedirected = true,
                            Stream? error = null, bool isErrorRedirected = true)
         {
-            Input = WrapInput(this, input, isInputRedirected);
+            Input = WrapInput(this, input, isInputRedirected, keyReader);
             Output = WrapOutput(this, output, isOutputRedirected);
             Error = WrapOutput(this, error, isErrorRedirected);
         }
 
-        /// <inheritdoc/>
-        public void Clear()
-        {
-
-        }
-
-        /// <inheritdoc/>
-        public ConsoleKeyInfo ReadKey(bool intercept = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public void ResetColor()
-        {
-            _foregroundColor = ConsoleColor.White;
-            _backgroundColor = ConsoleColor.Black;
-
-            Output.Write(string.Concat(Ansi.Color.Background.Default, Ansi.Color.Foreground.Default));
-        }
-
-        /// <inheritdoc />
-        public void SetBackground(byte r, byte g, byte b)
-        {
-            Output.Write(Ansi.Color.Background.Rgb(r, g, b));
-        }
-
-        /// <inheritdoc />
-        public void SetForeground(byte r, byte g, byte b)
-        {
-            Output.Write(Ansi.Color.Foreground.Rgb(r, g, b));
-        }
-
-        /// <inheritdoc />
-        public void SetColors(byte br, byte bg, byte bb,
-                              byte fr, byte fg, byte fb)
-        {
-            Output.Write(string.Concat(Ansi.Color.Background.Rgb(br, bg, bb), Ansi.Color.Foreground.Rgb(fr, fg, fb)));
-        }
-
-        /// <inheritdoc/>
-        public void SetCursorPosition(int left, int top)
-        {
-            _cursorLeft = left;
-            _cursorTop = top;
-
-            Output.Write(Ansi.Cursor.Move.ToLocation(left, top));
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            Input.Dispose();
-            Output.Dispose();
-            Error.Dispose();
-        }
-
-        /// <inheritdoc/>
-        public Task<ConsoleKeyInfo> ReadKeyAsync(bool intercept = false, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         #region Helpers
-        private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected)
+        private static StandardStreamReader WrapInput(IConsole console, Stream? stream, bool isRedirected, IKeyReader? keyReader)
         {
             if (stream is null)
             {
                 return StandardStreamReader.CreateNull(console);
             }
 
-            return new StandardStreamReader(Stream.Synchronized(stream), Console.InputEncoding, false, isRedirected, console);
+            return new StandardStreamReader(stream, Console.InputEncoding, false, isRedirected, console, keyReader);
         }
 
         private static StandardStreamWriter WrapOutput(IConsole console, Stream? stream, bool isRedirected)
@@ -194,7 +59,7 @@
                 return StandardStreamWriter.CreateNull(console);
             }
 
-            return new StandardStreamWriter(Stream.Synchronized(stream), Console.OutputEncoding, isRedirected, console)
+            return new StandardStreamWriter(stream, Console.OutputEncoding, isRedirected, console)
             {
                 AutoFlush = true
             };
