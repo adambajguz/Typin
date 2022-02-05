@@ -64,7 +64,7 @@
         }
 
         /// <inheritdoc />
-        public void Set(ITokenGroup instance)
+        public void Add(ITokenGroup instance)
         {
             this[instance.TokenType] = instance;
         }

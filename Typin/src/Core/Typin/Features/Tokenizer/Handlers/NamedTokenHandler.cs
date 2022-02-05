@@ -1,6 +1,5 @@
 ﻿namespace Typin.Features.Tokenizer.Handlers
 {
-    using System;
     using System.Collections.Generic;
     using Typin.Features.Input;
     using Typin.Features.Input.Tokens;
@@ -14,85 +13,101 @@
         /// <inheritdoc/>
         public bool CanHandle(TokenHandlerContext context)
         {
-            return true;
+            if (context.Position >= context.Arguments.Count)
+            {
+                return false;
+            }
+
+            string argument = context.Arguments[context.Position];
+
+            return IOptionSchema.IsName(argument) ||
+                IOptionSchema.IsShortNameGroup(argument);
         }
 
         /// <inheritdoc/>
         public bool Handle(TokenHandlerContext context, TokenGroup<NamedToken> tokenGroup)
         {
-            throw new NotImplementedException();
+            if (context.Position >= context.Arguments.Count)
+            {
+                return false;
+            }
+
+            string optionName = context.Arguments[context.Position++];
+
+            // Name
+            if (IOptionSchema.IsName(optionName))
+            {
+                bool hasDirectiveTermination = context.Directive.IsExplicit && optionName.EndsWith(']');
+
+                optionName = hasDirectiveTermination
+                    ? optionName[..^1]
+                    : optionName;
+
+                List<string> values = hasDirectiveTermination
+                    ? new()
+                    : TokenizeOptionValues(context);
+
+                tokenGroup.Tokens.Add(new NamedToken(optionName, values));
+
+                return true;
+            }
+
+            // Short name
+            if (IOptionSchema.IsShortNameGroup(optionName))
+            {
+                bool hasDirectiveTermination = context.Directive.IsExplicit && optionName.EndsWith(']');
+
+                string shortNamesCollection = hasDirectiveTermination
+                    ? optionName[1..^1]
+                    : optionName[1..];
+
+                foreach (char shortName in shortNamesCollection)
+                {
+                    tokenGroup.Tokens.Add(new NamedToken(shortName.ToString(), new List<string>()));
+                }
+
+                List<string> values = hasDirectiveTermination
+                    ? new()
+                    : TokenizeOptionValues(context);
+
+                return true;
+            }
+
+            return false;
         }
 
-        private static void ParseNamedValues(ITokenCollection input,
-                                             IReadOnlyList<string> commandLineArguments,
-                                             bool explicitlyOpenedDirective,
-                                             ref int index)
+        private static List<string> TokenizeOptionValues(TokenHandlerContext context)
         {
-            TokenGroup<NamedToken> tokenGroup = input.Get<NamedToken>() ?? new();
+            List<string> values = new();
 
-            string? currentOptionAlias = null;
-            List<string> currentOptionValues = new();
-            bool finish = false;
-
-            for (; index < commandLineArguments.Count; index++)
+            int index;
+            for (index = context.Position; index < context.Arguments.Count; index++)
             {
-                string argument = commandLineArguments[index];
+                string argument = context.Arguments[index++];
 
-                if (explicitlyOpenedDirective && argument.EndsWith(']'))
+                if (IOptionSchema.IsName(argument) ||
+                    IOptionSchema.IsShortNameGroup(argument))
                 {
-                    argument = argument[..^1];
-                    finish = true;
+                    break;
                 }
 
-                // Name
-                if (IOptionSchema.IsName(argument))
-                {
-                    // Flush previous
-                    if (!string.IsNullOrWhiteSpace(currentOptionAlias))
-                    {
-                        tokenGroup.Tokens.Add(new NamedToken(currentOptionAlias, currentOptionValues));
-                    }
+                bool hasDirectiveTermination = context.Directive.IsExplicit && argument.EndsWith(']');
 
-                    currentOptionAlias = argument[2..];
-                    currentOptionValues = new List<string>();
-                }
-                // Short name
-                else if (IOptionSchema.IsShortName(argument))
-                {
-                    foreach (var alias in argument[1..])
-                    {
-                        // Flush previous
-                        if (!string.IsNullOrWhiteSpace(currentOptionAlias))
-                        {
-                            tokenGroup.Tokens.Add(new NamedToken(currentOptionAlias, currentOptionValues));
-                        }
+                argument = hasDirectiveTermination
+                    ? argument[..^1]
+                    : argument;
 
-                        currentOptionAlias = alias.ToString();
-                        currentOptionValues = new List<string>();
-                    }
-                }
-                // Value
-                else if (!string.IsNullOrWhiteSpace(currentOptionAlias))
-                {
-                    currentOptionValues.Add(argument);
-                }
+                values.Add(argument);
 
-                if (finish)
+                if (hasDirectiveTermination)
                 {
                     break;
                 }
             }
 
-            // Flush last option
-            if (!string.IsNullOrWhiteSpace(currentOptionAlias))
-            {
-                tokenGroup.Tokens.Add(new NamedToken(currentOptionAlias, currentOptionValues));
-            }
+            context.Position = index;
 
-            if (tokenGroup.Tokens.Count > 0 && input.Get(typeof(NamedToken)) is null)
-            {
-                input.Set(tokenGroup);
-            }
+            return values;
         }
     }
 }

@@ -1,10 +1,7 @@
 ﻿namespace Typin.Features.Tokenizer.Handlers
 {
-    using System;
-    using System.Collections.Generic;
     using Typin.Features.Input;
     using Typin.Features.Input.Tokens;
-    using Typin.Models.Schemas;
 
     /// <summary>
     /// <see cref="ValueToken"/> handler.
@@ -14,46 +11,28 @@
         /// <inheritdoc/>
         public bool CanHandle(TokenHandlerContext context)
         {
-            return true;
+            return context.Position < context.Arguments.Count;
         }
 
         /// <inheritdoc/>
         public bool Handle(TokenHandlerContext context, TokenGroup<ValueToken> tokenGroup)
         {
-            throw new NotImplementedException();
-        }
-
-        private static void ParseValues(ITokenCollection input,
-                                        IReadOnlyList<string> commandLineArguments,
-                                        bool explicitlyOpenedDirective,
-                                        ref int index)
-        {
-            TokenGroup<ValueToken> tokenGroup = input.Get<ValueToken>() ?? new();
-
-            for (; index < commandLineArguments.Count; index++)
+            if (context.Position >= context.Arguments.Count)
             {
-                string argument = commandLineArguments[index];
-
-                if (IOptionSchema.IsName(argument) ||
-                    IOptionSchema.IsShortName(argument))
-                {
-                    break;
-                }
-
-                if (explicitlyOpenedDirective && argument.EndsWith(']'))
-                {
-                    tokenGroup.Tokens.Add(new ValueToken(argument[..^1]));
-
-                    break;
-                }
-
-                tokenGroup.Tokens.Add(new ValueToken(argument));
+                return false;
             }
 
-            if (tokenGroup.Tokens.Count > 0 && input.Get(typeof(ValueToken)) is null)
-            {
-                input.Set(tokenGroup);
-            }
+            string argument = context.Arguments[context.Position++];
+
+            bool hasDirectiveTermination = context.Directive.IsExplicit && argument.EndsWith(']');
+
+            argument = hasDirectiveTermination
+                ? argument[..^1]
+                : argument;
+
+            tokenGroup.Tokens.Add(new ValueToken(argument));
+
+            return true;
         }
     }
 }

@@ -44,7 +44,7 @@
         public static bool IsName(string name)
         {
             return name.StartsWith("--", StringComparison.Ordinal) &&
-                name.Length > 3 &&
+                name.Length >= 3 &&
                 char.IsLetter(name[2]);
         }
 
@@ -56,6 +56,16 @@
             return shortName.StartsWith('-') &&
                 shortName.Length == 2 &&
                 char.IsLetter(shortName[1]);
+        }
+
+        /// <summary>
+        /// Checks whether text is a valid option short name.
+        /// </summary>
+        public static bool IsShortNameGroup(string shortNameGroup)
+        {
+            return shortNameGroup.StartsWith('-') &&
+                shortNameGroup.Length >= 2 &&
+                char.IsLetter(shortNameGroup[1]);
         }
     }
 }

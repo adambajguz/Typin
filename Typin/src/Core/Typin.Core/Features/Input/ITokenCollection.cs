@@ -46,7 +46,7 @@
         /// Sets the given tokens group in the collection.
         /// </summary>
         /// <param name="instance">The tokens group value.</param>
-        void Set(ITokenGroup instance);
+        void Add(ITokenGroup instance);
 
         /// <summary>
         /// Removes a tokens group in the collection by key.

@@ -29,32 +29,18 @@
     public interface ITokenHandler<TToken> : ITokenHandler
         where TToken : class, IToken
     {
-        /// <summary>
-        /// Whether token can be handled by this handler instance.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        bool ITokenHandler.CanHandle(TokenHandlerContext context)
-        {
-            return context.Tokens.Get<TToken>() is not null && CanHandle(context);
-        }
-
         bool ITokenHandler.Handle(TokenHandlerContext context)
         {
-            if (context.Tokens.Get<TToken>() is TokenGroup<TToken> tokenGroup)
+            TokenGroup<TToken>? tokenGroup = context.Tokens.Get<TToken>();
+
+            if (tokenGroup is null)
             {
-                return Handle(context, tokenGroup);
+                tokenGroup = new();
+                context.Tokens.Add(tokenGroup);
             }
 
-            return false;
+            return Handle(context, tokenGroup);
         }
-
-        /// <summary>
-        /// Whether token can be handled by this handler instance.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        new bool CanHandle(TokenHandlerContext context);
 
         /// <summary>
         /// Handles the token of type <typeparamref name="TToken"/>.

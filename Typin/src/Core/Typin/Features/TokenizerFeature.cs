@@ -32,11 +32,10 @@
         /// Initializes a new instance of <see cref="InputFeature"/>.
         /// </summary>
         public TokenizerFeature(IEnumerable<string> input,
-                                InputOptions inputOptions)
+                                InputOptions inputOptions) :
+            this(input, inputOptions, new List<ITokenHandler>())
         {
-            Input = input;
-            InputOptions = inputOptions;
-            Handlers = new List<ITokenHandler>();
+
         }
 
         /// <summary>
@@ -44,9 +43,10 @@
         /// </summary>
         public TokenizerFeature(IEnumerable<string> input,
                                 InputOptions inputOptions,
-                                IList<ITokenHandler> handlers) :
-            this(input, inputOptions)
+                                IList<ITokenHandler> handlers)
         {
+            Input = input ?? throw new ArgumentNullException(nameof(input));
+            InputOptions = inputOptions;
             Handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
         }
 
@@ -82,7 +82,7 @@
                 DirectiveToken directiveToken = new(Interlocked.Increment(ref _idSource), argument);
                 directives.Add(directiveToken);
 
-                if (!directiveToken.IsTerminated)
+                if (!directiveToken.IsTerminated && index++ < args.Count)
                 {
                     TokenHandlerContext tokenHandlerContext = new(directiveToken,
                                                                   args,

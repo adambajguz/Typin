@@ -26,7 +26,7 @@
         public IReadOnlyList<string> Arguments { get; }
 
         /// <summary>
-        /// Position/Index in <see cref="Arguments"/> to start <see cref="ITokenHandler.Handle(TokenHandlerContext)"/> logic from.
+        /// Position/Index in <see cref="Tokens"/> to start <see cref="ITokenHandler.Handle(TokenHandlerContext)"/> logic from.
         /// This must be manually updated inside <see cref="ITokenHandler.Handle(TokenHandlerContext)"/> before exiting.
         /// </summary>
         public int Position { get; set; }
