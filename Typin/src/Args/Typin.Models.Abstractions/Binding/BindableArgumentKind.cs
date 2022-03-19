@@ -8,12 +8,12 @@
     public enum BindableArgumentKind
     {
         /// <summary>
-        /// Property based bindable arguemnt.
+        /// Property based bindable argument.
         /// </summary>
         Property,
 
         /// <summary>
-        /// Dynamic argument accessible throught <see cref="IArgumentCollection"/>.
+        /// Dynamic argument accessible through <see cref="IArgumentCollection"/>.
         /// </summary>
         Dynamic
     }

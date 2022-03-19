@@ -62,7 +62,7 @@
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    throw new TaskCanceledException($"{nameof(ReadKeyAsync)} cancelled.");
+                    throw new TaskCanceledException($"{nameof(ReadKeyAsync)} canceled.");
                 }
 
                 _output.Write(charsRead[0]);
@@ -77,7 +77,7 @@
 
             if (cancellationToken.IsCancellationRequested)
             {
-                throw new TaskCanceledException($"{nameof(ReadKeyAsync)} cancelled.");
+                throw new TaskCanceledException($"{nameof(ReadKeyAsync)} canceled.");
             }
 
             return Console.ReadKey(intercept);

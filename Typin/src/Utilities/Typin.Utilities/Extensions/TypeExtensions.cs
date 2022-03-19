@@ -83,7 +83,7 @@
         }
 
         /// <summary>
-        /// Tries to get static parse method with one string argument or dwo arguments (string and IFormatProvider). Returns null when no method was found.
+        /// Tries to get static parse method with one string argument or two arguments (string and IFormatProvider). Returns null when no method was found.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="withFormatProvider"></param>

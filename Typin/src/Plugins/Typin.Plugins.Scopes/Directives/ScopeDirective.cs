@@ -9,7 +9,7 @@
 //    using Typin.Plugins.Scopes;
 
 //    /// <summary>
-//    /// If application runs in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to ommit specified command name(s).
+//    /// If application runs in interactive mode, [>] directive followed by command(s) would scope to the command(s), allowing to omit specified command name(s).
 //    /// <example>
 //    /// Commands:
 //    ///              > [>] cmd1 sub

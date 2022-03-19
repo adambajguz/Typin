@@ -11,12 +11,12 @@
     public interface ICommandSchemaCollection : ISchemaCollection<IReadOnlyAliasCollection, string, ICommandSchema>
     {
         /// <summary>
-        /// Finds all descendant commands of the parrent command by name.
+        /// Finds all descendant commands of the parent command by name.
         /// </summary>
         IReadOnlyList<ICommandSchema> GetDescendantCommands(string? parentCommandName);
 
         /// <summary>
-        /// Finds all child commands of the parrent command by name.
+        /// Finds all child commands of the parent command by name.
         /// </summary>
         IReadOnlyList<ICommandSchema> GetChildCommands(string? parentCommandName);
 

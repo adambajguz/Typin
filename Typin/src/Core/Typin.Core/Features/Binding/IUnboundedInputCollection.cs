@@ -11,7 +11,7 @@
     public interface IUnboundedTokenCollection
     {
         /// <summary>
-        /// Whether collection has sobe unbounded input tokens.
+        /// Whether collection has unbounded input tokens.
         /// </summary>
         bool HasUnbounded { get; }
 

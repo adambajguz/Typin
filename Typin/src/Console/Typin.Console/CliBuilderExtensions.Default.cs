@@ -11,7 +11,7 @@
     {
         /// <summary>
         /// Adds a default console to the application.
-        /// Console instance will not be automatically diposed.
+        /// Console instance will not be automatically disposed.
         /// </summary>
         /// <param name="cliBuilder"></param>
         /// <param name="console"></param>

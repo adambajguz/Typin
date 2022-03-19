@@ -6,7 +6,7 @@
     public static class ScopesDirectives
     {
         /// <summary>
-        /// When application runs in interactive mode, [>] directive followed by command(s) name(s) would scope to the command(s), allowing to ommit specified command name(s).
+        /// When application runs in interactive mode, [>] directive followed by command(s) name(s) would scope to the command(s), allowing to omit specified command name(s).
         /// <example>
         /// Commands:
         ///              > [>] cmd1 sub

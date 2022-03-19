@@ -9,7 +9,7 @@
     using Typin.Utilities;
 
     /// <summary>
-    /// Prameter builder.
+    /// Parameter builder.
     /// </summary>
     internal class ParameterBuilder : ArgumentBuilder, IParameterBuilder
     {

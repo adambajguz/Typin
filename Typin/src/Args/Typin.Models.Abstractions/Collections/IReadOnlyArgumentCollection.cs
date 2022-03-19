@@ -26,7 +26,7 @@
         bool Contains(string propertyName);
 
         /// <summary>
-        /// Gets an arguemnt.
+        /// Gets an argument.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
         /// <returns>Property value.</returns>

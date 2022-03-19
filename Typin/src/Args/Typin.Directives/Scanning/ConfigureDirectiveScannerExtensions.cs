@@ -51,7 +51,7 @@
         }
 
         /// <summary>
-        /// Adds an inline global configuration nwith a dependencies resolved from services container.
+        /// Adds an inline global configuration with a dependencies resolved from services container.
         /// </summary>
         /// <typeparam name="TDep0"></typeparam>
         /// <typeparam name="TDep1"></typeparam>

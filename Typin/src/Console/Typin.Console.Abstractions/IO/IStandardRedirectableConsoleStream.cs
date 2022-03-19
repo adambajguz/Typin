@@ -1,7 +1,7 @@
 ﻿namespace Typin.Console.IO
 {
     /// <summary>
-    /// Abstraction for standard stream redirtection state.
+    /// Abstraction for standard stream redirection state.
     /// </summary>
     public interface IStandardRedirectableConsoleStream
     {

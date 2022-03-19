@@ -67,7 +67,7 @@ namespace Typin.Modes.Interactive
                 }
                 catch (OperationCanceledException)
                 {
-                    _logger.LogInformation("Interactive mode input cancelled.");
+                    _logger.LogInformation("Interactive mode input canceled.");
                     return ExitCode.Error;
                 }
 
@@ -92,7 +92,7 @@ namespace Typin.Modes.Interactive
         }
 
         /// <summary>
-        /// Gets user input and returns arguments or null if cancelled.
+        /// Gets user input and returns arguments or null if canceled.
         /// </summary>
         private async Task<IEnumerable<string>> GetInputAsync(CancellationToken cancellationToken)
         {

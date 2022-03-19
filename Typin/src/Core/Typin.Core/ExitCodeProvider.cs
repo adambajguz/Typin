@@ -1,7 +1,7 @@
 ﻿namespace Typin
 {
     /// <summary>
-    /// A class that can be used to retrive an exit code from CLI application.
+    /// A class that can be used to retrieve an exit code from CLI application.
     /// </summary>
     public sealed record ExitCodeProvider
     {

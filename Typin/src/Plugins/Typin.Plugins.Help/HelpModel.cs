@@ -8,7 +8,7 @@
     public sealed class HelpModel : IModel //TODO: add configuration
     {
         /// <summary>
-        /// Whether help screen was rquested.
+        /// Whether help screen was requested.
         /// </summary>
         //[Option("help", 'h', Description = "Shows help.")]
         public bool ShowHelp { get; set; }

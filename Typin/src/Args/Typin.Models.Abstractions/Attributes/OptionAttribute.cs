@@ -8,7 +8,7 @@
     public sealed class OptionAttribute : ArgumentAttribute
     {
         /// <summary>
-        /// Option name (must be longer than a single character). Starting dashes are trimed automatically.
+        /// Option name (must be longer than a single character). Starting dashes are trimmed automatically.
         /// All options in a command must have different names (comparison is case-insensitive).
         /// If this isn't specified, kebab-cased property name is used instead.
         /// </summary>

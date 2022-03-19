@@ -4,7 +4,7 @@
     using Typin.Directives.Features;
 
     /// <summary>
-    /// Represnes a directive instance that constins of a model and a handler.
+    /// Represents a directive instance that consists of a model and a handler.
     /// </summary>
     public class DirectiveArgs
     {

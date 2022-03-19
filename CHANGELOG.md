@@ -18,7 +18,7 @@
  - Changed default values format in help - now in round brackets. 
  - Fixed `StackTraceParser`: add a filter for `--- End of stack trace from previous location ---` and `--- End of stack trace from previous location where exception was thrown ---`.
  - Fixed invalid help text: `Environment variable:` instead of `Fallback variable:`.
- - Fixed default version format (complex versions like `3.0.0-beta1` were incorrectly dispalyed as `3.0.0`).
+ - Fixed default version format (complex versions like `3.0.0-beta1` were incorrectly displayed as `3.0.0`).
  - Fixed console not being disposed when stopping the application (for consoles that were created within `CliApplicationBuilder`).
  - Fixed showing choices for non-scalar nullable and non-nullable enum arguments.
  - Fixed dependency injection `IDisposable` anti-pattern in `IConsole` - `IDisposable` is no longer present in `IConsole`. If you wish to use it, implement it in `IConsole` implementation.
@@ -31,7 +31,7 @@
 ### v3.0.3 (06-Apr-2021)
 
  - Fixed `DefaultDirective` (`[!]`) executes default command - unable to execute scoped command without parameters, e.g., `[>] books\r [!]\r` was executing default command.
- - Fixed `DefaultDirective` behavior (more consistent with direct mode): it WILL NOT (was: WILL) force default command execution when input contains default commmand parameter values equal to command/subcommand name.
+ - Fixed `DefaultDirective` behavior (more consistent with direct mode): it WILL NOT (was: WILL) force default command execution when input contains default command parameter values equal to command/subcommand name.
 
 ### v3.0.2 (05-Apr-2021)
 
@@ -45,9 +45,9 @@
 ### v3.0.0 (23-Feb-2021)
 
 - Added `Typin.Core` library.
-- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives subpipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`.
+- Core middleware execution order has changed: `ResolveCommandSchemaAndInstance` -> `InitializeDirectives` -> `ExecuteDirectivesSubpipeline` -> [Directives sub-pipeline] -> `HandleSpecialOptions` -> `BindInput` -> [User middlewares] -> `ExecuteCommand`.
 - Renamed `normal mode` to `direct mode`, and added support for custom modes.
-- It is now possible to register multiple exception handleres to handle different exceptions in app.
+- It is now possible to register multiple exception handlers to handle different exceptions in app.
 - Major API and command execution changes: a) added `ICliApplicationLifetime`, `ICliMode`, `ICliCommandExecutor`, `ICliApplicationLifetime`, `DirectMode`, `InteractiveMode`, `IPipelinedDirective`, and more; b) removed `InteractiveCliApplication`.
 - Removed `HandleInteractiveDirective` and `HandleInteractiveCommands` middlewares.
 - Replaced `IsInteractiveModeOnly` with `SupportedModes` and `ExcludedModes`.
@@ -66,17 +66,17 @@
 - Option name with 3 characters is no longer treated as option alias (e.g., `--h` is not `-h`).
 - Option name and short name must start with letter (previously not start with digit).
 - Parameter names are generated using `StringExtensions.ToHyphenCase()` instead of `string.ToLowerInvariant()`.
-- Option attributes are validated in ctor, and appropiate exception is thrown without the need of resolving RootSchema.
+- Option attributes are validated in ctor, and appropriate exception is thrown without the need of resolving RootSchema.
 - Added `TextUtils.UnescapeChar()` and a support for the following escape sequences: '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\\\', and Unicode escape e.g. \\u006A) during char parsing.
 - Added `CliApplication.RunAsync` with string command line and replaced `IReadOnlyList<string>` with `IEnumerable<string>`.
 - Advanced interactive input is disabled when input is redirected.
 - Added `IRootSchemaAccessor` and `IEnvironmentVariablesAccessor` singleton services;
 - Added `ExceptionFormatter` utility and used it as a default exception printer in `DefaultExceptionHandler`.
-- `TableUtils` refactory and fix for proper handling of empty collection.
+- `TableUtils` refactor and fix for proper handling of empty collection.
 - `[!]` directive is now required only to execute command without parameters and options.
 - Added startup message color personalization, and replaced string formating based on macros with `Func<ApplicationMetadata, string>` and `Action<ApplicationMetadata, IConsole>`.
-- Fixed case-sensitivity of command and option names (always case-sesitive).
-- Fixed interactive mode autocompletion results (fo 'column chan' TAB TAB result was 'column column change-range' instead of 'column change-range').
+- Fixed case-sensitivity of command and option names (always case-sensitive).
+- Fixed interactive mode autocompletion results (for 'column chan' TAB TAB result was 'column column change-range' instead of 'column change-range').
 
 ### v2.1.1 (18-Oct-2020)
 
@@ -84,7 +84,7 @@
 - It is no possible to scope to `cmd` command even if there is only `cmd sub` in application.
 - Added `CommandInput.Arguments`.
 - Added `RootSchema.IsCommandOrSubcommandPart()`.
-- `[>]` is now not resseting the scope when no name after `[>]`.
+- `[>]` is now not reseting the scope when no name after `[>]`.
 
 ### v2.1 (17-Oct-2020)
 
@@ -95,7 +95,7 @@
 
 ### v2.0 (02-Oct-2020)
 
-- Added preview of custom DI containter support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).
+- Added preview of custom DI container support (`CliApplicationBuilder.UseServiceProviderFactory` and `CliApplicationBuilder.ConfigureContainer`).
 - Added `ShortcutDefinition` struct and user defined shortcuts configuration in `CliApplicationBuilder.UseInteractiveMode(...)`.
 - Improvements in shortcuts handling.
 - Renamed `[default]` directive to `[!]`.
@@ -117,15 +117,15 @@
 
 - Added interactive mode `CliInteractiveApplication` and interactive only commands.
 - Added `ICliExceptionHandler` and `CliApplicationBuilder.UseExceptionHandler(...)`
-- Added	`Manual` property in `CommandAttribute` that can be used to provide a long, extended description of a commmand.
+- Added	`Manual` property in `CommandAttribute` that can be used to provide a long, extended description of a command.
 - Added `CliContext` that can be injected to services and commands with DI.
 - Added `ReadKey`, `SetCursorPosition`, `WindowWidth`, `WindowHeight`, `BufferWidth`, and `BufferHeight` to `IConsole`.
 - Added new demo apps and improved existing demo.
 - Added `Debugger attached to PID {processId}.` message after debugger attachment.
 - Added benchmarks for multiple commands.
 - Added startup message option with macros.
-- Rewritten `RootSchema` with HashSet for faster execution, esspecially in interactive mode.
-- Added tests of the command used in benchmarking to easily check if it executs correctly and won't cause banchmarking freezing.
+- Rewritten `RootSchema` with HashSet for faster execution, especially in interactive mode.
+- Added tests of the command used in benchmarking to easily check if it executes correctly and won't cause benchmarking freezing.
 - Improved code readability.
 - Removed `CliApplicationBuilder.UseTypeActivator` and added `Microsoft.Extensions.DependencyInjection`
 - Added support for middlewares.

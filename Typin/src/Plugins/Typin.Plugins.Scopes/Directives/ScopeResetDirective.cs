@@ -17,7 +17,7 @@
 //    /// </example>
 //    /// </summary>
 //    [Directive(ScopesDirectives.ScopeReset, Description = "Resets the scope to default value.")]
-//    public sealed class ScopeResetDirective : IDirective //TODO: add directive hadnler
+//    public sealed class ScopeResetDirective : IDirective //TODO: add directive handler
 //    {
 //        private sealed class Handler : IDirectiveHandler<ScopeResetDirective>
 //        {

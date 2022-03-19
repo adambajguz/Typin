@@ -14,7 +14,7 @@
         Default = 0,
 
         /// <summary>
-        /// Whether to ommit scope creartion.
+        /// Whether to omit scope creation.
         /// </summary>
         UseCurrentScope = 1 << 0
     }

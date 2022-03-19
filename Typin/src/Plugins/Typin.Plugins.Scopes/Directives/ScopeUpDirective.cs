@@ -17,7 +17,7 @@
 //    /// </example>
 //    /// </summary>
 //    [Directive(ScopesDirectives.ScopeUp, Description = "Removes one command from the scope.")]
-//    public sealed class ScopeUpDirective : IDirective //TODO: add directive hadnler
+//    public sealed class ScopeUpDirective : IDirective //TODO: add directive handler
 //    {
 //        private sealed class Handler : IDirectiveHandler<ScopeResetDirective>
 //        {

@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// Represents a class with model model type accessor property.
+    /// Represents a class with model type accessor property.
     /// </summary>
     public interface IModelTypeAccessor
     {

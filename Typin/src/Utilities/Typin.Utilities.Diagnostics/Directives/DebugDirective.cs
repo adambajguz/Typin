@@ -18,7 +18,7 @@
     /// This is useful for debugging apps that were ran outside of the IDE.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public sealed class DebugDirective : IDirective //TODO: add directive hadnler
+    public sealed class DebugDirective : IDirective //TODO: add directive handler
     {
         private sealed class Configure : IConfigureModel<DebugDirective>, IConfigureDirective<DebugDirective>
         {

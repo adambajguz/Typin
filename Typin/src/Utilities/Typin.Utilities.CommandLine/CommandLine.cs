@@ -90,7 +90,7 @@
 
             // Escape all backslashes, but let the terminating
             // double quotation mark we add below be interpreted
-            // as a metacharacter.
+            // as a meta-character.
             quoted.Append('\\', numberBackslashes * 2);
             quoted.Append('"');
 

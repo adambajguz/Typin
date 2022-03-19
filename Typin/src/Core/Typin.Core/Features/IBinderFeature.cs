@@ -30,14 +30,14 @@
         /// Removes a bindable model by identifier.
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>Whether binable model with identifier <paramref name="id"/> was removed.</returns>
+        /// <returns>Whether bindable model with identifier <paramref name="id"/> was removed.</returns>
         bool TryRemove(int id);
 
         /// <summary>
         /// Removes a bindable model by schema type.
         /// </summary>
         /// <param name="type"></param>
-        /// <returns>Whether binable model with type <paramref name="type"/> was removed.</returns>
+        /// <returns>Whether bindable model with type <paramref name="type"/> was removed.</returns>
         bool TryRemove(Type type);
 
         /// <summary>
@@ -67,7 +67,7 @@
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="bindableModel"></param>
-        void Bind(IServiceProvider serviceProvider, BindableModel bindableModel); //TODO: is this neccessary.
+        void Bind(IServiceProvider serviceProvider, BindableModel bindableModel); //TODO: is this necessary.
 
         /// <summary>
         /// Validates whether all input, as well as all parameters and required options were bounded.

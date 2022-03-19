@@ -6,7 +6,7 @@
     using Typin.Utilities.Extensions;
 
     /// <summary>
-    /// Missing parmeters input exception.
+    /// Missing parameters input exception.
     /// </summary>
     public sealed class MissingParametersException : ArgumentBindingException
     {

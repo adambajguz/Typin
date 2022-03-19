@@ -22,7 +22,7 @@
 
 
         /// <summary>
-        /// Checks whether type is a valid direcrive handler.
+        /// Checks whether type is a valid directive handler.
         /// </summary>
         public static bool IsValidType(Type type)
         {
@@ -35,7 +35,7 @@
         }
 
         /// <summary>
-        /// Checks whether type is a valid direcrive handler.
+        /// Checks whether type is a valid directive handler.
         /// </summary>
         public static bool IsValidType(Type type, Type commandType)
         {

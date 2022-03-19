@@ -62,7 +62,7 @@
         }
 
         /// <summary>
-        /// Finds all child commands of the parrent command by name.
+        /// Finds all child commands of the parent command by name.
         /// </summary>
         public IReadOnlyList<ICommandSchema> GetChildCommands(string? parentCommandName)
         {

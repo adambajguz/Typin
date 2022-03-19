@@ -12,7 +12,7 @@
     /// <summary>
     /// <see cref="ITokenizerFeature"/> implementation.
     /// </summary>
-    internal sealed class TokenizerFeature : ITokenizerFeature
+    public sealed class TokenizerFeature : ITokenizerFeature
     {
         private int _idSource;
 

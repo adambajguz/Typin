@@ -6,7 +6,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Prameter builder.
+    /// Parameter builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     internal class ParameterBuilder<TModel> : ParameterBuilder, IParameterBuilder<TModel>

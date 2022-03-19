@@ -1,7 +1,7 @@
 ﻿namespace Typin.Modes.Interactive.Directives
 {
     /// <summary>
-    /// Interactive onlt directives definitions.
+    /// Interactive only directives definitions.
     /// </summary>
     public static class InteractiveOnlyDirectives
     {

@@ -16,7 +16,7 @@
         public int Count => _values.Count;
 
         /// <summary>
-        /// Initializes a new instace of <see cref="ArgumentCollection"/>.
+        /// Initializes a new instance of <see cref="ArgumentCollection"/>.
         /// </summary>
         public ArgumentCollection()
         {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instace of <see cref="ArgumentCollection"/>.
+        /// Initializes a new instance of <see cref="ArgumentCollection"/>.
         /// </summary>
         /// <param name="capacity">The initial number of elements that the internal dictionary can contain.</param>
         public ArgumentCollection(int capacity)
@@ -33,7 +33,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instace of <see cref="ArgumentCollection"/>.
+        /// Initializes a new instance of <see cref="ArgumentCollection"/>.
         /// </summary>
         public ArgumentCollection(IEnumerable<KeyValuePair<string, ArgumentValue>> values)
         {
@@ -115,7 +115,7 @@
             }
             else
             {
-                throw new InvalidOperationException($"Property with name '{propertyName}' not found. Cannot set a schemaless property.");
+                throw new InvalidOperationException($"Property with name '{propertyName}' not found. Cannot set a schema-less property.");
             }
         }
 

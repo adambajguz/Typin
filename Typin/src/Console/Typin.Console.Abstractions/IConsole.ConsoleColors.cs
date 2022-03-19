@@ -20,7 +20,7 @@
         ConsoleColor BackgroundColor { get; set; }
 
         /// <summary>
-        /// Sets console background and foregorund.
+        /// Sets console background and foreground.
         /// </summary>
         /// <param name="background"></param>
         /// <param name="foreground"></param>

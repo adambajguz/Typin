@@ -504,7 +504,7 @@
             public static string Line { get; } = $"{Esc}[2K";
 
             /// <summary>
-            /// Clear to beginning of the lind.
+            /// Clear to beginning of the line.
             /// </summary>
             public static string ToBeginningOfLine { get; } = $"{Esc}[1K";
 

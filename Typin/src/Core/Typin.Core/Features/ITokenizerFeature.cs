@@ -10,7 +10,7 @@
     public interface ITokenizerFeature
     {
         /// <summary>
-        /// Commadn command line input to tokenize arguments.
+        /// Command line input to tokenize arguments.
         /// </summary>
         IEnumerable<string> Input { get; set; }
 
@@ -26,7 +26,7 @@
 
         /// <summary>
         /// A collection of token handlers.
-        /// For each token in <see cref="Tokens"/> every token handler is executed in order untill it returns <see langword="true"/>.
+        /// For each token in <see cref="Tokens"/> every token handler is executed in order until it returns <see langword="true"/>.
         /// </summary>
         IList<ITokenHandler> Handlers { get; set; }
 

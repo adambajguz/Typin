@@ -8,7 +8,7 @@
     using Typin.Schemas.Collections;
 
     /// <summary>
-    /// Prameter builder.
+    /// Parameter builder.
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TProperty"></typeparam>

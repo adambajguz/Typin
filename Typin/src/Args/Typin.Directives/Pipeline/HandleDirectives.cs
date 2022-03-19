@@ -11,7 +11,7 @@ namespace Typin.Directives.Pipeline
     using Typin.Directives.Features;
 
     /// <summary>
-    /// Handles directives using a subpipeline.
+    /// Handles directives using a sub-pipeline.
     /// </summary>
     public sealed class HandleDirectives : IMiddleware
     {

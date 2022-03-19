@@ -11,12 +11,12 @@
         public string? Title { get; set; }
 
         /// <summary>
-        /// Applicatin executable name.
+        /// Application executable name.
         /// </summary>
         public string? ExecutableName { get; set; }
 
         /// <summary>
-        /// Applicatin version text.
+        /// Application version text.
         /// </summary>
         public string? VersionText { get; set; }
 

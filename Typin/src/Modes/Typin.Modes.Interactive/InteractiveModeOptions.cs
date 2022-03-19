@@ -22,7 +22,7 @@
         public ConsoleColor CommandForeground { get; set; } = ConsoleColor.Yellow;
 
         /// <summary>
-        /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initalize with a call to <see cref="SetDefaultPrompt"/>).
+        /// Prompt writer delegate. Use SetPrompt to change prompt specification (by default initialized with a call to <see cref="SetDefaultPrompt"/>).
         /// </summary>
         public Action<IServiceProvider, ApplicationMetadata, IConsole> Prompt { get; private set; } = default!;
 

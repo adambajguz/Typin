@@ -27,7 +27,7 @@
         string Name { get; }
 
         /// <summary>
-        /// Arguemnt type
+        /// Argument type
         /// </summary>
         BindableArgumentKind Kind { get; }
 

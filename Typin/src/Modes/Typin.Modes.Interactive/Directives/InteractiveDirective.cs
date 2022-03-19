@@ -16,7 +16,7 @@
     /// </summary>
     [Alias(InteractiveOnlyDirectives.Interactive)]
     [Description("Executes a command, then starts an interactive mode.")]
-    public sealed class InteractiveDirective : IDirective //TODO: add directive hadnler
+    public sealed class InteractiveDirective : IDirective //TODO: add directive handler
     {
         private sealed class Handler : IDirectiveHandler<InteractiveDirective>
         {

@@ -8,7 +8,7 @@
     public sealed class ScopeChangedEventArgs : EventArgs
     {
         /// <summary>
-        /// Previos scope.
+        /// Previous scope.
         /// </summary>
         public string Previous { get; }
 

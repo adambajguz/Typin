@@ -1,7 +1,7 @@
 ﻿namespace Typin.Schemas.Builders
 {
     /// <summary>
-    /// Represents a class with storngly typed self reference.
+    /// Represents a class with strongly typed self reference.
     /// </summary>
     /// <typeparam name="TSelf"></typeparam>
     public interface ISelf<TSelf>

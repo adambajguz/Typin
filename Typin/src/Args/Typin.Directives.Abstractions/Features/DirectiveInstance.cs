@@ -4,7 +4,7 @@
     using Typin.Directives;
 
     /// <summary>
-    /// Represnes a directive instance that constins of a model and a handler.
+    /// Represents a directive instance that constists of a model and a handler.
     /// </summary>
     public sealed class DirectiveInstance
     {

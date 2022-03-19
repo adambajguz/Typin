@@ -49,7 +49,7 @@
         /// </summary>
         /// <param name="console"></param>
         /// <param name="consoleFeatures"></param>
-        /// <returns>True when all features were enabled, false when one or morer equested features are not supported.</returns>
+        /// <returns>True when all features were enabled, false when one or more requested features are not supported.</returns>
         public static bool TryEnable(this IConsole console, ConsoleFeatures consoleFeatures)
         {
             if ((console.SupportedFeatures | consoleFeatures) != console.SupportedFeatures)

@@ -14,7 +14,7 @@
         public IReadOnlyCollection<Type>? Types { get; }
 
         /// <summary>
-        /// Initializes a new instanse of <see cref="Components{T}"/>.
+        /// Initializes a new instance of <see cref="Components{T}"/>.
         /// </summary>
         /// <param name="componentProvider"></param>
         public Components(IComponentProvider componentProvider)

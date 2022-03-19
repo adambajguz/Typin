@@ -163,7 +163,7 @@ namespace Typin.Features.Binder
                     return v;
                 }
 
-                // Enum conversion conversion
+                // Enum conversion
                 if (targetType.IsEnum && !string.IsNullOrWhiteSpace(value))
                 {
                     return Enum.Parse(targetType, value ?? string.Empty, true);
@@ -282,7 +282,7 @@ namespace Typin.Features.Binder
         #endregion
 
         /// <summary>
-        /// Binds input values to a bindbale object instance.
+        /// Binds input values to a bindable object instance.
         /// </summary>
         public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, BindableModel bindableModel, IReadOnlyCollection<string> values)
         {
@@ -291,7 +291,7 @@ namespace Typin.Features.Binder
         }
 
         /// <summary>
-        /// Binds input values to a bindbale object instance.
+        /// Binds input values to a bindable object instance.
         /// </summary>
         public static void BindOn(this IArgumentSchema argumentSchema, IServiceProvider serviceProvider, BindableModel bindableModel, string value)
         {

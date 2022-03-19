@@ -10,7 +10,7 @@
 
 </p>
 
-**See [TypinExamples](https://adambajguz.github.io/Typin/) website for interective examples.**
+**See [TypinExamples](https://adambajguz.github.io/Typin/) website for interactive examples.**
 
 <table>
  <tr>
@@ -51,7 +51,7 @@ Typin is build based on the source code of [CliFx](https://github.com/Tyrrrz/Cli
 - [Middleware pipeline](https://github.com/adambajguz/Typin/wiki/Middleware-pipeline),
 - [Custom directives](https://github.com/adambajguz/Typin/wiki/Defining-custom-directives) that can be used as either flags (`IDirective`) or dynamic pipeline extensions (`IPipelinedDirective`),
 - [IOptionFallbackProvider](https://github.com/adambajguz/Typin/wiki/Option-fallback) for custom fallback providers instead of only environment variable fallback,
-- [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used accross entire framework,
+- [Build-in DI support](https://github.com/adambajguz/Typin/wiki/Dependency-injection) with `Microsoft.Extensions.DependencyInjection` that is used across entire framework,
 - Build-in options support with `Microsoft.Extensions.Options`,
 - Ability to modify [exception handling](https://github.com/adambajguz/Typin/wiki/Exception-handling) with one or more exception handlers,
 - Ability to execute commands from other commands or services with `ICliCommandExecutor` (NOT RECOMMENDED, except for custom CLI mode classes),
@@ -77,7 +77,7 @@ Overall, Typin is a framework that is much more flexible and rich with both feat
 ## Features
 
 - Complete application framework
-- Argument (options and parmeters) parser.
+- Argument (options and parameters) parser.
 - Requires minimal amount of code to get started.
 - Configuration via attributes.
 - Handles conversions to various types, including custom types.

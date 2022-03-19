@@ -24,7 +24,7 @@
         IReadOnlyList<IToken> ITokenGroup.Tokens => _tokens;
 
         /// <summary>
-        /// Initializes a new instanc of <see cref="TokenGroup{T}"/>.
+        /// Initializes a new instance of <see cref="TokenGroup{T}"/>.
         /// </summary>
         public TokenGroup() :
             this(new List<T>())
@@ -33,7 +33,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instanc of <see cref="TokenGroup{T}"/>.
+        /// Initializes a new instance of <see cref="TokenGroup{T}"/>.
         /// </summary>
         public TokenGroup(List<T> tokens)
         {

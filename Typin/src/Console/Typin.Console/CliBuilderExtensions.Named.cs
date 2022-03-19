@@ -12,7 +12,7 @@
     {
         /// <summary>
         /// Adds a named console to the application.
-        /// Console instance will not be automatically diposed.
+        /// Console instance will not be automatically disposed.
         /// </summary>
         /// <param name="cliBuilder"></param>
         /// <param name="name"></param>

@@ -50,7 +50,7 @@
                 IDirectiveSchemaResolver directiveSchemaResolver = (IDirectiveSchemaResolver)_serviceProvider.GetRequiredService(directiveSchemaResolverType);
                 IDirectiveSchema schema = await directiveSchemaResolver.ResolveAsync(cancellationToken);
 
-                Schemas.Set(schema); //TODO: better valdiation, e.g. name duplicates
+                Schemas.Set(schema); //TODO: better validation, e.g. name duplicates
             }
         }
     }

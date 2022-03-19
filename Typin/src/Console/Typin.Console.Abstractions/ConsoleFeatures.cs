@@ -24,7 +24,7 @@
         /// <see cref="IConsole.ForegroundColor"/>,
         /// <see cref="IConsole.SetColors(ConsoleColor, ConsoleColor)"/>, and
         /// <see cref="IConsole.ResetColor"/>
-        /// is enabled/alowed.
+        /// is enabled/allowed.
         /// </summary>
         ConsoleColors = 1ul << 1,
 
@@ -34,14 +34,14 @@
         /// <see cref="IConsole.SetForeground(byte, byte, byte)"/>,
         /// <see cref="IConsole.SetColors(byte, byte, byte, byte, byte, byte)"/>, and
         /// <see cref="IConsole.ResetColor"/>
-        /// is enabled/alowed.
+        /// is enabled/allowed.
         /// </summary>
         RgbColors = 1ul << 2,
 
         /// <summary>
         /// Indicates that
         /// <see cref="IConsole.Clear"/>
-        /// is enabled/alowed.
+        /// is enabled/allowed.
         /// </summary>
         Clear = 1ul << 3,
 
@@ -50,14 +50,14 @@
         /// <see cref="IConsole.CursorLeft"/>,
         /// <see cref="IConsole.CursorTop"/>, and
         /// <see cref="IConsole.SetCursorPosition(int, int)"/>
-        /// are enabled/alowed.
+        /// are enabled/allowed.
         /// </summary>
         CursorPosition = 1ul << 10,
 
         /// <summary>
         /// Indicates that
         /// <see cref="IConsole.CursorVisible"/>
-        /// are enabled/alowed.
+        /// are enabled/allowed.
         /// </summary>
         CursorVisibility = 1ul << 11,
 
@@ -66,7 +66,7 @@
         /// <see cref="IConsole.WindowHeight"/>,
         /// <see cref="IConsole.WindowWidth"/>, and
         /// <see cref="IConsole.SetWindowSize(int, int)"/>.
-        /// are enabled/alowed.
+        /// are enabled/allowed.
         /// </summary>
         WindowSize = 1ul << 20,
 
@@ -75,14 +75,14 @@
         /// <see cref="IConsole.BufferHeight"/>,
         /// <see cref="IConsole.BufferWidth"/>, and
         /// <see cref="IConsole.SetBufferSize(int, int)"/>.
-        /// are enabled/alowed.
+        /// are enabled/allowed.
         /// </summary>
         BufferSize = 1ul << 21,
 
         /// <summary>
         /// Indicates that
         /// <see cref="IConsole.Title"/>
-        /// are enabled/alowed.
+        /// are enabled/allowed.
         /// </summary>
         Title = 1ul << 22
     }
