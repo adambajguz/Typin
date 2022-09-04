@@ -34,25 +34,9 @@
             }
 
             /// <inheritdoc/>
-            public async ValueTask ExecuteAsync(DirectiveArgs<InteractiveDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
+            public ValueTask ExecuteAsync(DirectiveArgs<InteractiveDirective> args, StepDelegate next, CancellationToken cancellationToken = default)
             {
-                //await _cliModeSwitcher.WithModeAsync<InteractiveMode>(async (mode, ct) =>
-                //{
-                //    TokensGroup<IDirectiveToken>? parsedInput = args.Context.Input.Tokens;
-
-                //    if (parsedInput is not null)
-                //    {
-                //        parsedInput.Directives.RemoveAll(x => x.Matches(InteractiveOnlyDirectives.Interactive));
-
-                //        if (parsedInput.GetRaw() is { Count: > 0 } arguments)
-                //        {
-                //            await _commandExecutor.ExecuteAsync(arguments, cancellationToken: ct);
-                //        }
-                //    }
-
-                //    await mode.ExecuteAsync(ct);
-
-                //}, cancellationToken);
+                return new ValueTask();
             }
         }
     }

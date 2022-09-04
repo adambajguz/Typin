@@ -47,7 +47,7 @@
             {
                 Type commandSchemaResolverType = typeof(ICommandSchemaResolver<>).MakeGenericType(type);
 
-                ICommandSchemaResolver commandSchemaResolver = (ICommandSchemaResolver)_serviceProvider.GetRequiredService(commandSchemaResolverType);
+                var commandSchemaResolver = (ICommandSchemaResolver)_serviceProvider.GetRequiredService(commandSchemaResolverType);
                 ICommandSchema schema = await commandSchemaResolver.ResolveAsync(cancellationToken);
 
                 Schemas.Set(schema); //TODO: better validation, e.g. name duplicates

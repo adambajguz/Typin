@@ -57,7 +57,6 @@
             return (console, output, error);
         }
 
-
         /// <summary>
         /// Creates a <see cref="VirtualConsole"/> that uses in-memory output and error streams.
         /// Use the exposed streams to easily get the current output.

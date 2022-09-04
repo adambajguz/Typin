@@ -66,7 +66,7 @@ namespace Typin.Features
             {
                 _ = key ?? throw new ArgumentNullException(nameof(key));
 
-                return _features is not null && _features.TryGetValue(key, out var result) ? result : _defaults?[key];
+                return _features is not null && _features.TryGetValue(key, out object? result) ? result : _defaults?[key];
             }
             set
             {
@@ -82,10 +82,7 @@ namespace Typin.Features
                     return;
                 }
 
-                if (_features == null)
-                {
-                    _features = new Dictionary<Type, object>(_initialCapacity);
-                }
+                _features ??= new Dictionary<Type, object>(_initialCapacity);
                 _features[key] = value;
                 ++_containerRevision;
             }
@@ -101,7 +98,7 @@ namespace Typin.Features
         {
             if (_features is not null)
             {
-                foreach (var pair in _features)
+                foreach (KeyValuePair<Type, object> pair in _features)
                 {
                     yield return pair;
                 }
@@ -110,7 +107,7 @@ namespace Typin.Features
             if (_defaults is not null)
             {
                 // Don't return features masked by the wrapper.
-                foreach (var pair in _features == null ? _defaults : _defaults.Except(_features, FeatureKeyComparer))
+                foreach (KeyValuePair<Type, object> pair in _features == null ? _defaults : _defaults.Except(_features, FeatureKeyComparer))
                 {
                     yield return pair;
                 }

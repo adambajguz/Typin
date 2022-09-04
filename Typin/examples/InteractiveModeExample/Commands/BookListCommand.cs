@@ -23,10 +23,10 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            var library = _libraryService.GetLibrary();
+            Models.Library library = _libraryService.GetLibrary();
 
-            var isFirst = true;
-            foreach (var book in library.Books)
+            bool isFirst = true;
+            foreach (Models.Book book in library.Books)
             {
                 // Margin
                 if (!isFirst)

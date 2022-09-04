@@ -15,7 +15,7 @@
         public static string PadBoth(this string source, int totalWidth, char paddingChar = ' ')
         {
             int spaces = totalWidth - source.Length;
-            int padLeft = spaces / 2 + source.Length;
+            int padLeft = (spaces / 2) + source.Length;
 
             return source.PadLeft(padLeft, paddingChar)
                          .PadRight(totalWidth, paddingChar);

@@ -11,7 +11,7 @@
 
         private void StoreLibrary(Library library)
         {
-            var data = JsonConvert.SerializeObject(library);
+            string data = JsonConvert.SerializeObject(library);
             File.WriteAllText(StorageFilePath, data);
         }
 
@@ -22,7 +22,7 @@
                 return Library.Empty;
             }
 
-            var data = File.ReadAllText(StorageFilePath);
+            string data = File.ReadAllText(StorageFilePath);
 
             return JsonConvert.DeserializeObject<Library>(data) ?? Library.Empty;
         }
@@ -34,13 +34,13 @@
 
         public void AddBook(Book book)
         {
-            var updatedLibrary = GetLibrary().WithBook(book);
+            Library updatedLibrary = GetLibrary().WithBook(book);
             StoreLibrary(updatedLibrary);
         }
 
         public void RemoveBook(Book book)
         {
-            var updatedLibrary = GetLibrary().WithoutBook(book);
+            Library updatedLibrary = GetLibrary().WithoutBook(book);
             StoreLibrary(updatedLibrary);
         }
     }

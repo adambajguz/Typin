@@ -14,7 +14,7 @@
 
         public static Library WithoutBook(this Library library, Book book)
         {
-            var books = library.Books.Where(b => b != book).ToArray();
+            Book[] books = library.Books.Where(b => b != book).ToArray();
 
             return new Library(books);
         }

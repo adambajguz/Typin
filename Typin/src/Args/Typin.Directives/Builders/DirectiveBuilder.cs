@@ -168,7 +168,6 @@
             return this;
         }
 
-
         IDirectiveBuilder<TModel> IBaseDirectiveBuilder<IDirectiveBuilder<TModel>>.UseHandler<THandler>()
         {
             UseHandler(typeof(THandler));

@@ -12,10 +12,7 @@
                 return int.MaxValue;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.BufferSize);
-            }
+            set => ValidateFeature(ConsoleFeatures.BufferSize);
         }
 
         /// <inheritdoc />
@@ -28,10 +25,7 @@
                 return int.MaxValue;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.BufferSize);
-            }
+            set => ValidateFeature(ConsoleFeatures.BufferSize);
         }
 
         /// <inheritdoc />

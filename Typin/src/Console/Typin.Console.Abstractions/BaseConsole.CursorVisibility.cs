@@ -12,10 +12,7 @@
                 return true;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.CursorVisibility);
-            }
+            set => ValidateFeature(ConsoleFeatures.CursorVisibility);
         }
     }
 }

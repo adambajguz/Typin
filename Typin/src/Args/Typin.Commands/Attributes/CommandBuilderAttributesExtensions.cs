@@ -5,7 +5,6 @@
     using System.Reflection;
     using Typin.Commands.Builders;
     using Typin.Schemas.Attributes;
-    using Typin.Schemas.Builders;
 
     /// <summary>
     /// Command builder attributes configuration extensions.
@@ -44,7 +43,7 @@
         {
             Type commandType = builder.Model.Type;
 
-            (builder as IManageAliases<TSelf>).FromAttributes();
+            builder.FromAttributes();
 
             foreach (DescriptionAttribute descriptionAttribute in commandType.GetCustomAttributes<DescriptionAttribute>())
             {

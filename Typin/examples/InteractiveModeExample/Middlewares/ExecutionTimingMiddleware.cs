@@ -25,7 +25,7 @@
                 output.WriteLine($"--- Handling command '{args.Features.Get<ICommandFeature>()?.Schema.Aliases}' with args '{string.Join(' ', args.Input.Arguments ?? Array.Empty<string>())}'");
             });
 
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             await next();
 
@@ -49,7 +49,6 @@
                                      stopwatch.Elapsed.TotalMilliseconds);
                 });
             }
-
         }
     }
 }

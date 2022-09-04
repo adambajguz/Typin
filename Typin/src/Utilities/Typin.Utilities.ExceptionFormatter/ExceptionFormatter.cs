@@ -105,7 +105,7 @@
                         output.Write(indentationLocal);
 
                         // "C:\Projects\Typin\Typin.Demo\Commands\"
-                        var stackFrameDirectoryPath = Path.GetDirectoryName(stackFrame.FilePath);
+                        string? stackFrameDirectoryPath = Path.GetDirectoryName(stackFrame.FilePath);
                         output.WithForegroundColor(ConsoleColor.DarkGray, (o) =>
                         {
                             o.Write(stackFrameDirectoryPath);

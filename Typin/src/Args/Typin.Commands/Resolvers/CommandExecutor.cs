@@ -71,9 +71,9 @@
                                             ModeBehavior options = default,
                                             CancellationToken cancellationToken = default)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
-            using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             await using AsyncServiceScope? serviceScope = options.HasFlag(ModeBehavior.UseCurrentScope)
                 ? null

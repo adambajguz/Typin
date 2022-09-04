@@ -24,7 +24,7 @@
 
                 if (this.IsEnabled(ConsoleFeatures.ConsoleColors))
                 {
-                    _foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.White : value;
+                    _foregroundColor = value is < ConsoleColor.Black or > ConsoleColor.White ? ConsoleColor.White : value;
 
                     Output.Write(Ansi.Color.Foreground.FromConsoleColor(value));
                 }
@@ -49,7 +49,7 @@
 
                 if (this.IsEnabled(ConsoleFeatures.ConsoleColors))
                 {
-                    _backgroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
+                    _backgroundColor = value is < ConsoleColor.Black or > ConsoleColor.White ? ConsoleColor.Black : value;
 
                     Output.Write(Ansi.Color.Background.FromConsoleColor(value));
                 }

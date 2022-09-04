@@ -51,7 +51,7 @@
 
             public async ValueTask ExecuteAsync(TestCommand command, CancellationToken cancellationToken)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
+                var stopwatch = Stopwatch.StartNew();
 
                 _console.Output.WriteLine($"ContextId: {_cliContextAccessor.CliContext!.Call.ContextDepth} | '{command.Author}' '{command.AuthorX}' '{command.Ch}'");
 

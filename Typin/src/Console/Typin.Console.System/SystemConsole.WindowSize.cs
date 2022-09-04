@@ -57,7 +57,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int LargestWindowWidth
         {
             get
@@ -72,7 +71,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int LargestWindowHeight
         {
             get

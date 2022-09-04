@@ -37,7 +37,7 @@ namespace Typin.Features
         /// <inheritdoc/>
         public void Add(BindableModel model)
         {
-            if (_bindableMapById.TryGetValue(model.DirectiveId, out var byId))
+            if (_bindableMapById.TryGetValue(model.DirectiveId, out List<BindableModel>? byId))
             {
                 byId.Add(model);
             }
@@ -47,7 +47,7 @@ namespace Typin.Features
             }
 
             Type schemaType = model.Schema.Type;
-            if (_bindableMapByType.TryGetValue(schemaType, out var byType))
+            if (_bindableMapByType.TryGetValue(schemaType, out List<BindableModel>? byType))
             {
                 byType.Add(model);
             }
@@ -62,9 +62,9 @@ namespace Typin.Features
         /// <inheritdoc/>
         public bool TryRemove(int id)
         {
-            if (_bindableMapById.Remove(id, out var models))
+            if (_bindableMapById.Remove(id, out List<BindableModel>? models))
             {
-                foreach (var model in models)
+                foreach (BindableModel model in models)
                 {
                     _bindable.Remove(model);
                     _bindableMapByType.Remove(model.Schema.Type);
@@ -79,9 +79,9 @@ namespace Typin.Features
         /// <inheritdoc/>
         public bool TryRemove(Type type)
         {
-            if (_bindableMapByType.Remove(type, out var models))
+            if (_bindableMapByType.Remove(type, out List<BindableModel>? models))
             {
-                foreach (var model in models)
+                foreach (BindableModel model in models)
                 {
                     _bindable.Remove(model);
                     _bindableMapById.Remove(model.DirectiveId);
@@ -221,7 +221,7 @@ namespace Typin.Features
             IReadOnlyList<IOptionSchema> requiredOptions = bindableModel.Schema.RequiredOptions;
             IReadOnlyList<IOptionSchema> options = bindableModel.Schema.Options;
 
-            HashSet<IOptionSchema> unsetRequiredOptions = requiredOptions.ToHashSet();
+            var unsetRequiredOptions = requiredOptions.ToHashSet();
 
             // Direct or fallback input
             foreach (OptionSchema option in requiredOptions.Concat(options))

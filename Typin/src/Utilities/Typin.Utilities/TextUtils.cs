@@ -58,7 +58,7 @@
             {
                 if (text.Length == 2)
                 {
-                    return (text[1]) switch
+                    return text[1] switch
                     {
                         '0' => '\0', // Null
                         'a' => '\a', // Alert

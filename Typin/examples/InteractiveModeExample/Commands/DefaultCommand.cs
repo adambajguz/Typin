@@ -26,7 +26,7 @@
         {
             _console.Output.WithForegroundColor(ConsoleColor.DarkGreen, (output) => output.WriteLine("Hello world from default command"));
 
-            foreach (var value in Values)
+            foreach (string value in Values)
             {
                 _console.Output.WriteLine(value);
             }

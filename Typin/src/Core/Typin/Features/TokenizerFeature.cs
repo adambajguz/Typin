@@ -60,7 +60,7 @@
         public IDirectiveCollection Tokenize(IEnumerable<string> arguments, InputOptions options)
         {
             bool trimExecutable = options.HasFlag(InputOptions.TrimExecutable);
-            List<string> tokenizerInput = arguments.Skip(trimExecutable ? 1 : 0).ToList();
+            var tokenizerInput = arguments.Skip(trimExecutable ? 1 : 0).ToList();
 
             DirectiveCollection directives = new();
 

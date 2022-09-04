@@ -5,7 +5,6 @@
     using System.Reflection;
     using Typin.Directives.Builders;
     using Typin.Schemas.Attributes;
-    using Typin.Schemas.Builders;
 
     /// <summary>
     /// Directive builder attributes configuration extensions.
@@ -43,7 +42,7 @@
             where TSelf : class, IBaseDirectiveBuilder<TSelf>
         {
             Type directiveType = builder.Model.Type;
-            (builder as IManageAliases<TSelf>).FromAttributes();
+            builder.FromAttributes();
 
             foreach (DescriptionAttribute descriptionAttribute in directiveType.GetCustomAttributes<DescriptionAttribute>())
             {

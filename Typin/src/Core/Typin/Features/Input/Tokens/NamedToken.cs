@@ -26,9 +26,10 @@
             {
                 if (_raw is null)
                 {
-                    List<string> values = new(Values.Count + 1);
-
-                    values.Add(GetFormattedAlias());
+                    List<string> values = new(Values.Count + 1)
+                    {
+                        GetFormattedAlias()
+                    };
                     values.AddRange(Values);
 
                     _raw = values;

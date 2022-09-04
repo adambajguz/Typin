@@ -2,7 +2,7 @@
 {
     public partial class AnsiConsole
     {
-        bool _cursorVisible = true;
+        private bool _cursorVisible = true;
 
         /// <inheritdoc />
         public override bool CursorVisible

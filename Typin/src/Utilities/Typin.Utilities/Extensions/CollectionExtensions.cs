@@ -35,7 +35,7 @@
         {
             ICollection sourceAsCollection = source as ICollection ?? source.ToArray();
 
-            Array array = Array.CreateInstance(elementType, sourceAsCollection.Count);
+            var array = Array.CreateInstance(elementType, sourceAsCollection.Count);
             sourceAsCollection.CopyTo(array, 0);
 
             return array;

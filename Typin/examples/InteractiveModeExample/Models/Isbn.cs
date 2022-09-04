@@ -24,7 +24,7 @@
         }
         public static Isbn Parse(string value, IFormatProvider formatProvider)
         {
-            var components = value.Split('-', 5, StringSplitOptions.RemoveEmptyEntries);
+            string[] components = value.Split('-', 5, StringSplitOptions.RemoveEmptyEntries);
 
             return new Isbn(
                 int.Parse(components[0], formatProvider),

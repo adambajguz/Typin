@@ -20,7 +20,7 @@
         public void Progress_ticker_can_be_used_to_report_progress_to_console()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered(isOutputRedirected: false, isErrorRedirected: false);
+            (VirtualConsole console, Console.IO.MemoryStreamWriter stdOut, Console.IO.MemoryStreamWriter _) = VirtualConsole.CreateBuffered(isOutputRedirected: false, isErrorRedirected: false);
 
             ProgressTicker ticker = console.CreateProgressTicker();
 
@@ -45,7 +45,7 @@
         public void Progress_ticker_does_not_write_to_console_if_output_is_redirected()
         {
             // Arrange
-            var (console, stdOut, _) = VirtualConsole.CreateBuffered();
+            (VirtualConsole console, Console.IO.MemoryStreamWriter stdOut, Console.IO.MemoryStreamWriter _) = VirtualConsole.CreateBuffered();
 
             ProgressTicker ticker = console.CreateProgressTicker();
 

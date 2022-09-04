@@ -12,10 +12,7 @@
                 return 0;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.CursorPosition);
-            }
+            set => ValidateFeature(ConsoleFeatures.CursorPosition);
         }
 
         /// <inheritdoc />
@@ -28,10 +25,7 @@
                 return 0;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.CursorPosition);
-            }
+            set => ValidateFeature(ConsoleFeatures.CursorPosition);
         }
 
         /// <inheritdoc/>

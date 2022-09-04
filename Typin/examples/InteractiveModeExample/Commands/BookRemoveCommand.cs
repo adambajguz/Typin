@@ -26,7 +26,7 @@
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
-            var book = _libraryService.GetBook(Title);
+            Models.Book? book = _libraryService.GetBook(Title);
 
             if (book == null)
             {

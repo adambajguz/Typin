@@ -12,10 +12,7 @@
                 return string.Empty;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.Title);
-            }
+            set => ValidateFeature(ConsoleFeatures.Title);
         }
     }
 }

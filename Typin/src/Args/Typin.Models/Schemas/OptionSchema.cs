@@ -81,7 +81,7 @@
         /// <inheritdoc/>
         public bool MatchesNameOrShortName(string alias)
         {
-            return MatchesName(alias) || alias.Length == 1 && MatchesShortName(alias.Single());
+            return MatchesName(alias) || (alias.Length == 1 && MatchesShortName(alias.Single()));
         }
 
         private string GetUserFacingDisplayString()

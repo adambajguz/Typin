@@ -101,7 +101,7 @@
                         return Enum.GetNames(underlyingType);
                     }
 
-                    List<string> enumNames = Enum.GetNames(underlyingType).ToList();
+                    var enumNames = Enum.GetNames(underlyingType).ToList();
                     enumNames.Add(string.Empty);
 
                     return enumNames;

@@ -20,7 +20,6 @@
                                       StepDelegate next,
                                       CancellationToken cancellationToken = default);
 
-
         /// <summary>
         /// Checks whether type is a valid directive handler.
         /// </summary>

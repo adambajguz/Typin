@@ -237,7 +237,7 @@ namespace Typin.Features.Binder
             // User-defined conversion
             if (argumentSchema.ConverterType is Type converterType)
             {
-                IArgumentConverter converterInstance = (IArgumentConverter)ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, converterType);
+                var converterInstance = (IArgumentConverter)ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, converterType);
 
                 // Scalar
                 if (enumerableUnderlyingType is null)

@@ -19,10 +19,7 @@
         {
             get
             {
-                if (_raw is null)
-                {
-                    _raw = new string[] { Value };
-                }
+                _raw ??= new string[] { Value };
 
                 return _raw;
             }

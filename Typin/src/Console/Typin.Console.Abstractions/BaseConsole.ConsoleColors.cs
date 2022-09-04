@@ -14,10 +14,7 @@
                 return ConsoleColor.White;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.ConsoleColors);
-            }
+            set => ValidateFeature(ConsoleFeatures.ConsoleColors);
         }
 
         /// <inheritdoc/>
@@ -30,10 +27,7 @@
                 return ConsoleColor.Black;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.ConsoleColors);
-            }
+            set => ValidateFeature(ConsoleFeatures.ConsoleColors);
         }
 
         /// <inheritdoc />

@@ -99,7 +99,7 @@
 
         private void DisposeInternal()
         {
-            Dictionary<Type, IReadOnlyCollection<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
+            var cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
 
             if (SubsequentCall)
             {

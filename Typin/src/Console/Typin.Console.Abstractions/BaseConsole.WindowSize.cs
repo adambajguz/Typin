@@ -12,10 +12,7 @@
                 return int.MaxValue;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.WindowSize);
-            }
+            set => ValidateFeature(ConsoleFeatures.WindowSize);
         }
 
         /// <inheritdoc/>
@@ -28,10 +25,7 @@
                 return int.MaxValue;
             }
 
-            set
-            {
-                ValidateFeature(ConsoleFeatures.WindowSize);
-            }
+            set => ValidateFeature(ConsoleFeatures.WindowSize);
         }
 
         /// <inheritdoc />

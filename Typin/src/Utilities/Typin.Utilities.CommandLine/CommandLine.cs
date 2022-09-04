@@ -21,7 +21,7 @@
         public static string EncodeArguments(IEnumerable<string> arguments, bool forceQuotes = false)
         {
             StringBuilder s = new();
-            foreach (var argument in arguments)
+            foreach (string argument in arguments)
             {
                 if (s.Length > 0)
                 {
@@ -66,7 +66,7 @@
 
             int numberBackslashes = 0;
 
-            foreach (var chr in argument)
+            foreach (char chr in argument)
             {
                 switch (chr)
                 {
@@ -76,7 +76,7 @@
                     case '"':
                         // Escape all backslashes and the following
                         // double quotation mark.
-                        quoted.Append('\\', numberBackslashes * 2 + 1);
+                        quoted.Append('\\', (numberBackslashes * 2) + 1);
                         quoted.Append(chr);
                         break;
                     default:
@@ -85,6 +85,7 @@
                         quoted.Append(chr);
                         break;
                 }
+
                 numberBackslashes = 0;
             }
 
