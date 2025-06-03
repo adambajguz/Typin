@@ -6,7 +6,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(WithStringArrayOptionCommand))]
+    [Alias(nameof(WithStringArrayOptionCommand))]
     public class WithStringArrayOptionCommand : SelfSerializeCommandBase
     {
         [Option("opt", 'o')]

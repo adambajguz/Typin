@@ -7,7 +7,7 @@
     using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
 
-    [Command("duplicated-ex")]
+    [Alias("duplicated-ex")]
     public class GenericInnerExceptionCommand : ICommand
     {
         [Option("msg", 'm')]

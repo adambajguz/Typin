@@ -6,7 +6,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command("cmd")]
+    [Alias("cmd")]
     public class NonLastNonScalarParameterCommand : SelfSerializeCommandBase
     {
         [Parameter(0)]

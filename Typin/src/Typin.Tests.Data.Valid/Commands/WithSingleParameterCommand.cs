@@ -5,7 +5,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(WithSingleParameterCommand))]
+    [Alias(nameof(WithSingleParameterCommand))]
     public class WithSingleParameterCommand : SelfSerializeCommandBase
     {
         [Parameter(0)]

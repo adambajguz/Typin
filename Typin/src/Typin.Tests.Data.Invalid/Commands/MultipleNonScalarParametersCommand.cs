@@ -4,9 +4,10 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command("cmd")]
+    [Alias("cmd")]
     public class MultipleNonScalarParametersCommand : SelfSerializeCommandBase
     {
         [Parameter(0)]

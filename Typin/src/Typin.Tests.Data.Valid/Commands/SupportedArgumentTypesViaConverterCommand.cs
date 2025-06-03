@@ -3,10 +3,11 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
     using Typin.Tests.Data.Common.CustomTypes.InitializableByConverter;
 
-    [Command(nameof(SupportedArgumentTypesViaConverterCommand))]
+    [Alias(nameof(SupportedArgumentTypesViaConverterCommand))]
     public class SupportedArgumentTypesViaConverterCommand : SelfSerializeCommandBase
     {
         [Option("str-class", Converter = typeof(InitializableClassTypeByConverter_Converter))]

@@ -11,7 +11,7 @@
 //    using Typin.Console;
 //    using Typin.Schemas;
 
-//    [Command("add dynamic", Description = "Adds a dynamic command.")]
+//    [Alias("add dynamic", Description = "Adds a dynamic command.")]
 //    public class AddDynamicCommand : ICommand
 //    {
 //        private readonly IConsole _console;

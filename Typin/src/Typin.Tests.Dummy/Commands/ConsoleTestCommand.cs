@@ -7,7 +7,7 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
 
-    [Command("console-test")]
+    [Alias("console-test")]
     public class ConsoleTestCommand : ICommand
     {
         private readonly IConsole _console;

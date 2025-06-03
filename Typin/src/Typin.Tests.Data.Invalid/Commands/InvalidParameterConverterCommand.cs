@@ -3,10 +3,11 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
     using Typin.Tests.Data.Common.CustomTypes.InitializableByConverter;
 
-    [Command(nameof(InvalidParameterConverterCommand))]
+    [Alias(nameof(InvalidParameterConverterCommand))]
     public class InvalidParameterConverterCommand : SelfSerializeCommandBase
     {
         [Parameter(0, Converter = typeof(object))]

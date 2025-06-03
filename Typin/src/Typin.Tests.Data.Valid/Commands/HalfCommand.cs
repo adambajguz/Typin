@@ -9,7 +9,7 @@
     using Typin.Console;
     using Typin.Models.Attributes;
 
-    [Command("half", Description = "Command with half type")]
+    [Alias("half", Description = "Command with half type")]
     public class HalfCommand : ICommand
     {
         private readonly IConsole _console;

@@ -11,7 +11,7 @@
 //    using Typin.Console;
 //    using Typin.Utilities;
 
-//    [Command("pipeline", Description = "Prints a middleware pipeline structure in application.")]
+//    [Alias("pipeline", Description = "Prints a middleware pipeline structure in application.")]
 //    public class PipelineCommand : ICommand
 //    {
 //        public const string PipelineTermination = "<PipelineTermination>";

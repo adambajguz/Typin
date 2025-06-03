@@ -3,10 +3,11 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
     using Typin.Tests.Data.Common.CustomTypes.NonInitializable;
 
-    [Command(nameof(UnsupportedArgumentTypesCommand))]
+    [Alias(nameof(UnsupportedArgumentTypesCommand))]
     public class UnsupportedArgumentTypesCommand : SelfSerializeCommandBase
     {
         [Option("str-non-initializable-class")]

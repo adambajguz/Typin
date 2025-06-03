@@ -7,7 +7,7 @@
     using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
 
-    [Command("cmd")]
+    [Alias("cmd")]
     public class WithExceptionThatPrintsHelpCommand : ICommand
     {
         [Option("msg", 'm')]

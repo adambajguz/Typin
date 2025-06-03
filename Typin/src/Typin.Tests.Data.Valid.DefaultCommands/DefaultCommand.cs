@@ -6,7 +6,7 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
 
-    [Command(Description = "Default command description")]
+    [Alias(Description = "Default command description")]
     public class DefaultCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(DefaultCommand);

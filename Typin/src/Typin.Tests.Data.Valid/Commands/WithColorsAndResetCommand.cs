@@ -7,7 +7,7 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
 
-    [Command("colors-with-reset", Description = "With colors command description")]
+    [Alias("colors-with-reset", Description = "With colors command description")]
     public class WithColorsAndResetCommand : ICommand
     {
         public static string ExpectedOutputText { get; } = Ansi.Color.Background.FromConsoleColor(ConsoleColor.Magenta) + "Magenta" + Environment.NewLine + Ansi.Color.Background.FromConsoleColor(ConsoleColor.Black) +

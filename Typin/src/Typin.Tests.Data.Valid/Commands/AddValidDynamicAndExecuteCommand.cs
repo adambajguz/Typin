@@ -12,7 +12,7 @@
 //    using Typin.Schemas;
 //    using Typin.Tests.Data.Valid.DynamicCommands;
 
-//    [Command("add valid-dynamic-and-execute", Description = "Adds a dynamic command and executed it.")]
+//    [Alias("add valid-dynamic-and-execute", Description = "Adds a dynamic command and executed it.")]
 //    public class AddValidDynamicAndExecuteCommand : ICommand
 //    {
 //        private readonly IConsole _console;

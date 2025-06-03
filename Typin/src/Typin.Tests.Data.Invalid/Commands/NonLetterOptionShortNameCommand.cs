@@ -3,9 +3,10 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(NonLetterOptionShortName0Command))]
+    [Alias(nameof(NonLetterOptionShortName0Command))]
     public class NonLetterOptionShortName0Command : SelfSerializeCommandBase
     {
         [Option('0')]
@@ -17,7 +18,7 @@
         }
     }
 
-    [Command(nameof(NonLetterOptionShortName1Command))]
+    [Alias(nameof(NonLetterOptionShortName1Command))]
     public class NonLetterOptionShortName1Command : SelfSerializeCommandBase
     {
         [Option('=')]
@@ -29,7 +30,7 @@
         }
     }
 
-    [Command(nameof(NonLetterOptionShortName2Command))]
+    [Alias(nameof(NonLetterOptionShortName2Command))]
     public class NonLetterOptionShortName2Command : SelfSerializeCommandBase
     {
         [Option('-')]
@@ -41,7 +42,7 @@
         }
     }
 
-    [Command(nameof(NonLetterOptionShortName3Command))]
+    [Alias(nameof(NonLetterOptionShortName3Command))]
     public class NonLetterOptionShortName3Command : SelfSerializeCommandBase
     {
         [Option('~')]

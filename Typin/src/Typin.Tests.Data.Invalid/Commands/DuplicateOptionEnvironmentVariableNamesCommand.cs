@@ -5,7 +5,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command("cmd")]
+    [Alias("cmd")]
     public class DuplicateOptionEnvironmentVariableNamesCommand : SelfSerializeCommandBase
     {
         [Option("option-a")]

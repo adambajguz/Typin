@@ -6,7 +6,7 @@
     using Typin.Commands;
     using Typin.Commands.Attributes;
 
-    [Command("exit", Description = "Exits.")]
+    [Alias("exit", Description = "Exits.")]
     public class ExitCommand : ICommand
     {
         private readonly IHostLifetime _lifetime;

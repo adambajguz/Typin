@@ -6,7 +6,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command("cmd")]
+    [Alias("cmd")]
     public class WithDefaultValuesCommand : SelfSerializeCommandBase
     {
         public enum CustomEnum { Value1, Value2, Value3 };

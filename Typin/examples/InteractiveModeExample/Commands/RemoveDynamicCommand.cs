@@ -10,7 +10,7 @@
 //    using Typin.Console;
 //    using Typin.Schemas;
 
-//    [Command("remove dynamic", Description = "Removes a dynamic command.")]
+//    [Alias("remove dynamic", Description = "Removes a dynamic command.")]
 //    public class RemoveDynamicCommand : ICommand
 //    {
 //        private readonly IConsole _console;

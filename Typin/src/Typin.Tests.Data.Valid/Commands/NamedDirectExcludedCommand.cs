@@ -6,7 +6,7 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
 
-    [Command("named-direct-excluded-only", Description = "Named command description")]
+    [Alias("named-direct-excluded-only", Description = "Named command description")]
     public class NamedDirectExcludedCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(NamedDirectExcludedCommand);

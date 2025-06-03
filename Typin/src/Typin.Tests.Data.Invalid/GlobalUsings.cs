@@ -1,0 +1,1 @@
+﻿global using Typin.Schemas.Attributes;

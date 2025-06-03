@@ -50,12 +50,6 @@
                                                           .RunAsync(Arguments, new Dictionary<string, string>());
         }
 
-        [Benchmark(Description = "System.CommandLine")]
-        public async Task<int> ExecuteWithSystemCommandLine()
-        {
-            return await new SystemCommandLineCommand().ExecuteAsync(Arguments);
-        }
-
         [Benchmark(Description = "McMaster.Extensions.CommandLineUtils")]
         public int ExecuteWithMcMaster()
         {

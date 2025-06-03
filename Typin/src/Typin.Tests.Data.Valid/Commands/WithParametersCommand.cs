@@ -6,7 +6,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(WithParametersCommand))]
+    [Alias(nameof(WithParametersCommand))]
     public class WithParametersCommand : SelfSerializeCommandBase
     {
         [Parameter(0)]

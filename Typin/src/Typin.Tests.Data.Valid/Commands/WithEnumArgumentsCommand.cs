@@ -3,9 +3,10 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
+    using Typin.Schemas.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(WithEnumArgumentsCommand))]
+    [Alias(nameof(WithEnumArgumentsCommand))]
     public class WithEnumArgumentsCommand : SelfSerializeCommandBase
     {
         public WithEnumArgumentsCommand(IConsole console) : base(console)

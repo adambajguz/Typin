@@ -5,7 +5,7 @@
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;
 
-    [Command(nameof(WithSingleRequiredOptionCommand))]
+    [Alias(nameof(WithSingleRequiredOptionCommand))]
     public class WithSingleRequiredOptionCommand : SelfSerializeCommandBase
     {
         [Option("opt-a")]

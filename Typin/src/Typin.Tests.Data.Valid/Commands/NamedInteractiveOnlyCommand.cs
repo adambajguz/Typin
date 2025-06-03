@@ -6,7 +6,7 @@
     using Typin.Commands.Attributes;
     using Typin.Console;
 
-    [Command("named-interactive-only", Description = "Named command description")]
+    [Alias("named-interactive-only", Description = "Named command description")]
     public class NamedInteractiveOnlyCommand : ICommand
     {
         public const string ExpectedOutputText = nameof(NamedInteractiveOnlyCommand);
