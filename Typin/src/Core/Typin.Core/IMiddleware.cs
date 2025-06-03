@@ -13,7 +13,7 @@
         /// <summary>
         /// Checks whether type is a valid middleware.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IMiddleware)) &&

@@ -44,7 +44,7 @@
                     : optionName;
 
                 List<string> values = hasDirectiveTermination
-                    ? new()
+                    ? []
                     : TokenizeOptionValues(context);
 
                 tokenGroup.Tokens.Add(new NamedToken(optionName, values));
@@ -63,11 +63,11 @@
 
                 foreach (char shortName in shortNamesCollection)
                 {
-                    tokenGroup.Tokens.Add(new NamedToken(shortName.ToString(), new List<string>()));
+                    tokenGroup.Tokens.Add(new NamedToken(shortName.ToString(), []));
                 }
 
                 List<string> values = hasDirectiveTermination
-                    ? new()
+                    ? []
                     : TokenizeOptionValues(context);
 
                 return true;
@@ -78,7 +78,7 @@
 
         private static List<string> TokenizeOptionValues(TokenHandlerContext context)
         {
-            List<string> values = new();
+            List<string> values = [];
 
             int index;
             for (index = context.Position; index < context.Arguments.Count; index++)

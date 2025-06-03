@@ -41,7 +41,7 @@
         /// <summary>
         /// Checks whether text is a valid option name.
         /// </summary>
-        public static bool IsName(string name)
+        static bool IsName(string name)
         {
             return name.StartsWith("--", StringComparison.Ordinal) &&
                 name.Length >= 3 &&
@@ -51,7 +51,7 @@
         /// <summary>
         /// Checks whether text is a valid option short name.
         /// </summary>
-        public static bool IsShortName(string shortName)
+        static bool IsShortName(string shortName)
         {
             return shortName.StartsWith('-') &&
                 shortName.Length == 2 &&
@@ -61,7 +61,7 @@
         /// <summary>
         /// Checks whether text is a valid option short name.
         /// </summary>
-        public static bool IsShortNameGroup(string shortNameGroup)
+        static bool IsShortNameGroup(string shortNameGroup)
         {
             return shortNameGroup.StartsWith('-') &&
                 shortNameGroup.Length >= 2 &&

@@ -25,7 +25,7 @@
                 output.WriteLine($"--- Handling command '{args.Features.Get<ICommandFeature>()?.Schema.Aliases}' with args '{string.Join(' ', args.Input.Arguments ?? Array.Empty<string>())}'");
             });
 
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
             await next();
 

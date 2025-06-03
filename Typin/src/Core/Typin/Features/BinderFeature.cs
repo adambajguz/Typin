@@ -16,9 +16,9 @@ namespace Typin.Features
     /// </summary>
     public sealed class BinderFeature : IBinderFeature
     {
-        private readonly Dictionary<Type, List<BindableModel>> _bindableMapByType = new();
-        private readonly Dictionary<int, List<BindableModel>> _bindableMapById = new();
-        private readonly List<BindableModel> _bindable = new();
+        private readonly Dictionary<Type, List<BindableModel>> _bindableMapByType = [];
+        private readonly Dictionary<int, List<BindableModel>> _bindableMapById = [];
+        private readonly List<BindableModel> _bindable = [];
 
         /// <inheritdoc/>
         public IUnboundedDirectiveCollection UnboundedTokens { get; }
@@ -43,7 +43,7 @@ namespace Typin.Features
             }
             else
             {
-                _bindableMapById.Add(model.DirectiveId, new List<BindableModel> { model });
+                _bindableMapById.Add(model.DirectiveId, [model]);
             }
 
             Type schemaType = model.Schema.Type;
@@ -53,7 +53,7 @@ namespace Typin.Features
             }
             else
             {
-                _bindableMapByType.Add(schemaType, new List<BindableModel> { model });
+                _bindableMapByType.Add(schemaType, [model]);
             }
 
             _bindable.Add(model);
@@ -96,13 +96,13 @@ namespace Typin.Features
         /// <inheritdoc/>
         public IReadOnlyList<BindableModel> Get(Type type)
         {
-            return _bindableMapByType.GetValueOrDefault(type) ?? new List<BindableModel>();
+            return _bindableMapByType.GetValueOrDefault(type) ?? [];
         }
 
         /// <inheritdoc/>
         public IReadOnlyList<BindableModel> Get(int id)
         {
-            return _bindableMapById.GetValueOrDefault(id) ?? new List<BindableModel>();
+            return _bindableMapById.GetValueOrDefault(id) ?? [];
         }
 
         /// <inheritdoc/>
@@ -221,7 +221,7 @@ namespace Typin.Features
             IReadOnlyList<IOptionSchema> requiredOptions = bindableModel.Schema.RequiredOptions;
             IReadOnlyList<IOptionSchema> options = bindableModel.Schema.Options;
 
-            var unsetRequiredOptions = requiredOptions.ToHashSet();
+            HashSet<IOptionSchema> unsetRequiredOptions = requiredOptions.ToHashSet();
 
             // Direct or fallback input
             foreach (OptionSchema option in requiredOptions.Concat(options))

@@ -15,12 +15,12 @@
         /// This is the method that's called when the command is invoked by a user through command line.
         /// </summary>
         /// <remarks>If the execution of the command is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        public ValueTask ExecuteAsync(object command, CancellationToken cancellationToken);
+        ValueTask ExecuteAsync(object command, CancellationToken cancellationToken);
 
         /// <summary>
         /// Checks whether type is a valid command handler.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             Type[] interfaces = type.GetInterfaces();
 
@@ -33,7 +33,7 @@
         /// <summary>
         /// Checks whether type is a valid command handler.
         /// </summary>
-        public static bool IsValidType(Type type, Type commandType)
+        static bool IsValidType(Type type, Type commandType)
         {
             return type.GetInterfaces()
                 .Contains(typeof(ICommandHandler<>).MakeGenericType(commandType)) &&
@@ -63,7 +63,7 @@
         /// <summary>
         /// Checks whether type is a valid command handler.
         /// </summary>
-        public static new bool IsValidType(Type type)
+        static new bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(ICommandHandler<TCommand>)) &&

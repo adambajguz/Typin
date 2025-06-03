@@ -17,7 +17,7 @@
     public abstract class CliBuilder : ICliBuilder, IDisposable
     {
         private readonly IComponentProvider? _previousComponentProvider;
-        private readonly Dictionary<Type, IScanner> _components = new();
+        private readonly Dictionary<Type, IScanner> _components = [];
         private bool disposedValue;
 
         /// <inheritdoc/>
@@ -99,7 +99,7 @@
 
         private void DisposeInternal()
         {
-            var cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
+            Dictionary<Type, IReadOnlyCollection<Type>> cliComponents = _components.ToDictionary(x => x.Key, x => x.Value.Types);
 
             if (SubsequentCall)
             {

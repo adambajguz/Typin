@@ -26,11 +26,11 @@
         public async ValueTask ExecuteAsync(CliContext args, StepDelegate next, IInvokablePipeline<CliContext> invokablePipeline, CancellationToken cancellationToken = default)
         {
             IInputFeature inputFeature = args.Input;
-            List<ITokenHandler> handlers = new()
-            {
+            List<ITokenHandler> handlers =
+            [
                 new NamedTokenHandler(),
                 new ValueTokenHandler()
-            }; //TODO: dynamic from services or options
+            ]; //TODO: dynamic from services or options
 
             args.Features.Set<ITokenizerFeature>(new TokenizerFeature(inputFeature.Arguments, inputFeature.Options, handlers));
 

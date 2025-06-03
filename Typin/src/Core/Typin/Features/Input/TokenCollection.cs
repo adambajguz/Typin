@@ -13,7 +13,7 @@
         /// <summary>
         /// Data.
         /// </summary>
-        protected Dictionary<Type, ITokenGroup> Data { get; set; } = new();
+        protected Dictionary<Type, ITokenGroup> Data { get; set; } = [];
 
         /// <inheritdoc/>
         public int Count => Data.Count;
@@ -91,7 +91,7 @@
         /// <inheritdoc/>
         public IList<string> GetRaw()
         {
-            List<string> tmp = new();
+            List<string> tmp = [];
 
             foreach (KeyValuePair<Type, ITokenGroup> tokenGroup in Data)
             {

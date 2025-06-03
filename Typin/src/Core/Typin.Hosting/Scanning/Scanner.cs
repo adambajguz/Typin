@@ -30,8 +30,8 @@
         protected Scanner(IEnumerable<Type>? current)
         {
             _types = current is null
-                ? new HashSet<Type>()
-                : new HashSet<Type>(current);
+                ? []
+                : [.. current];
 
             ComponentType = typeof(TComponent);
         }

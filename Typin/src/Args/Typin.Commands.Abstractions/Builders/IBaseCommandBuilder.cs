@@ -35,7 +35,7 @@
         /// Sets parameter description to default (no description).
         /// </summary>
         /// <returns></returns>
-        public TSelf UseDefaultDescription()
+        TSelf UseDefaultDescription()
         {
             return UseDescription(null);
         }

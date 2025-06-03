@@ -19,7 +19,7 @@
         static BindableArgument()
         {
             MethodInfo methodInfo = typeof(IDynamicModel).GetProperty(nameof(IDynamicModel.Arguments))!.GetSetMethod(true)!;
-            var @delegate = (Action<IDynamicModel, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicModel, IArgumentCollection>), methodInfo);
+            Action<IDynamicModel, IArgumentCollection> @delegate = (Action<IDynamicModel, IArgumentCollection>)Delegate.CreateDelegate(typeof(Action<IDynamicModel, IArgumentCollection>), methodInfo);
 
             _dynamicArgumentCollectionSetter = @delegate;
         }
@@ -101,7 +101,7 @@
                         return Enum.GetNames(underlyingType);
                     }
 
-                    var enumNames = Enum.GetNames(underlyingType).ToList();
+                    List<string> enumNames = Enum.GetNames(underlyingType).ToList();
                     enumNames.Add(string.Empty);
 
                     return enumNames;

@@ -1,7 +1,6 @@
 ﻿namespace Typin.Tests.Data.Valid.DefaultCommands
 {
     using System;
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
     using Typin.Tests.Data.Common.Commands;

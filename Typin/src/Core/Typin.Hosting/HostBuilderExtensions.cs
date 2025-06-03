@@ -50,7 +50,7 @@
 
                 if (env.IsDevelopment() && env.ApplicationName is { Length: > 0 })
                 {
-                    var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+                    Assembly? appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
                     if (appAssembly is not null)
                     {
                         config.AddUserSecrets(appAssembly, optional: true, reloadOnChange: reloadOnChange);

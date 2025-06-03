@@ -69,14 +69,14 @@
             IEnumerable<ICommandSchema> descendants = GetDescendantCommands(Data.Values, parentCommandName);
 
             // Filter out descendants of descendants, leave only children
-            List<ICommandSchema> result = new(descendants);
+            List<ICommandSchema> result = [.. descendants];
 
             foreach (ICommandSchema descendant in descendants)
             {
                 foreach (string alias in descendant.Aliases)
                 {
-                    var descendantDescendants = GetDescendantCommands(descendants, alias).ToHashSet();
-                    result.RemoveAll(t => descendantDescendants.Contains(t));
+                    HashSet<ICommandSchema> descendantDescendants = GetDescendantCommands(descendants, alias).ToHashSet();
+                    result.RemoveAll(descendantDescendants.Contains);
                 }
             }
 

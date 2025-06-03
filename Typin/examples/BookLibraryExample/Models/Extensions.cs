@@ -6,7 +6,7 @@
     {
         public static Library WithBook(this Library library, Book book)
         {
-            var books = library.Books.ToList();
+            System.Collections.Generic.List<Book> books = library.Books.ToList();
             books.Add(book);
 
             return new Library(books);

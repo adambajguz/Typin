@@ -33,7 +33,7 @@
         /// </summary>
         public TokenizerFeature(IEnumerable<string> input,
                                 InputOptions inputOptions) :
-            this(input, inputOptions, new List<ITokenHandler>())
+            this(input, inputOptions, [])
         {
 
         }
@@ -60,9 +60,9 @@
         public IDirectiveCollection Tokenize(IEnumerable<string> arguments, InputOptions options)
         {
             bool trimExecutable = options.HasFlag(InputOptions.TrimExecutable);
-            var tokenizerInput = arguments.Skip(trimExecutable ? 1 : 0).ToList();
+            List<string> tokenizerInput = arguments.Skip(trimExecutable ? 1 : 0).ToList();
 
-            DirectiveCollection directives = new();
+            DirectiveCollection directives = [];
 
             if (tokenizerInput.Count > 0)
             {

@@ -17,17 +17,17 @@
         /// <summary>
         /// A collection of parameters.
         /// </summary>
-        protected List<IParameterSchema> Parameters { get; } = new();
+        protected List<IParameterSchema> Parameters { get; } = [];
 
         /// <summary>
         /// A collection of options.
         /// </summary>
-        protected List<IOptionSchema> Options { get; } = new();
+        protected List<IOptionSchema> Options { get; } = [];
 
         /// <summary>
         /// A collection of required options.
         /// </summary>
-        protected List<IOptionSchema> RequiredOptions { get; } = new();
+        protected List<IOptionSchema> RequiredOptions { get; } = [];
 
         /// <summary>
         /// A collection of extensions.

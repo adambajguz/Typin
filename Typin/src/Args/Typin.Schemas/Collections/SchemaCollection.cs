@@ -27,7 +27,7 @@
         public SchemaCollection(Func<TSchema, TKey> keyAccessor)
         {
             KeyAccessor = keyAccessor;
-            Data = new Dictionary<TKey, TSchema>();
+            Data = [];
         }
 
         /// <summary>

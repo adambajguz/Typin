@@ -1,7 +1,6 @@
 ﻿namespace Typin
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Domain exception thrown within Typin.

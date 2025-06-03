@@ -48,7 +48,7 @@
             {
                 Type modelSchemaResolverType = typeof(IModelSchemaResolver<>).MakeGenericType(type);
 
-                var modelSchemaResolver = (IModelSchemaResolver)_serviceProvider.GetRequiredService(modelSchemaResolverType);
+                IModelSchemaResolver modelSchemaResolver = (IModelSchemaResolver)_serviceProvider.GetRequiredService(modelSchemaResolverType);
                 IModelSchema schema = await modelSchemaResolver.ResolveAsync(cancellationToken);
 
                 Schemas.Set(schema);

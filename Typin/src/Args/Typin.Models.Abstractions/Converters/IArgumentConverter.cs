@@ -12,7 +12,7 @@
         /// <summary>
         /// The type to which input is converted.
         /// </summary>
-        public Type TargetType { get; }
+        Type TargetType { get; }
 
         /// <summary>
         /// Converts raw command line input to <see cref="object"/>.
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="value">Value to convert.</param>
         /// <returns>Converted object instance.</returns>
-        public object? Convert(string? value);
+        object? Convert(string? value);
 
         /// <summary>
         /// Converts raw command line input to <see cref="object"/>.
@@ -28,12 +28,12 @@
         /// </summary>
         /// <param name="values">Values to convert.</param>
         /// <returns>Converted object instance.</returns>
-        public object? Convert(IReadOnlyCollection<string> values);
+        object? Convert(IReadOnlyCollection<string> values);
 
         /// <summary>
         /// Checks whether type is a valid argument converter.
         /// </summary>
-        public static bool IsValidType(Type type, Type propertyType)
+        static bool IsValidType(Type type, Type propertyType)
         {
             Type[] interfaces = type.GetInterfaces();
 
@@ -83,7 +83,7 @@
         /// <summary>
         /// Checks whether type is a valid argument converter.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IArgumentConverter<T>)) &&

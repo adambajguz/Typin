@@ -67,7 +67,7 @@
         /// </summary>
         public IReadOnlyDictionary<IArgumentSchema, object?> GetArgumentValues(IModel instance)
         {
-            Dictionary<IArgumentSchema, object?> result = new();
+            Dictionary<IArgumentSchema, object?> result = [];
 
             foreach (IArgumentSchema argument in Arguments)
             {

@@ -1,6 +1,5 @@
 ﻿namespace Typin.Tests.Data.Valid.Commands
 {
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
     using Typin.Schemas.Attributes;

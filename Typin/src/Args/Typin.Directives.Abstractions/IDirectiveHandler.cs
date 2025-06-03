@@ -16,14 +16,14 @@
         /// This is the method that's called when the directive is invoked by a user through directive line.
         /// </summary>
         /// <remarks>If the execution of the directive is not asynchronous, simply end the method with <code>return default;</code></remarks>
-        public ValueTask ExecuteAsync(DirectiveArgs args,
+        ValueTask ExecuteAsync(DirectiveArgs args,
                                       StepDelegate next,
                                       CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks whether type is a valid directive handler.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             Type[] interfaces = type.GetInterfaces();
 
@@ -36,7 +36,7 @@
         /// <summary>
         /// Checks whether type is a valid directive handler.
         /// </summary>
-        public static bool IsValidType(Type type, Type commandType)
+        static bool IsValidType(Type type, Type commandType)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IDirectiveHandler<>).MakeGenericType(commandType)) &&
@@ -72,7 +72,7 @@
         /// <summary>
         /// Checks whether type is a valid directive handler.
         /// </summary>
-        public static new bool IsValidType(Type type)
+        static new bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IDirectiveHandler<TDirective>)) &&

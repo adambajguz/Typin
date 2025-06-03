@@ -17,7 +17,7 @@
         /// <summary>
         /// Checks whether type is a valid dynamic model.
         /// </summary>
-        public static new bool IsValidType(Type type)
+        static new bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IDynamicModel)) &&

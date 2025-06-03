@@ -7,7 +7,6 @@
     {
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int WindowWidth
         {
             get
@@ -32,7 +31,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int WindowHeight
         {
             get
@@ -85,7 +83,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override void SetWindowSize(int width, int height)
         {
             base.SetWindowSize(width, height);

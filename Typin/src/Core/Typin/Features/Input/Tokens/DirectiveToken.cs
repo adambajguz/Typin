@@ -29,7 +29,7 @@
         {
             get
             {
-                List<string> values = new();
+                List<string> values = [];
 
                 if (Children is { Count: > 0 })
                 {

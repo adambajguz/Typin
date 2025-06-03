@@ -20,7 +20,7 @@
         /// </summary>
         public ArgumentCollection()
         {
-            _values = new();
+            _values = [];
         }
 
         /// <summary>

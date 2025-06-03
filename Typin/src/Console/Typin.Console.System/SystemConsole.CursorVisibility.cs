@@ -7,7 +7,6 @@
     {
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override bool CursorVisible
         {
             get

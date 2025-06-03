@@ -37,7 +37,7 @@
             //https://misc.flogisoft.com/bash/tip_colors_and_formatting
             set
             {
-                _foregroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.White : value;
+                _foregroundColor = value is < ConsoleColor.Black or > ConsoleColor.White ? ConsoleColor.White : value;
 
                 Output.Write(Ansi.Color.Foreground.FromConsoleColor(value));
             }
@@ -49,7 +49,7 @@
             get => _backgroundColor;
             set
             {
-                _backgroundColor = value < ConsoleColor.Black || value > ConsoleColor.White ? ConsoleColor.Black : value;
+                _backgroundColor = value is < ConsoleColor.Black or > ConsoleColor.White ? ConsoleColor.Black : value;
 
                 Output.Write(Ansi.Color.Background.FromConsoleColor(value));
             }
@@ -80,6 +80,12 @@
 
         /// <inheritdoc />
         public int BufferHeight { get; set; } = int.MaxValue;
+        public string Title { get; set; }
+        public int LargestWindowWidth { get; }
+        public int LargestWindowHeight { get; }
+        public ConsoleFeatures SupportedFeatures { get; }
+        public ConsoleFeatures EnabledFeatures { get; set; }
+        public bool CursorVisible { get; }
 
         #region ctor
         /// <summary>
@@ -223,6 +229,21 @@
             {
                 AutoFlush = true
             };
+        }
+
+        public void SetWindowSize(int width, int height)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetColors(ConsoleColor background, ConsoleColor foreground)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBufferSize(int width, int height)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

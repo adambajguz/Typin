@@ -21,7 +21,7 @@
         /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder<TModel, TProperty> DefaultOrder()
+        IParameterBuilder<TModel, TProperty> DefaultOrder()
         {
             return Order(null);
         }
@@ -30,7 +30,7 @@
         /// Sets parameter name to default (kebab-cased property name).
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder<TModel, TProperty> DefaultName()
+        IParameterBuilder<TModel, TProperty> DefaultName()
         {
             return Name(null);
         }
@@ -39,7 +39,7 @@
         /// Sets parameter description to default (no description).
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder<TModel, TProperty> DefaultDescription()
+        IParameterBuilder<TModel, TProperty> DefaultDescription()
         {
             return Description(null);
         }

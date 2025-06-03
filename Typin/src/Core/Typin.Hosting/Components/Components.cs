@@ -6,7 +6,7 @@
     /// <summary>
     /// CLI component provider.
     /// </summary>
-    internal struct Components<T> : IComponents<T>
+    internal readonly struct Components<T> : IComponents<T>
     {
         /// <summary>
         /// Component types collection.

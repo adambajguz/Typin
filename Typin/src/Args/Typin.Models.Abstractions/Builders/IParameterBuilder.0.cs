@@ -17,7 +17,7 @@
         /// Parameter whose type is a non-scalar (e.g. array), must be the last in order and only one such parameter is allowed.
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder DefaultOrder()
+        IParameterBuilder DefaultOrder()
         {
             return Order(null);
         }
@@ -26,7 +26,7 @@
         /// Sets parameter name to default (kebab-cased property name).
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder DefaultName()
+        IParameterBuilder DefaultName()
         {
             return Name(null);
         }
@@ -35,7 +35,7 @@
         /// Sets parameter description to default (no description).
         /// </summary>
         /// <returns></returns>
-        public IParameterBuilder DefaultDescription()
+        IParameterBuilder DefaultDescription()
         {
             return Description(null);
         }

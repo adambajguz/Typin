@@ -17,7 +17,7 @@
         /// Sets option name to default (kebab-cased property name).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder<TModel> DefaultName()
+        IOptionBuilder<TModel> DefaultName()
         {
             return Name(null);
         }
@@ -26,7 +26,7 @@
         /// Sets option short name to default (no short name).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder<TModel> DefaultShortName()
+        IOptionBuilder<TModel> DefaultShortName()
         {
             return ShortName(null);
         }
@@ -35,7 +35,7 @@
         /// Sets option description to default (no description).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder<TModel> DefaultDescription()
+        IOptionBuilder<TModel> DefaultDescription()
         {
             return Description(null);
         }

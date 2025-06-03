@@ -28,7 +28,7 @@
         /// <inheritdoc/>
         public IList<string> GetRaw()
         {
-            List<string> tmp = new();
+            List<string> tmp = [];
 
             foreach (IDirectiveToken directive in this)
             {

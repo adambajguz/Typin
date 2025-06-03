@@ -7,7 +7,6 @@
     {
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int BufferWidth
         {
             get
@@ -32,7 +31,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override int BufferHeight
         {
             get
@@ -57,7 +55,6 @@
 
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override void SetBufferSize(int width, int height)
         {
             base.SetBufferSize(width, height);

@@ -22,7 +22,7 @@
         /// <summary>
         /// Checks whether type is a valid directive configurator.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IConfigureDirective)) &&
@@ -33,7 +33,7 @@
         /// <summary>
         /// Checks whether type is a valid directive configurator.
         /// </summary>
-        public static bool IsValidGenericType(Type type)
+        static bool IsValidGenericType(Type type)
         {
             Type[] interfaces = type.GetInterfaces();
 
@@ -61,7 +61,7 @@
         /// <summary>
         /// Checks whether type is a valid directive configurator.
         /// </summary>
-        public static bool IsValidType(Type type)
+        static bool IsValidType(Type type)
         {
             return type.GetInterfaces()
                 .Contains(typeof(IConfigureDirective<TDirective>)) &&

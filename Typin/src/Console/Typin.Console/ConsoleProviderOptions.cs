@@ -8,6 +8,6 @@
         /// <summary>
         /// Console name to console type map.
         /// </summary>
-        public ConsoleCollection Consoles { get; } = new();
+        public ConsoleCollection Consoles { get; } = [];
     }
 }

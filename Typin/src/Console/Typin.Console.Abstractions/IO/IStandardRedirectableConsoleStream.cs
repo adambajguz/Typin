@@ -9,7 +9,7 @@
         /// Console instance that is using this stream.
         /// This property allows writing stream-targeted extensions.
         /// </summary>
-        public IConsole BoundedConsole { get; }
+        IConsole BoundedConsole { get; }
 
         /// <summary>
         /// Whether the stream is redirected.

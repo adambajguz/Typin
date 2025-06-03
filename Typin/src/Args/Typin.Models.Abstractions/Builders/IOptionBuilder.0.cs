@@ -14,7 +14,7 @@
         /// Sets option name to default (kebab-cased property name).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder DefaultName()
+        IOptionBuilder DefaultName()
         {
             return Name(null);
         }
@@ -23,7 +23,7 @@
         /// Sets option short name to default (no short name).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder DefaultShortName()
+        IOptionBuilder DefaultShortName()
         {
             return ShortName(null);
         }
@@ -32,7 +32,7 @@
         /// Sets option description to default (no description).
         /// </summary>
         /// <returns></returns>
-        public IOptionBuilder DefaultDescription()
+        IOptionBuilder DefaultDescription()
         {
             return Description(null);
         }

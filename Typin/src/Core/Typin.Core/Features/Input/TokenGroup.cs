@@ -27,7 +27,7 @@
         /// Initializes a new instance of <see cref="TokenGroup{T}"/>.
         /// </summary>
         public TokenGroup() :
-            this(new List<T>())
+            this([])
         {
 
         }
@@ -47,7 +47,7 @@
         /// <returns></returns>
         public IList<string> GetRaw()
         {
-            List<string> tmp = new();
+            List<string> tmp = [];
 
             foreach (T token in _tokens)
             {

@@ -1,12 +1,10 @@
 ﻿namespace Typin.Console
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     public partial class SystemConsole
     {
         /// <inheritdoc />
-        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public override string Title
         {
             get

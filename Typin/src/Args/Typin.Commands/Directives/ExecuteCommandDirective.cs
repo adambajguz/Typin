@@ -109,7 +109,7 @@
 
                 ICommandSchema? schema = null;
 
-                List<string> buffer = new();
+                List<string> buffer = [];
                 int lastIndex = -1;
 
                 // We need to look ahead to see if we can match as many consecutive arguments to a command name as possible

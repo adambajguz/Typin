@@ -10,8 +10,8 @@ namespace System.Threading.Tasks
     {
         public static async Task<T> WaitAsync<T>(this Task<T> task, CancellationToken cancellationToken)
         {
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            var waiting = Task.Delay(-1, cts.Token);
+            using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            Task waiting = Task.Delay(-1, cts.Token);
 
             await Task.WhenAny(waiting, task);
             cts.Cancel();

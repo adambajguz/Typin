@@ -26,11 +26,10 @@
             {
                 if (_raw is null)
                 {
-                    List<string> values = new(Values.Count + 1)
-                    {
-                        GetFormattedAlias()
-                    };
-                    values.AddRange(Values);
+                    List<string> values =
+                    [
+                        GetFormattedAlias(), .. Values
+                    ];
 
                     _raw = values;
                 }
@@ -45,7 +44,7 @@
         public NamedToken(string alias)
         {
             Alias = alias.Trim().TrimStart('-');
-            Values = new List<string>();
+            Values = [];
         }
 
         /// <summary>

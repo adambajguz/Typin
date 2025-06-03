@@ -9,7 +9,7 @@
     /// </summary>
     public class ExtensionsCollection : IExtensionsCollection
     {
-        private readonly Dictionary<Type, object> _data = new();
+        private readonly Dictionary<Type, object> _data = [];
 
         /// <summary>
         /// Initializes a new instance of <see cref="ExtensionsCollection"/>.

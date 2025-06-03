@@ -41,7 +41,7 @@
             IUnboundedDirectiveCollection unboundedDirectives = binder.UnboundedTokens;
 
             //Initialize collections
-            List<DirectiveInstance> instances = new();
+            List<DirectiveInstance> instances = [];
 
             //Process directive input
             foreach (IUnboundedDirectiveToken directiveToken in unboundedDirectives)

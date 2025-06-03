@@ -3,7 +3,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
 
     [Alias("named-direct-excluded-only", Description = "Named command description")]

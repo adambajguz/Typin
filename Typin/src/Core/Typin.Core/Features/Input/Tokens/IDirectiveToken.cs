@@ -18,12 +18,12 @@
         /// <summary>
         /// Whether directive was explicitly opened in command line.
         /// </summary>
-        public bool IsExplicit { get; }
+        bool IsExplicit { get; }
 
         /// <summary>
         /// Whether directive was terminated just after its alias.
         /// </summary>
-        public bool IsTerminated { get; }
+        bool IsTerminated { get; }
 
         /// <summary>
         /// Child tokens collection.

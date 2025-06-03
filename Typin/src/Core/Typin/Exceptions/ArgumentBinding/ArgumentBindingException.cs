@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.ArgumentBinding
 {
     using System;
-    using System.Runtime.Serialization;
     using Typin.Models.Schemas;
 
     /// <summary>

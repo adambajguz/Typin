@@ -1,7 +1,6 @@
 ﻿namespace Typin.Exceptions.Mode
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Typin mode exception.
