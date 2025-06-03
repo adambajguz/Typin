@@ -2,7 +2,6 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin.Directives.Attributes;
 
     [Directive("invalid-no-interface", Description = "No interface directive.")]
     public sealed class NoInterafaceDirective

@@ -6,7 +6,6 @@
     using Typin;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Directives.Attributes;
 
     [Directive("custom-stop", Description = "Custom stop directive.")]
     public sealed class CustomStopDirective : IDirective

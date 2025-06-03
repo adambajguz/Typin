@@ -18,7 +18,6 @@
         {
             await _console.Output.WriteLineAsync(nameof(InvalidCustomMode));
 
-
             await _console.Output.WriteLineAsync(nameof(InvalidCustomMode) + "END");
 
             return 0;

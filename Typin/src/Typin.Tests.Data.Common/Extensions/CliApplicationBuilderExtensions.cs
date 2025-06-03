@@ -45,7 +45,7 @@
                                                                                                                                  bool isInputRedirected = true,
                                                                                                                                  string? input = null)
         {
-            var (console, stdIn, stdOut, stdErr) = VirtualConsole.CreateBufferedWithInput(isInputRedirected: isInputRedirected);
+            (VirtualConsole console, MemoryStreamReader stdIn, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr) = VirtualConsole.CreateBufferedWithInput(isInputRedirected: isInputRedirected);
 
             CliApplication application = applicationBuilder.UseConsole(console)
                                                            .Build();
@@ -88,7 +88,7 @@
                                                                                                                                  bool isInputRedirected = true,
                                                                                                                                  string? input = null)
         {
-            var (console, stdIn, stdOut, stdErr) = VirtualConsole.CreateBufferedWithInput(isInputRedirected: isInputRedirected);
+            (VirtualConsole console, MemoryStreamReader stdIn, MemoryStreamWriter stdOut, MemoryStreamWriter stdErr) = VirtualConsole.CreateBufferedWithInput(isInputRedirected: isInputRedirected);
 
             CliApplication application = applicationBuilder.UseConsole(console)
                                                            .Build();

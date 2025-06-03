@@ -2,7 +2,7 @@
 {
     using System;
 
-    public struct InitializableStructTypeByConverter
+    public readonly struct InitializableStructTypeByConverter
     {
         public int Value { get; init; }
         public DayOfWeek Day { get; init; }

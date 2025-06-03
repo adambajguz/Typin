@@ -37,7 +37,6 @@
             );
         }
 
-
         [Fact]
         public async Task Command_may_throw_a_generic_exception_with_inner_exception_which_exits_and_prints_error_message_and_stack_trace()
         {

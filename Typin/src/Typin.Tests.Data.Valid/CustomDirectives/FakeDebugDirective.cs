@@ -6,7 +6,6 @@
     using PackSite.Library.Pipelining;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Directives.Attributes;
     using Typin.Utilities.Diagnostics.Directives;
 
     [Directive(DiagnosticsDirectives.Debug, Description = "FAKE: Starts a debugging mode. Application will wait for debugger to be attached before proceeding.")]

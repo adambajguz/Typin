@@ -22,7 +22,6 @@ namespace Typin.Tests.InteractiveModeTests
     //            _output = output;
     //        }
 
-
     //        [Fact(Timeout = Timeout)]
     //        public async Task Application_should_allow_string_based_prompt()
     //        {

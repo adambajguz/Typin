@@ -4,7 +4,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
 
     [Alias("duplicated-ex")]

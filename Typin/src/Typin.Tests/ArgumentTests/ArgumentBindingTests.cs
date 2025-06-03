@@ -31,7 +31,7 @@
                 nameof(WithStringArrayOptionCommand), "--opt", "foo", "-o", "bar", "--opt", "baz"
             });
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithStringArrayOptionCommand>();
+            WithStringArrayOptionCommand commandInstance = stdOut.GetString().DeserializeJson<WithStringArrayOptionCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
@@ -138,7 +138,7 @@
                 nameof(WithParametersCommand), "foo", number.ToString(), "bar", "baz"
             });
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
+            WithParametersCommand commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
@@ -165,7 +165,7 @@
                 nameof(WithParametersCommand), "-", "0", "bar", "-", "baz"
             });
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
+            WithParametersCommand commandInstance = stdOut.GetString().DeserializeJson<WithParametersCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);

@@ -2,7 +2,6 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Typin;
     using Typin.Console;
     using Typin.Modes;
 

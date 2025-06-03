@@ -6,7 +6,6 @@
     using Typin;
     using Typin.Console;
     using Typin.Directives;
-    using Typin.Directives.Attributes;
 
     [Directive("custom-interactive", Description = "Custom interactive only directive.")]
     public sealed class CustomInteractiveModeOnlyDirective : IDirective //TODO: add directive hadnler

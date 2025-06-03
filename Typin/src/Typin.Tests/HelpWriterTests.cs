@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Modes.Interactive.Commands;
     using Typin.Modes.Interactive.Directives;

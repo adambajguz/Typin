@@ -4,9 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Typin.Commands;
     using Typin.Hosting;
-    using Typin.Modes;
 
     public static class Program
     {

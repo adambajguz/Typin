@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Valid.Commands;
@@ -193,7 +192,7 @@
         public async Task Application_can_be_created_with_VirtualConsole_MemoryStreamWriter()
         {
             // Arrange
-            var (console, _, _) = VirtualConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: true);
+            (VirtualConsole console, Console.IO.MemoryStreamWriter _, Console.IO.MemoryStreamWriter _) = VirtualConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: true);
 
             // Act
             var builder = new CliApplicationBuilder()
@@ -223,7 +222,7 @@
         public async Task Application_can_be_created_with_VirtualConsole_CreateBuffered()
         {
             // Arrange
-            var (console, _, _) = VirtualConsole.CreateBuffered(isInputRedirected: false);
+            (VirtualConsole console, Console.IO.MemoryStreamWriter _, Console.IO.MemoryStreamWriter _) = VirtualConsole.CreateBuffered(isInputRedirected: false);
 
             // Act
             var builder = new CliApplicationBuilder()

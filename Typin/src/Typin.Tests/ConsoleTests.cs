@@ -27,7 +27,7 @@
         public async Task Real_implementation_of_console_maps_directly_to_system_console()
         {
             // Arrange
-            var command = "Hello world" | Cli.Wrap("dotnet")
+            Command command = "Hello world" | Cli.Wrap("dotnet")
                 .WithArguments(a => a
                     .Add(Dummy.Program.Location)
                     .Add("console-test"));
@@ -72,9 +72,9 @@
             console.Output.Write("output");
             console.Error.Write("error");
 
-            var stdInData = console.Input.ReadToEnd();
-            var stdOutData = console.Output.Encoding.GetString(stdOut.ToArray());
-            var stdErrData = console.Error.Encoding.GetString(stdErr.ToArray());
+            string stdInData = console.Input.ReadToEnd();
+            string stdOutData = console.Output.Encoding.GetString(stdOut.ToArray());
+            string stdErrData = console.Error.Encoding.GetString(stdErr.ToArray());
 
             console.Clear();
             console.ResetColor();
@@ -113,7 +113,7 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<WithColorsCommand>();
 
-            var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
+            (VirtualAnsiConsole console, Typin.Console.IO.MemoryStreamWriter stdOut, Typin.Console.IO.MemoryStreamWriter stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
 
             CliApplication application = builder.UseConsole(console)
                                                 .Build();
@@ -136,7 +136,7 @@
             var builder = new CliApplicationBuilder()
                 .AddCommand<WithColorsAndResetCommand>();
 
-            var (console, stdOut, stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
+            (VirtualAnsiConsole console, Typin.Console.IO.MemoryStreamWriter stdOut, Typin.Console.IO.MemoryStreamWriter stdErr) = VirtualAnsiConsole.CreateBuffered(isInputRedirected: false, isOutputRedirected: false, isErrorRedirected: false);
 
             CliApplication application = builder.UseConsole(console)
                                                 .Build();

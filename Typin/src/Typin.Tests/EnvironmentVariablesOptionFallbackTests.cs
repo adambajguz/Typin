@@ -25,14 +25,14 @@
         public async Task Option_can_use_an_environment_variable_as_fallback()
         {
             // Arrange
-            var command = Cli.Wrap("dotnet")
+            Command command = Cli.Wrap("dotnet")
                 .WithArguments(a => a
                     .Add(Dummy.Program.Location))
                 .WithEnvironmentVariables(e => e
                     .Set("ENV_TARGET", "Mars"));
 
             // Act
-            var stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
+            string stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
 
             // Assert
             stdOut.Trim().Should().Be("Hello Mars!");
@@ -43,7 +43,7 @@
         public async Task Option_only_uses_an_environment_variable_as_fallback_if_the_value_is_not_directly_provided()
         {
             // Arrange
-            var command = Cli.Wrap("dotnet")
+            Command command = Cli.Wrap("dotnet")
                 .WithArguments(a => a
                     .Add(Dummy.Program.Location)
                     .Add("--target")
@@ -52,7 +52,7 @@
                     .Set("ENV_TARGET", "Mars"));
 
             // Act
-            var stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
+            string stdOut = await command.ExecuteBufferedAsync().Select(r => r.StandardOutput);
 
             // Assert
             stdOut.Trim().Should().Be("Hello Jupiter!");
@@ -74,7 +74,7 @@
                 }
             );
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
+            WithEnvironmentVariablesCommand commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
@@ -99,7 +99,7 @@
                 }
             );
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
+            WithEnvironmentVariablesCommand commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
@@ -124,7 +124,7 @@
                 }
             );
 
-            var commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
+            WithEnvironmentVariablesCommand commandInstance = stdOut.GetString().DeserializeJson<WithEnvironmentVariablesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);

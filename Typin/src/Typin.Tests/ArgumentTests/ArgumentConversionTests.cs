@@ -226,8 +226,8 @@
             // Act
             var (exitCode, stdOut, stdErr) = await builder.BuildAndRunTestAsync(_output, args);
 
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
-            var testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>();
+            SupportedArgumentTypesCommand commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
+            SupportedArgumentTypesCommand testInstance = output.DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);
@@ -248,7 +248,7 @@
                 nameof(SupportedArgumentTypesCommand), "--str-parsable-format", "foobar"
             });
 
-            var commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
+            SupportedArgumentTypesCommand commandInstance = stdOut.GetString().DeserializeJson<SupportedArgumentTypesCommand>();
 
             // Assert
             exitCode.Should().Be(ExitCode.Success);

@@ -20,7 +20,7 @@
 
         public InitializableEnumerableByConverter<T> ConvertCollection(IReadOnlyCollection<string> values)
         {
-            List<T> v = new();
+            List<T> v = [];
 
             foreach (string value in values)
             {

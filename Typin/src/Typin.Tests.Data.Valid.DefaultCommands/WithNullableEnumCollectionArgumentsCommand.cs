@@ -4,7 +4,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Models.Attributes;
 
     [Command]
@@ -29,7 +28,7 @@
         public CustomEnum4?[] Buzz { get; set; } = default!;
 
         [Option("fizzz")]
-        public IReadOnlyCollection<CustomEnum5?> Fizz { get; set; } = new List<CustomEnum5?>() { CustomEnum5.ValueD, CustomEnum5.ValueF, null };
+        public IReadOnlyCollection<CustomEnum5?> Fizz { get; set; } = [CustomEnum5.ValueD, CustomEnum5.ValueF, null];
 
         public ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {

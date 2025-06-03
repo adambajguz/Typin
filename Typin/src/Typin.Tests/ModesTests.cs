@@ -4,7 +4,6 @@ namespace Typin.Tests
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Exceptions.Mode;
-    using Typin.Modes;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Invalid.Modes;
     using Typin.Tests.Data.Valid.DefaultCommands;

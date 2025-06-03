@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using FluentAssertions;
     using Typin.Console;
-    using Typin.Modes;
     using Typin.Modes.Interactive;
     using Typin.Tests.Data.Common.Extensions;
     using Typin.Tests.Data.Invalid.CustomDirectives;
@@ -316,7 +315,7 @@
         public void Custom_directive_should_not_be_abstract()
         {
             // Arrange
-            var (console, stdOut, stdErr) = VirtualConsole.CreateBuffered();
+            (VirtualConsole console, Typin.Console.IO.MemoryStreamWriter stdOut, Typin.Console.IO.MemoryStreamWriter stdErr) = VirtualConsole.CreateBuffered();
 
             // Act & Assert
             Func<CliApplication> act = () =>
@@ -366,7 +365,6 @@
             stdOut.GetString().Should().BeNullOrWhiteSpace();
             stdErr.GetString().Should().NotBeNullOrWhiteSpace();
         }
-
 
         [Fact]
         public async Task Custom_directive_should_be_registered_once()

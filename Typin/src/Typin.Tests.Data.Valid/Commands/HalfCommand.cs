@@ -5,7 +5,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Typin.Commands;
-    using Typin.Commands.Attributes;
     using Typin.Console;
     using Typin.Models.Attributes;
 
