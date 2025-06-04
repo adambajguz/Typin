@@ -105,7 +105,6 @@ namespace Typin.Features.Binder
                 return DateTimeOffset.Parse(value, FormatProvider);
             }
 
-#if NET6_0_OR_GREATER
             if (targetType == typeof(DateOnly))
             {
                 return DateOnly.Parse(value, FormatProvider);
@@ -115,7 +114,6 @@ namespace Typin.Features.Binder
             {
                 return TimeOnly.Parse(value, FormatProvider);
             }
-#endif
 
             return null;
         }

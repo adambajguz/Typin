@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>net9.0</TargetFrameworks>
 		<Description>Declarative framework for interactive CLI applications</Description>
 		<PackageTags>cli command line executable interactive interface framework parser arguments terminal shell console tooling</PackageTags>
 		<RootNamespace>Typin.Hosting</RootNamespace>
@@ -11,12 +11,8 @@
 		<None Include="..\..\..\..\.img\typin-favicon-64px.png" Pack="true" PackagePath="" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="[6.0,]" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="[5.0,]" />
 	</ItemGroup>
 
 	<ItemGroup>
