@@ -25,11 +25,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="[6.0,]" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[6.0,]" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="[6.0,]" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="[6.0,]" />
-		<PackageReference Include="PackSite.Library.Pipelining" Version="1.0.0-rc6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="PackSite.Library.Pipelining" Version="2.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>
